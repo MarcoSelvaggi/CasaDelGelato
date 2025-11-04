@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Casa del Gelato</title>
+    <link rel="stylesheet" href="style.css" />
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Casa del Gelato</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<script>
+function closePopup() {
+    document.getElementById("promo-popup").style.display = "none";
+}
+
+function vaiACreaCoppa() {
+    window.location.href = "crea-coppa.html";
+}
+
+</script>
+<script>
+function closePopup() {
+    document.getElementById("promo-popup").style.display = "none";
+}
+
+function vaiACreaCoppa() {
+    window.location.href = "crea-coppa.html";
+}
+
+// Mostra il popup solo quando la pagina è completamente caricata
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        document.getElementById("promo-popup").style.display = "flex";
+    }, 500);
+});
+</script>
+<body>
+
+<!-- ✅ POPUP CREA COPPA (UNICO, DENTRO IL BODY) -->
+<div id="promo-popup" class="popup">
+  <div class="popup-content">
+      <span class="close-popup" onclick="closePopup()">×</span>
+      <h2>✨ Crea la tua Coppa Personalizzata! ✨</h2>
+      <p>Scegli gusti, topping, granelle ed extra come vuoi tu.</p>
+      <button class="popup-button" onclick="vaiACreaCoppa()">Inizia Ora</button>
+  </div>
+</div>
+
+<!-- CONTENUTO NORMALE DELLA PAGINA -->
+<header>...</header>
+<section>...</section>
+
+<header>
+    <img src="logo.png" alt="Casa del Gelato" class="logo">
+    <h1>Casa del Gelato</h1>
+</header>
+<div id="step-progress">
+    <span data-step="1">GUSTI</span>
+    <span data-step="2">GRANELLE</span>
+    <span data-step="3">TOPPING</span>
+    <span data-step="4">EXTRA</span>
+</div>
+<section class="menu-section">
+    <h2>Menù</h2>
+
+<div class="category" onclick="toggleCategory(this)">
+    <h3>Caffetteria</h3>
+    <div class="items">
+
+        <div class="menu-item with-photo">
+            <img src="espresso.jpg" alt="Caffè Espresso">
+            <div>
+                <h4>Caffè Espresso</h4>
+                <p>€1.60</p>
+            </div>
+        </div>
+
+        <div class="menu-item with-photo">
+            <img src="mac-caldo.jpg" alt="Caffè Macchiato Caldo">
+            <div>
+                <h4>Caffè Macchiato Caldo</h4>
+                <p>€1.60</p>
+            </div>
+        </div>
+
+        <div class="menu-item with-photo">
+            <img src="mac-freddo.jpg" alt="Caffè Macchiato Freddo">
+            <div>
+                <h4>Caffè Macchiato Freddo</h4>
+                <p>€1.60</p>
+            </div>
+        </div>
+
+        <div class="menu-item with-photo">
+            <img src="decaffeinato.jpg" alt="Caffè Decaffeinato">
+            <div>
+                <h4>Caffè Decaffeinato</h4>
+                <p>€1.80</p>
+            </div>
+        </div>
+
+        <div class="menu-item with-photo">
+            <img src="corretto.jpg" alt="Caffè Corretto">
+            <div>
+                <h4>Caffè Corretto</h4>
+                <p>€2.50</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Pasticceria e Snack</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Bibite</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Promo Colazioni</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Frullato e Spremute</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Per i più piccoli</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Coppe gelato alla frutta</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Coppe gelato alla crema</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Coppe gelato allo Yogurt</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Coppe gelato pizza e spaghetti</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Aperitivi</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Cocktails</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Amari</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Superalcolici</h3>
+        <div class="items"></div>
+    </div>
+
+    <div class="category" onclick="toggleCategory(this)">
+        <h3>Crea la tua coppa</h3>
+        <div class="items"></div>
+    </div>
+    <section class="menu-section">
+    <h2>Crea la tua Coppa</h2>
+    <p style="text-align:center; color:#8B6B4A;">
+        Personalizza la tua coppa come la vuoi tu
+    </p>
+
+    <a href="crea-coppa.html" class="btn">
+        🍨 INIZIA
+    </a>
+</section>
+
+</section>
+
+    <section class="contact-section">
+        <h2>Contatti</h2>
+        <a class="btn" id="whatsapp-link" target="_blank">Chat WhatsApp</a>
+        <a class="btn" href="https://goo.gl/maps/" target="_blank">Indicazioni Stradali</a>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

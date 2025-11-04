@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crea la tua Coppa</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+    <h1>Crea la tua Coppa Gelato</h1>
+</header>
+
+<!-- stato in alto -->
+<div id="top-status"></div>
+
+<!-- step-size: la scelta iniziale -->
+<section id="step-size">
+    <h2>Scegli il Formato</h2>
+
+    <div class="menu-item option" onclick="selectSize('PICCOLA',2,1,1,1)">
+        PICCOLA (2 gusti, 1 granella, 1 topping, 1 extra)
+    </div>
+
+    <div class="menu-item option" onclick="selectSize('MEDIA',3,2,2,1)">
+        MEDIA (3 gusti, 2 granelle, 2 topping, 1 extra)
+    </div>
+
+    <div class="menu-item option" onclick="selectSize('GRANDE',4,2,2,2)">
+        GRANDE (4 gusti, 2 granelle, 2 topping, 2 extra)
+    </div>
+</section>
+
+<!-- qui saranno caricati dinamicamente gli step -->
+<section id="step-container"></section>
+
+<!-- script -->
+<script src="crea-coppa.js"></script>
+</body>
+</html>
