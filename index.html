@@ -1,206 +1,157 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Casa del Gelato</title>
-    <link rel="stylesheet" href="style.css" />
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Casa del Gelato</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title data-lang="title">Casa del Gelato</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
+    header{text-align:center;padding:20px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:#007aff;color:#fff;text-decoration:none}
+
+    /* Schermata lingua iniziale */
+    #language-screen{
+      position:fixed;inset:0;background:white;display:flex;
+      flex-direction:column;justify-content:center;align-items:center;gap:20px;
+      z-index:2000;
+    }
+
+    /* Lingua toggle in alto */
+    #lang-toggle{position:fixed;top:12px;right:12px;padding:6px 10px;border-radius:12px;background:#ffffffd9;border:1px solid #ddd;cursor:pointer;z-index:10000}
+    #lang-menu{position:fixed;top:48px;right:12px;background:#fff;padding:8px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.12);display:none;z-index:10001}
+#lang-menu{
+  position:fixed;
+  top:48px;
+  right:12px;
+  background:#fff;
+  padding:6px 0;
+  border-radius:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+  display:none;
+  z-index:10001;
+  display:flex;
+  flex-direction:column; /* ✅ verticale */
+}
+
+#lang-menu button{
+  padding:10px 14px;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  font-size:15px;
+  width:100%; 
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+#lang-menu button:hover{
+  background:#f2f2f2; /* ✅ effetto hover morbido */
+}
+    /* Dynamic Island */
+    #dynamic-island{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:8px 14px;border-radius:20px;display:none;z-index:9998}
+  </style>
 </head>
-<script>
-function closePopup() {
-    document.getElementById("promo-popup").style.display = "none";
-}
-
-function vaiACreaCoppa() {
-    window.location.href = "crea-coppa.html";
-}
-
-</script>
-<script>
-function closePopup() {
-    document.getElementById("promo-popup").style.display = "none";
-}
-
-function vaiACreaCoppa() {
-    window.location.href = "crea-coppa.html";
-}
-
-// Mostra il popup solo quando la pagina è completamente caricata
-window.addEventListener("load", () => {
-    setTimeout(() => {
-        document.getElementById("promo-popup").style.display = "flex";
-    }, 500);
-});
-</script>
 <body>
-<div id="dynamic-island">
-  <span id="island-text">Benvenuto! Inizia a creare la tua coppa 🍨</span>
-</div>
-<!-- ✅ POPUP CREA COPPA (UNICO, DENTRO IL BODY) -->
-<div id="promo-popup" class="popup">
-  <div class="popup-content">
-      <span class="close-popup" onclick="closePopup()">×</span>
-      <h2>✨ Crea la tua Coppa Personalizzata! ✨</h2>
-      <p>Scegli gusti, topping, granelle ed extra come vuoi tu.</p>
-      <button class="popup-button" onclick="vaiACreaCoppa()">Inizia Ora</button>
-  </div>
+
+<!-- Selettore lingua -->
+<div id="lang-toggle">🌍 ▾</div>
+<div id="lang-menu">
+  <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
+  <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+  <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
 </div>
 
-<!-- CONTENUTO NORMALE DELLA PAGINA -->
-<header>...</header>
-<section>...</section>
+<!-- Schermata prima apertura -->
+<div id="language-screen">
+  <h2>Seleziona la lingua</h2>
+  <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
+  <button class="lang-btn" data-lang="en">🇬🇧 English</button>
+  <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+</div>
+
+<!-- Dynamic Island -->
+<div id="dynamic-island"><span id="island-text"></span></div>
 
 <header>
-    <img src="logo.png" alt="Casa del Gelato" class="logo">
-    <h1>Casa del Gelato</h1>
+  <h1 data-lang="title">Casa del Gelato</h1>
 </header>
 
 <section class="menu-section">
-    <h2>Menù</h2>
-
-<div class="category" onclick="toggleCategory(this)">
-    <h3>Caffetteria</h3>
-    <div class="items">
-
-        <div class="menu-item with-photo">
-            <img src="espresso.jpg" alt="Caffè Espresso">
-            <div>
-                <h4>Caffè Espresso</h4>
-                <p>€1.60</p>
-            </div>
-        </div>
-
-        <div class="menu-item with-photo">
-            <img src="mac-caldo.jpg" alt="Caffè Macchiato Caldo">
-            <div>
-                <h4>Caffè Macchiato Caldo</h4>
-                <p>€1.60</p>
-            </div>
-        </div>
-
-        <div class="menu-item with-photo">
-            <img src="mac-freddo.jpg" alt="Caffè Macchiato Freddo">
-            <div>
-                <h4>Caffè Macchiato Freddo</h4>
-                <p>€1.60</p>
-            </div>
-        </div>
-
-        <div class="menu-item with-photo">
-            <img src="decaffeinato.jpg" alt="Caffè Decaffeinato">
-            <div>
-                <h4>Caffè Decaffeinato</h4>
-                <p>€1.80</p>
-            </div>
-        </div>
-
-        <div class="menu-item with-photo">
-            <img src="corretto.jpg" alt="Caffè Corretto">
-            <div>
-                <h4>Caffè Corretto</h4>
-                <p>€2.50</p>
-            </div>
-        </div>
-
-    </div>
-</div>
-</div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Pasticceria e Snack</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Bibite</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Promo Colazioni</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Frullato e Spremute</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Per i più piccoli</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Coppe gelato alla frutta</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Coppe gelato alla crema</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Coppe gelato allo Yogurt</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Coppe gelato pizza e spaghetti</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Aperitivi</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Cocktails</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Amari</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Superalcolici</h3>
-        <div class="items"></div>
-    </div>
-
-    <div class="category" onclick="toggleCategory(this)">
-        <h3>Crea la tua coppa</h3>
-        <div class="items"></div>
-    </div>
-    <section class="menu-section">
-    <h2>Crea la tua Coppa</h2>
-    <p style="text-align:center; color:#8B6B4A;">
-        Personalizza la tua coppa come la vuoi tu
-    </p>
-
-    <a href="crea-coppa.html" class="btn">
-        🍨 INIZIA
-    </a>
+  <h2 data-lang="menu">Menù</h2>
 </section>
 
+<section class="menu-section">
+  <h2 data-lang="create_cup_title">Crea la tua Coppa</h2>
+  <p data-lang="create_cup_subtitle">Personalizza la tua coppa come la vuoi tu</p>
+  <a class="btn" href="crea-coppa.html" data-lang="create_button">🍨 INIZIA</a>
 </section>
 
-    <section class="contact-section">
-        <h2>Contatti</h2>
-        <a class="btn" id="whatsapp-link" target="_blank">Chat WhatsApp</a>
-        <a class="btn" href="https://goo.gl/maps/" target="_blank">Indicazioni Stradali</a>
-    </section>
+<section class="menu-section">
+  <h2 data-lang="contacts">Contatti</h2>
+  <a id="whatsapp-link" class="btn" target="_blank" data-lang="whatsapp">Chat WhatsApp</a>
+  <a class="btn" href="https://goo.gl/maps/" target="_blank" data-lang="directions">Indicazioni Stradali</a>
+</section>
 
-    <script src="script.js"></script>
+<script>
+(function(){
+
+  const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
+
+  const LANG = {
+    it:{title:"Casa del Gelato",menu:"Menù",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"Contatti",whatsapp:"Chat WhatsApp",directions:"Indicazioni Stradali",welcome_island:"Benvenuto! 🍨"},
+    en:{title:"House of Gelato",menu:"Menu",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup as you like",create_button:"🍨 START",contacts:"Contacts",whatsapp:"WhatsApp Chat",directions:"Get Directions",welcome_island:"Welcome! 🍨"},
+    de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher wie du willst",create_button:"🍨 START",contacts:"Kontakte",whatsapp:"WhatsApp Chat",directions:"Wegbeschreibung",welcome_island:"Willkommen! 🍨"}
+  };
+
+  const screen = document.getElementById('language-screen');
+  const island = document.getElementById('dynamic-island');
+  const islandText = document.getElementById('island-text');
+  const langToggle = document.getElementById('lang-toggle');
+  const langMenu = document.getElementById('lang-menu');
+
+  function applyLanguage(l){
+    document.querySelectorAll('[data-lang]').forEach(el=>{
+      const k = el.dataset.lang;
+      if(LANG[l][k]) el.textContent = LANG[l][k];
+    });
+    langToggle.textContent = FLAGS[l] + " ▾"; // ✅ mostra la bandiera scelta
+  }
+
+  function choose(l){
+    localStorage.setItem("lang", l);
+    applyLanguage(l);
+    langMenu.style.display="none"; // ✅ chiudi menu dopo click
+    screen.style.display="none";  // ✅ nasconde schermata iniziale dopo scelta
+    islandText.textContent = LANG[l].welcome_island;
+    island.style.display="block";
+    setTimeout(()=> island.style.display="none",1400);
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    b.onclick=()=>choose(b.dataset.lang);
+  });
+
+  langToggle.onclick = ()=> {
+    langMenu.style.display = langMenu.style.display==="block" ? "none" : "block";
+  };
+
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle'))
+      langMenu.style.display="none";
+  });
+
+  const saved = localStorage.getItem("lang");
+  if(saved){
+    applyLanguage(saved);
+    screen.style.display="none"; // ✅ non mostra più schermata iniziale
+  } else {
+    screen.style.display="flex"; // ✅ prima apertura → mostra selezione lingua
+  }
+
+})();
+</script>
+
 </body>
 </html>

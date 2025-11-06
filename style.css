@@ -325,3 +325,128 @@ button:active, .btn:active {
 
 /* rendi cliccabile anche su mobile */
 .menu-item.option:active { transform: scale(0.995); }
+.language-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  z-index: 99999;
+}
+
+.lang-btn {
+  padding: 12px 20px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #f0f0f0;
+  transition: 0.2s;
+}
+
+.lang-btn:hover { transform: scale(1.05); }
+#lang-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  padding: 8px 12px;
+  background: #ffffffd9;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 99999;
+  backdrop-filter: blur(8px);
+}
+
+#lang-menu {
+  position: fixed;
+  top: 55px;
+  right: 12px;
+  background: white;
+  padding: 8px;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 99999;
+}
+
+#lang-menu .lang-btn {
+  border: none;
+  background: #f7f7f7;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#lang-menu .lang-btn:hover {
+  background: #e6e6e6;
+}
+/* === SELEZIONE LINGUA → SCHERMATA INIZIALE === */
+#language-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  z-index: 99999;
+}
+
+.lang-btn {
+  padding: 12px 20px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #f0f0f0;
+  transition: 0.2s;
+}
+
+.lang-btn:hover { transform: scale(1.05); }
+
+/* 🌍 Toggle */
+#lang-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  padding: 8px 12px;
+  background: #ffffffd9;
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 99999;
+  backdrop-filter: blur(8px);
+}
+
+/* Menu a tendina */
+#lang-menu{
+  position:fixed;
+  top:48px;
+  right:12px;
+  background:#fff;
+  padding:8px;
+  border-radius:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+  display:none;
+  z-index:10001;
+
+  /* ✅ Aggiunto: menu verticale */
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+/* ✅ Mostra quando attivo */
+#lang-menu.show {
+  display: flex !important;
+}

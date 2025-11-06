@@ -3,26 +3,28 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Crea la tua Coppa</title>
+<title data-lang="create_cup_title">Crea la tua Coppa</title>
 <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+
+<!-- ✅ DYNAMIC ISLAND -->
 <div id="dynamic-island" class="dynamic-island">
-  <div id="island-text">Aggiunto</div>
+  <div id="island-text" data-lang="welcome_island">Aggiunto</div>
   <div id="island-progress">
     <div id="island-bar"></div>
   </div>
 </div>
+
 <header>
-    <h1>Crea la tua Coppa Gelato</h1>
+    <h1 data-lang="create_cup_title">Crea la tua Coppa Gelato</h1>
 </header>
 
-<!-- stato in alto -->
 <div id="top-status"></div>
 
-<!-- step-size: la scelta iniziale -->
 <section id="step-size">
-    <h2>Scegli il Formato</h2>
+    <h2 data-lang="choose_size">Scegli il Formato</h2>
 
     <div class="menu-item option" onclick="selectSize('PICCOLA',2,1,1,1)">
         PICCOLA (2 gusti, 1 granella, 1 topping, 1 extra)
@@ -37,10 +39,29 @@
     </div>
 </section>
 
-<!-- qui saranno caricati dinamicamente gli step -->
 <section id="step-container"></section>
 
-<!-- script -->
-<script src="crea-coppa.js?v=2"></script>
+<script>
+/* ✅ Traduzioni locali solo per questa pagina */
+const translations = {
+  it: { create_cup_title:"Crea la tua Coppa Gelato", choose_size:"Scegli il Formato", welcome_island:"Aggiunto!" },
+  en: { create_cup_title:"Create Your Ice Cream Cup", choose_size:"Choose a Size", welcome_island:"Added!" },
+  de: { create_cup_title:"Erstelle deinen Eisbecher", choose_size:"Wähle die Größe", welcome_island:"Hinzugefügt!" }
+};
+
+/* ✅ Legge lingua scelta in home */
+const lang = localStorage.getItem("lang") || "it";
+
+/* ✅ Applica lingua */
+function applyLanguage(){
+  document.documentElement.setAttribute("lang", lang);
+  document.querySelectorAll("[data-lang]").forEach(el=>{
+    const key = el.getAttribute("data-lang");
+    if(translations[lang][key]) el.textContent = translations[lang][key];
+  });
+}
+applyLanguage();
+</script>
+<script src="crea-coppa.js"></script>
 </body>
 </html>
