@@ -456,3 +456,51 @@ button:active, .btn:active {
 .call-waiter-btn {
   display: none !important;
 }
+#stores {
+  max-width: 600px;
+  margin: auto;
+}
+
+.store-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 20px;
+  margin: 15px 0;
+  box-shadow: 0 5px 18px rgba(0,0,0,0.07);
+  transition: transform .18s, box-shadow .18s;
+  cursor: pointer;
+}
+
+.store-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.store-card h3 {
+  font-size: 20px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.store-card p {
+  opacity: 0.7;
+  margin-bottom: 14px;
+}
+
+.store-actions {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  font-size: 24px;
+}
+
+.store-actions a, .store-actions span {
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform .18s;
+}
+
+.store-actions a:hover, .store-actions span:hover {
+  transform: scale(1.2);
+}
