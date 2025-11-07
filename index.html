@@ -15,21 +15,27 @@
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
     header{text-align:center;padding:20px}
     .menu-section{padding:20px 12px;text-align:center}
-    .btn{display:block;width:220px;text-align:center;padding:12px 14px;border-radius:12px;background:#ff7a00;color:#fff;text-decoration:none;margin:10px auto;font-size:17px;font-weight:600;}
+    .btn{display:block;width:260px;text-align:center;padding:12px 14px;border-radius:12px;background:#ff7a00;color:#fff;text-decoration:none;margin:10px auto;font-size:17px;font-weight:600;}
 
+    /* Selettore lingua */
     #language-screen{position:fixed;inset:0;background:white;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;z-index:2000;}
     #lang-toggle{position:fixed;top:12px;right:12px;padding:6px 10px;border-radius:12px;background:#ffffffd9;border:1px solid #ddd;cursor:pointer;z-index:10000}
     #lang-menu{position:fixed;top:48px;right:12px;background:#fff;padding:6px 0;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.12);display:none;z-index:10001;display:flex;flex-direction:column;}
     #lang-menu button{padding:10px 14px;border:none;background:transparent;cursor:pointer;font-size:15px;width:100%;text-align:left;display:flex;align-items:center;gap:8px;}
     #lang-menu button:hover{background:#f2f2f2;}
 
+    /* Dynamic island */
     #dynamic-island{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:8px 14px;border-radius:20px;display:none;z-index:9998}
-    .call-waiter-btn { display: none !important; }
+
+    /* Blocchi Locali */
+    .location-block {margin-top:25px;margin-bottom:35px;}
+    .location-block h3 {margin-bottom:10px;font-size:19px;}
   </style>
 </head>
 
 <body>
 
+<!-- Lingua -->
 <div id="lang-toggle">🌍 ▾</div>
 <div id="lang-menu">
   <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
@@ -58,31 +64,44 @@
   <a class="btn" href="crea-coppa.html" data-lang="create_button">🍨 INIZIA</a>
 </section>
 
+<!-- ✅ CONTATTI E LOCALI -->
 <section class="menu-section">
   <h2 data-lang="contacts">Contatti</h2>
 
-  <a id="whatsapp-link" class="btn" href="https://wa.me/393519243532" target="_blank" data-lang="whatsapp">Chat WhatsApp</a>
+  <!-- Locale 1 -->
+  <div class="location-block">
+    <h3>📍 Casa del Gelato</h3>
+    <a class="btn" href="https://www.google.com/maps?q=Viale+delle+costellazioni+49+bibione+VE" target="_blank">🗺️ Indicazioni</a>
+    <a class="btn" href="tel:043143628">📞 0431 43628</a>
+    <a class="btn" href="https://g.page/r/CYRHvgKQaZHjEBM/review" target="_blank">⭐ Recensioni</a>
+  </div>
 
-  <!-- 🔔 Pulsante Chiama Cameriere via iMessage -->
-<button class="btn call-waiter-btn" onclick="callWaiter()">🔔 Chiama Cameriere</button>
-  <a class="btn" href="https://goo.gl/maps/" target="_blank" data-lang="directions">Indicazioni Stradali</a>
+  <!-- Locale 2 -->
+  <div class="location-block">
+    <h3>📍 Casa del Gelato 2</h3>
+    <a class="btn" href="https://www.google.com/maps?q=Viale+delle+Costellazioni+10+Bibione+VE" target="_blank">🗺️ Indicazioni</a>
+    <a class="btn" href="tel:0431364365">📞 0431 364365</a>
+    <a class="btn" href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank">⭐ Recensioni</a>
+  </div>
+
+  <!-- Locale 3 -->
+  <div class="location-block">
+    <h3>📍 Casa del Gelato Lignano</h3>
+    <a class="btn" href="https://www.google.com/maps?q=Via+Udine+1+Lignano+Sabbiadoro+UD" target="_blank">🗺️ Indicazioni</a>
+    <a class="btn" href="tel:04311961783">📞 0431 1961783</a>
+    <a class="btn" href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank">⭐ Recensioni</a>
+  </div>
+
+  <a id="whatsapp-link" class="btn" href="https://wa.me/393519243532" target="_blank">💬 Chat WhatsApp</a>
 </section>
-
-<script>
-function callWaiter() {
-  const msg = encodeURIComponent("Un cliente ha bisogno del cameriere. 🍦");
-  const to = "casadelgelato.it@icloud.com";
-  window.location.href = `sms:${to}&body=${msg}`;
-}
-</script>
 
 <script>
 (function(){
   const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
   const LANG = {
-    it:{title:"Casa del Gelato",menu:"Menù",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"Contatti",whatsapp:"Chat WhatsApp",directions:"Indicazioni Stradali",welcome_island:"Benvenuto! 🍨"},
-    en:{title:"House of Gelato",menu:"Menu",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup as you like",create_button:"🍨 START",contacts:"Contacts",whatsapp:"WhatsApp Chat",directions:"Get Directions",welcome_island:"Welcome! 🍨"},
-    de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher wie du willst",create_button:"🍨 START",contacts:"Kontakte",whatsapp:"WhatsApp Chat",directions:"Wegbeschreibung",welcome_island:"Willkommen! 🍨"}
+    it:{title:"Casa del Gelato",menu:"Menù",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"Contatti",welcome_island:"Benvenuto! 🍨"},
+    en:{title:"House of Gelato",menu:"Menu",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup as you like",create_button:"🍨 START",contacts:"Contacts",welcome_island:"Welcome! 🍨"},
+    de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher wie du willst",create_button:"🍨 START",contacts:"Kontakte",welcome_island:"Willkommen! 🍨"}
   };
 
   const screen=document.getElementById('language-screen');
@@ -111,10 +130,9 @@ function callWaiter() {
 
   document.querySelectorAll('.lang-btn').forEach(b=>{ b.onclick=()=>choose(b.dataset.lang); });
   langToggle.onclick = ()=> langMenu.style.display = langMenu.style.display==="block" ? "none" : "block";
-  document.addEventListener('click',e=>{ if(!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle')) langMenu.style.display="none"; });
 
   const saved = localStorage.getItem("lang");
-  if(saved){ applyLanguage(saved); screen.style.display="none"; } else { screen.style.display="flex"; }
+  if(saved){ applyLanguage(saved); screen.style.display="none"; }
 })();
 </script>
 
