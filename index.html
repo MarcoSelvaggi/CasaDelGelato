@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
+    <link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title data-lang="title">Casa del Gelato</title>
@@ -53,8 +55,54 @@
     #dynamic-island{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:8px 14px;border-radius:20px;display:none;z-index:9998}
   </style>
 </head>
-<body>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js";
+  import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEtjAs4cTJbpji4dXnb_bGxRUaK2D2tsA",
+    authDomain: "casadelgelato-e6fbf.firebaseapp.com",
+    databaseURL: "https://casadelgelato-e6fbf-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "casadelgelato-e6fbf",
+    storageBucket: "casadelgelato-e6fbf.firebasestorage.app",
+    messagingSenderId: "446810619113",
+    appId: "1:446810619113:web:1f25c3a16586c81c8a0478"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+  const db = getDatabase(app);
+
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      getToken(messaging, { vapidKey: "BIxxYqAOYyTEXSgH1gawFdcg3P_SWMDW54rv4x8ei9QrsNB-D_LM28cNsP5DnBT-zQu9RgJJQX7LsimNOT1SQTY" })
+        .then((token) => {
+          localStorage.setItem("clientToken", token);
+        });
+    }
+  });
+
+  // Funzione che chiameremo quando il cliente clicca "Chiama Cameriere"
+  window.callWaiter = () => {
+    const token = localStorage.getItem("clientToken");
+    push(ref(db, "calls"), { time: Date.now(), token });
+    alert("✅ Cameriere avvisato!");
+  };
+
+  // Quando il cameriere risponde, il cliente riceve un avviso
+  onMessage(messaging, () => {
+    alert("📣 Il cameriere sta arrivando!");
+  });
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("firebase-messaging-sw.js")
+    .then(() => console.log("✅ Firebase SW registrato"))
+    .catch(err => console.log("❌ Errore SW:", err));
+}
+</script>
+<body>
 <!-- Selettore lingua -->
 <div id="lang-toggle">🌍 ▾</div>
 <div id="lang-menu">
@@ -90,8 +138,23 @@
 
 <section class="menu-section">
   <h2 data-lang="contacts">Contatti</h2>
-  <a id="whatsapp-link" class="btn" target="_blank" data-lang="whatsapp">Chat WhatsApp</a>
-  <a class="btn" href="https://goo.gl/maps/" target="_blank" data-lang="directions">Indicazioni Stradali</a>
+
+  <!-- ✅ Link WhatsApp corretto -->
+  <a 
+    id="whatsapp-link" 
+    class="btn" 
+    href="https://wa.me/393516490934" 
+    target="_blank" 
+    data-lang="whatsapp">
+    Chat WhatsApp
+  </a>
+
+  <a class="btn" href="https://goo.gl/maps/" target="_blank" data-lang="directions">
+    Indicazioni Stradali
+  </a>
+
+  <!-- ✅ Pulsante Chiama Cameriere -->
+  <button class="btn" onclick="callWaiter()">🛎️ Chiama Cameriere</button>
 </section>
 
 <script>
