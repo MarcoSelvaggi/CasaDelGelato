@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Cameriere</title>
+  <style>
+    body { font-family: system-ui; text-align:center; margin-top:40px; }
+    .call { padding:20px; margin:10px; background:#ffeb3b; border-radius:12px; }
+  </style>
+</head>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+  import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEtjAs4cTJbpji4dXnb_bGxRUaK2D2tsA",
+    authDomain: "casadelgelato-e6fbf.firebaseapp.com",
+    databaseURL: "https://casadelgelato-e6fbf-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "casadelgelato-e6fbf",
+    messagingSenderId: "446810619113",
+    appId: "1:446810619113:web:1f25c3a16586c81c8a0478"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const messaging = getMessaging(app);
+
+  getToken(messaging, { vapidKey: "BIxxYqAOYyTEXSgH1gawFdcg3P_SWMDW54rv4x8ei9QrsNB-D_LM28cNsP5DnBT-zQu9RgJJQX7LsimNOT1SQTY" })
+    .then(token => {
+      localStorage.setItem("waiterToken", token);
+      document.getElementById("status").innerHTML = "✅ Cameriere registrato - Notifiche attive";
+    });
+
+  onChildAdded(ref(db, "calls"), (snapshot) => {
+    const card = document.createElement("div");
+    card.className = "call";
+    card.innerHTML = "📣 Un tavolo ha chiesto aiuto!";
+    document.body.appendChild(card);
+    new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play();
+  });
+</script>
+
+<body>
+<h1>📟 Cameriere</h1>
+<p id="status">⏳ Registrazione...</p>
+<p>Lascia questa pagina aperta sul banco</p>
+</body>
+</html>
