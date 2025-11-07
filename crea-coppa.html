@@ -1,161 +1,90 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <title>Casa del Gelato</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title data-lang="create_cup_title">Crea la tua Coppa</title>
+<link rel="stylesheet" href="style.css" />
 
-  <link rel="icon" href="favicon.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
+<style>
+/* ✅ BOTTONE HOME IN ALTO A SINISTRA */
+.home-button {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  background: #ffffffd9;
+  border: 1px solid #ddd;
+  padding: 7px 12px;
+  border-radius: 12px;
+  font-size: 18px;
+  text-decoration: none;
+  color: #111;
+  font-weight: 600;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+}
+</style>
 
-  <style>
-    body { font-family: system-ui, -apple-system, Roboto, sans-serif; margin:0; background:#f6f6f7; color:#111; }
-    header { text-align:center; padding:20px; }
-
-    .menu-section { padding: 24px 14px; text-align:center; }
-    .btn { display:block; width:220px; text-align:center; padding:12px; border-radius:14px; background:#ff7a00; color:#fff; text-decoration:none; margin:12px auto; font-size:17px; font-weight:600; }
-
-    /* 🌍 Selettore Lingua */
-    #lang-toggle { position:fixed; top:12px; right:12px; background:#fff; border:1px solid #ddd; padding:6px 10px; border-radius:12px; cursor:pointer; z-index:9999; }
-    #lang-menu { position:fixed; top:48px; right:12px; background:#fff; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,0.12); padding:6px 0; display:none; z-index:10000; }
-    #lang-menu button { padding:10px 14px; border:none; background:transparent; cursor:pointer; font-size:15px; width:100%; text-align:left; display:flex; align-items:center; gap:8px; }
-    #lang-menu button:hover { background:#f2f2f2; }
-
-    #language-screen { position:fixed; inset:0; background:white; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:20px; z-index:2000; }
-
-    /* 🏬 CARD LOCALI */
-    .shop-card {
-      background:#fff;
-      margin:14px;
-      padding:16px 18px;
-      border-radius:14px;
-      box-shadow:0 4px 14px rgba(0,0,0,0.08);
-      text-align:left;
-    }
-    .shop-card h3 { margin:0 0 6px; font-size:19px; }
-    .shop-card p { margin:0 0 12px; font-size:15px; color:#555; }
-    .shop-actions { display:flex; gap:8px; flex-wrap:wrap; }
-    .shop-actions a {
-      flex:1;
-      text-align:center;
-      background:#ff7a00;
-      padding:10px;
-      border-radius:10px;
-      text-decoration:none;
-      color:#fff;
-      font-weight:600;
-      font-size:14px;
-    }
-  </style>
 </head>
 
 <body>
 
-<!-- 🌍 Selettore Lingua -->
-<div id="lang-toggle">🌍 ▾</div>
-<div id="lang-menu">
-  <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
-  <button class="lang-btn" data-lang="en">🇬🇧 English</button>
-  <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
-</div>
+<!-- 🏠 TASTO HOME -->
+<a href="index.html" class="home-button">🏠</a>
 
-<div id="language-screen">
-  <h2>Seleziona la lingua</h2>
-  <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
-  <button class="lang-btn" data-lang="en">🇬🇧 English</button>
-  <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+<!-- ✅ DYNAMIC ISLAND -->
+<div id="dynamic-island" class="dynamic-island">
+  <div id="island-text" data-lang="welcome_island">Aggiunto</div>
+  <div id="island-progress">
+    <div id="island-bar"></div>
+  </div>
 </div>
 
 <header>
-  <h1 data-lang="title">Casa del Gelato</h1>
+    <h1 data-lang="create_cup_title">Crea la tua Coppa Gelato</h1>
 </header>
 
-<section class="menu-section">
-  <h2 data-lang="create_cup_title">Crea la tua Coppa</h2>
-  <p data-lang="create_cup_subtitle">Personalizza la tua coppa come vuoi tu</p>
-  <a class="btn" href="crea-coppa.html" data-lang="create_button">🍨 INIZIA</a>
+<div id="top-status"></div>
+
+<section id="step-size">
+    <h2 data-lang="choose_size">Scegli il Formato</h2>
+
+    <div class="menu-item option" onclick="selectSize('PICCOLA',2,1,1,1)">
+        PICCOLA (2 gusti, 1 granella, 1 topping, 1 extra)
+    </div>
+
+    <div class="menu-item option" onclick="selectSize('MEDIA',3,2,2,1)">
+        MEDIA (3 gusti, 2 granelle, 2 topping, 1 extra)
+    </div>
+
+    <div class="menu-item option" onclick="selectSize('GRANDE',4,2,2,2)">
+        GRANDE (4 gusti, 2 granelle, 2 topping, 2 extra)
+    </div>
 </section>
 
-<section class="menu-section">
-  <h2 data-lang="contacts">I nostri Locali</h2>
-
-  <!-- Locale 1 -->
-  <div class="shop-card">
-    <h3>Casa del Gelato — Bibione</h3>
-    <p>Viale delle Costellazioni 49</p>
-    <div class="shop-actions">
-      <a href="https://www.google.com/maps?q=Viale+delle+Costellazioni+49+Bibione" target="_blank">📍 Indicazioni</a>
-      <a href="tel:043143628">📞 Chiama</a>
-      <a href="https://g.page/r/CYRHvgKQaZHjEBM/review" target="_blank">⭐ Recensioni</a>
-    </div>
-  </div>
-
-  <!-- Locale 2 -->
-  <div class="shop-card">
-    <h3>Casa del Gelato 2 — Bibione</h3>
-    <p>Viale delle Costellazioni 10</p>
-    <div class="shop-actions">
-      <a href="https://www.google.com/maps?q=Viale+delle+Costellazioni+10+Bibione" target="_blank">📍 Indicazioni</a>
-      <a href="tel:0431364365">📞 Chiama</a>
-      <a href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank">⭐ Recensioni</a>
-    </div>
-  </div>
-
-  <!-- Locale 3 -->
-  <div class="shop-card">
-    <h3>Casa del Gelato — Lignano</h3>
-    <p>Via Udine 1</p>
-    <div class="shop-actions">
-      <a href="https://www.google.com/maps?q=Via+Udine+1+Lignano" target="_blank">📍 Indicazioni</a>
-      <a href="tel:04311961783">📞 Chiama</a>
-      <a href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank">⭐ Recensioni</a>
-    </div>
-  </div>
-
-</section>
+<section id="step-container"></section>
 
 <script>
-(function(){
-  const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
-  const LANG = {
-    it:{title:"Casa del Gelato",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come vuoi tu",create_button:"🍨 INIZIA",contacts:"I nostri Locali"},
-    en:{title:"House of Gelato",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup as you like",create_button:"🍨 START",contacts:"Our Shops"},
-    de:{title:"Haus des Gelatos",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher wie du willst",create_button:"🍨 START",contacts:"Unsere Standorte"}
-  };
+/* ✅ Traduzioni */
+const translations = {
+  it: { create_cup_title:"Crea la tua Coppa Gelato", choose_size:"Scegli il Formato", welcome_island:"Aggiunto!" },
+  en: { create_cup_title:"Create Your Ice Cream Cup", choose_size:"Choose a Size", welcome_island:"Added!" },
+  de: { create_cup_title:"Erstelle deinen Eisbecher", choose_size:"Wähle die Größe", welcome_island:"Hinzugefügt!" }
+};
 
-  const screen = document.getElementById("language-screen");
-  const langToggle = document.getElementById("lang-toggle");
-  const langMenu = document.getElementById("lang-menu");
+const lang = localStorage.getItem("lang") || "it";
 
-  function applyLanguage(l){
-    document.querySelectorAll("[data-lang]").forEach(el=>{
-      const k=el.dataset.lang;
-      if(LANG[l][k]) el.textContent = LANG[l][k];
-    });
-    langToggle.textContent = FLAGS[l] + " ▾";
-  }
-
-  function choose(l){
-    localStorage.setItem("lang", l);
-    applyLanguage(l);
-    screen.style.display = "none";
-  }
-
-  document.querySelectorAll(".lang-btn").forEach(btn=>btn.onclick=()=>choose(btn.dataset.lang));
-  langToggle.onclick = ()=> langMenu.style.display = langMenu.style.display==="block" ? "none":"block";
-
-  document.addEventListener("click",(e)=>{
-    if(!e.target.closest("#lang-menu") && !e.target.closest("#lang-toggle")){
-      langMenu.style.display="none";
-    }
+function applyLanguage(){
+  document.documentElement.setAttribute("lang", lang);
+  document.querySelectorAll("[data-lang]").forEach(el=>{
+    const key = el.getAttribute("data-lang");
+    if(translations[lang][key]) el.textContent = translations[lang][key];
   });
-
-  const saved = localStorage.getItem("lang");
-  if(saved){ applyLanguage(saved); screen.style.display="none"; }
-})();
+}
+applyLanguage();
 </script>
+
+<script src="crea-coppa.js"></script>
 
 </body>
 </html>
