@@ -156,30 +156,25 @@ if ("serviceWorker" in navigator) {
 })();
 </script>
 <!-- Pulsante Chiama Cameriere -->
-<style>
-  #chiamaCameriere {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #ff8a5c;
-    color: white;
-    border: none;
-    padding: 14px 22px;
-    border-radius: 30px;
-    font-size: 18px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
-    cursor: pointer;
-    z-index: 9999;
-  }
-</style>
-
-<button id="chiamaCameriere">Chiama Cameriere</button>
+<button id="chiamaCameriere" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff8a5c;
+  color: white;
+  border: none;
+  padding: 14px 22px;
+  border-radius: 30px;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  cursor: pointer;
+  z-index: 9999;
+">Chiama Cameriere</button>
 
 <script>
 document.getElementById("chiamaCameriere").addEventListener("click", () => {
-  // Invia segnale al cameriere (Firebase Messaging)
-  fetch("cameriere.html"); // NON TOCCARE
-  alert("Il cameriere è stato chiamato ✅");
+  fetch("https://marcoselvaggi.github.io/CasaDelGelato/cameriere.html");
+  alert("✅ Cameriere chiamato!");
 });
 </script>
 </body>
