@@ -1,60 +1,30 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title data-lang="title">Casa del Gelato</title>
+
+  <!-- ✅ Icone (metti questi 2 file nella root del sito) -->
+  <link rel="icon" href="favicon.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
     header{text-align:center;padding:20px}
-    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:#007aff;color:#fff;text-decoration:none}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:#007aff;color:#fff;text-decoration:none;margin:6px 0;display:block;width:200px;text-align:center;margin-left:auto;margin-right:auto;}
 
-    /* Schermata lingua iniziale */
-    #language-screen{
-      position:fixed;inset:0;background:white;display:flex;
-      flex-direction:column;justify-content:center;align-items:center;gap:20px;
-      z-index:2000;
-    }
-
-    /* Lingua toggle in alto */
+    #language-screen{position:fixed;inset:0;background:white;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;z-index:2000;}
     #lang-toggle{position:fixed;top:12px;right:12px;padding:6px 10px;border-radius:12px;background:#ffffffd9;border:1px solid #ddd;cursor:pointer;z-index:10000}
-    #lang-menu{position:fixed;top:48px;right:12px;background:#fff;padding:8px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.12);display:none;z-index:10001}
-#lang-menu{
-  position:fixed;
-  top:48px;
-  right:12px;
-  background:#fff;
-  padding:6px 0;
-  border-radius:8px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.12);
-  display:none;
-  z-index:10001;
-  display:flex;
-  flex-direction:column; /* ✅ verticale */
-}
-
-#lang-menu button{
-  padding:10px 14px;
-  border:none;
-  background:transparent;
-  cursor:pointer;
-  font-size:15px;
-  width:100%; 
-  text-align:left;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-#lang-menu button:hover{
-  background:#f2f2f2; /* ✅ effetto hover morbido */
-}
-    /* Dynamic Island */
+    #lang-menu{position:fixed;top:48px;right:12px;background:#fff;padding:6px 0;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.12);display:none;z-index:10001;display:flex;flex-direction:column;}
+    #lang-menu button{padding:10px 14px;border:none;background:transparent;cursor:pointer;font-size:15px;width:100%;text-align:left;display:flex;align-items:center;gap:8px;}
+    #lang-menu button:hover{background:#f2f2f2;}
     #dynamic-island{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:#000;color:#fff;padding:8px 14px;border-radius:20px;display:none;z-index:9998}
   </style>
 </head>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
   import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js";
@@ -83,18 +53,17 @@
     }
   });
 
-  // Funzione che chiameremo quando il cliente clicca "Chiama Cameriere"
   window.callWaiter = () => {
     const token = localStorage.getItem("clientToken");
     push(ref(db, "calls"), { time: Date.now(), token });
     alert("✅ Cameriere avvisato!");
   };
 
-  // Quando il cameriere risponde, il cliente riceve un avviso
   onMessage(messaging, () => {
     alert("📣 Il cameriere sta arrivando!");
   });
 </script>
+
 <script>
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("firebase-messaging-sw.js")
@@ -102,8 +71,9 @@ if ("serviceWorker" in navigator) {
     .catch(err => console.log("❌ Errore SW:", err));
 }
 </script>
+
 <body>
-<!-- Selettore lingua -->
+
 <div id="lang-toggle">🌍 ▾</div>
 <div id="lang-menu">
   <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
@@ -111,7 +81,6 @@ if ("serviceWorker" in navigator) {
   <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
 </div>
 
-<!-- Schermata prima apertura -->
 <div id="language-screen">
   <h2>Seleziona la lingua</h2>
   <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
@@ -119,12 +88,9 @@ if ("serviceWorker" in navigator) {
   <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
 </div>
 
-<!-- Dynamic Island -->
 <div id="dynamic-island"><span id="island-text"></span></div>
 
-<header>
-  <h1 data-lang="title">Casa del Gelato</h1>
-</header>
+<header><h1 data-lang="title">Casa del Gelato</h1></header>
 
 <section class="menu-section">
   <h2 data-lang="menu">Menù</h2>
@@ -139,27 +105,17 @@ if ("serviceWorker" in navigator) {
 <section class="menu-section">
   <h2 data-lang="contacts">Contatti</h2>
 
-  <!-- ✅ Link WhatsApp corretto -->
-  <a 
-    id="whatsapp-link" 
-    class="btn" 
-    href="https://wa.me/393516490934" 
-    target="_blank" 
-    data-lang="whatsapp">
-    Chat WhatsApp
-  </a>
+  <!-- ✅ WhatsApp -->
+  <a id="whatsapp-link" class="btn" href="https://wa.me/393519243532" target="_blank" data-lang="whatsapp">Chat WhatsApp</a>
 
-  <a class="btn" href="https://goo.gl/maps/" target="_blank" data-lang="directions">
-    Indicazioni Stradali
-  </a>
+  <!-- ✅ Chiama Cameriere -->
+  <button class="btn" onclick="callWaiter()">🔔 Chiama Cameriere</button>
 
-  <!-- ✅ Pulsante Chiama Cameriere -->
-  <button class="btn" onclick="callWaiter()">🛎️ Chiama Cameriere</button>
+  <a class="btn" href="https://goo.gl/maps/" target="_blank" data-lang="directions">Indicazioni Stradali</a>
 </section>
 
 <script>
 (function(){
-
   const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
 
   const LANG = {
@@ -168,53 +124,63 @@ if ("serviceWorker" in navigator) {
     de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher wie du willst",create_button:"🍨 START",contacts:"Kontakte",whatsapp:"WhatsApp Chat",directions:"Wegbeschreibung",welcome_island:"Willkommen! 🍨"}
   };
 
-  const screen = document.getElementById('language-screen');
-  const island = document.getElementById('dynamic-island');
-  const islandText = document.getElementById('island-text');
-  const langToggle = document.getElementById('lang-toggle');
-  const langMenu = document.getElementById('lang-menu');
+  const screen=document.getElementById('language-screen');
+  const island=document.getElementById('dynamic-island');
+  const islandText=document.getElementById('island-text');
+  const langToggle=document.getElementById('lang-toggle');
+  const langMenu=document.getElementById('lang-menu');
 
   function applyLanguage(l){
     document.querySelectorAll('[data-lang]').forEach(el=>{
       const k = el.dataset.lang;
       if(LANG[l][k]) el.textContent = LANG[l][k];
     });
-    langToggle.textContent = FLAGS[l] + " ▾"; // ✅ mostra la bandiera scelta
+    langToggle.textContent = FLAGS[l] + " ▾";
   }
 
   function choose(l){
     localStorage.setItem("lang", l);
     applyLanguage(l);
-    langMenu.style.display="none"; // ✅ chiudi menu dopo click
-    screen.style.display="none";  // ✅ nasconde schermata iniziale dopo scelta
+    langMenu.style.display="none";
+    screen.style.display="none";
     islandText.textContent = LANG[l].welcome_island;
     island.style.display="block";
     setTimeout(()=> island.style.display="none",1400);
   }
 
-  document.querySelectorAll('.lang-btn').forEach(b=>{
-    b.onclick=()=>choose(b.dataset.lang);
-  });
-
-  langToggle.onclick = ()=> {
-    langMenu.style.display = langMenu.style.display==="block" ? "none" : "block";
-  };
-
-  document.addEventListener('click',e=>{
-    if(!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle'))
-      langMenu.style.display="none";
-  });
-
+  document.querySelectorAll('.lang-btn').forEach(b=>{ b.onclick=()=>choose(b.dataset.lang); });
+  langToggle.onclick = ()=> langMenu.style.display = langMenu.style.display==="block" ? "none" : "block";
+  document.addEventListener('click',e=>{ if(!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle')) langMenu.style.display="none"; });
   const saved = localStorage.getItem("lang");
-  if(saved){
-    applyLanguage(saved);
-    screen.style.display="none"; // ✅ non mostra più schermata iniziale
-  } else {
-    screen.style.display="flex"; // ✅ prima apertura → mostra selezione lingua
-  }
-
+  if(saved){ applyLanguage(saved); screen.style.display="none"; } else { screen.style.display="flex"; }
 })();
 </script>
+<!-- Pulsante Chiama Cameriere -->
+<style>
+  #chiamaCameriere {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ff8a5c;
+    color: white;
+    border: none;
+    padding: 14px 22px;
+    border-radius: 30px;
+    font-size: 18px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+    cursor: pointer;
+    z-index: 9999;
+  }
+</style>
 
+<button id="chiamaCameriere">Chiama Cameriere</button>
+
+<script>
+document.getElementById("chiamaCameriere").addEventListener("click", () => {
+  // Invia segnale al cameriere (Firebase Messaging)
+  fetch("cameriere.html"); // NON TOCCARE
+  alert("Il cameriere è stato chiamato ✅");
+});
+</script>
 </body>
 </html>
