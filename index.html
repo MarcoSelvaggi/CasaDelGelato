@@ -7,7 +7,6 @@
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
 
-  <!-- Icone -->
   <link rel="icon" href="favicon.png">
   <link rel="apple-touch-icon" href="icon-192.png">
 
@@ -17,41 +16,17 @@
     .menu-section{padding:20px 12px;text-align:center}
     .btn{display:block;width:220px;text-align:center;padding:12px 14px;border-radius:12px;background:#ff7a00;color:#fff;text-decoration:none;margin:10px auto;font-size:17px;font-weight:600;}
 
-    /* 🌍 Selettore lingua */
     #language-screen{position:fixed;inset:0;background:white;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;z-index:2000;}
     #lang-toggle{position:fixed;top:12px;right:12px;padding:6px 10px;border-radius:12px;background:#ffffffd9;border:1px solid #ddd;cursor:pointer;z-index:10000}
     #lang-menu{position:fixed;top:48px;right:12px;background:#fff;padding:6px 0;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.12);display:none;z-index:10001;display:flex;flex-direction:column;}
-    #lang-menu button{padding:10px 14px;border:none;background:transparent;cursor:pointer;font-size:15px;width:100%;text-align:left;}
+    #lang-menu button{padding:10px 14px;border:none;background:transparent;cursor:pointer;font-size:15px;width:100%;text-align:left;display:flex;align-items:center;gap:8px;}
     #lang-menu button:hover{background:#f2f2f2;}
-
-    /* 🏠 Tasto Home sempre visibile */
-    .home-btn {
-      position: fixed;
-      top: 14px;
-      left: 14px;
-      background: #ffffffcc;
-      backdrop-filter: blur(6px);
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-size: 15px;
-      color: #111;
-      text-decoration: none;
-      font-weight: 600;
-      border: 1px solid #ddd;
-      z-index: 999999;
-    }
-
-    /* 🔔 Pulsante Cameriere nascosto */
-    .call-waiter-btn { display: none !important; }
   </style>
 </head>
 
 <body>
 
-<!-- 🏠 TASTO HOME (rimanda a index sempre) -->
-<a class="home-btn" href="index.html">🏠 Home</a>
-
-<!-- 🌍 SELEZIONA LINGUA -->
+<!-- 🌍 SELETTORE LINGUA -->
 <div id="lang-toggle">🌍 ▾</div>
 <div id="lang-menu">
   <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
@@ -79,59 +54,69 @@
 </section>
 
 <section class="menu-section">
-  <h2 data-lang="contacts">Contatti & Locali</h2>
+  <h2 data-lang="contacts">I nostri Locali</h2>
 
-  <a class="btn" href="https://wa.me/393519243532" target="_blank" data-lang="whatsapp">💬 Chat WhatsApp</a>
-
-  <br><br>
-
-  <!-- 📍 Locale 1 -->
-  <h3>🍦 Casa del Gelato</h3>
-  <a class="btn" href="https://g.page/r/CYRHvgKQaZHjEBM" target="_blank">📍 Indicazioni</a>
+  <a class="btn" target="_blank" href="https://www.google.com/maps?q=Viale+delle+costellazioni+49+Bibione">
+    📍 Casa del Gelato - Bibione (Costellazioni 49)
+  </a>
   <a class="btn" href="tel:043143628">📞 0431 43628</a>
-  <a class="btn" href="https://g.page/r/CYRHvgKQaZHjEBM/review" target="_blank">⭐ Lascia una Recensione</a>
+  <a class="btn" target="_blank" href="https://g.page/r/CYRHvgKQaZHjEBM/review">⭐ Lascia una recensione</a>
 
-  <!-- 📍 Locale 2 -->
-  <h3>🍦 Casa del Gelato 2</h3>
-  <a class="btn" href="https://g.page/r/CSsHbwS_DqXnEBM" target="_blank">📍 Indicazioni</a>
+  <a class="btn" target="_blank" href="https://www.google.com/maps?q=Viale+delle+Costellazioni+10+Bibione">
+    📍 Casa del Gelato 2 - Bibione (Costellazioni 10)
+  </a>
   <a class="btn" href="tel:0431364365">📞 0431 364365</a>
-  <a class="btn" href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank">⭐ Lascia una Recensione</a>
+  <a class="btn" target="_blank" href="https://g.page/r/CSsHbwS_DqXnEBM/review">⭐ Lascia una recensione</a>
 
-  <!-- 📍 Locale 3 -->
-  <h3>🍦 Casa del Gelato Lignano</h3>
-  <a class="btn" href="https://g.page/r/CeodtGzi9G76EBM" target="_blank">📍 Indicazioni</a>
+  <a class="btn" target="_blank" href="https://www.google.com/maps?q=Via+Udine+1+Lignano+Sabbiadoro">
+    📍 Casa del Gelato - Lignano (Via Udine 1)
+  </a>
   <a class="btn" href="tel:04311961783">📞 0431 1961783</a>
-  <a class="btn" href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank">⭐ Lascia una Recensione</a>
+  <a class="btn" target="_blank" href="https://g.page/r/CeodtGzi9G76EBM/review">⭐ Lascia una recensione</a>
 </section>
 
 <script>
 (function(){
   const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
   const LANG = {
-    it:{title:"Casa del Gelato",menu:"Menù",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"Contatti & Locali",whatsapp:"💬 Chat WhatsApp"},
-    en:{title:"House of Gelato",menu:"Menu",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup as you like",create_button:"🍨 START",contacts:"Contacts & Locations",whatsapp:"💬 WhatsApp Chat"},
-    de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher wie du willst",create_button:"🍨 START",contacts:"Kontakte & Standorte",whatsapp:"💬 WhatsApp Chat"}
+    it:{title:"Casa del Gelato",menu:"Menù",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"I nostri Locali"},
+    en:{title:"House of Gelato",menu:"Menu",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup as you like",create_button:"🍨 START",contacts:"Our Shops"},
+    de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher wie du willst",create_button:"🍨 START",contacts:"Unsere Standorte"}
   };
 
-  function applyLanguage(){
-    let lang = localStorage.getItem("lang") || "it";
-    document.querySelectorAll("[data-lang]").forEach(el=>{
-      const key = el.getAttribute("data-lang");
-      if(LANG[lang][key]) el.textContent = LANG[lang][key];
+  const screen=document.getElementById('language-screen');
+  const langToggle=document.getElementById('lang-toggle');
+  const langMenu=document.getElementById('lang-menu');
+
+  function applyLanguage(l){
+    document.querySelectorAll('[data-lang]').forEach(el=>{
+      const k = el.dataset.lang;
+      if(LANG[l][k]) el.textContent = LANG[l][k];
     });
-    document.getElementById("lang-toggle").textContent = FLAGS[lang] + " ▾";
+    langToggle.textContent = FLAGS[l] + " ▾";
   }
 
-  document.querySelectorAll('.lang-btn').forEach(b=>{
-    b.onclick=()=>{
-      localStorage.setItem("lang", b.dataset.lang);
-      applyLanguage();
-      document.getElementById("language-screen").style.display="none";
-    };
+  function choose(l){
+    localStorage.setItem("lang", l);
+    applyLanguage(l);
+    screen.style.display="none";
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(b=>{ b.onclick=()=>choose(b.dataset.lang); });
+
+  // ✅ CHIUSURA AUTOMATICA MENU LINGUE
+  langToggle.onclick = () => {
+    langMenu.style.display = (langMenu.style.display === "block") ? "none" : "block";
+  };
+
+  document.addEventListener('click',(e)=>{
+    if(!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle')){
+      langMenu.style.display="none";
+    }
   });
 
-  if(localStorage.getItem("lang")) document.getElementById("language-screen").style.display="none";
-  applyLanguage();
+  const saved = localStorage.getItem("lang");
+  if(saved){ applyLanguage(saved); screen.style.display="none"; } else { screen.style.display="flex"; }
 })();
 </script>
 
