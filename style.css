@@ -1,5 +1,7 @@
 @import url('https://cdn.jsdelivr.net/npm/sf-font@1.0.0/sf-font.min.css');
-
+.call-waiter-btn {
+  display: none !important;
+}
 :root {
   --bg: #f6f6f7;
   --card: #ffffff;
@@ -449,4 +451,8 @@ button:active, .btn:active {
 /* ✅ Mostra quando attivo */
 #lang-menu.show {
   display: flex !important;
+}
+/* Nasconde tutti i pulsanti "Chiama Cameriere" ovunque */
+.call-waiter-btn {
+  display: none !important;
 }
