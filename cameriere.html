@@ -2,93 +2,69 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Cameriere - Notifiche</title>
-
+  <title>Cameriere</title>
   <style>
-    body { font-family: system-ui; padding:20px; background:#f6f6f7; }
-    h1 { text-align:center; }
-    .call { 
-      padding:18px; 
-      margin-top:12px; 
-      background:#ff8a5c; 
-      color:white; 
-      border-radius:14px; 
-      font-size:18px;
-    }
+    body { font-family: system-ui; text-align:center; margin-top:40px; }
+    .call { padding:20px; margin:10px; background:#ffeb3b; border-radius:12px; }
   </style>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js";
-    import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCEtjAs4cTJbpji4dXnb_bGxRUaK2D2tsA",
-      authDomain: "casadelgelato-e6fbf.firebaseapp.com",
-      databaseURL: "https://casadelgelato-e6fbf-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "casadelgelato-e6fbf",
-      storageBucket: "casadelgelato-e6fbf.firebasestorage.app",
-      messagingSenderId: "446810619113",
-      appId: "1:446810619113:web:1f25c3a16586c81c8a0478"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-    const db = getDatabase(app);
-
-    // ✅ REGISTRAZIONE TOKEN DEL CAMERIERE
-    Notification.requestPermission().then((permission) => {
-      if (permission === "granted") {
-        getToken(messaging, { vapidKey: "BIxxYqAOYyTEXSgH1gawFdcg3P_SWMDW54rv4x8ei9QrsNB-D_LM28cNsP5DnBT-zQu9RgJJQX7LsimNOT1SQTY" })
-        .then((token) => {
-            localStorage.setItem("waiterToken", token);
-            document.getElementById("status").textContent = "✅ Cameriere attivo e in ascolto...";
-        });
-      } else {
-        document.getElementById("status").textContent = "❌ Devi permettere le notifiche";
-      }
-    });
-
-    // ✅ ARRIVA UNA NOTIFICA CON APP APERTA
-    onMessage(messaging, () => {
-      playSound();
-      alert("📣 Cliente ha chiamato il cameriere!");
-    });
-
-    // ✅ ASCOLTA LE CHIAMATE SU FIREBASE IN TEMPO REALE
-    const callsRef = ref(db, "calls");
-    onChildAdded(callsRef, () => {
-      playSound();
-      const c = document.createElement("div");
-      c.className = "call";
-      c.textContent = "🔔 Un tavolo ha chiamato!";
-      document.getElementById("calls").prepend(c);
-    });
-
-    // ✅ SUONO DI AVVISO
-    function playSound() {
-      const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
-      audio.play();
-    }
-
-  </script>
-
-  <script>
-  // ✅ REGISTRA SERVICE WORKER NECESSARIO PER NOTIFICHE A SCHERMO SPENTO
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("firebase-messaging-sw.js")
-      .then(() => console.log("✅ Service Worker OK"))
-      .catch(err => console.log("❌ Errore SW:", err));
-  }
-  </script>
-
 </head>
 
 <body>
-  <h1>👨‍🍳 Modalità Cameriere</h1>
-  <p id="status">⏳ Attivazione notifiche...</p>
 
-  <h2>📣 Chiamate Ricevute</h2>
-  <div id="calls"></div>
+<h2>📟 Schermata Cameriere</h2>
+<p>Riceverai notifiche quando un cliente ti chiama.</p>
+<p><strong>✅ Mantieni questa app aperta oppure installata sulla schermata Home.</strong></p>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging.js";
+  import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCEtjAs4cTJbpji4dXnb_bGxRUaK2D2tsA",
+    authDomain: "casadelgelato-e6fbf.firebaseapp.com",
+    databaseURL: "https://casadelgelato-e6fbf-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "casadelgelato-e6fbf",
+    storageBucket: "casadelgelato-e6fbf.firebasestorage.app",
+    messagingSenderId: "446810619113",
+    appId: "1:446810619113:web:1f25c3a16586c81c8a0478"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const messaging = getMessaging(app);
+  const db = getDatabase(app);
+
+  // ✅ Chiede permesso notifiche appena si apre
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      getToken(messaging, { vapidKey: "BIxxYqAOYyTEXSgH1gawFdcg3P_SWMDW54rv4x8ei9QrsNB-D_LM28cNsP5DnBT-zQu9RgJJQX7LsimNOT1SQTY" })
+        .then((token) => {
+          localStorage.setItem("waiterToken", token);
+          console.log("✅ Cameriere registrato per notifiche");
+        });
+    } else {
+      alert("⚠️ Devi abilitare le notifiche per ricevere le chiamate dei clienti.");
+    }
+  });
+
+  // ✅ Notifica quando un cliente chiama
+  onChildAdded(ref(db, "calls"), () => {
+    alert("🔔 Cliente sta chiamando!");
+  });
+
+  // ✅ Se l'app è aperta in primo piano
+  onMessage(messaging, () => {
+    alert("🔔 Cliente ha bisogno di te!");
+  });
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("firebase-messaging-sw.js")
+    .then(() => console.log("✅ SW Cameriere registrato"))
+    .catch(err => console.log("❌ Errore SW:", err));
+}
+</script>
+
 </body>
 </html>
