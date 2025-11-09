@@ -24,15 +24,18 @@
   <h2>Scegli il Formato</h2>
 
   <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
-    PICCOLA • €7,50
+    <b>PICCOLA • €7,50</b><br>
+    2 gusti · 1 topping · 1 granella · 1 ingrediente
   </div>
 
-  <div class="menu-item" onclick="selectSize('MEDIA', 3,1,1,2)">
-    MEDIA • €9,00
+  <div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
+    <b>MEDIA • €9,00</b><br>
+    3 gusti · 2 topping · 2 granelle · 1 ingrediente
   </div>
 
-  <div class="menu-item" onclick="selectSize('GRANDE', 4,1,2,2)">
-    GRANDE • €12,00
+  <div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
+    <b>GRANDE • €12,00</b><br>
+    4 gusti · 2 topping · 2 granelle · 2 ingredienti
   </div>
 </section>
 <section id="step-container" style="display:none;"></section>
@@ -46,8 +49,7 @@
   </div>
 </div>
 
-<script src="crea-coppa.js"></script>
-
+<script src="crea-coppa.js?v=2"></script>
 <script>
 document.getElementById("popup-coppa").style.display = "flex";
 document.getElementById("popup-ok").onclick = () => {
