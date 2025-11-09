@@ -1,4 +1,6 @@
-// Dizionario lingue
+// =========================
+// DIZIONARIO LINGUE
+// =========================
 const translations = {
   it: {
     title: "Casa del Gelato",
@@ -35,7 +37,6 @@ const translations = {
   }
 };
 
-// Applica lingua
 function applyLanguage(lang) {
   document.querySelectorAll("[data-lang]").forEach(el => {
     const key = el.getAttribute("data-lang");
@@ -43,24 +44,58 @@ function applyLanguage(lang) {
       el.textContent = translations[lang][key];
     }
   });
+
+  const flag = { it: "🇮🇹", en: "🇬🇧", de: "🇩🇪" }[lang] || "🌍";
+  document.getElementById("lang-toggle").textContent = flag + " ▾";
+
   localStorage.setItem("selectedLanguage", lang);
 }
 
-// Al click dei bottoni lingua
+// =========================
+// SCELTA LINGUA
+// =========================
 document.querySelectorAll(".lang-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
+  btn.onclick = () => {
     const lang = btn.getAttribute("data-lang");
     applyLanguage(lang);
     document.getElementById("language-screen").style.display = "none";
-    document.getElementById("lang-menu").style.display = "none";
-  });
+    document.getElementById("lang-menu").classList.remove("show");
+  };
 });
 
-// Mostra schermata solo la prima volta
+// =========================
+// MOSTRA/NASCONDI MENU A TENDINA
+// =========================
+const langToggle = document.getElementById("lang-toggle");
+const langMenu = document.getElementById("lang-menu");
+
+langToggle.onclick = () => {
+  langMenu.classList.toggle("show");
+};
+
+// ✅ Chiudi menu se clicchi fuori
+document.addEventListener("click", (e) => {
+  if (!langToggle.contains(e.target) && !langMenu.contains(e.target)) {
+    langMenu.classList.remove("show");
+  }
+});
+
+// =========================
+// MOSTRA SCHERMATA LINGUA SOLO ALLA PRIMA VISITA
+// =========================
 window.addEventListener("load", () => {
   const savedLang = localStorage.getItem("selectedLanguage");
-  if (savedLang) {
-    applyLanguage(savedLang);
-    document.getElementById("language-screen").style.display = "none";
+  const screen = document.getElementById("language-screen");
+
+  const isHome =
+    location.pathname.endsWith("index.html") ||
+    location.pathname === "/" ||
+    location.pathname === "";
+
+  if (!savedLang && isHome) {
+    screen.style.display = "flex";
+  } else {
+    screen.style.display = "none";
+    if (savedLang) applyLanguage(savedLang);
   }
 });

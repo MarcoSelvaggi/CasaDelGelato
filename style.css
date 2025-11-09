@@ -431,30 +431,23 @@ button:active, .btn:active {
 }
 
 /* Menu a tendina */
-#lang-menu{
-  position:fixed;
-  top:48px;
-  right:12px;
-  background:#fff;
-  padding:8px;
-  border-radius:8px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.12);
-  display:none;
-  z-index:10001;
-
-  /* ✅ Aggiunto: menu verticale */
-  display:flex;
-  flex-direction:column;
-  gap:4px;
+#lang-menu {
+  position: fixed;
+  top: 48px;
+  right: 12px;
+  background: #fff;
+  padding: 6px 0;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  display: none;
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-/* ✅ Mostra quando attivo */
 #lang-menu.show {
   display: flex !important;
-}
-/* Nasconde tutti i pulsanti "Chiama Cameriere" ovunque */
-.call-waiter-btn {
-  display: none !important;
 }
 #stores {
   max-width: 600px;
@@ -508,7 +501,7 @@ button:active, .btn:active {
   position: fixed;
   top: 14px;
   left: 14px;
-  background: #ffffffd9;
+  background: #ffffffcc;
   backdrop-filter: blur(6px);
   padding: 8px 14px;
   border-radius: 12px;
@@ -517,5 +510,5 @@ button:active, .btn:active {
   text-decoration: none;
   font-weight: 600;
   border: 1px solid #ddd;
-  z-index: 3000;
+  z-index: 999999;
 }

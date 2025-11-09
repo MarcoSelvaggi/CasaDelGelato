@@ -134,18 +134,18 @@
     de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher",create_button:"🍨 START",contacts:"Unsere Standorte"}
   };
 
-  const toggle=document.getElementById('lang-toggle');
-  const menu=document.getElementById('lang-menu');
+const toggle = document.getElementById('lang-toggle');
+const menu = document.getElementById('lang-menu');
 
-  toggle.onclick = () => {
-    menu.style.display = menu.style.display==="flex" ? "none" : "flex";
-  };
+toggle.onclick = () => {
+  menu.classList.toggle("show");
+};
 
-  document.addEventListener('click',(e)=>{
-    if(!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle')){
-      menu.style.display="none";
-    }
-  });
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle')) {
+    menu.classList.remove("show");
+  }
+});
 
   function apply(l){
     localStorage.setItem("lang",l);
