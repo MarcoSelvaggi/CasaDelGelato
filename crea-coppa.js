@@ -1,85 +1,87 @@
-let step = 0;
 
+// === PARAMETRI SELEZIONE COPPA ===
+let maxGusti = 0, maxGranelle = 0, maxTopping = 0, maxExtra = 0;
+
+let scelti = {
+  gusti: [],
+  granelle: [],
+  topping: [],
+  extra: []
+};
+
+// LISTE INGREDIENTI
 const gusti = [
 "VANIGLIA","FIOR DI LATTE","CIOCCOLATO","NOCCIOLA","FRAGOLA","PISTACCHIO","LIMONE",
 "MELONE","KIWI","BANANA","COCCO","LAMPONE","MANGO","ANANAS","VARIEGATO AMARENA",
-"STRACCIATELLA","YOGURT","YOGURT FRAGOLINE","CREME CARAMEL","BACIO","CAFFÈ","TIRAMISÙ",
-"CROCCANTINO AL RUM","AMARETTO","MALAGA","CHEESECAKE","COOKIES","CREMA ANDALUSA",
-"CREMINO","CREMINO AL PISTACCHIO","AFTER EIGHT","VARIEGATO FICHI NOCI MIELE"
+"STRACCIATELLA","YOGURT","YOGURT FRAGOLINE","CREME CARAMEL","BACIO","CAFFÈ",
+"TIRAMISÙ","CROCCANTINO AL RUM","AMARETTO","MALAGA","CHEESECAKE","COOKIES",
+"CREMA ANDALUSA","CREMINO","CREMINO AL PISTACCHIO","AFTER EIGHT",
+"VARIEGATO FICHI NOCI MIELE"
 ];
-const granelle = ["NOCCIOLA","CROCCANTE","PISTACCHIO","SCAGLIETTE AL CIOCCOLATO","ZUCCHERINI COLORATI","SMARTIES","COCCO RAPE’"];
-const topping = ["FRAGOLA","FRUTTI DI BOSCO","MENTA","CARAMELLO","CIOCCOLATO","NOCCIOLA","PISTACCHIO","SCIROPPO AMARENA"];
-const ingredienti = ["AMARENE","MACEDONIA","MIX BOSCO","KITKAT","BOUNTY","DUPLO","CIOCCOLATINI"];
 
-let max = {};
-let scelta = { formato:"", gusti:[], granelle:[], topping:[], ingredienti:[] };
+const granelle = ["GRANELLA NOCCIOLA","SMARTIES","BISCOTTO","BISCOTTO OREO","MANDORLA"];
+const topping = ["CIOCCOLATO CALDO","CARAMELLO","FRAGOLA","PISTACCHIO"];
+const extra = ["PANNA","CONO","CIALDA","WAFER"];
 
-function byId(id){ return document.getElementById(id); }
-
-function showIsland(text){
-  byId("island-text").textContent = text;
-  const island = byId("dynamic-island");
-  island.style.opacity = "1";
-  setTimeout(()=> island.style.opacity = "0", 1600);
+// DYNAMIC ISLAND
+function showIsland(text, percent) {
+  document.getElementById("island-text").innerText = text;
+  document.getElementById("island-bar").style.width = percent + "%";
+  document.getElementById("dynamic-island").classList.add("show");
+  setTimeout(() => {
+    document.getElementById("dynamic-island").classList.remove("show");
+  }, 1500);
 }
 
-function selectSize(formato,g,gra,top,ing){
-  scelta.formato = formato;
-  max = { gusti:g, granelle:gra, topping:top, ingredienti:ing };
-  step = 1;
-  byId("step-size").style.display = "none";
-  byId("step-container").style.display = "block";
-  renderStep();
+// Selezione formato
+function selectSize(size, g, gr, t, e) {
+  maxGusti = g; maxGranelle = gr; maxTopping = t; maxExtra = e;
+  scelti = { gusti:[], granelle:[], topping:[], extra:[] };
+  renderStep("gusti", gusti, maxGusti);
 }
 
-function renderStep(){
-  const container = byId("step-container");
-  container.innerHTML = "";
-
-  const lists = [
-    ["Scegli i Gusti", gusti, "gusti"],
-    ["Scegli le Granelle", granelle, "granelle"],
-    ["Scegli i Topping", topping, "topping"],
-    ["Scegli Ingredienti Extra", ingredienti, "ingredienti"]
-  ];
-
-  if(step <= 4){
-    const [titolo, elenco, tipo] = lists[step-1];
-    container.innerHTML = `<h2>${titolo}</h2>`;
-
-    elenco.forEach(item=>{
-      const div = document.createElement("div");
-      div.className = "menu-item";
-      div.textContent = item;
-      if(scelta[tipo].includes(item)) div.classList.add("selected");
-      div.onclick = () => toggle(tipo,item,div);
-      container.appendChild(div);
-    });
-
-    container.innerHTML += `<br><div class="menu-item" onclick="step++;renderStep()">Avanti →</div>`;
-    return;
-  }
+// Genera fase di selezione
+function renderStep(tipo, lista, max) {
+  const container = document.getElementById("step-container");
+  container.style.display = "block";
 
   container.innerHTML = `
-  <h2>Riepilogo</h2>
-  <p><strong>Formato:</strong> ${scelta.formato}</p>
-  <p><strong>Gusti:</strong> ${scelta.gusti.join(", ")}</p>
-  <p><strong>Granelle:</strong> ${scelta.granelle.join(", ")}</p>
-  <p><strong>Topping:</strong> ${scelta.topping.join(", ")}</p>
-  <p><strong>Extra:</strong> ${scelta.ingredienti.join(", ")}</p>
-  <div class="menu-item" onclick="window.print()">Stampa</div>
-  <div class="menu-item" onclick="location.href='index.html'">Home</div>
+  <h2>Scegli ${tipo.toUpperCase()} (${scelti[tipo].length}/${max})</h2>
+  <div class="ingredienti-lista">
+    ${lista.map(item => `
+      <div class="item ${scelti[tipo].includes(item) ? "selected" : ""}"
+           onclick="toggle('${tipo}','${item}',${max})">${item}</div>
+    `).join("")}
+  </div>
+  ${tipo !== "extra" ? `<button onclick="nextStep('${tipo}')">Avanti ➜</button>` : `<button onclick="conferma()">Conferma ✅</button>`}
   `;
 }
 
-function toggle(tipo,valore,el){
-  if(scelta[tipo].includes(valore)){
-    scelta[tipo] = scelta[tipo].filter(x=>x!==valore);
-    el.classList.remove("selected");
-    return;
+// Toggle selezione
+function toggle(tipo, nome, max) {
+  const arr = scelti[tipo];
+  if (arr.includes(nome)) {
+    arr.splice(arr.indexOf(nome), 1);
+  } else {
+    if (arr.length >= max) return;
+    arr.push(nome);
   }
-  if(scelta[tipo].length >= max[tipo]) return;
-  scelta[tipo].push(valore);
-  el.classList.add("selected");
-  showIsland("Aggiunto!");
+  showIsland(nome, (arr.length / max) * 100);
+  renderStep(tipo, tipo === "gusti" ? gusti : tipo === "granelle" ? granelle : tipo === "topping" ? topping : extra, max);
+}
+
+// Cambia fase
+function nextStep(attuale) {
+  if (attuale === "gusti") renderStep("granelle", granelle, maxGranelle);
+  else if (attuale === "granelle") renderStep("topping", topping, maxTopping);
+  else if (attuale === "topping") renderStep("extra", extra, maxExtra);
+}
+
+// Fine
+function conferma() {
+  alert("✅ Coppa Creata!\n\n" +
+  "Gusti: " + scelti.gusti.join(", ") +
+  "\nGranelle: " + scelti.granelle.join(", ") +
+  "\nTopping: " + scelti.topping.join(", ") +
+  "\nExtra: " + scelti.extra.join(", "));
 }
