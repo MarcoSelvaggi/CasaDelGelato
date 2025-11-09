@@ -1,30 +1,31 @@
-<link rel="stylesheet" href="crea-coppa.css" />
 <!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title data-lang="create_cup_title">Crea la tua Coppa</title>
-<link rel="stylesheet" href="crea-coppa.css" />
+<title>Crea la tua Coppa</title>
+
+<link rel="stylesheet" href="style.css">
+<script src="crea-coppa.js" defer></script>
+
 </head>
 
 <body>
 
-<!-- 🏠 Tasto Home -->
 <a href="index.html" class="home-button">🏠</a>
 
-<!-- 🍏 Dynamic Island -->
+<!-- 🍏 DYNAMIC ISLAND -->
 <div id="dynamic-island">
-  <span id="island-text"></span>
+  <div id="island-text">Aggiunto!</div>
   <div id="island-progress"><div id="island-bar"></div></div>
 </div>
 
-<header class="header">
-  <h1 data-lang="create_cup_title">Crea la tua Coppa Gelato</h1>
+<header class="page-header">
+  <h1>Crea la tua Coppa Gelato</h1>
 </header>
 
-<section id="step-size" class="step">
-  <h2 data-lang="choose_size">Scegli il Formato</h2>
+<section id="step-size">
+  <h2>Scegli il Formato</h2>
 
   <div class="menu-item" onclick="selectSize('PICCOLA',2,1,1,1)">PICCOLA (2 gusti, 1 granella, 1 topping, 1 extra)</div>
   <div class="menu-item" onclick="selectSize('MEDIA',3,2,2,1)">MEDIA (3 gusti, 2 granelle, 2 topping, 1 extra)</div>
@@ -33,22 +34,24 @@
 
 <section id="step-container"></section>
 
+<!-- ℹ️ POPUP -->
+<div id="popup-coppa">
+  <div class="popup-content">
+    <h2>🍨 Come funziona</h2>
+    <p>Seleziona prima il formato. Poi scegli gusti, granelle, topping ed extra. Infine conferma ✅</p>
+    <button id="popup-ok">Ho capito</button>
+  </div>
+</div>
+
 <script>
-/* Lingue */
-const translations = {
-  it:{ create_cup_title:"Crea la tua Coppa Gelato", choose_size:"Scegli il Formato", welcome_island:"Aggiunto!" },
-  en:{ create_cup_title:"Create Your Ice Cream Cup", choose_size:"Choose Size", welcome_island:"Added!" },
-  de:{ create_cup_title:"Erstelle deinen Eisbecher", choose_size:"Wähle die Größe", welcome_island:"Hinzugefügt!"}
+if (!sessionStorage.getItem("coppaInfoShown")) {
+  document.getElementById("popup-coppa").style.display = "flex";
+}
+document.getElementById("popup-ok").onclick = () => {
+  sessionStorage.setItem("coppaInfoShown", "true");
+  document.getElementById("popup-coppa").style.display = "none";
 };
-
-const lang = localStorage.getItem("lang") || "it";
-document.querySelectorAll("[data-lang]").forEach(el=>{
-  const k=el.dataset.lang;
-  if(translations[lang][k]) el.textContent=translations[lang][k];
-});
 </script>
-
-<script src="crea-coppa.js"></script>
 
 </body>
 </html>
