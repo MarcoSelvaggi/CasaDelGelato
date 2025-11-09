@@ -446,9 +446,10 @@ button:active, .btn:active {
   gap: 4px;
 }
 
-/* Mostra menu quando aperto */
+/* ✅ MOSTRA IL MENU QUANDO APERTO */
 #lang-menu.show {
   display: flex !important;
+  flex-direction: column;
 }
 #stores {
   max-width: 600px;
