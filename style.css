@@ -426,20 +426,19 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 
 /* ✅ SELEZIONATO */
 .item.selected {
-  border-color: #36c463;
-  background: #e7ffe9;
-  position: relative;
+  border-color:#36c463;
+  background:#e7ffe9;
+  position:relative;
 }
 
 .item.selected::after {
-  content: "✅";
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
+  content:"✅";
+  position:absolute;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:20px;
 }
-
 /* ✅ Animazione AGGIUNTA (verde soft) */
 .add-ok {
   animation: addOkAnim 0.4s ease-out;

@@ -4,12 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Crea la tua Coppa</title>
-
 <link rel="stylesheet" href="style.css">
-<script src="crea-coppa.js" defer></script>
-
 </head>
-
 <body>
 
 <a href="index.html" class="home-button">🏠</a>
@@ -20,21 +16,27 @@
   <div id="island-progress"><div id="island-bar"></div></div>
 </div>
 
-<header class="page-header">
+<header style="text-align:center; padding:26px;">
   <h1>Crea la tua Coppa Gelato</h1>
 </header>
 
-<section id="step-size">
+<section id="step-size" style="text-align:center;">
   <h2>Scegli il Formato</h2>
 
-  <div class="menu-item" onclick="selectSize('PICCOLA',2,1,1,1)">PICCOLA (2 gusti, 1 granella, 1 topping, 1 extra)</div>
-  <div class="menu-item" onclick="selectSize('MEDIA',3,2,2,1)">MEDIA (3 gusti, 2 granelle, 2 topping, 1 extra)</div>
-  <div class="menu-item" onclick="selectSize('GRANDE',4,2,2,2)">GRANDE (4 gusti, 2 granelle, 2 topping, 2 extra)</div>
+  <div class="menu-item" onclick="selectSize('PICCOLA',2,1,1,1)">
+    PICCOLA (2 gusti, 1 granella, 1 topping, 1 extra)
+  </div>
+  <div class="menu-item" onclick="selectSize('MEDIA',3,2,2,1)">
+    MEDIA (3 gusti, 2 granelle, 2 topping, 1 extra)
+  </div>
+  <div class="menu-item" onclick="selectSize('GRANDE',4,2,2,2)">
+    GRANDE (4 gusti, 2 granelle, 2 topping, 2 extra)
+  </div>
 </section>
 
-<section id="step-container"></section>
+<section id="step-container" style="display:none;"></section>
 
-<!-- ℹ️ POPUP -->
+<!-- POPUP -->
 <div id="popup-coppa">
   <div class="popup-content">
     <h2>🍨 Come funziona</h2>
@@ -43,12 +45,11 @@
   </div>
 </div>
 
+<script src="crea-coppa.js"></script>
+
 <script>
-if (!sessionStorage.getItem("coppaInfoShown")) {
-  document.getElementById("popup-coppa").style.display = "flex";
-}
+document.getElementById("popup-coppa").style.display = "flex";
 document.getElementById("popup-ok").onclick = () => {
-  sessionStorage.setItem("coppaInfoShown", "true");
   document.getElementById("popup-coppa").style.display = "none";
 };
 </script>
