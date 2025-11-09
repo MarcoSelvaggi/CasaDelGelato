@@ -1,6 +1,6 @@
 // 📌 STATO
-let max = { gusti:0, granelle:0, topping:0, extra:0 };
-let scelti = { gusti:[], granelle:[], topping:[], extra:[] };
+let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
+let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 let step = "gusti";
 
 // LISTE
@@ -13,9 +13,10 @@ const gustiList = [
 "VARIEGATO FICHI NOCI MIELE"
 ];
 
-const granelleList = ["GRANELLA NOCCIOLA","SMARTIES","BISCOTTO","BISCOTTO OREO","MANDORLA"];
-const toppingList = ["CIOCCOLATO CALDO","CARAMELLO","FRAGOLA","PISTACCHIO"];
-const extraList = ["PANNA","CONO","CIALDA","WAFER"];
+const granelleList = ["NOCCIOLA","CROCCANTE","PISTACCHIO","COCCO RAPE'","SCAGLIETTE AL CIOCCOLATO","SMARTIES","ZUCCHERINI COLORATI"];
+const toppingList = ["ANANAS","ARANCIA","FRAGOLA","FRUTTI DI BOSCO","KIWI","MELONE","MENTA","CARAMELLO","MALAGA","CIOCCOLATO","NOCCIOLA","PISTACCHIO","LIQUORE AMARETTO","LIQUORE AL CAFFE'","LIQUORE AL COCCO","SCIROPPO AMARENA","JOGURT NATURALE","VOV","CAFFE' ESPRESSO","CAFFE' DECA","ORZO","GINSENG","CAFFE' FREDDO","CIOCCOLATO FREDDO","AMARETTO DISARONNO","BAYLES","COINTREAU","GRAND MARNIER","JACK DANIELS","LIMONCELLO","RUM","STRAVECCHIO","VECCHIA ROMAGNA","VODKA"];
+const ingredientiList = ["AMARENE(4PZ)","MACEDONIA","ANGURIA","ANANAS","BANANA","FRAGOLE","KIWI","MELONE","MIX BOSCO","PESCA","UVA","FRUTTI DI BOSCO","AMARETTI","NOCCIOLINE","NOCI","UVETTA","MIKADO","AFTER EIGHT","BOUNTY","KITKAT","DUPLO","CIOCCOLATINI"];
+const extraList = ["COCCO (3PZ) 0,50€","MIX KINDER 2,50€","PANNA EXTRA 1,80€"];
 
 // 🎛 Dynamic Island
 function showIsland(text){
@@ -31,9 +32,9 @@ function showIsland(text){
 }
 
 // ✅ Selezione formato → Gusti
-function selectSize(size, g, gr, t, e){
-  max = { gusti:g, granelle:gr, topping:t, extra:e };
-  scelti = { gusti:[], granelle:[], topping:[], extra:[] };
+function selectSize(size, g, gr, t, ing, ex){
+  max = { gusti:g, granelle:gr, topping:t, ingredienti:ing, extra:ex };
+  scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
   step = "gusti";
   render();
   document.getElementById("step-size").style.display = "none";
@@ -46,9 +47,10 @@ function render(){
   const area = document.getElementById("step-container");
   let titolo = step.toUpperCase();
   let lista = step === "gusti" ? gustiList :
-              step === "granelle" ? granelleList :
-              step === "topping" ? toppingList : extraList;
-
+            step === "granelle" ? granelleList :
+            step === "topping" ? toppingList :
+            step === "ingredienti" ? ingredientiList :
+            extraList;
   area.innerHTML = `
 <h2>${titolo}</h2>
 
@@ -116,22 +118,27 @@ function toggle(tipo, nome){
 function nextStep(){
   if(step === "gusti") step = "granelle";
   else if(step === "granelle") step = "topping";
-  else if(step === "topping") step = "extra";
-  else conferma();
-
+  else if(step === "topping") step = "ingredienti";
+  else if(step === "ingredienti") step = "extra";
+  else if(step === "extra") step = "fine";
   render();
 }
 
 function prevStep(){
-  if(step === "gusti"){
-    document.getElementById("step-container").style.display = "none";
-    document.getElementById("step-size").style.display = "block";
-    return;
-  }
-
   if(step === "granelle") step = "gusti";
   else if(step === "topping") step = "granelle";
-  else if(step === "extra") step = "topping";
+  else if(step === "ingredienti") step = "topping";
+  else if(step === "extra") step = "ingredienti";
+  else if(step === "fine") step = "extra";
+  render();
+}
+
+function prevStep(){
+  if(step === "granelle") step = "gusti";
+  else if(step === "topping") step = "granelle";
+  else if(step === "ingredienti") step = "topping";
+  else if(step === "extra") step = "ingredienti";
+  else if(step === "fine") step = "extra";
 
   render();
 }
