@@ -13,30 +13,77 @@
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
     header{text-align:center;padding:20px}
 
-    /* ✅ HOME BUTTON */
-    #home-btn {position:fixed;top:14px;left:14px;font-size:26px;text-decoration:none;z-index:9999;}
+    /* ✅ HOME BUTTON — reso visibile */
+    #home-btn {
+      position:fixed;
+      top:14px; left:14px;
+      font-size:26px;
+      text-decoration:none;
+      z-index:9999;
+      background:white;
+      padding:6px 10px;
+      border-radius:12px;
+      border:1px solid #ccc;
+    }
 
     .menu-section{padding:22px;text-align:center}
     .btn{display:block;width:240px;text-align:center;padding:12px 14px;border-radius:12px;background:#ff7a00;color:#fff;text-decoration:none;margin:10px auto;font-size:17px;font-weight:600;}
 
-    /* ✅ LANGUAGE MENU */
-    #lang-toggle{position:fixed;top:12px;right:12px;padding:6px 10px;border-radius:12px;background:#ffffffd9;border:1px solid #ddd;cursor:pointer;z-index:10000}
-    #lang-menu{position:fixed;top:48px;right:12px;background:#fff;padding:6px 0;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.12);display:none;z-index:10001;display:flex;flex-direction:column;}
-    #lang-menu button{padding:10px 14px;border:none;background:transparent;cursor:pointer;font-size:15px;width:100%;text-align:left;display:flex;align-items:center;gap:8px;}
+    /* ✅ LANGUAGE MENU FIX */
+    #lang-toggle{
+      position:fixed; top:12px; right:12px;
+      padding:6px 10px;
+      border-radius:12px;
+      background:white;
+      border:1px solid #ddd;
+      cursor:pointer; 
+      z-index:10000;
+    }
+    #lang-menu{
+      position:fixed; top:48px; right:12px;
+      background:#fff;
+      padding:6px 0;
+      border-radius:8px;
+      box-shadow:0 6px 20px rgba(0,0,0,0.12);
+      display:none;
+      z-index:10001;
+      flex-direction:column;
+    }
+    #lang-menu button{
+      padding:10px 14px;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      font-size:15px;
+      width:100%;
+      text-align:left;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
     #lang-menu button:hover{background:#f2f2f2;}
 
-    /* ✅ CARDS LOCALI */
-    .shop-card {background:white;padding:14px;border-radius:14px;margin:14px auto;max-width:330px;box-shadow:0 2px 8px rgba(0,0,0,0.07);}
-    .shop-card b {display:block;margin-bottom:6px;font-size:16px;}
-    .shop-card a {display:block;text-decoration:none;margin-top:6px;font-size:15px;}
+    /* ✅ LOCAL CARDS RESTYLE */
+    .shop-card {
+      background:white;
+      padding:14px 16px;
+      border-radius:14px;
+      margin:14px auto;
+      max-width:330px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.07);
+      text-align:left;
+    }
+    .shop-card b {font-size:16px;margin-bottom:6px;display:block;}
+    .shop-card a {display:block;text-decoration:none;margin-top:4px;font-size:15px;color:#007aff;}
   </style>
 </head>
 
 <body>
 
+<!-- 🏠 HOME BUTTON -->
 <a id="home-btn" href="index.html">🏠</a>
 
-<!-- 🌍 SELETTORE LINGUA -->
+<!-- 🌍 LANGUAGE MENU -->
 <div id="lang-toggle">🌍 ▾</div>
 <div id="lang-menu">
   <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
@@ -62,19 +109,19 @@
   <div class="shop-card">
     <b>📍 Bibione - Viale delle Costellazioni 49</b>
     <a href="tel:043143628">📞 0431 43628</a>
-    <a target="_blank" href="https://www.google.com/maps?q=Viale+delle+costellazioni+49+Bibione">Apri su Maps</a>
+    <a href="https://goo.gl/maps/PLxK1tzJq7E2" target="_blank">🗺 Apri su Maps</a>
   </div>
 
   <div class="shop-card">
     <b>📍 Bibione - Viale delle Costellazioni 10</b>
     <a href="tel:0431364365">📞 0431 364365</a>
-    <a target="_blank" href="https://www.google.com/maps?q=Viale+delle+Costellazioni+10+Bibione">Apri su Maps</a>
+    <a href="https://goo.gl/maps/hJkYB1sXcQt" target="_blank">🗺 Apri su Maps</a>
   </div>
 
   <div class="shop-card">
     <b>📍 Lignano Sabbiadoro - Via Udine 1</b>
     <a href="tel:04311961783">📞 0431 1961783</a>
-    <a target="_blank" href="https://www.google.com/maps?q=Via+Udine+1+Lignano+Sabbiadoro">Apri su Maps</a>
+    <a href="https://goo.gl/maps/Z4q8C2e6SuM2" target="_blank">🗺 Apri su Maps</a>
   </div>
 </section>
 
@@ -90,7 +137,9 @@
   const toggle=document.getElementById('lang-toggle');
   const menu=document.getElementById('lang-menu');
 
-  toggle.onclick = () => menu.style.display = menu.style.display==="block" ? "none" : "block";
+  toggle.onclick = () => {
+    menu.style.display = menu.style.display==="flex" ? "none" : "flex";
+  };
 
   document.addEventListener('click',(e)=>{
     if(!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle')){
@@ -106,8 +155,7 @@
     toggle.textContent = FLAGS[l] + " ▾";
   }
 
-  const saved = localStorage.getItem("lang") || "it";
-  apply(saved);
+  apply(localStorage.getItem("lang") || "it");
 })();
 </script>
 
