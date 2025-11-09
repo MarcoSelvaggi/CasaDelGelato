@@ -1,7 +1,7 @@
 // 📌 STATO
 let coppaSelezionata = "";
-let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
 let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
+let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
 let step = "gusti";
 
 // LISTE
@@ -62,11 +62,11 @@ function selectSize(size, g, gr, t, e){
 function render(){
   const area = document.getElementById("step-container");
   let titolo = step.toUpperCase();
-  let lista = step === "gusti" ? gustiList :
-              step === "granelle" ? granelleList :
-              step === "topping" ? toppingList :
-              step === "ingredienti" ? ingredientiList :
-              extraList;
+ let lista = step === "gusti" ? gustiList :
+            step === "granelle" ? granelleList :
+            step === "topping" ? toppingList :
+            step === "ingredienti" ? ingredientiList :
+            extraList;
 
   area.innerHTML = `
 <h2>${titolo}</h2>
@@ -84,7 +84,6 @@ ${lista.map(item => `
     ${step === "ingredienti" ? "Conferma ✅" : "Avanti ➜"}
   </button>
 </div>
-console.log("STEP ATTUALE:", step);
 `;
 }
 
@@ -139,8 +138,7 @@ function nextStep(){
   else if(step === "granelle") step = "topping";
   else if(step === "topping") step = "ingredienti";
   else if(step === "ingredienti") step = "extra";
-  else if(step === "extra") return mostraRiepilogo(); // ✅ QUI MOSTRIAMO IL RIEPILOGO
-
+  else conferma(); // <<< RIEPILOGO QUI
   render();
 }
 
@@ -148,30 +146,22 @@ function prevStep(){
   if(step === "granelle") step = "gusti";
   else if(step === "topping") step = "granelle";
   else if(step === "ingredienti") step = "topping";
-
+  else if(step === "extra") step = "ingredienti";
   render();
 }
-
 function conferma(){
-  let base = prezziBase[coppaSelezionata];
-  let extraCosto = scelti.ingredienti.reduce((sum, x)=> sum + prezziIngredienti[x], 0);
-  let totale = base + extraCosto;
-
   document.getElementById("step-container").innerHTML = `
-    <h2>🍨 Coppa ${coppaSelezionata}</h2>
+  <h2>✅ Coppa Creata!</h2>
 
-    <p><b>Gusti:</b> ${scelti.gusti.join(", ")}</p>
-    <p><b>Granelle:</b> ${scelti.granelle.join(", ")}</p>
-    <p><b>Topping:</b> ${scelti.topping.join(", ")}</p>
-    <p><b>Ingredienti Extra:</b> ${
-      scelti.ingredienti.map(x => `${x} (+€${prezziIngredienti[x].toFixed(2)})`).join("<br>")
-    }</p>
+  <p><b>Gusti:</b> ${scelti.gusti.join(", ") || "-"}</p>
+  <p><b>Granelle:</b> ${scelti.granelle.join(", ") || "-"}</p>
+  <p><b>Topping:</b> ${scelti.topping.join(", ") || "-"}</p>
+  <p><b>Ingredienti:</b> ${scelti.ingredienti.join(", ") || "-"}</p>
+  <p><b>Extra:</b> ${scelti.extra.join(", ") || "-"}</p>
 
-    <h3>Prezzo base: €${base.toFixed(2)}</h3>
-    <h3>Extra: €${extraCosto.toFixed(2)}</h3>
-    <h2>TOTALE: €${totale.toFixed(2)}</h2>
-
-    <p style="margin-top:20px;">👋 Ora elenca questa coppa al cameriere</p>
+  <br><h3>📣 Ora comunica questa coppa al cameriere</h3>
+  
+  <button onclick="location.reload()">Crea un'altra 🍨</button>
   `;
 }
 
