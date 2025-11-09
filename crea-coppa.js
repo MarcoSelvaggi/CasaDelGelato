@@ -1,4 +1,5 @@
 // 📌 STATO
+let coppaSelezionata = "";
 let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
 let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 let step = "gusti";
@@ -16,7 +17,19 @@ const gustiList = [
 const granelleList = ["NOCCIOLA","CROCCANTE","PISTACCHIO","COCCO RAPE'","SCAGLIETTE AL CIOCCOLATO","SMARTIES","ZUCCHERINI COLORATI"];
 const toppingList = ["ANANAS","ARANCIA","FRAGOLA","FRUTTI DI BOSCO","KIWI","MELONE","MENTA","CARAMELLO","MALAGA","CIOCCOLATO","NOCCIOLA","PISTACCHIO","LIQUORE AMARETTO","LIQUORE AL CAFFE'","LIQUORE AL COCCO","SCIROPPO AMARENA","JOGURT NATURALE","VOV","CAFFE' ESPRESSO","CAFFE' DECA","ORZO","GINSENG","CAFFE' FREDDO","CIOCCOLATO FREDDO","AMARETTO DISARONNO","BAYLES","COINTREAU","GRAND MARNIER","JACK DANIELS","LIMONCELLO","RUM","STRAVECCHIO","VECCHIA ROMAGNA","VODKA"];
 const ingredientiList = ["AMARENE(4PZ)","MACEDONIA","ANGURIA","ANANAS","BANANA","FRAGOLE","KIWI","MELONE","MIX BOSCO","PESCA","UVA","FRUTTI DI BOSCO","AMARETTI","NOCCIOLINE","NOCI","UVETTA","MIKADO","AFTER EIGHT","BOUNTY","KITKAT","DUPLO","CIOCCOLATINI"];
-const extraList = ["COCCO (3PZ) 0,50€","MIX KINDER 2,50€","PANNA EXTRA 1,80€"];
+const extraList = ["COCCO(3PZ)","MIX KINDER","PANNA EXTRA"];
+
+const prezziBase = {
+  "PICCOLA": 7.50,
+  "MEDIA": 9.00,
+  "GRANDE": 12.00
+};
+
+const prezziExtra = {
+  "COCCO (4pz)": 0.50,
+  "MIX KINDER": 2.50,
+  "PANNA EXTRA": 1.80
+};
 
 // 🎛 Dynamic Island
 function showIsland(text){
@@ -32,9 +45,12 @@ function showIsland(text){
 }
 
 // ✅ Selezione formato → Gusti
-function selectSize(size, g, gr, t, ing, ex){
-  max = { gusti:g, granelle:gr, topping:t, ingredienti:ing, extra:ex };
+function selectSize(size, g, gr, t, e){
+  coppaSelezionata = size; // <-- QUESTA È L'IMPORTANTE
+  
+  max = { gusti:g, granelle:gr, topping:t, ingredienti:e, extra:0 };
   scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
+
   step = "gusti";
   render();
   document.getElementById("step-size").style.display = "none";
@@ -47,10 +63,11 @@ function render(){
   const area = document.getElementById("step-container");
   let titolo = step.toUpperCase();
   let lista = step === "gusti" ? gustiList :
-            step === "granelle" ? granelleList :
-            step === "topping" ? toppingList :
-            step === "ingredienti" ? ingredientiList :
-            extraList;
+              step === "granelle" ? granelleList :
+              step === "topping" ? toppingList :
+              step === "ingredienti" ? ingredientiList :
+              extraList;
+
   area.innerHTML = `
 <h2>${titolo}</h2>
 
@@ -62,10 +79,12 @@ ${lista.map(item => `
 </div>
 
 <div class="nav-buttons">
-<button class="back-btn" onclick="prevStep()">⬅ Indietro</button>  <button class="next-btn" onclick="nextStep()">
-    ${step === "extra" ? "Conferma ✅" : "Avanti ➜"}
+  <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
+  <button class="next-btn" onclick="nextStep()">
+    ${step === "ingredienti" ? "Conferma ✅" : "Avanti ➜"}
   </button>
 </div>
+console.log("STEP ATTUALE:", step);
 `;
 }
 
@@ -120,7 +139,8 @@ function nextStep(){
   else if(step === "granelle") step = "topping";
   else if(step === "topping") step = "ingredienti";
   else if(step === "ingredienti") step = "extra";
-  else if(step === "extra") step = "fine";
+  else if(step === "extra") return mostraRiepilogo(); // ✅ QUI MOSTRIAMO IL RIEPILOGO
+
   render();
 }
 
@@ -128,41 +148,39 @@ function prevStep(){
   if(step === "granelle") step = "gusti";
   else if(step === "topping") step = "granelle";
   else if(step === "ingredienti") step = "topping";
-  else if(step === "extra") step = "ingredienti";
-  else if(step === "fine") step = "extra";
-  render();
-}
-
-function prevStep(){
-  if(step === "granelle") step = "gusti";
-  else if(step === "topping") step = "granelle";
-  else if(step === "ingredienti") step = "topping";
-  else if(step === "extra") step = "ingredienti";
-  else if(step === "fine") step = "extra";
 
   render();
 }
 
-// ✅ Fine → Riepilogo condivisibile
 function conferma(){
+  let base = prezziBase[coppaSelezionata];
+  let extraCosto = scelti.ingredienti.reduce((sum, x)=> sum + prezziIngredienti[x], 0);
+  let totale = base + extraCosto;
+
   document.getElementById("step-container").innerHTML = `
-  <h2>✅ Coppa Creata!</h2>
-  <p><b>Gusti:</b> ${scelti.gusti.join(", ")}</p>
-  <p><b>Granelle:</b> ${scelti.granelle.join(", ")}</p>
-  <p><b>Topping:</b> ${scelti.topping.join(", ")}</p>
-  <p><b>Extra:</b> ${scelti.extra.join(", ")}</p>
-  
-  <button onclick="navigator.share({ text: 'La mia coppa: ${scelti.gusti.join(', ')} + ${scelti.granelle.join(', ')} + ${scelti.topping.join(', ')} + ${scelti.extra.join(', ')}' })">
-    Condividi 📤
-  </button>`;
+    <h2>🍨 Coppa ${coppaSelezionata}</h2>
+
+    <p><b>Gusti:</b> ${scelti.gusti.join(", ")}</p>
+    <p><b>Granelle:</b> ${scelti.granelle.join(", ")}</p>
+    <p><b>Topping:</b> ${scelti.topping.join(", ")}</p>
+    <p><b>Ingredienti Extra:</b> ${
+      scelti.ingredienti.map(x => `${x} (+€${prezziIngredienti[x].toFixed(2)})`).join("<br>")
+    }</p>
+
+    <h3>Prezzo base: €${base.toFixed(2)}</h3>
+    <h3>Extra: €${extraCosto.toFixed(2)}</h3>
+    <h2>TOTALE: €${totale.toFixed(2)}</h2>
+
+    <p style="margin-top:20px;">👋 Ora elenca questa coppa al cameriere</p>
+  `;
 }
 
-// 🔝 Mini-riepilogo
-function updateRiepilogo(){
-  document.getElementById("riepilogo-mini").innerHTML = `
-  <b>G:</b> ${scelti.gusti.join(", ")}<br>
-  <b>Gr:</b> ${scelti.granelle.join(", ")}<br>
-  <b>T:</b> ${scelti.topping.join(", ")}<br>
-  <b>E:</b> ${scelti.extra.join(", ")}
-  `;
+function nextStep(){
+  if(step === "gusti") step = "granelle";
+  else if(step === "granelle") step = "topping";
+  else if(step === "topping") step = "ingredienti";
+  else if(step === "ingredienti") step = "extra";
+  else if(step === "extra") return mostraRiepilogo(); // ✅ QUI MOSTRIAMO IL RIEPILOGO
+
+  render();
 }
