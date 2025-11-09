@@ -30,7 +30,7 @@ function showIsland(text){
   setTimeout(()=>island.classList.remove("show"),1400);
 }
 
-// ✅ Selezione formato → vai ai gusti
+// ✅ Selezione formato → Gusti
 function selectSize(size, g, gr, t, e){
   max = { gusti:g, granelle:gr, topping:t, extra:e };
   scelti = { gusti:[], granelle:[], topping:[], extra:[] };
@@ -38,9 +38,10 @@ function selectSize(size, g, gr, t, e){
   render();
   document.getElementById("step-size").style.display = "none";
   document.getElementById("step-container").style.display = "block";
+  updateRiepilogo();
 }
 
-// 🔄 Render step
+// 🔄 Render
 function render(){
   const area = document.getElementById("step-container");
   let titolo = step.toUpperCase();
@@ -48,79 +49,113 @@ function render(){
               step === "granelle" ? granelleList :
               step === "topping" ? toppingList : extraList;
 
-  let maxStep = max[step];
-  let current = scelti[step].length;
-
   area.innerHTML = `
-<h2 style="margin-bottom:10px;">${current}/${maxStep}</h2>    <div class="ingredienti-lista">
-      ${lista.map(item => `
-        <div class="item ${scelti[step].includes(item) ? "selected" : ""}"
-          onclick="toggle('${step}','${item}')">${item}</div>
-      `).join("")}
-    </div>
-<h2 style="margin-bottom:10px;">${current}/${maxStep}</h2>  `;
+<h2>${titolo}</h2>
+
+<div class="ingredienti-lista">
+${lista.map(item => `
+  <div class="item ${scelti[step].includes(item) ? "selected" : ""}" onclick="toggle('${step}','${item}')">
+    ${item}
+  </div>`).join("")}
+</div>
+
+<div class="nav-buttons">
+<button class="back-btn" onclick="prevStep()">⬅ Indietro</button>  <button class="next-btn" onclick="nextStep()">
+    ${step === "extra" ? "Conferma ✅" : "Avanti ➜"}
+  </button>
+</div>
+`;
 }
 
-// 🎯 Selezione ingredienti
+// 🎯 Seleziona / Deseleziona ingredienti
 function toggle(tipo, nome){
   let arr = scelti[tipo];
   let maxStep = max[tipo];
-  if(arr.length >= maxStep){
-  showIsland("❌ Limite raggiunto ("+maxStep+")");
 
-  // Effetto X rossa sull'item
-  const items = document.querySelectorAll(".item");
-  items.forEach(i => {
-    if(i.innerText === nome){
-      i.classList.add("limit");
-      setTimeout(() => i.classList.remove("limit"), 400);
-    }
-  });
-  return;
-}
-
+  // ✅ SE GIÀ SELEZIONATO → RIMUOVO
   if(arr.includes(nome)){
-    arr.splice(arr.indexOf(nome),1);
+    scelti[tipo] = arr.filter(i => i !== nome);
     showIsland("Rimosso: " + nome);
-  } else {
-    if(arr.length >= maxStep){
-      showIsland("❌ Limite raggiunto ("+maxStep+")");
-      return;
+
+    const el = [...document.querySelectorAll(".item")].find(x => x.textContent.trim() === nome);
+    if(el){
+      el.classList.add("remove-anim");
+      setTimeout(()=> el.classList.remove("remove-anim"), 350);
     }
-    arr.push(nome);
-    showIsland("Aggiunto: " + nome);
+
+    render();
+    updateRiepilogo();
+    return;
   }
+
+  // ❌ LIMITE RAGGIUNTO → ANIMAZIONE ROSSA
+  if(arr.length >= maxStep){
+    const el = [...document.querySelectorAll(".item")].find(x => x.textContent.trim() === nome);
+    if(el){
+      el.classList.add("limit-error");
+      setTimeout(()=> el.classList.remove("limit-error"), 450);
+    }
+    showIsland(`❌ Limite massimo (${maxStep})`);
+    return;
+  }
+
+  // ✅ SELEZIONE NORMALE
+  arr.push(nome);
+  showIsland("Aggiunto: " + nome);
+
+  const el = [...document.querySelectorAll(".item")].find(x => x.textContent.trim() === nome);
+  if(el){
+    el.classList.add("add-ok");
+    setTimeout(()=> el.classList.remove("add-ok"), 350);
+  }
+
   render();
+  updateRiepilogo();
 }
 
-// ⏭ Step successivo
 function nextStep(){
   if(step === "gusti") step = "granelle";
   else if(step === "granelle") step = "topping";
   else if(step === "topping") step = "extra";
   else conferma();
+
   render();
 }
 
-// ✅ Finale
+function prevStep(){
+  if(step === "gusti"){
+    document.getElementById("step-container").style.display = "none";
+    document.getElementById("step-size").style.display = "block";
+    return;
+  }
+
+  if(step === "granelle") step = "gusti";
+  else if(step === "topping") step = "granelle";
+  else if(step === "extra") step = "topping";
+
+  render();
+}
+
+// ✅ Fine → Riepilogo condivisibile
 function conferma(){
   document.getElementById("step-container").innerHTML = `
-    <h2>✅ Coppa Creata!</h2>
-    <p><b>Gusti:</b> ${scelti.gusti.join(", ")}</p>
-    <p><b>Granelle:</b> ${scelti.granelle.join(", ")}</p>
-    <p><b>Topping:</b> ${scelti.topping.join(", ")}</p>
-    <p><b>Extra:</b> ${scelti.extra.join(", ")}</p>
-
-    <button onclick="navigator.share({ text: 'La mia coppa: ${scelti.gusti.join(', ')} + ${scelti.granelle.join(', ')} + ${scelti.topping.join(', ')} + ${scelti.extra.join(', ')}' })">
-      Condividi 📤
-    </button>
-  `;
+  <h2>✅ Coppa Creata!</h2>
+  <p><b>Gusti:</b> ${scelti.gusti.join(", ")}</p>
+  <p><b>Granelle:</b> ${scelti.granelle.join(", ")}</p>
+  <p><b>Topping:</b> ${scelti.topping.join(", ")}</p>
+  <p><b>Extra:</b> ${scelti.extra.join(", ")}</p>
+  
+  <button onclick="navigator.share({ text: 'La mia coppa: ${scelti.gusti.join(', ')} + ${scelti.granelle.join(', ')} + ${scelti.topping.join(', ')} + ${scelti.extra.join(', ')}' })">
+    Condividi 📤
+  </button>`;
 }
+
+// 🔝 Mini-riepilogo
 function updateRiepilogo(){
   document.getElementById("riepilogo-mini").innerHTML = `
-    <b>G:</b> ${scelti.gusti.join(", ")}<br>
-    <b>Gr:</b> ${scelti.granelle.join(", ")}<br>
-    <b>T:</b> ${scelti.topping.join(", ")}<br>
-    <b>E:</b> ${scelti.extra.join(", ")}
+  <b>G:</b> ${scelti.gusti.join(", ")}<br>
+  <b>Gr:</b> ${scelti.granelle.join(", ")}<br>
+  <b>T:</b> ${scelti.topping.join(", ")}<br>
+  <b>E:</b> ${scelti.extra.join(", ")}
   `;
 }
