@@ -23,15 +23,17 @@
 <section id="step-size" style="text-align:center;">
   <h2>Scegli il Formato</h2>
 
-  <div class="menu-item" onclick="selectSize('PICCOLA',2,1,1,1)">
-    PICCOLA (2 gusti, 1 granella, 1 topping, 1 extra)
-  </div>
-  <div class="menu-item" onclick="selectSize('MEDIA',3,2,2,1)">
-    MEDIA (3 gusti, 2 granelle, 2 topping, 1 extra)
-  </div>
-  <div class="menu-item" onclick="selectSize('GRANDE',4,2,2,2)">
-    GRANDE (4 gusti, 2 granelle, 2 topping, 2 extra)
-  </div>
+<div class="menu-item" onclick="selectSize('PICCOLA',2,1,1,1, 7.50)">
+  PICCOLA (2 gusti, 1 granella, 1 topping, 1 ingrediente) - €7.50
+</div>
+
+<div class="menu-item" onclick="selectSize('MEDIA',3,2,2,1, 9.00)">
+  MEDIA (3 gusti, 2 granelle, 2 topping, 1 ingrediente) - €9.00
+</div>
+
+<div class="menu-item" onclick="selectSize('GRANDE',4,2,2,2, 12.00)">
+  GRANDE (4 gusti, 2 granelle, 2 topping, 2 ingredienti) - €12.00
+</div>
 </section>
 
 <section id="step-container" style="display:none;"></section>
