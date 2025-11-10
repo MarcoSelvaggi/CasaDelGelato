@@ -11,9 +11,9 @@
 
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
-    header{text-align:center;padding:20px}
+    header{text-align:center;padding:22px}
 
-    /* ✅ HOME BUTTON — reso visibile */
+    /* ✅ HOME BUTTON */
     #home-btn {
       position:fixed;
       top:14px; left:14px;
@@ -26,316 +26,166 @@
       border:1px solid #ccc;
     }
 
-    .menu-section{padding:22px;text-align:center}
-    .btn{display:block;width:240px;text-align:center;padding:12px 14px;border-radius:12px;background:#ff7a00;color:#fff;text-decoration:none;margin:10px auto;font-size:17px;font-weight:600;}
-
-    /* ✅ LANGUAGE MENU FIX */
+    /* ✅ LANGUAGE MENU */
     #lang-toggle{
-      position:fixed; top:12px; right:12px;
-      padding:6px 10px;
+      position:fixed; top:14px; right:14px;
+      padding:6px 12px;
       border-radius:12px;
       background:white;
       border:1px solid #ddd;
       cursor:pointer; 
+      font-size:18px;
       z-index:10000;
     }
     #lang-menu{
-      position:fixed; top:48px; right:12px;
+      position:fixed; top:50px; right:14px;
       background:#fff;
       padding:6px 0;
-      border-radius:8px;
+      border-radius:10px;
       box-shadow:0 6px 20px rgba(0,0,0,0.12);
       display:none;
       z-index:10001;
-      flex-direction:column;
     }
     #lang-menu button{
-      padding:10px 14px;
+      padding:10px 16px;
       border:none;
       background:transparent;
       cursor:pointer;
       font-size:15px;
-      width:100%;
       text-align:left;
-      display:flex;
-      align-items:center;
-      gap:8px;
+      width:100%;
     }
     #lang-menu button:hover{background:#f2f2f2;}
 
-    /* ✅ LOCAL CARDS RESTYLE */
+    /* ✅ BUTTONS */
+    .menu-section{padding:22px;text-align:center}
+    .btn{
+      display:block;width:240px;text-align:center;
+      padding:12px 14px;border-radius:12px;background:#ff7a00;color:#fff;
+      text-decoration:none;margin:14px auto;font-size:17px;font-weight:600;
+    }
+
+    /* ✅ CARDS I NOSTRI LOCALI */
     .shop-card {
       background:white;
-      padding:14px 16px;
+      padding:16px;
       border-radius:14px;
       margin:14px auto;
       max-width:330px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.07);
+      box-shadow:0 2px 6px rgba(0,0,0,0.08);
       text-align:left;
     }
-    .shop-card b {font-size:16px;margin-bottom:6px;display:block;}
-    .shop-card a {display:block;text-decoration:none;margin-top:4px;font-size:15px;color:#007aff;}
-  </style>
-</head>
+    .shop-card b {font-size:16px;margin-bottom:4px;display:block;}
+    .shop-card a {text-decoration:none;margin-top:4px;display:block;font-size:15px;color:#007aff;}
 
-<body>
-
-<!-- 🏠 HOME BUTTON -->
-<a id="home-btn" href="index.html">🏠</a>
-
-<!-- 🌍 LANGUAGE MENU -->
-<div id="lang-toggle">🌍 ▾</div>
-<div id="lang-menu">
-  <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
-  <button class="lang-btn" data-lang="en">🇬🇧 English</button>
-  <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
-</div>
-
-<header><h1 data-lang="title">Casa del Gelato</h1></header>
-
-<section class="menu-section">
-  <h2 data-lang="menu">Menù</h2>
-</section>
-
-<section class="menu-section">
-  <h2 data-lang="create_cup_title">Crea la tua Coppa</h2>
-  <p data-lang="create_cup_subtitle">Personalizza la tua coppa come la vuoi tu</p>
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="utf-8" />
-  <title>Casa del Gelato</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="manifest" href="manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="icon" href="favicon.png">
-  <link rel="apple-touch-icon" href="icon-192.png">
-
-  <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
-    header{text-align:center;padding:20px}
-
-    /* ✅ HOME BUTTON — reso visibile */
-    #home-btn {
+    /* ✅ WHATSAPP BUTTON */
+    #whatsapp-btn {
       position:fixed;
-      top:14px; left:14px;
-      font-size:26px;
+      right:18px;
+      bottom:18px;
+      background:#25D366;
+      color:white;
+      padding:14px 18px;
+      border-radius:50%;
+      font-size:24px;
       text-decoration:none;
       z-index:9999;
-      background:white;
-      padding:6px 10px;
-      border-radius:12px;
-      border:1px solid #ccc;
+      box-shadow:0 4px 14px rgba(0,0,0,0.25);
     }
-
-    .menu-section{padding:22px;text-align:center}
-    .btn{display:block;width:240px;text-align:center;padding:12px 14px;border-radius:12px;background:#ff7a00;color:#fff;text-decoration:none;margin:10px auto;font-size:17px;font-weight:600;}
-
-    /* ✅ LANGUAGE MENU FIX */
-    #lang-toggle{
-      position:fixed; top:12px; right:12px;
-      padding:6px 10px;
-      border-radius:12px;
-      background:white;
-      border:1px solid #ddd;
-      cursor:pointer; 
-      z-index:10000;
-    }
-    #lang-menu{
-      position:fixed; top:48px; right:12px;
-      background:#fff;
-      padding:6px 0;
-      border-radius:8px;
-      box-shadow:0 6px 20px rgba(0,0,0,0.12);
-      display:none;
-      z-index:10001;
-      flex-direction:column;
-    }
-    #lang-menu button{
-      padding:10px 14px;
-      border:none;
-      background:transparent;
-      cursor:pointer;
-      font-size:15px;
-      width:100%;
-      text-align:left;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    #lang-menu button:hover{background:#f2f2f2;}
-
-    /* ✅ LOCAL CARDS RESTYLE */
-    .shop-card {
-      background:white;
-      padding:14px 16px;
-      border-radius:14px;
-      margin:14px auto;
-      max-width:330px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.07);
-      text-align:left;
-    }
-    .shop-card b {font-size:16px;margin-bottom:6px;display:block;}
-    .shop-card a {display:block;text-decoration:none;margin-top:4px;font-size:15px;color:#007aff;}
   </style>
 </head>
 
 <body>
 
-<!-- 🏠 HOME BUTTON -->
 <a id="home-btn" href="index.html">🏠</a>
 
-<!-- 🌍 LANGUAGE MENU -->
-<div id="lang-toggle">🌍 ▾</div>
+<!-- 🌍 LANGUAGE -->
+<div id="lang-toggle">🇮🇹 ▾</div>
 <div id="lang-menu">
-  <button class="lang-btn" data-lang="it">🇮🇹 Italiano</button>
-  <button class="lang-btn" data-lang="en">🇬🇧 English</button>
-  <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+  <button class="lang-btn" data-lang="it">Italiano</button>
+  <button class="lang-btn" data-lang="en">English</button>
+  <button class="lang-btn" data-lang="de">Deutsch</button>
 </div>
 
 <header><h1 data-lang="title">Casa del Gelato</h1></header>
 
 <section class="menu-section">
-  <h2 data-lang="menu">Menù</h2>
-</section>
-
-<section class="menu-section">
   <h2 data-lang="create_cup_title">Crea la tua Coppa</h2>
   <p data-lang="create_cup_subtitle">Personalizza la tua coppa come la vuoi tu</p>
-  <a class="btn" href="crea-coppa.html" data-lang="create_button">🍨 INIZIA</a>
+  <a id="start-coppa" class="btn" data-lang="create_button">🍨 INIZIA</a>
 </section>
 
 <section class="menu-section">
   <h2 data-lang="contacts">I nostri Locali</h2>
 
   <div class="shop-card">
-    <b>📍 Bibione - Viale delle Costellazioni 49</b>
+    <b>Bibione - Viale delle Costellazioni 49</b>
     <a href="tel:043143628">📞 0431 43628</a>
     <a href="https://goo.gl/maps/PLxK1tzJq7E2" target="_blank">🗺 Apri su Maps</a>
   </div>
 
   <div class="shop-card">
-    <b>📍 Bibione - Viale delle Costellazioni 10</b>
+    <b>Bibione - Viale delle Costellazioni 10</b>
     <a href="tel:0431364365">📞 0431 364365</a>
     <a href="https://goo.gl/maps/hJkYB1sXcQt" target="_blank">🗺 Apri su Maps</a>
   </div>
 
   <div class="shop-card">
-    <b>📍 Lignano Sabbiadoro - Via Udine 1</b>
+    <b>Lignano Sabbiadoro - Via Udine 1</b>
     <a href="tel:04311961783">📞 0431 1961783</a>
     <a href="https://goo.gl/maps/Z4q8C2e6SuM2" target="_blank">🗺 Apri su Maps</a>
   </div>
 </section>
 
-<script>
-(function(){
-  const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
-  const LANG = {
-    it:{title:"Casa del Gelato",menu:"Menù",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"I nostri Locali"},
-    en:{title:"House of Gelato",menu:"Menu",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup",create_button:"🍨 START",contacts:"Our Shops"},
-    de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher",create_button:"🍨 START",contacts:"Unsere Standorte"}
-  };
-
-const toggle = document.getElementById('lang-toggle');
-const menu = document.getElementById('lang-menu');
-
-toggle.onclick = () => {
-  menu.classList.toggle("show");
-};
-
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle')) {
-    menu.classList.remove("show");
-  }
-});
-
-  function apply(l){
-    localStorage.setItem("lang",l);
-    document.querySelectorAll("[data-lang]").forEach(el=>{
-      el.textContent = LANG[l][el.dataset.lang];
-    });
-    toggle.textContent = FLAGS[l] + " ▾";
-  }
-
-  apply(localStorage.getItem("lang") || "it");
-})();
-</script>
-<div id="start-popup" class="popup" style="display:none;">
-  <div class="popup-content">
+<!-- ✅ POPUP CREA COPPA -->
+<div id="popup-coppa" style="display:none; position:fixed; inset:0; background:#00000070; display:flex; align-items:center; justify-content:center; z-index:9999;">
+  <div style="background:white; padding:26px; border-radius:16px; max-width:300px; text-align:center;">
     <h3>🍨 Come funziona?</h3>
-    <p>Scegli prima il FORMATO della tua coppa,<br>
-    poi i GUSTI,<br>
-    e infine le AGGIUNTE.<br><br>
-    Alla fine vedrai il riepilogo ✅</p>
-    <button id="confirm-start" class="btn">Ho capito!</button>
+    <p>Scegli prima il formato,<br> poi gli ingredienti,<br> e infine il riepilogo ✅</p>
+    <button id="popup-ok" class="btn" style="width:100%;">Ho capito!</button>
   </div>
 </div>
-<script>
-document.getElementById("start-cup").onclick = () => {
-  document.getElementById("start-popup").style.display = "flex";
-};
 
-document.getElementById("confirm-start").onclick = () => {
-  document.getElementById("start-popup").style.display = "none";
-  window.location.href = "crea-coppa.html";
-};
-</script>
-</body>
-</html></section>
-
-<section class="menu-section">
-  <h2 data-lang="contacts">I nostri Locali</h2>
-
-  <div class="shop-card">
-    <b>📍 Bibione - Viale delle Costellazioni 49</b>
-    <a href="tel:043143628">📞 0431 43628</a>
-    <a href="https://goo.gl/maps/PLxK1tzJq7E2" target="_blank">🗺 Apri su Maps</a>
-  </div>
-
-  <div class="shop-card">
-    <b>📍 Bibione - Viale delle Costellazioni 10</b>
-    <a href="tel:0431364365">📞 0431 364365</a>
-    <a href="https://goo.gl/maps/hJkYB1sXcQt" target="_blank">🗺 Apri su Maps</a>
-  </div>
-
-  <div class="shop-card">
-    <b>📍 Lignano Sabbiadoro - Via Udine 1</b>
-    <a href="tel:04311961783">📞 0431 1961783</a>
-    <a href="https://goo.gl/maps/Z4q8C2e6SuM2" target="_blank">🗺 Apri su Maps</a>
-  </div>
-</section>
+<!-- ✅ WHATSAPP -->
+<a id="whatsapp-btn" href="https://wa.me/393403788846" target="_blank">💬</a>
 
 <script>
 (function(){
   const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
   const LANG = {
-    it:{title:"Casa del Gelato",menu:"Menù",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"I nostri Locali"},
-    en:{title:"House of Gelato",menu:"Menu",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup",create_button:"🍨 START",contacts:"Our Shops"},
-    de:{title:"Haus des Gelatos",menu:"Speisekarte",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher",create_button:"🍨 START",contacts:"Unsere Standorte"}
+    it:{title:"Casa del Gelato",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"I nostri Locali"},
+    en:{title:"House of Gelato",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup",create_button:"🍨 START",contacts:"Our Shops"},
+    de:{title:"Haus des Gelatos",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher",create_button:"🍨 START",contacts:"Unsere Standorte"}
   };
 
-const toggle = document.getElementById('lang-toggle');
-const menu = document.getElementById('lang-menu');
+  const toggle = document.getElementById('lang-toggle');
+  const menu = document.getElementById('lang-menu');
 
-toggle.onclick = () => {
-  menu.classList.toggle("show");
-};
+  toggle.onclick = () => menu.style.display = menu.style.display=="flex" ? "none" : "flex";
 
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('#lang-menu') && !e.target.closest('#lang-toggle')) {
-    menu.classList.remove("show");
-  }
-});
+  document.addEventListener('click', e => {
+    if(!e.target.closest('#lang-toggle') && !e.target.closest('#lang-menu')) menu.style.display="none";
+  });
 
   function apply(l){
     localStorage.setItem("lang",l);
-    document.querySelectorAll("[data-lang]").forEach(el=>{
-      el.textContent = LANG[l][el.dataset.lang];
-    });
+    document.querySelectorAll("[data-lang]").forEach(el => el.textContent = LANG[l][el.dataset.lang]);
     toggle.textContent = FLAGS[l] + " ▾";
   }
-
   apply(localStorage.getItem("lang") || "it");
+
+  document.querySelectorAll(".lang-btn").forEach(btn =>
+    btn.onclick = () => apply(btn.dataset.lang)
+  );
+
+  // ✅ Popup ogni volta
+  document.getElementById("start-coppa").onclick = () => {
+    document.getElementById("popup-coppa").style.display="flex";
+  };
+  document.getElementById("popup-ok").onclick = () => {
+    document.getElementById("popup-coppa").style.display="none";
+    window.location.href="crea-coppa.html";
+  };
 })();
 </script>
 
