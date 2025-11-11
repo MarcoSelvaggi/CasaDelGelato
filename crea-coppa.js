@@ -245,8 +245,7 @@ function mostraRiepilogo(){
   area.innerHTML = `
     <h2>Riepilogo finale</h2>
 
-    <div class="scontrino">
-      <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
+<div class="scontrino" id="scontrino-da-share">      <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
       <p><b>Gusti:</b> ${safeJoin(scelti.gusti)}</p>
       <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
       <p><b>Topping:</b> ${safeJoin(scelti.topping)}</p>
@@ -270,9 +269,13 @@ function mostraRiepilogo(){
 
     <div class="nav-buttons" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
       <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
-      <button class="next-btn" onclick="shareInstagram()">📸 Condividi su Instagram</button>
+      <button class="next-btn" onclick="salvaScontrinoComeImmagine()">📸 Salva immagine (Instagram)</button>
       <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
     </div>
+
+    <p style="font-size:12px; text-align:center; opacity:0.7; margin-top:4px;">
+      Dopo aver salvato l'immagine puoi pubblicarla nelle Storie su Instagram 📲
+    </p>
   `;
 
   updateRiepilogo();
@@ -286,7 +289,7 @@ function shareInstagram(){
   salvaScontrinoComeImmagine();
 }
 function salvaScontrinoComeImmagine() {
-  const scontrino = document.querySelector(".scontrino");
+  const scontrino = document.getElementById("scontrino-da-share");
   if(!scontrino) return;
 
   html2canvas(scontrino, { scale: 3 }).then(canvas => {
