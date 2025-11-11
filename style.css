@@ -752,12 +752,14 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 
 /* Stato ridotto (pill) */
 #riepilogo-mini.collapsed {
-  max-width: 90px;
-  max-height: 24px;
+  max-width: 120px;    /* + spazio orizzontale */
+  max-height: 32px;    /* + altezza */
   overflow: hidden;
-  padding: 6px 10px;
-  font-size: 11px;
-  opacity: 0.85;
+  padding: 8px 12px;   /* + area di tap */
+  font-size: 13px;     /* testo leggermente più grande */
+  opacity: 0.95;       /* più leggibile */
+  border-radius: 14px; /* forma più “chip style” */
+  transition: 0.25s;   /* animazione più fluida */
 }
 #riepilogo-mini {
   transition: all 0.35s ease;
@@ -784,4 +786,21 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 header, #step-container {
   z-index: 1;
   position: relative;
+}
+#riepilogo-mini .quick-next-inside {
+  display: block;
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: none;
+  background: #2c8a2c;
+  color: white;
+  width: 100%;
+  text-align: center;
+}
+
+/* Quando è chiuso → nascondi */
+#riepilogo-mini.collapsed .quick-next-inside {
+  display: none;
 }

@@ -108,16 +108,6 @@ function render(){
       <button class="next-btn" onclick="nextStep()">${step==="extra"?"Conferma ✅":"Avanti ➜"}</button>
     </div>
   `;
-
-  // --- Quick Next Logic ---
-  const quick = byId("quick-next");
-  if(quick){
-    if(maxStep && scelti[step].length >= maxStep){
-      quick.style.display = "block";
-    } else {
-      quick.style.display = "none";
-    }
-  }
 }
 
 // ---------------- TOGGLE ----------------
@@ -132,15 +122,23 @@ function limitEffect(nome){
 }
 
 function toggle(step, nome){
-  if(step==="extra"){
-    if(scelti.extra.includes(nome)) scelti.extra = scelti.extra.filter(x=>x!==nome);
+  // EXTRA: comportamento libero
+  if(step === "extra"){
+    if(scelti.extra.includes(nome)) scelti.extra = scelti.extra.filter(x => x !== nome);
     else scelti.extra.push(nome);
+
     showIsland(nome);
-    render(); updateRiepilogo(); return;
+    render();
+    updateRiepilogo();
+
+    // espandi in modo robusto
+    expandMiniRiepilogo();
+    return;
   }
 
+  // toggle normale
   if(scelti[step].includes(nome)){
-    scelti[step] = scelti[step].filter(x=>x!==nome);
+    scelti[step] = scelti[step].filter(x => x !== nome);
   } else {
     if(scelti[step].length >= max[step]) return limitEffect(nome);
     scelti[step].push(nome);
@@ -149,7 +147,10 @@ function toggle(step, nome){
   showIsland(nome);
   render();
   updateRiepilogo();
-  updateQuickNext();
+  if (typeof updateQuickNext === "function") updateQuickNext();
+
+  // espandi in modo robusto
+  expandMiniRiepilogo();
 }
 
 // ---------------- NAV ----------------
@@ -183,15 +184,22 @@ function updateRiepilogo(){
   const el = byId("riepilogo-mini");
   if(!el) return;
 
-  // se siamo nella schermata finale (scontrino) lo nascondiamo
+  // se siamo nella schermata finale lo nascondiamo
   if(document.querySelector(".scontrino") || step === "riepilogo"){
     el.classList.add("hidden");
     return;
   }
 
-  // titolo (mostra solo se selezionata una coppa)
-  const titolo = coppaSelezionata 
-    ? `<div class="riepilogo-titolo">🍨 ${escapeHtml(coppaSelezionata)}</div>` 
+  // calcola se mostrare "Avanti"
+  let ready = false;
+  if(step === "gusti") ready = scelti.gusti.length === max.gusti;
+  if(step === "granelle") ready = scelti.granelle.length === max.granelle;
+  if(step === "topping") ready = scelti.topping.length === max.topping;
+  if(step === "ingredienti") ready = scelti.ingredienti.length === max.ingredienti;
+  if(step === "extra") ready = true;
+
+  const titolo = coppaSelezionata
+    ? `<div class="riepilogo-titolo">🍨 ${escapeHtml(coppaSelezionata)}</div>`
     : `<div class="riepilogo-titolo" style="opacity:.6">Scegli il formato</div>`;
 
   const riga = (label, arr) => {
@@ -199,65 +207,58 @@ function updateRiepilogo(){
     return `<div class="riepilogo-line"><b>${escapeHtml(label)}</b>${val}</div>`;
   };
 
-  // ⬇⬇ QUI MOSTRIAMO LA VERSIONE COMPLETA (FULL)
-  el.innerHTML = `
+  const btnHtml = ready ? `<button class="quick-next-inside" onclick="nextStep()">Avanti ➜</button>` : "";
+
+  // creiamo la versione FULL ma non la forziamo sempre nell'innerHTML (vedi dopo)
+  const fullHtml = `
     ${titolo}
     ${riga("G", scelti.gusti)}
     ${riga("Gr", scelti.granelle)}
     ${riga("T", scelti.topping)}
     ${riga("Ing", scelti.ingredienti)}
     ${riga("Extra", scelti.extra)}
+    ${btnHtml}
   `;
 
-  // ⬇⬇ AGGIUNGERE QUESTO BLOCCO (IMPORTANTISSIMO)
-  el.dataset.full = el.innerHTML;                  // salva versione completa
-  el.dataset.mini = `🍨 ${coppaSelezionata || ""}`; // versione ridotta (solo formato)
+  // MINI (pill) — solo il formato
+  const miniHtml = `🍨 ${escapeHtml(coppaSelezionata || "")}`;
 
-  // gestione visibilità
+  // SALVIAMO le versioni su data-*, così expand/collapse usano sempre lo stesso contenuto
+  el.dataset.full = fullHtml;
+  el.dataset.mini = miniHtml;
+
+  // se attualmente è espanso, mostriamo il full, altrimenti mostriamo miniHtml
+  if(el.classList.contains("collapsed")){
+    el.innerHTML = el.dataset.mini;
+  } else {
+    el.innerHTML = el.dataset.full;
+  }
+
+  // visibilità generale
   if(step === "size"){
     el.classList.add("hidden");
   } else {
     el.classList.remove("hidden");
   }
-
-  // --- MOSTRA SEMPRE ESPANSO PER 1 SECONDO PRIMA DI COLLASSARE ---
-  el.classList.remove("collapsed");
-  el.innerHTML = el.dataset.full; // lo facciamo rivedere intero
-
-  autoCollapseRiepilogo();
 }
 // ---------------- COLLASSO AUTOMATICO MINI-RIEPILOGO ----------------
 function autoCollapseRiepilogo(){
   const el = document.getElementById("riepilogo-mini");
   if(!el) return;
 
-  // reset timer se attivo
+  // se è già collapsed non schedulare nulla
+  if(el.classList.contains("collapsed")) return;
+
   if(collapseTimer) clearTimeout(collapseTimer);
 
-  // dopo 1 secondo passa alla versione mini
+  // dopo 2 secondi (2000ms) riduciamo
   collapseTimer = setTimeout(() => {
-    el.innerHTML = el.dataset.mini || "";
     el.classList.add("collapsed");
+    // mostra la mini pill (da dataset.mini)
+    el.innerHTML = el.dataset.mini || "";
   }, 3000);
 }
 
-// clic per espandere / ridurre
-document.addEventListener("click", function(e){
-  const el = document.getElementById("riepilogo-mini");
-  if(!el) return;
-
-  // cliccato dentro il mini-riepilogo?
-  if(el.contains(e.target)){
-    // toggle versione
-    if(el.classList.contains("collapsed")){
-      el.innerHTML = el.dataset.full;
-      el.classList.remove("collapsed");
-    } else {
-      el.innerHTML = el.dataset.mini;
-      el.classList.add("collapsed");
-    }
-  }
-});
 // ---------------- SHARE ----------------
 function shareRiepilogo(){
   const text = `COPPA ${coppaSelezionata}\n\n`+
@@ -269,10 +270,6 @@ function shareRiepilogo(){
 
   navigator.share ? navigator.share({text}) : alert(text);
 }
-document.getElementById("quick-next").addEventListener("click", () => {
-  document.querySelector(".next-btn")?.click();
-});
-
 
 function mostraRiepilogo(){
   step = "riepilogo";
@@ -355,3 +352,35 @@ function salvaScontrinoComeImmagine() {
     alert("Errore durante la creazione dell'immagine.");
   });
 }
+function expandMiniRiepilogo(){
+  const el = document.getElementById("riepilogo-mini");
+  if(!el) return;
+
+  // Mostra SEMPRE la versione completa
+  el.innerHTML = el.dataset.full || "";
+  el.classList.remove("collapsed");
+
+  // Riavvia auto-collapse
+  if(collapseTimer) clearTimeout(collapseTimer);
+  autoCollapseRiepilogo();
+}
+// ⬇️ FINE FILE — METTILO QUI ⬇️
+
+document.getElementById("riepilogo-mini").addEventListener("click", function(e){
+  const el = this;
+
+  if(e.target && e.target.classList && e.target.classList.contains("quick-next-inside")) {
+    return;
+  }
+
+  if(el.classList.contains("collapsed")){
+    el.classList.remove("collapsed");
+    el.innerHTML = el.dataset.full || "";
+    if(collapseTimer) clearTimeout(collapseTimer);
+    autoCollapseRiepilogo();
+  } else {
+    el.classList.add("collapsed");
+    el.innerHTML = el.dataset.mini || "";
+    if(collapseTimer) { clearTimeout(collapseTimer); collapseTimer = null; }
+  }
+});
