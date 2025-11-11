@@ -220,7 +220,10 @@ function updateRiepilogo(){
     el.classList.remove("hidden");
   }
 
-  // applica riduzione automatica dopo 1 secondo
+  // --- MOSTRA SEMPRE ESPANSO PER 1 SECONDO PRIMA DI COLLASSARE ---
+  el.classList.remove("collapsed");
+  el.innerHTML = el.dataset.full; // lo facciamo rivedere intero
+
   autoCollapseRiepilogo();
 }
 // ---------------- COLLASSO AUTOMATICO MINI-RIEPILOGO ----------------
@@ -235,18 +238,24 @@ function autoCollapseRiepilogo(){
   collapseTimer = setTimeout(() => {
     el.innerHTML = el.dataset.mini || "";
     el.classList.add("collapsed");
-  }, 1000);
+  }, 3000);
 }
 
 // clic per espandere / ridurre
-document.getElementById("riepilogo-mini").addEventListener("click", function(){
-  const el = this;
-  if(el.classList.contains("collapsed")){
-    el.innerHTML = el.dataset.full;
-    el.classList.remove("collapsed");
-  } else {
-    el.innerHTML = el.dataset.mini;
-    el.classList.add("collapsed");
+document.addEventListener("click", function(e){
+  const el = document.getElementById("riepilogo-mini");
+  if(!el) return;
+
+  // cliccato dentro il mini-riepilogo?
+  if(el.contains(e.target)){
+    // toggle versione
+    if(el.classList.contains("collapsed")){
+      el.innerHTML = el.dataset.full;
+      el.classList.remove("collapsed");
+    } else {
+      el.innerHTML = el.dataset.mini;
+      el.classList.add("collapsed");
+    }
   }
 });
 // ---------------- SHARE ----------------
