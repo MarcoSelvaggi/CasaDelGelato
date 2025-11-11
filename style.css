@@ -100,18 +100,11 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   background: #eaffea;
 }
 
+/* ✅ Nessuna spunta automatica */
 .menu-item.option.selected::after,
 .select-item.selected::after {
-  content: "✓";
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--success);
+  content: none !important;
 }
-
 .menu-item.option.error,
 .select-item.error {
   border-color: var(--error);
@@ -460,13 +453,16 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   position: fixed;
   top: 14px;
   right: 14px;
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.35); /* semi-trasparente */
+  backdrop-filter: blur(8px); /* effetto vetro */
   padding: 8px 14px;
   border-radius: 12px;
-  font-size: 13px;
-  width: 150px;
+  font-size: 14px;
+  font-weight: 600;
   text-align: right;
+  line-height: 1.45;
+  color: #000;
+  border: 1px solid rgba(255,255,255,0.4); /* contorno delicato */
 }
 /* Quando aggiungo (spunta verde) */
 .add-anim {
@@ -563,4 +559,177 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   border: none;
   border-top: 1px dashed #444;
   margin: 10px 0;
+}
+.item.limit-warning {
+  background: rgba(255, 0, 0, 0.3) !important;
+  border-color: red !important;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.item.limit-warning.shake {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+.limit-reached {
+  background: rgba(255, 0, 0, 0.25) !important;
+  border-color: red !important;
+  animation: shake 0.4s ease;
+}
+/* ----------------------------------
+   Forza: niente spunta di default
+   ---------------------------------- */
+.menu-item.option::after,
+.select-item::after,
+.item::after,
+.menu-item::after {
+  content: none !important;
+}
+
+/* Assicura che gli elementi abbiano positioning per il ::after */
+.item { position: relative; }
+
+/* Mostra la spunta SOLO quando l'elemento è selezionato */
+.item.selected::after {
+  content: "✔";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #2c8a2c; /* verde spunta */
+  font-weight: 700;
+}
+
+/* Compatibilità: se hai altri tipi di card usali anche per loro */
+.menu-item.option.selected::after,
+.select-item.selected::after {
+  content: "✔" !important;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #2c8a2c;
+  font-weight: 700;
+}
+#quick-next {
+  position: fixed;
+  top: 62px;
+  right: 14px;
+  background: #ffcf3f;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: none; /* 🔥 parte nascosto */
+  z-index: 9999;
+}
+/* MINI RIEPILOGO — verticale, compatto e non espandibile orizzontalmente */
+#riepilogo-mini {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.30); /* semi-trasparente */
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+  width: min(230px, 38vw);
+  max-width: 260px;
+  color: #111;
+  font-size: 13px;
+  line-height: 1.25;
+  z-index: 9999;
+  transition: transform .18s ease, opacity .18s ease;
+  pointer-events: none; /* non interferisce con click */
+}
+
+/* titolo (es. PICCOLA) */
+#riepilogo-mini .riepilogo-titolo{
+  font-weight: 800;
+  font-size: 13px;
+  width: 100%;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: auto;
+}
+
+/* ogni riga: label in grassetto e valore normale */
+#riepilogo-mini .riepilogo-line{
+  width: 100%;
+  text-align: right;
+  color: #222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* label (G, Gr, T, Ing, Extra) */
+#riepilogo-mini .riepilogo-line b{
+  font-weight: 800;
+  margin-right: 6px;
+}
+
+/* nascondi se vuoto (utile) */
+#riepilogo-mini.hidden { opacity: 0; transform: translateY(-6px); pointer-events:none; }
+/* =================== SISTEMA SELEZIONE PULITO =================== */
+
+/* Forza: nessuna spunta di default */
+.menu-item.option::after,
+.select-item::after,
+.item::after {
+  content: none !important;
+}
+
+/* La spunta appare SOLO quando selezionato */
+.item.selected::after {
+  content: "✔";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #2c8a2c;
+  font-weight: 700;
+}
+
+/* =================== MINI RIEPILOGO PERFETTO =================== */
+#riepilogo-mini {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  line-height: 1.35;
+  color: #000;
+  border: 1px solid rgba(255,255,255,0.4);
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  max-width: 200px;
+  white-space: normal;
+}
+
+#riepilogo-mini div {
+  margin: 2px 0;
 }
