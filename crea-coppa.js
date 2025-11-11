@@ -3,7 +3,7 @@ let coppaSelezionata = "";
 let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
 let step = "size"; // iniziamo sulla scelta formato
-
+let collapseTimer = null
 // ---------------- LISTE ----------------
 const gustiList = [
   "VANIGLIA","FIOR DI LATTE","CIOCCOLATO","NOCCIOLA","FRAGOLA","PISTACCHIO","LIMONE",
@@ -190,14 +190,16 @@ function updateRiepilogo(){
   }
 
   // titolo (mostra solo se selezionata una coppa)
-  const titolo = coppaSelezionata ? `<div class="riepilogo-titolo">🍨 ${escapeHtml(coppaSelezionata)}</div>` : `<div class="riepilogo-titolo" style="opacity:.6">Scegli il formato</div>`;
+  const titolo = coppaSelezionata 
+    ? `<div class="riepilogo-titolo">🍨 ${escapeHtml(coppaSelezionata)}</div>` 
+    : `<div class="riepilogo-titolo" style="opacity:.6">Scegli il formato</div>`;
 
-  // prepariamo le righe: se vuote mostriamo "-" per chiarezza
   const riga = (label, arr) => {
     const val = (arr && arr.length) ? escapeHtml(safeJoin(arr)) : "-";
     return `<div class="riepilogo-line"><b>${escapeHtml(label)}</b>${val}</div>`;
   };
 
+  // ⬇⬇ QUI MOSTRIAMO LA VERSIONE COMPLETA (FULL)
   el.innerHTML = `
     ${titolo}
     ${riga("G", scelti.gusti)}
@@ -207,13 +209,46 @@ function updateRiepilogo(){
     ${riga("Extra", scelti.extra)}
   `;
 
-  // Mostra il mini riepilogo se siamo in una fase di selezione (non size)
+  // ⬇⬇ AGGIUNGERE QUESTO BLOCCO (IMPORTANTISSIMO)
+  el.dataset.full = el.innerHTML;                  // salva versione completa
+  el.dataset.mini = `🍨 ${coppaSelezionata || ""}`; // versione ridotta (solo formato)
+
+  // gestione visibilità
   if(step === "size"){
     el.classList.add("hidden");
   } else {
     el.classList.remove("hidden");
   }
+
+  // applica riduzione automatica dopo 1 secondo
+  autoCollapseRiepilogo();
 }
+// ---------------- COLLASSO AUTOMATICO MINI-RIEPILOGO ----------------
+function autoCollapseRiepilogo(){
+  const el = document.getElementById("riepilogo-mini");
+  if(!el) return;
+
+  // reset timer se attivo
+  if(collapseTimer) clearTimeout(collapseTimer);
+
+  // dopo 1 secondo passa alla versione mini
+  collapseTimer = setTimeout(() => {
+    el.innerHTML = el.dataset.mini || "";
+    el.classList.add("collapsed");
+  }, 1000);
+}
+
+// clic per espandere / ridurre
+document.getElementById("riepilogo-mini").addEventListener("click", function(){
+  const el = this;
+  if(el.classList.contains("collapsed")){
+    el.innerHTML = el.dataset.full;
+    el.classList.remove("collapsed");
+  } else {
+    el.innerHTML = el.dataset.mini;
+    el.classList.add("collapsed");
+  }
+});
 // ---------------- SHARE ----------------
 function shareRiepilogo(){
   const text = `COPPA ${coppaSelezionata}\n\n`+
