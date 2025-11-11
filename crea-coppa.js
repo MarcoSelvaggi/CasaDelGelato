@@ -275,6 +275,7 @@ function mostraRiepilogo(){
 
     <p style="font-size:12px; text-align:center; opacity:0.7; margin-top:4px;">
       Dopo aver salvato l'immagine puoi pubblicarla nelle Storie su Instagram 📲
+      @casadelgelato.it
     </p>
   `;
 
@@ -289,27 +290,24 @@ function shareInstagram(){
   salvaScontrinoComeImmagine();
 }
 function salvaScontrinoComeImmagine() {
-  const scontrino = document.getElementById("scontrino-da-share");
-  if(!scontrino) return;
+  const scontrino = document.querySelector(".scontrino");
+  if(!scontrino){
+    alert("Errore: scontrino non trovato.");
+    return;
+  }
 
   html2canvas(scontrino, { scale: 3 }).then(canvas => {
-    canvas.toBlob(blob => {
-      const file = new File([blob], "coppa.png", { type: "image/png" });
 
-      // WhatsApp / Instagram share (se supportato)
-      if(navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({
-          files: [file],
-          title: "La mia coppa gelato 🍨",
-          text: "Guarda la mia coppa personalizzata!"
-        });
-      } else {
-        // Download fallback (se share non supportato)
-        const link = document.createElement("a");
-        link.download = "coppa.png";
-        link.href = canvas.toDataURL();
-        link.click();
-      }
-    });
+    // ✅ Sempre salvataggio file, niente share API
+    const link = document.createElement("a");
+    link.download = "coppa.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+
+    // ✅ Info utente
+    alert("📸 Immagine salvata!\nOra puoi condividerla su Instagram.")
+  }).catch(err => {
+    console.error(err);
+    alert("Errore durante la creazione dell'immagine.");
   });
 }
