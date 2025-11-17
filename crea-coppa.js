@@ -121,38 +121,77 @@ function limitEffect(nome){
   showIsland("Limite raggiunto ❗");
 }
 
-function toggle(step, nome){
-  // EXTRA: comportamento libero
-  if(step === "extra"){
-    if(scelti.extra.includes(nome)) scelti.extra = scelti.extra.filter(x => x !== nome);
-    else scelti.extra.push(nome);
+function toggle(step, nome) {
+  const container = document.getElementById("riepilogo-mini");
+
+  // ------------------------
+  // EXTRA → NON APRIRE MAI
+  // ------------------------
+  if (step === "extra") {
+    if (scelti.extra.includes(nome)) {
+      scelti.extra = scelti.extra.filter(x => x !== nome);
+    } else {
+      scelti.extra.push(nome);
+    }
 
     showIsland(nome);
     render();
     updateRiepilogo();
+    stabilizeMiniRiepilogo();   // 👈 evita effetti strani
 
-    // espandi in modo robusto
-    expandMiniRiepilogo();
+    // SOLO SHAKE
+    container.classList.add("collapsed");
+    container.classList.remove("wide");
+    container.innerHTML = container.dataset.mini || "";
+
+    container.classList.add("shake");
+    setTimeout(() => container.classList.remove("shake"), 300);
+
     return;
   }
 
-  // toggle normale
-  if(scelti[step].includes(nome)){
+  // ------------------------
+  // TOGGLE NORMALE
+  // ------------------------
+  if (scelti[step].includes(nome)) {
     scelti[step] = scelti[step].filter(x => x !== nome);
   } else {
-    if(scelti[step].length >= max[step]) return limitEffect(nome);
+    if (scelti[step].length >= max[step]) return limitEffect(nome);
     scelti[step].push(nome);
   }
 
   showIsland(nome);
   render();
   updateRiepilogo();
-  if (typeof updateQuickNext === "function") updateQuickNext();
+  stabilizeMiniRiepilogo();   // 👈 evita glitch
 
-  // espandi in modo robusto
-  expandMiniRiepilogo();
+  const currentCount = scelti[step].length;
+  const maxCount = max[step];
+
+  // ------------------------
+  // SE HO RAGGIUNTO IL MASSIMO → APRI E ALLARGA
+  // ------------------------
+  if (maxCount && currentCount === maxCount) {
+    container.classList.remove("collapsed");
+    container.classList.add("wide");
+    container.innerHTML = container.dataset.full || "";
+
+    if (collapseTimer) clearTimeout(collapseTimer);
+    autoCollapseRiepilogo();
+  }
+
+  // ------------------------
+  // SE NON HO RAGGIUNTO IL MAX → SOLO SHAKE
+  // ------------------------
+  else {
+    container.classList.add("collapsed");
+    container.classList.remove("wide");
+    container.innerHTML = container.dataset.mini || "";
+
+    container.classList.add("shake");
+    setTimeout(() => container.classList.remove("shake"), 300);
+  }
 }
-
 // ---------------- NAV ----------------
 function nextStep(){
   if(step==="gusti") step="granelle";
@@ -212,10 +251,10 @@ function updateRiepilogo(){
   // creiamo la versione FULL ma non la forziamo sempre nell'innerHTML (vedi dopo)
   const fullHtml = `
     ${titolo}
-    ${riga("G", scelti.gusti)}
-    ${riga("Gr", scelti.granelle)}
-    ${riga("T", scelti.topping)}
-    ${riga("Ing", scelti.ingredienti)}
+    ${riga("Gusti", scelti.gusti)}
+    ${riga("Granelle", scelti.granelle)}
+    ${riga("Topping", scelti.topping)}
+    ${riga("Ingredienti", scelti.ingredienti)}
     ${riga("Extra", scelti.extra)}
     ${btnHtml}
   `;
@@ -233,6 +272,7 @@ function updateRiepilogo(){
   } else {
     el.innerHTML = el.dataset.full;
   }
+  stabilizeMiniRiepilogo();
 
   // visibilità generale
   if(step === "size"){
@@ -363,6 +403,21 @@ function expandMiniRiepilogo(){
   // Riavvia auto-collapse
   if(collapseTimer) clearTimeout(collapseTimer);
   autoCollapseRiepilogo();
+}
+function stabilizeMiniRiepilogo() {
+  const el = document.getElementById("riepilogo-mini");
+  if (!el) return;
+
+  // Se è collapsed → forza mini pill + niente wide
+  if (el.classList.contains("collapsed")) {
+    el.classList.remove("wide");
+    el.innerHTML = el.dataset.mini || "";
+  } 
+  // Se è espanso → forza full + wide
+  else {
+    el.classList.add("wide");
+    el.innerHTML = el.dataset.full || "";
+  }
 }
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
