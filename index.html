@@ -137,15 +137,6 @@
   </div>
 </section>
 
-<!-- ✅ POPUP CREA COPPA -->
-<div id="popup-coppa" style="display:none; position:fixed; inset:0; background:#00000070; display:flex; align-items:center; justify-content:center; z-index:9999;">
-  <div style="background:white; padding:26px; border-radius:16px; max-width:300px; text-align:center;">
-    <h3>🍨 Come funziona?</h3>
-    <p>Scegli prima il formato,<br> poi gli ingredienti,<br> e infine il riepilogo ✅</p>
-    <button id="popup-ok" class="btn" style="width:100%;">Ho capito!</button>
-  </div>
-</div>
-
 <!-- ✅ WHATSAPP -->
 <a id="whatsapp-btn" href="https://wa.me/393403788846" target="_blank">💬</a>
 
@@ -179,13 +170,9 @@
   );
 
   // ✅ Popup ogni volta
-  document.getElementById("start-coppa").onclick = () => {
-    document.getElementById("popup-coppa").style.display="flex";
-  };
-  document.getElementById("popup-ok").onclick = () => {
-    document.getElementById("popup-coppa").style.display="none";
-    window.location.href="crea-coppa.html";
-  };
+document.getElementById("start-coppa").onclick = () => {
+    window.location.href = "crea-coppa.html";
+};
 })();
 </script>
 
