@@ -12,7 +12,7 @@ const gustiList = [
   "TIRAMISÙ","CROCCANTINO AL RUM","AMARETTO","MALAGA","CHEESECAKE","COOKIES",
   "CREMA ANDALUSA","CREMINO","CREMINO AL PISTACCHIO","AFTER EIGHT",
   "VARIEGATO FICHI NOCI MIELE"
-];
+]
 
 const granelleList = [
   "NOCCIOLA","CROCCANTE","PISTACCHIO","COCCO RAPE'","SCAGLIETTE AL CIOCCOLATO","SMARTIES","ZUCCHERINI COLORATI"
@@ -77,6 +77,13 @@ function selectSize(size, g, gr, t, ing){
   byId("step-container").style.display = "block";
   render();
   updateRiepilogo();
+
+// 🔥 DEVE ESSERE DOPO updateRiepilogo()
+const el = document.getElementById("riepilogo-mini");
+
+// Assicuro che dataset.mini sia già pronto
+el.classList.add("collapsed");
+el.innerHTML = el.dataset.mini;
 }
 
 // ---------------- RENDER ----------------
@@ -137,11 +144,10 @@ function toggle(step, nome) {
     showIsland(nome);
     render();
     updateRiepilogo();
-    stabilizeMiniRiepilogo();   // 👈 evita effetti strani
+    stabilizeMiniRiepilogo();
 
     // SOLO SHAKE
     container.classList.add("collapsed");
-    container.classList.remove("wide");
     container.innerHTML = container.dataset.mini || "";
 
     container.classList.add("shake");
@@ -163,33 +169,36 @@ function toggle(step, nome) {
   showIsland(nome);
   render();
   updateRiepilogo();
-  stabilizeMiniRiepilogo();   // 👈 evita glitch
+  stabilizeMiniRiepilogo();
 
   const currentCount = scelti[step].length;
   const maxCount = max[step];
 
   // ------------------------
-  // SE HO RAGGIUNTO IL MASSIMO → APRI E ALLARGA
+  // SE HO RAGGIUNTO IL MASSIMO → APRI
   // ------------------------
   if (maxCount && currentCount === maxCount) {
+
     container.classList.remove("collapsed");
-    container.classList.add("wide");
     container.innerHTML = container.dataset.full || "";
 
     if (collapseTimer) clearTimeout(collapseTimer);
     autoCollapseRiepilogo();
-  }
 
-  // ------------------------
-  // SE NON HO RAGGIUNTO IL MAX → SOLO SHAKE
-  // ------------------------
-  else {
+  } else {
+
+    // ------------------------
+    // SE NON HO RAGGIUNTO IL MAX → MINI + SHAKE
+    // ------------------------
     container.classList.add("collapsed");
-    container.classList.remove("wide");
     container.innerHTML = container.dataset.mini || "";
 
-    container.classList.add("shake");
-    setTimeout(() => container.classList.remove("shake"), 300);
+ // RESET animazione shake
+container.classList.remove("shake");
+void container.offsetWidth; // forza il reflow, NECESSARIO
+
+container.classList.add("shake");
+setTimeout(() => container.classList.remove("shake"), 350);
   }
 }
 // ---------------- NAV ----------------
@@ -242,9 +251,20 @@ function updateRiepilogo(){
     : `<div class="riepilogo-titolo" style="opacity:.6">Scegli il formato</div>`;
 
   const riga = (label, arr) => {
-    const val = (arr && arr.length) ? escapeHtml(safeJoin(arr)) : "-";
-    return `<div class="riepilogo-line"><b>${escapeHtml(label)}</b>${val}</div>`;
-  };
+  // Se non ci sono elementi → mostra "-"
+  if (!arr || !arr.length) {
+    return `<div class="riepilogo-line">
+              <b>${escapeHtml(label)}</b>
+              <span>-</span>
+            </div>`;
+  }
+
+  // Ogni elemento diventa uno span separato → va a capo
+const spans = arr.map(x => `<span class="line-value">- ${escapeHtml(x)}</span>`).join("");  return `<div class="riepilogo-line">
+            <b>${escapeHtml(label)}</b>
+            ${spans}
+          </div>`;
+};
 
   const btnHtml = ready ? `<button class="quick-next-inside" onclick="nextStep()">Avanti ➜</button>` : "";
 
@@ -408,15 +428,17 @@ function stabilizeMiniRiepilogo() {
   const el = document.getElementById("riepilogo-mini");
   if (!el) return;
 
-  // Se è collapsed → forza mini pill + niente wide
+  // rimuove stili di centratura residui
+  el.style.left = "";
+  el.style.transform = "";
+
+  // impedisce larghezze strane
+  el.style.width = "fit-content";
+  el.style.maxWidth = "240px";
+
+  // se è chiuso → pill piccola
   if (el.classList.contains("collapsed")) {
-    el.classList.remove("wide");
-    el.innerHTML = el.dataset.mini || "";
-  } 
-  // Se è espanso → forza full + wide
-  else {
-    el.classList.add("wide");
-    el.innerHTML = el.dataset.full || "";
+    el.style.maxWidth = "140px";
   }
 }
 // ⬇️ FINE FILE — METTILO QUI ⬇️
