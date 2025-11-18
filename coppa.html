@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Crea la tua Coppa</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<body>
+<div id="riepilogo-mini"></div>
+
+<a href="index.html" class="home-button">🏠</a>
+
+<!-- 🍏 DYNAMIC ISLAND -->
+<div id="dynamic-island">
+    <div id="island-title">Gusti (0/0)</div>
+    <div id="island-added">Aggiunto!</div>
+
+    <div id="island-progress">
+        <div id="island-bar"></div>
+    </div>
+</div>
+
+<!-- POPUP -->
+<div id="popup-coppa">
+  <div class="popup-content">
+    <h2>🍨 Come funziona</h2>
+    <p>Seleziona prima il formato. Poi scegli gusti, granelle, topping ed ingredienti. Infine conferma ✅</p>
+    <button id="popup-ok">Ho capito</button>
+  </div>
+</div>
+
+<script src="crea-coppa.js?v=2"></script>
+<script>
+document.getElementById("popup-coppa").style.display = "flex";
+document.getElementById("popup-ok").onclick = () => {
+  document.getElementById("popup-coppa").style.display = "none";
+};
+</script>
+
+</body>
+</html>

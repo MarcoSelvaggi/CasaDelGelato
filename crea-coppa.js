@@ -153,7 +153,7 @@ function limitEffect(step, nome){
     }
   });
 
-  // Dynamic island: mostra errore sullo step giusto
+  // Dynamic island: messaggio di errore sullo step giusto
   showIsland(step, "Limite raggiunto ❗");
 }
 
@@ -488,26 +488,32 @@ function stabilizeMiniRiepilogo() {
 }
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
-document.getElementById("riepilogo-mini").addEventListener("click", function(e){
-  const el = this;
+// ⬇️ FINE FILE — LASCIA SOLO QUESTO ⬇️
+document.addEventListener("DOMContentLoaded", () => {
+  const riepilogo = document.getElementById("riepilogo-mini");
+  if (!riepilogo) return; // sicurezza extra
 
-  // click su bottone interno → NON chiudere
-  if (e.target.classList.contains("quick-next-inside")) return;
+  riepilogo.addEventListener("click", function(e){
+    const el = this;
 
-  // --- APRI ---
-  if (el.classList.contains("collapsed")) {
-    el.classList.remove("collapsed");
-    el.classList.add("open");
-    el.innerHTML = el.dataset.full || "";
-    if (collapseTimer) clearTimeout(collapseTimer);
-    autoCollapseRiepilogo();
-  }
+    // click su bottone interno → NON chiudere
+    if (e.target.classList.contains("quick-next-inside")) return;
 
-  // --- CHIUDI ---
-  else {
-    el.classList.add("collapsed");
-    el.classList.remove("open");
-    el.innerHTML = el.dataset.mini || "";
-    if(collapseTimer) { clearTimeout(collapseTimer); collapseTimer = null; }
-  }
+    // --- APRI ---
+    if (el.classList.contains("collapsed")) {
+      el.classList.remove("collapsed");
+      el.classList.add("open");
+      el.innerHTML = el.dataset.full || "";
+      if (collapseTimer) clearTimeout(collapseTimer);
+      autoCollapseRiepilogo();
+    }
+
+    // --- CHIUDI ---
+    else {
+      el.classList.add("collapsed");
+      el.classList.remove("open");
+      el.innerHTML = el.dataset.mini || "";
+      if(collapseTimer) { clearTimeout(collapseTimer); collapseTimer = null; }
+    }
+  });
 });
