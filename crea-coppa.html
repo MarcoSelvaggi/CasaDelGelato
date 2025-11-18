@@ -10,53 +10,17 @@
 <body>
 <div id="riepilogo-mini"></div>
 
-<button id="quick-next" style="
-  display:none;
-  position: sticky;
-  bottom: 6px;
-  width: 92%;
-  margin: 8px auto;
-  padding: 12px;
-  border-radius: 12px;
-  background:#2c8a2c;
-  color:white;
-  font-size: 18px;
-  border:none;
-  text-align:center;
-  box-shadow:0 2px 6px rgba(0,0,0,0.15);
-  z-index: 999;
-">Avanti ➜</button>
 <a href="index.html" class="home-button">🏠</a>
 
 <!-- 🍏 DYNAMIC ISLAND -->
 <div id="dynamic-island">
-  <div id="island-text">Aggiunto!</div>
-  <div id="island-progress"><div id="island-bar"></div></div>
+    <div id="island-title">Gusti (0/0)</div>
+    <div id="island-added">Aggiunto!</div>
+
+    <div id="island-progress">
+        <div id="island-bar"></div>
+    </div>
 </div>
-
-<header style="text-align:center; padding:26px;">
-  <h1>Crea la tua Coppa Gelato</h1>
-</header>
-
-<section id="step-size" style="text-align:center;">
-  <h2>Scegli il Formato</h2>
-
-  <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
-    <b>PICCOLA • €7,50</b><br>
-    2 gusti · 1 topping · 1 granella · 1 ingrediente
-  </div>
-
-  <div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
-    <b>MEDIA • €9,00</b><br>
-    3 gusti · 2 topping · 2 granelle · 1 ingrediente
-  </div>
-
-  <div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
-    <b>GRANDE • €12,00</b><br>
-    4 gusti · 2 topping · 2 granelle · 2 ingredienti
-  </div>
-</section>
-<section id="step-container" style="display:none;"></section>
 
 <!-- POPUP -->
 <div id="popup-coppa">

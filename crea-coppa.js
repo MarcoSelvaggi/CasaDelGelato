@@ -41,23 +41,50 @@ function safeJoin(arr){ return (arr && arr.length) ? arr.join(", ") : "-"; }
 function escForOnclick(s){ return String(s).replace(/'/g, "\\'"); }
 
 // ---------------- DYNAMIC ISLAND ----------------
-function showIsland(text){
+function showIsland(step, nomeSelezionato) {
+
   const island = byId("dynamic-island");
-  const label = island?.querySelector("#island-text");
-  const bar = island?.querySelector("#island-bar");
-  if(label) label.textContent = text;
+  const title = byId("island-title");
+  const added = byId("island-added");
+  const bar = byId("island-bar");
 
+  // Titolo es: "Gusti (1/2)"
+  if (title) {
+    title.textContent = `${step.charAt(0).toUpperCase() + step.slice(1)} (${scelti[step].length}/${max[step]})`;
+  }
+
+  // Elemento aggiunto
+  if (added) {
+    added.textContent = nomeSelezionato;
+  }
+
+  // Barra avanzamento totale
   const extraUnlimited = (max.extra === Infinity);
-  const totSlots = (max.gusti+max.granelle+max.topping+max.ingredienti + (extraUnlimited?0:max.extra));
-  const done = (scelti.gusti.length+scelti.granelle.length+scelti.topping.length+scelti.ingredienti.length + (extraUnlimited?0:scelti.extra.length));
-  const pct = totSlots ? Math.round(done/totSlots*100) : 0;
-  if(bar) bar.style.width = pct+"%";
+  const totSlots = (
+    max.gusti +
+    max.granelle +
+    max.topping +
+    max.ingredienti +
+    (extraUnlimited ? 0 : max.extra)
+  );
 
-  island?.classList.add("show");
-  clearTimeout(island?._hideTO);
-  island._hideTO = setTimeout(()=> island.classList.remove("show"), 1400);
+  const done = (
+    scelti.gusti.length +
+    scelti.granelle.length +
+    scelti.topping.length +
+    scelti.ingredienti.length +
+    (extraUnlimited ? 0 : scelti.extra.length)
+  );
+
+  const pct = totSlots ? Math.round(done / totSlots * 100) : 0;
+
+  if (bar) bar.style.width = pct + "%";
+
+  // Mostra
+  island.classList.add("show");
+  clearTimeout(island._hideTO);
+  island._hideTO = setTimeout(() => island.classList.remove("show"), 1400);
 }
-
 // ---------------- FORMATO ----------------
 function showSizeScreen(){
   document.querySelector("header").style.display = "block";
@@ -118,22 +145,22 @@ function render(){
 }
 
 // ---------------- TOGGLE ----------------
-function limitEffect(nome){
+function limitEffect(step, nome){
   document.querySelectorAll(".item").forEach(el=>{
     if(el.textContent.trim().startsWith(nome)){
       el.classList.add("limit-reached");
       setTimeout(()=>el.classList.remove("limit-reached"),1500);
     }
   });
-  showIsland("Limite raggiunto ❗");
+
+  // Dynamic island: mostra errore sullo step giusto
+  showIsland(step, "Limite raggiunto ❗");
 }
 
 function toggle(step, nome) {
   const container = document.getElementById("riepilogo-mini");
 
-  // ------------------------
   // EXTRA → NON APRIRE MAI
-  // ------------------------
   if (step === "extra") {
     if (scelti.extra.includes(nome)) {
       scelti.extra = scelti.extra.filter(x => x !== nome);
@@ -141,32 +168,33 @@ function toggle(step, nome) {
       scelti.extra.push(nome);
     }
 
-    showIsland(nome);
+    showIsland(step, nome);
     render();
     updateRiepilogo();
     stabilizeMiniRiepilogo();
 
-    // SOLO SHAKE
+    // Mini + shake
+    container.classList.remove("open");
     container.classList.add("collapsed");
+
     container.innerHTML = container.dataset.mini || "";
 
+    container.classList.remove("shake");
+    void container.offsetWidth;
     container.classList.add("shake");
-    setTimeout(() => container.classList.remove("shake"), 300);
-
+    setTimeout(() => container.classList.remove("shake"), 350);
     return;
   }
 
-  // ------------------------
-  // TOGGLE NORMALE
-  // ------------------------
+  // TOGGLE normale
   if (scelti[step].includes(nome)) {
     scelti[step] = scelti[step].filter(x => x !== nome);
   } else {
-    if (scelti[step].length >= max[step]) return limitEffect(nome);
+    if (scelti[step].length >= max[step]) return limitEffect(step, nome);
     scelti[step].push(nome);
   }
 
-  showIsland(nome);
+  showIsland(step, nome);
   render();
   updateRiepilogo();
   stabilizeMiniRiepilogo();
@@ -174,43 +202,58 @@ function toggle(step, nome) {
   const currentCount = scelti[step].length;
   const maxCount = max[step];
 
-  // ------------------------
-  // SE HO RAGGIUNTO IL MASSIMO → APRI
-  // ------------------------
+  // 👉 RAGGIUNTO MASSIMO → apri fluido
   if (maxCount && currentCount === maxCount) {
 
     container.classList.remove("collapsed");
+    container.classList.add("open");       // <<< ANIMAZIONE FLUIDA
     container.innerHTML = container.dataset.full || "";
 
     if (collapseTimer) clearTimeout(collapseTimer);
     autoCollapseRiepilogo();
+  }
 
-  } else {
-
-    // ------------------------
-    // SE NON HO RAGGIUNTO IL MAX → MINI + SHAKE
-    // ------------------------
+  // 👉 NON ancora finito → mini + shake fluido
+  else {
+    container.classList.remove("open");
     container.classList.add("collapsed");
     container.innerHTML = container.dataset.mini || "";
 
- // RESET animazione shake
-container.classList.remove("shake");
-void container.offsetWidth; // forza il reflow, NECESSARIO
-
-container.classList.add("shake");
-setTimeout(() => container.classList.remove("shake"), 350);
+    container.classList.remove("shake");
+    void container.offsetWidth;
+    container.classList.add("shake");
+    setTimeout(() => container.classList.remove("shake"), 350);
   }
 }
 // ---------------- NAV ----------------
-function nextStep(){
+function nextStep() {
+
+  // ➤ Quando premi "Conferma" nello step EXTRA:
+  if (step === "extra") {
+
+    step = "riepilogo-mini-open";
+
+    // apri il mini riepilogo COMPLETO
+    const el = document.getElementById("riepilogo-mini");
+    el.classList.remove("collapsed");
+    el.innerHTML = el.dataset.full || "";
+
+    // blocca l'autocollasso
+    if (collapseTimer) clearTimeout(collapseTimer);
+    collapseTimer = null;
+
+    return; // fermiamo il normale passaggio
+  }
+
+  // ➤ Passaggi normali
   if(step==="gusti") step="granelle";
   else if(step==="granelle") step="topping";
   else if(step==="topping") step="ingredienti";
   else if(step==="ingredienti") step="extra";
-  else return mostraRiepilogo(); // ✅ qui il riepilogo finale
+  else return mostraRiepilogo();
 
   render();
-  updateRiepilogo(); // ✅ questa riga mancava!
+  updateRiepilogo();
 }
 function prevStep(){
   if(step==="gusti"){ showSizeScreen(); return; }
@@ -251,16 +294,18 @@ function updateRiepilogo(){
     : `<div class="riepilogo-titolo" style="opacity:.6">Scegli il formato</div>`;
 
   const riga = (label, arr) => {
-  // Se non ci sono elementi → mostra "-"
   if (!arr || !arr.length) {
     return `<div class="riepilogo-line">
               <b>${escapeHtml(label)}</b>
-              <span>-</span>
+              <div class="line-value">-</div>
             </div>`;
   }
 
-  // Ogni elemento diventa uno span separato → va a capo
-const spans = arr.map(x => `<span class="line-value">- ${escapeHtml(x)}</span>`).join("");  return `<div class="riepilogo-line">
+  const spans = arr
+    .map(x => `<div class="line-value">- ${escapeHtml(x)}</div>`)
+    .join("");
+
+  return `<div class="riepilogo-line">
             <b>${escapeHtml(label)}</b>
             ${spans}
           </div>`;
@@ -306,15 +351,15 @@ function autoCollapseRiepilogo(){
   const el = document.getElementById("riepilogo-mini");
   if(!el) return;
 
-  // se è già collapsed non schedulare nulla
+  // 🔥 se siamo dopo "Conferma" non collassa mai
+  if (step === "riepilogo-mini-open") return;
+
   if(el.classList.contains("collapsed")) return;
 
   if(collapseTimer) clearTimeout(collapseTimer);
 
-  // dopo 2 secondi (2000ms) riduciamo
   collapseTimer = setTimeout(() => {
     el.classList.add("collapsed");
-    // mostra la mini pill (da dataset.mini)
     el.innerHTML = el.dataset.mini || "";
   }, 3000);
 }
@@ -446,17 +491,22 @@ function stabilizeMiniRiepilogo() {
 document.getElementById("riepilogo-mini").addEventListener("click", function(e){
   const el = this;
 
-  if(e.target && e.target.classList && e.target.classList.contains("quick-next-inside")) {
-    return;
+  // click su bottone interno → NON chiudere
+  if (e.target.classList.contains("quick-next-inside")) return;
+
+  // --- APRI ---
+  if (el.classList.contains("collapsed")) {
+    el.classList.remove("collapsed");
+    el.classList.add("open");
+    el.innerHTML = el.dataset.full || "";
+    if (collapseTimer) clearTimeout(collapseTimer);
+    autoCollapseRiepilogo();
   }
 
-  if(el.classList.contains("collapsed")){
-    el.classList.remove("collapsed");
-    el.innerHTML = el.dataset.full || "";
-    if(collapseTimer) clearTimeout(collapseTimer);
-    autoCollapseRiepilogo();
-  } else {
+  // --- CHIUDI ---
+  else {
     el.classList.add("collapsed");
+    el.classList.remove("open");
     el.innerHTML = el.dataset.mini || "";
     if(collapseTimer) { clearTimeout(collapseTimer); collapseTimer = null; }
   }

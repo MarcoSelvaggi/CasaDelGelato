@@ -711,6 +711,12 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   opacity: .92;
 }
 
+#riepilogo-mini .riepilogo-line b {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+/* VALORI (gusti, topping ecc.) */
 /* RIGHE DEL RIEPILOGO */
 #riepilogo-mini .riepilogo-line {
   width: 100%;                      /* <--- RISOLVE i gusti lunghi */
@@ -726,15 +732,7 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 }
 
 /* VALORI (gusti, topping ecc.) */
-#riepilogo-mini .riepilogo-line span {
-  display: block;
-  font-size: 14px;
-  line-height: 1.32em;
-  white-space: normal;
-  word-break: break-word;      /* 👈 obbliga il testo lungo a spezzarsi bene */
-  overflow-wrap: break-word;   /* 👈 supporto extra */
-  margin-bottom: 2px;
-}
+
 
 /* Pulsante 'Avanti' */
 #riepilogo-mini .quick-next-inside {
