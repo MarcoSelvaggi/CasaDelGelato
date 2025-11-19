@@ -104,16 +104,17 @@ function selectSize(size, g, gr, t, ing){
   byId("step-size").style.display = "none";
   byId("step-container").style.display = "block";
 
-  render();
-  updateRiepilogo();   // QUI nasce dataset.mini
+render();
+updateRiepilogo();   // <-- crea dataset.full e dataset.mini
 
-  // --- 🔥 DOPO updateRiepilogo ---
-  const el = document.getElementById("riepilogo-mini");
+// --- 🔥 SOLO DOPO updateRiepilogo() È SICURO ---
+const el = document.getElementById("riepilogo-mini");
 
-  if (el && el.dataset && el.dataset.mini) {
-      el.classList.add("collapsed");
-      el.innerHTML = el.dataset.mini;
-  }
+// Se il dataset è stato creato → inizializza il mini-riepilogo
+if (el && el.dataset && typeof el.dataset.mini !== "undefined") {
+    el.classList.add("collapsed");
+    el.innerHTML = el.dataset.mini;
+}
 }
 
 // ---------------- RENDER ----------------
@@ -314,6 +315,11 @@ function updateRiepilogo(){
 
 const fullHtml = `
   ${titolo}
+  ${riga("Gusti", scelti.gusti)}
+  ${riga("Granelle", scelti.granelle)}
+  ${riga("Topping", scelti.topping)}
+  ${riga("Ingredienti", scelti.ingredienti)}
+  ${riga("Extra", scelti.extra)}
   ${btnHtml}
 `;
 
@@ -324,12 +330,9 @@ const fullHtml = `
   el.dataset.full = fullHtml;
   el.dataset.mini = miniHtml;
 
-  // se attualmente è espanso, mostriamo il full, altrimenti mostriamo miniHtml
-  if(el.classList.contains("collapsed")){
-    el.innerHTML = el.dataset.mini;
-  } else {
-    el.innerHTML = el.dataset.full;
-  }
+  // ➜ Mostra SEMPRE la versione completa con Gusti / Granelle / Topping / Ingredienti / Extra
+  el.innerHTML = el.dataset.full;
+
   stabilizeMiniRiepilogo();
 
   // visibilità generale
