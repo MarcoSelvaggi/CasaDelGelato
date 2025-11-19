@@ -775,3 +775,36 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   75%  { transform: translateX(-4px); }
   100% { transform: translateX(0); }
 }
+/* 🔥 TASTO HOME IN ALTO A SINISTRA */
+.home-btn {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  width: 48px;                 /* 🔹 più piccolo */
+  height: 48px;
+  border-radius: 14px;         /* 🔹 forma morbida */
+  background: rgba(255, 255, 255, 0.25);  /* 🔹 effetto vetro */
+  backdrop-filter: blur(10px);             /* 🔥 glassmorphism */
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  text-decoration: none;
+  z-index: 9999;
+}
+
+.home-btn img {
+    width: 30px;   /* ← DIMENSIONE PERFETTA DEL LOGO */
+    height: auto;
+    pointer-events: none;  /* il click resta sul tasto */
+}
+
+.home-btn span {
+  font-size: 11px;          /* 🔹 scritta piccola */
+  color: white;
+  margin-top: 2px;          /* 🔹 più vicina all’icona */
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}

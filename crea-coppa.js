@@ -323,8 +323,16 @@ const fullHtml = `
   ${btnHtml}
 `;
 
-  // MINI (pill) — solo il formato
-  const miniHtml = `🍨 ${escapeHtml(coppaSelezionata || "")}`;
+// MINI (pill) — se non hai ancora selezionato il formato → emoji
+// MINI (pill)
+let miniHtml;
+
+if (!coppaSelezionata) {
+    // 🔥 Emoji di default quando torni indietro
+    miniHtml = "🍧 Scegli un formato";
+} else {
+    miniHtml = `🍨 ${escapeHtml(coppaSelezionata)}`;
+}
 
   // SALVIAMO le versioni su data-*, così expand/collapse usano sempre lo stesso contenuto
   el.dataset.full = fullHtml;
@@ -357,7 +365,7 @@ function autoCollapseRiepilogo(){
   collapseTimer = setTimeout(() => {
     el.classList.add("collapsed");
     el.innerHTML = el.dataset.mini || "";
-  }, 3000);
+  }, 2000);
 }
 
 // ---------------- SHARE ----------------
@@ -420,7 +428,11 @@ function mostraRiepilogo(){
       @casadelgelato.it
     </p>
   `;
-
+// 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
+const mini = document.getElementById("riepilogo-mini");
+mini.classList.add("collapsed");
+mini.classList.remove("open");
+mini.innerHTML = mini.dataset.mini || "";
   updateRiepilogo();
 }
 function shareWhatsApp(){
