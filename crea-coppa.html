@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crea la tua Coppa</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Libreria immagine -->
+  <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- JS della tua app -->
+  <script defer src="crea-coppa.js"></script>
+</head>
+
+<body>
+  <!-- 🔴 TEST: se vedi questa scritta, l'HTML è OK -->
+  <h1 style="color:red; text-align:center; margin-top:20px;">
+    TEST CREMA - se vedi questo l'HTML è caricato
+  </h1>
+
+  <div id="riepilogo-mini"></div>
+
+  <a href="index.html" class="home-btn">🏠</a>
+
+  <!-- 🍏 DYNAMIC ISLAND -->
+  <div id="dynamic-island">
+      <div id="island-title">Gusti (0/0)</div>
+      <div id="island-added">Aggiunto!</div>
+      <div id="island-progress">
+          <div id="island-bar"></div>
+      </div>
+  </div>
+
+  <!-- STEP FORMATO -->
+  <header style="text-align:center; padding:26px;">
+    <h1>Crea la tua Coppa Gelato</h1>
+  </header>
+
+  <section id="step-size" style="text-align:center;">
+    <h2>Scegli il Formato</h2>
+
+    <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
+      <b>PICCOLA • €7,50</b><br>
+      2 gusti · 1 topping · 1 granella · 1 ingrediente
+    </div>
+
+    <div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
+      <b>MEDIA • €9,00</b><br>
+      3 gusti · 2 topping · 2 granelle · 1 ingrediente
+    </div>
+
+    <div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
+      <b>GRANDE • €12,00</b><br>
+      4 gusti · 2 topping · 2 granelle · 2 ingredienti
+    </div>
+  </section>
+
+  <!-- 🔴 QUI il contenitore che JS usa per gli step successivi -->
+  <section id="step-container" style="display:none;"></section>
+
+  <!-- POPUP -->
+  <div id="popup-coppa">
+    <div class="popup-content">
+      <h2>🍨 Come funziona</h2>
+      <p>Seleziona prima il formato. Poi scegli gusti, granelle, topping ed ingredienti. Infine conferma ✅</p>
+      <button id="popup-ok">Ho capito</button>
+    </div>
+  </div>
+
+  <script>
+    // solo popup, non tocca altro
+    document.getElementById("popup-coppa").style.display = "flex";
+    document.getElementById("popup-ok").onclick = () => {
+      document.getElementById("popup-coppa").style.display = "none";
+    };
+  </script>
+</body>
+</html>

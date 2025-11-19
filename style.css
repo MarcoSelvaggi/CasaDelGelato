@@ -1,4 +1,7 @@
-@import url('https://cdn.jsdelivr.net/npm/sf-font/sf-font.min.css');
+@font-face {
+  font-family: system-ui;
+  src: local("."); /* forza Safari a NON cercare font esterni */
+}
 /* === VARIABLES === */
 :root {
   --bg: #f6f6f7;
@@ -226,8 +229,9 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 #dynamic-island {
   position: fixed;
   top: 12px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 12px;           /* ⬅️ da cambiare */
+  transform: none;      /* ⬅️ rimuove la centratura */
+  
   background: #111;
   color: #fff;
   padding: 8px 18px;

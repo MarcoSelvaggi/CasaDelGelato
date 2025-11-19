@@ -1,3 +1,4 @@
+console.log("JS CARICATO ✔️");
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
 let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
@@ -102,15 +103,17 @@ function selectSize(size, g, gr, t, ing){
   step = "gusti";
   byId("step-size").style.display = "none";
   byId("step-container").style.display = "block";
+
   render();
-  updateRiepilogo();
+  updateRiepilogo();   // QUI nasce dataset.mini
 
-// 🔥 DEVE ESSERE DOPO updateRiepilogo()
-const el = document.getElementById("riepilogo-mini");
+  // --- 🔥 DOPO updateRiepilogo ---
+  const el = document.getElementById("riepilogo-mini");
 
-// Assicuro che dataset.mini sia già pronto
-el.classList.add("collapsed");
-el.innerHTML = el.dataset.mini;
+  if (el && el.dataset && el.dataset.mini) {
+      el.classList.add("collapsed");
+      el.innerHTML = el.dataset.mini;
+  }
 }
 
 // ---------------- RENDER ----------------
@@ -124,24 +127,20 @@ function render(){
   else if(step==="ingredienti") lista = ingredientiList;
   else if(step==="extra") lista = extraList.map(e => e + (prezziExtra[e] ? ` (+€${prezziExtra[e].toFixed(2)})`:""));
 
-  const maxStep = max[step] || 0;
-  const current = scelti[step].length;
-  const counter = (step==="extra") ? "" : ` (${current}/${maxStep})`;
-
-  area.innerHTML = `
-    <h2>${step.toUpperCase()}${counter}</h2>
-    <div class="ingredienti-lista">
-      ${lista.map(it=>{
-        const nome = it.split(" (+€")[0].trim();
-        const sel = scelti[step].includes(nome) ? "selected" : "";
-        return `<div class="item ${sel}" onclick="toggle('${step}', '${escForOnclick(nome)}', this)">${it}</div>`;
-      }).join("")}
-    </div>
-    <div class="nav-buttons">
-      <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
-      <button class="next-btn" onclick="nextStep()">${step==="extra"?"Conferma ✅":"Avanti ➜"}</button>
-    </div>
-  `;
+area.innerHTML = `
+  <h2></h2>
+  <div class="ingredienti-lista">
+    ${lista.map(it=>{
+      const nome = it.split(" (+€")[0].trim();
+      const sel = scelti[step].includes(nome) ? "selected" : "";
+      return `<div class="item ${sel}" onclick="toggle('${step}', '${escForOnclick(nome)}', this)">${it}</div>`;
+    }).join("")}
+  </div>
+  <div class="nav-buttons">
+    <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
+    <button class="next-btn" onclick="nextStep()">${step==="extra"?"Conferma ✅":"Avanti ➜"}</button>
+  </div>
+`;
 }
 
 // ---------------- TOGGLE ----------------
@@ -157,7 +156,7 @@ function limitEffect(step, nome){
   showIsland(step, "Limite raggiunto ❗");
 }
 
-function toggle(step, nome) {
+function toggle(step, nome, el) {
   const container = document.getElementById("riepilogo-mini");
 
   // EXTRA → NON APRIRE MAI
@@ -313,16 +312,10 @@ function updateRiepilogo(){
 
   const btnHtml = ready ? `<button class="quick-next-inside" onclick="nextStep()">Avanti ➜</button>` : "";
 
-  // creiamo la versione FULL ma non la forziamo sempre nell'innerHTML (vedi dopo)
-  const fullHtml = `
-    ${titolo}
-    ${riga("Gusti", scelti.gusti)}
-    ${riga("Granelle", scelti.granelle)}
-    ${riga("Topping", scelti.topping)}
-    ${riga("Ingredienti", scelti.ingredienti)}
-    ${riga("Extra", scelti.extra)}
-    ${btnHtml}
-  `;
+const fullHtml = `
+  ${titolo}
+  ${btnHtml}
+`;
 
   // MINI (pill) — solo il formato
   const miniHtml = `🍨 ${escapeHtml(coppaSelezionata || "")}`;
@@ -488,32 +481,29 @@ function stabilizeMiniRiepilogo() {
 }
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
-// ⬇️ FINE FILE — LASCIA SOLO QUESTO ⬇️
 document.addEventListener("DOMContentLoaded", () => {
   const riepilogo = document.getElementById("riepilogo-mini");
-  if (!riepilogo) return; // sicurezza extra
+
+  // se l'elemento NON esiste → NON fare nulla
+  if (!riepilogo) return;
 
   riepilogo.addEventListener("click", function(e){
-    const el = this;
-
-    // click su bottone interno → NON chiudere
     if (e.target.classList.contains("quick-next-inside")) return;
 
-    // --- APRI ---
-    if (el.classList.contains("collapsed")) {
-      el.classList.remove("collapsed");
-      el.classList.add("open");
-      el.innerHTML = el.dataset.full || "";
+    if (this.classList.contains("collapsed")) {
+      this.classList.remove("collapsed");
+      this.classList.add("open");
+      this.innerHTML = this.dataset.full || "";
       if (collapseTimer) clearTimeout(collapseTimer);
       autoCollapseRiepilogo();
-    }
-
-    // --- CHIUDI ---
-    else {
-      el.classList.add("collapsed");
-      el.classList.remove("open");
-      el.innerHTML = el.dataset.mini || "";
-      if(collapseTimer) { clearTimeout(collapseTimer); collapseTimer = null; }
+    } else {
+      this.classList.add("collapsed");
+      this.classList.remove("open");
+      this.innerHTML = this.dataset.mini || "";
+      if(collapseTimer) {
+        clearTimeout(collapseTimer);
+        collapseTimer = null;
+      }
     }
   });
 });
