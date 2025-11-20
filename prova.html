@@ -7,7 +7,7 @@
 <style>
 #preview-area {
     position: relative;
-    width: 520px;
+    width: 650px;
     height: 420px;
     margin: 30px auto;
     background: #fff;
@@ -16,56 +16,54 @@
 /* COPPA */
 .coppa-base {
     position: absolute;
-    width: 260px;       /* più grande */
-    left: 110px;
-    top: 160px;
+    width: 260px;
+    left: 120px;
+    top: 190px;
     z-index: 1;
 }
 
-/* PALLINE */
+/* PALLINE – sopra la coppa */
 .pallina {
     position: absolute;
-    width: 110px;       /* più piccole */
+    width: 110px;
     height: 110px;
     border-radius: 50%;
     z-index: 3;
 }
 
-.pallina1 { /* vaniglia */
-    top: 100px;
-    left: 120px;
+.pallina1 {
+    top: 120px;
+    left: 135px;
 }
 
-.pallina2 { /* fragola */
-    top: 100px;
-    left: 215px;
+.pallina2 {
+    top: 120px;
+    left: 230px;
 }
 
-/* GRANELLA */
+/* ELEMENTI A DESTRA DELLA COPPA → ORIZZONTALI */
 .granella {
     position: absolute;
     width: 80px;
-    top: 240px;        /* centrata davanti alla coppa */
-    left: 205px;
+    top: 240px;
+    left: 420px;   /* primo elemento */
     z-index: 5;
 }
 
-/* FRAGOLA FRUTTO */
-.frutta {
-    position: absolute;
-    width: 75px;
-    top: 230px;
-    left: 290px;
-    z-index: 6;
-}
-
-/* BOTTIGLIA TOPPING */
 .topping {
     position: absolute;
-    width: 90px;       /* più piccola */
-    top: 120px;
-    left: 355px;
-    z-index: 2;
+    width: 70px;   /* più piccolo */
+    top: 230px;    /* stessa linea più o meno */
+    left: 520px;   /* secondo elemento */
+    z-index: 4;
+}
+
+.frutta {
+    position: absolute;
+    width: 85px;   /* grande come la granella */
+    top: 235px;
+    left: 600px;   /* terzo elemento */
+    z-index: 6;
 }
 </style>
 </head>
