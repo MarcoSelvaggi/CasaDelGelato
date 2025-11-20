@@ -273,10 +273,20 @@ function escapeHtml(s){
 // updateRiepilogo: versione verticale, step-by-step
 function updateRiepilogo(){
   const el = byId("riepilogo-mini");
-  if(!el) return;
+  if (!el) return;
+
+  // 🔥 FIX ASSOLUTO:
+  // Se siamo nello step "size", il mini-riepilogo NON deve esistere.
+  if (step === "size") {
+      el.classList.add("hidden");
+      el.innerHTML = "";
+      el.dataset.full = "";
+      el.dataset.mini = "";
+      return; // STOP QUI: non generiamo nessun riepilogo
+  }
 
   // se siamo nella schermata finale lo nascondiamo
-  if(document.querySelector(".scontrino") || step === "riepilogo"){
+  if (document.querySelector(".scontrino") || step === "riepilogo") {
     el.classList.add("hidden");
     return;
   }
@@ -294,62 +304,50 @@ function updateRiepilogo(){
     : `<div class="riepilogo-titolo" style="opacity:.6">Scegli il formato</div>`;
 
   const riga = (label, arr) => {
-  if (!arr || !arr.length) {
+    if (!arr || arr.length === 0) return "";
+    const spans = arr
+      .map(x => `<div class="line-value">- ${escapeHtml(x)}</div>`)
+      .join("");
     return `<div class="riepilogo-line">
               <b>${escapeHtml(label)}</b>
-              <div class="line-value">-</div>
+              ${spans}
             </div>`;
-  }
-
-  const spans = arr
-    .map(x => `<div class="line-value">- ${escapeHtml(x)}</div>`)
-    .join("");
-
-  return `<div class="riepilogo-line">
-            <b>${escapeHtml(label)}</b>
-            ${spans}
-          </div>`;
-};
+  };
 
   const btnHtml = ready ? `<button class="quick-next-inside" onclick="nextStep()">Avanti ➜</button>` : "";
 
-const fullHtml = `
-  ${titolo}
-  ${riga("Gusti", scelti.gusti)}
-  ${riga("Granelle", scelti.granelle)}
-  ${riga("Topping", scelti.topping)}
-  ${riga("Ingredienti", scelti.ingredienti)}
-  ${riga("Extra", scelti.extra)}
-  ${btnHtml}
-`;
+  const fullHtml = `
+    ${titolo}
+    ${riga("Gusti", scelti.gusti)}
+    ${riga("Granelle", scelti.granelle)}
+    ${riga("Topping", scelti.topping)}
+    ${riga("Ingredienti", scelti.ingredienti)}
+    ${riga("Extra", scelti.extra)}
+    ${btnHtml}
+  `;
 
-// MINI (pill) — se non hai ancora selezionato il formato → emoji
-// MINI (pill)
-let miniHtml;
+  // MINI (pill)
+  let miniHtml;
+  if (!coppaSelezionata) {
+      miniHtml = "🍧 Scegli un formato";
+  } else {
+      miniHtml = `🍨 ${escapeHtml(coppaSelezionata)}`;
+  }
 
-if (!coppaSelezionata) {
-    // 🔥 Emoji di default quando torni indietro
-    miniHtml = "🍧 Scegli un formato";
-} else {
-    miniHtml = `🍨 ${escapeHtml(coppaSelezionata)}`;
-}
-
-  // SALVIAMO le versioni su data-*, così expand/collapse usano sempre lo stesso contenuto
+  // Salviamo le versioni per expand/collapse
   el.dataset.full = fullHtml;
   el.dataset.mini = miniHtml;
 
-  // ➜ Mostra SEMPRE la versione completa con Gusti / Granelle / Topping / Ingredienti / Extra
+  // Mostra la versione completa
   el.innerHTML = el.dataset.full;
 
+  // Stabilizza animazione
   stabilizeMiniRiepilogo();
 
-  // visibilità generale
-  if(step === "size"){
-    el.classList.add("hidden");
-  } else {
-    el.classList.remove("hidden");
-  }
+  // Mostra mini riepilogo da qui in poi
+  el.classList.remove("hidden");
 }
+
 // ---------------- COLLASSO AUTOMATICO MINI-RIEPILOGO ----------------
 function autoCollapseRiepilogo(){
   const el = document.getElementById("riepilogo-mini");

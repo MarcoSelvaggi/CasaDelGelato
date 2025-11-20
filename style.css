@@ -808,3 +808,61 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   margin-top: 2px;          /* 🔹 più vicina all’icona */
   text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
+
+
+
+#coppa-preview {
+    position: relative;
+    width: 320px;
+    margin: 30px auto;
+}
+
+.coppa-base {
+    width: 100%;
+    z-index: 1;
+}
+
+.pallina {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+/* Posizioni palline */
+.pallina1 {
+    left: 50px;
+    top: -40px;
+}
+.pallina2 {
+    right: 50px;
+    top: -40px;
+}
+
+/* Topping (bottiglia) */
+.topping {
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 70px;
+    z-index: 4;
+}
+
+/* Frutta */
+.frutta {
+    position: absolute;
+    right: -30px;
+    top: 50px;
+    width: 120px;
+    z-index: 3;
+}
+
+/* Granella */
+.granella {
+    position: absolute;
+    left: 120px;
+    top: -10px;
+    width: 70px;
+    z-index: 5;
+}

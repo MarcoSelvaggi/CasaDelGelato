@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test Coppa Gelato</title>
+
+<style>
+#coppa-preview {
+    position: relative;
+    width: 320px;
+    margin: 30px auto;
+}
+.coppa-base {
+    width: 100%;
+    z-index: 1;
+}
+.pallina {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    z-index: 2;
+}
+.pallina1 {
+    left: 50px;
+    top: -40px;
+}
+.pallina2 {
+    right: 50px;
+    top: -40px;
+}
+.topping {
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 70px;
+    z-index: 4;
+}
+.frutta {
+    position: absolute;
+    right: -30px;
+    top: 50px;
+    width: 120px;
+    z-index: 3;
+}
+.granella {
+    position: absolute;
+    left: 120px;
+    top: -10px;
+    width: 70px;
+    z-index: 5;
+}
+</style>
+
+</head>
+<body>
+
+<h2 style="text-align:center">Test Coppa Gelato</h2>
+
+<div id="coppa-preview">
+    <img class="coppa-base" src="img/coppa-piccola.png">
+    <img class="pallina pallina1" src="img/pallina-vaniglia.png">
+    <img class="pallina pallina2" src="img/pallina-fragola.png">
+    <img class="topping" src="img/topping-bosco.png">
+    <img class="frutta" src="img/fragola.png">
+    <img class="granella" src="img/granella-nocciola.png">
+</div>
+
+</body>
+</html>
