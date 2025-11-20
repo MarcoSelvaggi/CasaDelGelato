@@ -28,22 +28,6 @@ font-family: -apple-system, BlinkMacSystemFont, sans-serif;  font-size: 17px;
 
 .page { padding: 22px; max-width: 450px; margin: auto; }
 
-/* === HOME BUTTON (fisso, corretto) === */
-.home-btn {
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  padding: 8px 14px;
-  background: #ffffffcc;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  color: var(--text);
-  backdrop-filter: blur(8px);
-  z-index: 9999;
-}
 
 /* === CARDS (I nostri locali — versione Apple pulita) === */
 #stores { max-width: 600px; margin: auto; }
@@ -775,26 +759,6 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   75%  { transform: translateX(-4px); }
   100% { transform: translateX(0); }
 }
-/* 🔥 TASTO HOME IN ALTO A SINISTRA */
-.home-btn {
-  position: fixed;
-  top: 18px;
-  left: 18px;
-  width: 48px;                 /* 🔹 più piccolo */
-  height: 48px;
-  border-radius: 14px;         /* 🔹 forma morbida */
-  background: rgba(255, 255, 255, 0.25);  /* 🔹 effetto vetro */
-  backdrop-filter: blur(10px);             /* 🔥 glassmorphism */
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 6px;
-  text-decoration: none;
-  z-index: 9999;
-}
 
 .home-btn img {
     width: 30px;   /* ← DIMENSIONE PERFETTA DEL LOGO */
@@ -865,4 +829,31 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
     top: -10px;
     width: 70px;
     z-index: 5;
+}
+
+#top-fixed-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    z-index: 9999;
+}
+
+.home-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    color: #444;
+    text-decoration: none;
+}
+
+.home-btn img {
+    width: 28px;
+    height: 28px;
 }
