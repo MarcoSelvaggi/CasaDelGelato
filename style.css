@@ -664,15 +664,38 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   left: auto !important;
 }
 
-/* COLLASSATO (pill piccola) */
+
+/* --- MINI RIEPILOGO SUPER COMPATTO (nuova versione) --- */
+
 #riepilogo-mini.collapsed {
-  padding: 4px 6px;       /* meno spazio a destra */
-  max-width: 110px;       /* più stretto */
-  min-width: auto;
-  text-align: right;
-  opacity: .92;
+    width: 105px !important;      /* ⭐ PERFETTO per PICCOLA / MEDIA / GRANDE */
+    min-width: 105px !important;
+    max-width: 105px !important;
+
+    padding: 4px 8px !important;   /* margini piccoli ma leggibili */
+    border-radius: 14px !important;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    display: flex;
+    justify-content: center;       /* ⭐ centra tutto, zero lingua bianca */
 }
 
+/* Impedisce l’allungamento */
+#riepilogo-mini {
+    display: inline-block;
+}
+
+/* Evita che le righe interne espandano la pillola da chiusa */
+#riepilogo-mini.collapsed .riepilogo-line,
+#riepilogo-mini.collapsed .riepilogo-titolo {
+    width: auto !important;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 #riepilogo-mini .riepilogo-line b {
   font-size: 12px;
   margin-bottom: 2px;
@@ -773,7 +796,9 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
-
+body.step-size #riepilogo-mini {
+    display: none !important;
+}
 
 #top-fixed-bar {
     position: fixed;
@@ -802,6 +827,91 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
     height: 28px;
 }
 
+
+
+
+
+/* ========== GESTIONE GUSTI CON QUANTITÀ ========== */
+
+.gusto-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+}
+
+/* Nome gusto */
+.gusto-name {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+/* Controlli + / - */
+.gusto-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Bottoni + e − */
+.gusto-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    font-size: 20px;
+    background: #f1f1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* bottone + evidenziato */
+.gusto-btn.plus {
+    background: #ffda6a;
+}
+
+/* bottone - */
+.gusto-btn.minus {
+    background: #eaeaea;
+}
+
+/* quantità */
+.gusto-qty {
+    width: 24px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+}
+
+/* stato in modifica (giallo) */
+.gusto-pending {
+    background: #fff2b0 !important;
+    border-color: #ffd75a !important;
+}
+
+/* stato confermato (verde) */
+.gusto-confirmed {
+    background: #e2ffe4 !important;
+    border-color: #36c463 !important;
+}
+
+/* animazioni leggere */
+.gusto-item {
+    transition: 0.25s ease;
+}
+
+.gusto-btn.plus.limit-blink {
+    animation: blinkPlus 0.45s ease-in-out;
+    background: #ff3b3066 !important;
+}
+
+@keyframes blinkPlus {
+    0%   { transform: scale(1);   background:#ff3b3066; }
+    50%  { transform: scale(1.15); background:#ff3b30; }
+    100% { transform: scale(1);   background:#ff3b3066; }
+}
 
 /* === COPPA PREVIEW FIX === */
 #preview-area {

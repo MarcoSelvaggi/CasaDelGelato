@@ -4,6 +4,9 @@ let coppaSelezionata = "";
 let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
 let step = "size"; // iniziamo sulla scelta formato
+// === SISTEMA QUANTITÀ GUSTI ===
+let gustiQuantities = {};      // es: { VANIGLIA: 2, FRAGOLA: 1 }
+let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in modifica)
 let collapseTimer = null
 // ---------------- LISTE ----------------
 const gustiList = [
@@ -96,30 +99,254 @@ function showSizeScreen(){
 }
 
 function selectSize(size, g, gr, t, ing){
+document.body.classList.remove("step-size");
   document.querySelector("header").style.display = "none";
   coppaSelezionata = size;
   max = { gusti:g, granelle:gr, topping:t, ingredienti:ing, extra:Infinity };
   scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
+
+  // === 🔥 STEP 2: inizializza quantità gusti ===
+  gustiQuantities = {};
+gustiList.forEach(gusto => gustiQuantities[gusto] = 0);
+  gustoInModifica = null;
+  // ==============================================
+
   step = "gusti";
   byId("step-size").style.display = "none";
   byId("step-container").style.display = "block";
 
-render();
-updateRiepilogo();   // <-- crea dataset.full e dataset.mini
+  renderStepGusti();
+  updateRiepilogo();   // <-- crea dataset.full e dataset.mini
 
-// --- 🔥 SOLO DOPO updateRiepilogo() È SICURO ---
-const el = document.getElementById("riepilogo-mini");
+  // --- 🔥 SOLO DOPO updateRiepilogo() È SICURO ---
+  const el = document.getElementById("riepilogo-mini");
 
-// Se il dataset è stato creato → inizializza il mini-riepilogo
-if (el && el.dataset && typeof el.dataset.mini !== "undefined") {
-    el.classList.add("collapsed");
-    el.innerHTML = el.dataset.mini;
+  // Se il dataset è stato creato → inizializza il mini-riepilogo
+  if (el && el.dataset && typeof el.dataset.mini !== "undefined") {
+      el.classList.add("collapsed");
+      el.innerHTML = el.dataset.mini;
+  }
 }
+
+// === Quando clicco un gusto lo metto "in modifica" (giallo) ===
+function selectGusto(nome) {
+    if (!coppaSelezionata) return;
+
+    const maxTot = max.gusti || 0;
+    const qtyAttuale = gustiQuantities[nome] || 0;
+
+    let totalePrima = Object.values(gustiQuantities).reduce((a,b)=>a+b,0);
+
+    // ➤ Se gusto era 0 → diventa 1
+    if (qtyAttuale === 0) {
+
+        // Limite raggiunto → errore
+        if (totalePrima >= maxTot) {
+            limitEffect("gusti", nome);
+            return;
+        }
+
+        gustiQuantities[nome] = 1;
+        rebuildSceltiGustiFromQuantities();
+        showIsland("gusti", nome);
+
+    } else {
+        // gusto già esistente → solo feedback island
+        showIsland("gusti", nome);
+    }
+
+    // Imposto gusto in modifica
+    gustoInModifica = nome;
+
+    // Ricalcolo totale dopo la modifica
+    let totaleDopo = Object.values(gustiQuantities).reduce((a,b)=>a+b,0);
+
+    // ✅ SE ORA HO RAGGIUNTO IL MASSIMO → APRO MINI RIEPILOGO
+    if (totaleDopo === maxTot) {
+        openMiniRiepilogoTemporaneo();
+        gustoInModifica = null;
+    }
+
+    renderStepGusti();
+    updateRiepilogo();
+}
+
+
+function updateStatusGusti() {
+    const maxTot = max.gusti || 0;
+    const totale = Object.values(gustiQuantities).reduce((a, b) => a + b, 0);
+
+    // ✅ Se il totale dei gusti = massimo → tutto confermato (verde)
+    if (totale >= maxTot) {
+        gustoInModifica = null; // nessun gusto in giallo
+        return;
+    }
+
+    // ❗ Se il gusto in modifica ha qty 0 → non deve più essere in modifica
+    if (gustoInModifica && gustiQuantities[gustoInModifica] === 0) {
+        gustoInModifica = null;
+    }
+}
+
+// === RENDER GUSTI CON QUANTITÀ E BOTTONI + / − ===
+function renderStepGusti() {
+    const cont = byId("step-container");
+    if (!cont) return;
+
+    const maxTot = max.gusti || 0;
+    const totale = Object.values(gustiQuantities).reduce((a, b) => a + b, 0);
+
+    // 🔥 Aggiorna giallo/verde PRIMA del render
+    updateStatusGusti();
+
+    let html = `
+      <!-- 🔥 titolo nascosto (era “scegli i gusti (0/2)”) -->
+      <h2 style="display:none"></h2>
+
+      <div class="ingredienti-lista">
+    `;
+
+    gustiList.forEach(nome => {
+        const qty = gustiQuantities[nome] || 0;
+        const isEditing = (gustoInModifica === nome);
+        const isConfirmed = qty > 0 && !isEditing;
+        const showControls = isEditing || qty > 0;
+
+        let cls = "item gusto-item";
+        if (isEditing) cls += " gusto-pending";
+        else if (isConfirmed) cls += " gusto-confirmed";
+
+        html += `
+            <div class="${cls}" onclick="selectGusto('${nome}')">
+                <span class="gusto-name">${escapeHtml(nome)}</span>
+
+                ${showControls ? `
+                <div class="gusto-controls" onclick="event.stopPropagation()">
+                    <button class="gusto-btn minus" onclick="changeGustoQty('${nome}', -1)">−</button>
+                    <span class="gusto-qty">${qty}</span>
+                    <button class="gusto-btn plus" onclick="changeGustoQty('${nome}', +1)">+</button>
+                </div>
+                ` : ""}
+            </div>
+        `;
+    });
+
+    html += `
+      </div>
+
+      <!-- 🔥 BOTTONI NAVIGAZIONE -->
+      <div class="nav-buttons">
+          <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
+          <button class="next-btn" onclick="nextStep()">Avanti ➜</button>
+      </div>
+    `;
+
+    cont.innerHTML = html;
+
+    // 🔥 Stabilizza mini-riepilogo (evita accartocciamenti)
+    setTimeout(() => {
+        stabilizeMiniRiepilogo();
+    }, 10);
+}
+
+function openMiniRiepilogoTemporaneo() {
+    const el = document.getElementById("riepilogo-mini");
+    if (!el) return;
+
+    // Aspetta 1 frame prima di aprire → dataset.full sarà già aggiornato
+    requestAnimationFrame(() => {
+
+        el.innerHTML = el.dataset.full || "";
+        el.classList.remove("collapsed");
+        el.classList.add("open");
+
+        // effetto shake
+        el.classList.remove("shake");
+        void el.offsetWidth;
+        el.classList.add("shake");
+        setTimeout(() => el.classList.remove("shake"), 300);
+
+        // chiudi dopo 2 secondi
+        if (collapseTimer) clearTimeout(collapseTimer);
+        collapseTimer = setTimeout(() => {
+            el.classList.add("collapsed");
+            el.classList.remove("open");
+            el.innerHTML = el.dataset.mini || "";
+        }, 2000);
+    });
+}
+
+
+// === AGGIUNTA / RIMOZIONE QUANTITÀ GUSTO ===
+function changeGustoQty(nome, delta) {
+    const maxTot = max.gusti || 0;
+    const corrente = gustiQuantities[nome] || 0;
+
+    let nuovo = corrente + delta;
+    if (nuovo < 0) nuovo = 0;
+
+    // Totale attuale
+    const totaleCorrente = Object.values(gustiQuantities).reduce((a,b)=>a+b,0);
+    const totaleDopo = totaleCorrente - corrente + nuovo;
+
+    // ❌ Supera limite → effetto rosso + blink del +
+    if (totaleDopo > maxTot) {
+        limitEffect("gusti", nome);
+
+        const btn = document.querySelector(`button.plus[onclick*="${nome}"]`);
+        if (btn) {
+            btn.classList.add("limit-blink");
+            setTimeout(()=> btn.classList.remove("limit-blink"), 650);
+        }
+        return;
+    }
+
+    // Aggiorno quantità
+    gustiQuantities[nome] = nuovo;
+
+    // Ricostruisco array gusti
+    rebuildSceltiGustiFromQuantities();
+
+    // Aggiorno colori (giallo/verde)
+    updateStatusGusti();
+
+    // 🔥 MOSTRARLO SEMPRE IN DYNAMIC ISLAND
+    // - Se aggiungo → mostra nome
+    // - Se diminuisco → mostra nome
+    // - Se arrivo a 0 → mostra nome del gusto coinvolto
+    showIsland("gusti", nome);
+
+    // Aggiorna mini riepilogo
+    updateRiepilogo();
+
+    // 👉 Se raggiungo il massimo → apri mini riepilogo
+    if (totaleDopo === maxTot) {
+        openMiniRiepilogoTemporaneo();
+        gustoInModifica = null;
+    }
+
+    renderStepGusti();
+}
+
+function rebuildSceltiGustiFromQuantities() {
+    scelti.gusti = [];
+
+    Object.entries(gustiQuantities).forEach(([nome, qty]) => {
+        for (let i = 0; i < qty; i++) {
+            scelti.gusti.push(nome);
+        }
+    });
 }
 
 // ---------------- RENDER ----------------
 function render(){
   const area = byId("step-container");
+
+    // 🔥 Se siamo sui gusti, usiamo il nuovo renderer con +/-
+  if (step === "gusti") {
+    renderStepGusti();
+    return;
+  }
 
   let lista = [];
   if(step==="gusti") lista = gustiList;
@@ -158,14 +385,41 @@ function limitEffect(step, nome){
 }
 
 function toggle(step, nome, el) {
-  const container = document.getElementById("riepilogo-mini");
 
-  // EXTRA → NON APRIRE MAI
-  if (step === "extra") {
-    if (scelti.extra.includes(nome)) {
-      scelti.extra = scelti.extra.filter(x => x !== nome);
+    const container = document.getElementById("riepilogo-mini");
+
+    // ---------------- EXTRA ----------------
+    if (step === "extra") {
+        if (scelti.extra.includes(nome)) {
+            scelti.extra = scelti.extra.filter(x => x !== nome);
+        } else {
+            scelti.extra.push(nome);
+        }
+
+        showIsland(step, nome);
+        render();
+        updateRiepilogo();
+        stabilizeMiniRiepilogo();
+
+        // shake mini riepilogo (MA NON APRIRLO MAI negli extra)
+        container.classList.remove("shake");
+        void container.offsetWidth;
+        container.classList.add("shake");
+        setTimeout(() => container.classList.remove("shake"), 350);
+
+        return;
+    }
+
+    // ---------------- TOGGLE NORMALI ----------------
+    if (scelti[step].includes(nome)) {
+        scelti[step] = scelti[step].filter(x => x !== nome);
     } else {
-      scelti.extra.push(nome);
+        if (scelti[step].length >= max[step]) {
+            // limite raggiunto
+            limitEffect(step, nome);
+            return;
+        }
+        scelti[step].push(nome);
     }
 
     showIsland(step, nome);
@@ -173,48 +427,19 @@ function toggle(step, nome, el) {
     updateRiepilogo();
     stabilizeMiniRiepilogo();
 
-    // Mini + shake
-    container.classList.remove("open");
-    container.classList.add("collapsed");
+    const currentCount = scelti[step].length;
+    const maxCount = max[step];
 
-    container.innerHTML = container.dataset.mini || "";
+    // 🎯 RAGGIUNTO IL MASSIMO → APRI MINI-RIEPILOGO PER 2 SECONDI
+    if (maxCount && currentCount === maxCount) {
 
-    container.classList.remove("shake");
-    void container.offsetWidth;
-    container.classList.add("shake");
-    setTimeout(() => container.classList.remove("shake"), 350);
-    return;
-  }
+        // funzione universale
+        openMiniRiepilogoTemporaneo();
 
-  // TOGGLE normale
-  if (scelti[step].includes(nome)) {
-    scelti[step] = scelti[step].filter(x => x !== nome);
-  } else {
-    if (scelti[step].length >= max[step]) return limitEffect(step, nome);
-    scelti[step].push(nome);
-  }
+        return;
+    }
 
-  showIsland(step, nome);
-  render();
-  updateRiepilogo();
-  stabilizeMiniRiepilogo();
-
-  const currentCount = scelti[step].length;
-  const maxCount = max[step];
-
-  // 👉 RAGGIUNTO MASSIMO → apri fluido
-  if (maxCount && currentCount === maxCount) {
-
-    container.classList.remove("collapsed");
-    container.classList.add("open");       // <<< ANIMAZIONE FLUIDA
-    container.innerHTML = container.dataset.full || "";
-
-    if (collapseTimer) clearTimeout(collapseTimer);
-    autoCollapseRiepilogo();
-  }
-
-  // 👉 NON ancora finito → mini + shake fluido
-  else {
+    // 🎯 NON ancora al massimo → resta chiuso ma fai shake
     container.classList.remove("open");
     container.classList.add("collapsed");
     container.innerHTML = container.dataset.mini || "";
@@ -223,7 +448,6 @@ function toggle(step, nome, el) {
     void container.offsetWidth;
     container.classList.add("shake");
     setTimeout(() => container.classList.remove("shake"), 350);
-  }
 }
 // ---------------- NAV ----------------
 function nextStep() {
@@ -270,55 +494,53 @@ function escapeHtml(s){
   return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
+
+
 // updateRiepilogo: versione verticale, step-by-step
 function updateRiepilogo(){
   const el = byId("riepilogo-mini");
   if (!el) return;
 
-  // 🔥 FIX ASSOLUTO:
-  // Se siamo nello step "size", il mini-riepilogo NON deve esistere.
   if (step === "size") {
       el.classList.add("hidden");
       el.innerHTML = "";
       el.dataset.full = "";
       el.dataset.mini = "";
-      return; // STOP QUI: non generiamo nessun riepilogo
+      return;
   }
 
-  // se siamo nella schermata finale lo nascondiamo
-  if (document.querySelector(".scontrino") || step === "riepilogo") {
-    el.classList.add("hidden");
-    return;
+  // 🔥 RAGGRUPPA GUSTI COME "Vaniglia x2"
+  function compressGusti(arr) {
+      const counts = {};
+      arr.forEach(g => counts[g] = (counts[g] || 0) + 1);
+
+      return Object.entries(counts)
+        .map(([name,qty]) => qty>1 ? `${name} x${qty}` : name);
   }
 
-  // calcola se mostrare "Avanti"
-  let ready = false;
-  if(step === "gusti") ready = scelti.gusti.length === max.gusti;
-  if(step === "granelle") ready = scelti.granelle.length === max.granelle;
-  if(step === "topping") ready = scelti.topping.length === max.topping;
-  if(step === "ingredienti") ready = scelti.ingredienti.length === max.ingredienti;
-  if(step === "extra") ready = true;
-
-  const titolo = coppaSelezionata
-    ? `<div class="riepilogo-titolo">🍨 ${escapeHtml(coppaSelezionata)}</div>`
-    : `<div class="riepilogo-titolo" style="opacity:.6">Scegli il formato</div>`;
+  const gustiCompatti = compressGusti(scelti.gusti);
 
   const riga = (label, arr) => {
-    if (!arr || arr.length === 0) return "";
-    const spans = arr
-      .map(x => `<div class="line-value">- ${escapeHtml(x)}</div>`)
-      .join("");
-    return `<div class="riepilogo-line">
-              <b>${escapeHtml(label)}</b>
-              ${spans}
-            </div>`;
+    if (!arr || arr.length===0) return "";
+    return `
+      <div class="riepilogo-line">
+        <b>${label}</b>
+        ${arr.map(v=>`<div class="line-value">- ${v}</div>`).join("")}
+      </div>`;
   };
+
+  let ready = false;
+  if(step==="gusti") ready = scelti.gusti.length === max.gusti;
+  if(step==="granelle") ready = scelti.granelle.length === max.granelle;
+  if(step==="topping") ready = scelti.topping.length === max.topping;
+  if(step==="ingredienti") ready = scelti.ingredienti.length === max.ingredienti;
+  if(step==="extra") ready = true;
 
   const btnHtml = ready ? `<button class="quick-next-inside" onclick="nextStep()">Avanti ➜</button>` : "";
 
   const fullHtml = `
-    ${titolo}
-    ${riga("Gusti", scelti.gusti)}
+    <div class="riepilogo-titolo">🍨 ${coppaSelezionata}</div>
+    ${riga("Gusti", gustiCompatti)}
     ${riga("Granelle", scelti.granelle)}
     ${riga("Topping", scelti.topping)}
     ${riga("Ingredienti", scelti.ingredienti)}
@@ -326,26 +548,16 @@ function updateRiepilogo(){
     ${btnHtml}
   `;
 
-  // MINI (pill)
-  let miniHtml;
-  if (!coppaSelezionata) {
-      miniHtml = "🍧 Scegli un formato";
-  } else {
-      miniHtml = `🍨 ${escapeHtml(coppaSelezionata)}`;
-  }
+  const miniHtml = `🍨 ${coppaSelezionata}`;
 
-  // Salviamo le versioni per expand/collapse
   el.dataset.full = fullHtml;
   el.dataset.mini = miniHtml;
 
-  // Mostra la versione completa
-  el.innerHTML = el.dataset.full;
-
-  // Stabilizza animazione
-  stabilizeMiniRiepilogo();
-
-  // Mostra mini riepilogo da qui in poi
-  el.classList.remove("hidden");
+  // Se NON devo aprirlo → pill chiusa
+  if (!el.classList.contains("open")) {
+      el.innerHTML = miniHtml;
+      el.classList.add("collapsed");
+  }
 }
 
 // ---------------- COLLASSO AUTOMATICO MINI-RIEPILOGO ----------------
@@ -378,6 +590,18 @@ function shareRiepilogo(){
   navigator.share ? navigator.share({text}) : alert(text);
 }
 
+function formatGustiQuantities() {
+    const grouped = {};
+
+    Object.entries(gustiQuantities).forEach(([nome, qty]) => {
+        if (qty > 0) grouped[nome] = qty;
+    });
+
+    return Object.entries(grouped)
+        .map(([nome, qty]) => `${nome} x${qty}`)
+        .join(", ");
+}
+
 function mostraRiepilogo(){
   step = "riepilogo";
   const area = byId("step-container");
@@ -394,8 +618,28 @@ function mostraRiepilogo(){
     <h2>Riepilogo finale</h2>
 
 <div class="scontrino" id="scontrino-da-share">      <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
-      <p><b>Gusti:</b> ${safeJoin(scelti.gusti)}</p>
-      <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
+<!-- GUSTI RAGGRUPPATI -->
+<p><b>Gusti:</b><br>
+${(() => {
+    const grouped = {};
+
+    // raggruppo quantità
+    Object.entries(gustiQuantities).forEach(([nome, qty]) => {
+        if (qty > 0) grouped[nome] = qty;
+    });
+
+    // se nessun gusto → "-"
+    if (Object.keys(grouped).length === 0) return "-";
+
+    // creo linee ordinate
+    return Object.entries(grouped)
+      .map(([nome, qty]) => {
+        if (qty === 1) return `- ${nome}`;       // niente x1
+        return `- ${nome} x${qty}`;              // x2/x3/x4
+      })
+      .join("<br>");
+})()}
+</p>      <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
       <p><b>Topping:</b> ${safeJoin(scelti.topping)}</p>
       <p><b>Ingredienti:</b> ${safeJoin(scelti.ingredienti)}</p>
 
@@ -479,17 +723,17 @@ function stabilizeMiniRiepilogo() {
   const el = document.getElementById("riepilogo-mini");
   if (!el) return;
 
-  // rimuove stili di centratura residui
-  el.style.left = "";
-  el.style.transform = "";
+  el.style.display = "inline-block";
+  el.style.boxSizing = "border-box";
 
-  // impedisce larghezze strane
-  el.style.width = "fit-content";
+  // di base: pill piccola ma leggibile
+  el.style.minWidth = "130px";
   el.style.maxWidth = "240px";
 
-  // se è chiuso → pill piccola
-  if (el.classList.contains("collapsed")) {
-    el.style.maxWidth = "140px";
+  // 🔥 per lo step GUSTI, quando è aperto, non farlo collassare
+  if (step === "gusti" && el.classList.contains("open")) {
+      el.style.minWidth = "180px";
+      el.style.maxWidth = "260px";
   }
 }
 // ⬇️ FINE FILE — METTILO QUI ⬇️
