@@ -803,79 +803,64 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 }
 
 
-/* CONTENITORE GENERALE DELLA COPPA */
+/* === COPPA PREVIEW FIX === */
 #coppa-preview {
-  position: relative;
-  width: 420px;
-  height: 340px;
-  margin: 40px auto;
+    position: relative;
+    width: 380px;
+    margin: 20px auto;
 }
 
-/* COPPA BASE */
-#coppa-preview .coppa-base {
-  position: absolute;
-  bottom: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 260px;
+/* PALLINE – spostate più in alto */
+.pallina {
+    position: absolute;
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    z-index: 3;
 }
 
-/* PALLINE (SU DI 20px) */
-#coppa-preview .pallina {
-  position: absolute;
-  width: 120px;
-  height: auto;
-  z-index: 3;
+.pallina1 {
+    left: 40px;
+    top: -55px;     /* ⬅️ prima era troppo basso */
 }
 
-/* PALLINA SINISTRA (ALZATA) */
-#coppa-preview .pallina-left {
-  bottom: 190px;   /* prima 170 */
-  left: 95px;
-}
-
-/* PALLINA DESTRA (ALZATA) */
-#coppa-preview .pallina-right {
-  bottom: 190px;   /* prima 170 */
-  left: 195px;
+.pallina2 {
+    left: 130px;
+    top: -55px;     /* ⬅️ uguale altezza */
 }
 
 /* PANNA */
-#coppa-preview .panna {
-  position: absolute;
-  width: 190px;
-  height: auto;
-  bottom: 235px;   /* alzata di 20 */
-  left: 135px;
-  z-index: 4;
+.panna {
+    position: absolute;
+    top: -120px;     /* leggermente più su */
+    left: 30px;
+    width: 200px;
+    z-index: 2;
 }
 
-/* GRANELLA (PIÙ VICINA ALLA COPPA) */
-#coppa-preview .granella {
-  position: absolute;
-  width: 90px;
-  height: auto;
-  bottom: 65px;     /* prima 40 */
-  left: 155px;      /* leggermente più centrata */
-  z-index: 5;
+/* GRANELLA – più vicina alla coppa */
+.granella {
+    position: absolute;
+    left: 110px;
+    top: 30px;      /* ⬅️ prima era troppo in basso */
+    width: 90px;
+    z-index: 4;
 }
 
-/* TOPPING (PIÙ PICCOLO E PIÙ VICINO) */
-#coppa-preview .topping {
-  position: absolute;
-  width: 55px;      /* prima 70 → più piccolo */
-  height: auto;
-  bottom: 65px;     /* riallineato */
-  left: 245px;      /* più vicino alla granella */
-  z-index: 5;
+/* TOPPING – bottiglia più piccola e più vicina */
+.topping {
+    position: absolute;
+    left: 200px;
+    top: 20px;
+    width: 60px;     /* ⬅️ RIDOTTA */
+    z-index: 4;
 }
 
-/* FRAGOLE (AVVICINATE AL TOPPING) */
-#coppa-preview .frutta {
-  position: absolute;
-  width: 100px;     /* leggermente ridotte */
-  height: auto;
-  bottom: 65px;
-  left: 315px;      /* prima 320 → più vicino */
-  z-index: 5;
+/* FRAGOLA – leggermente piú vicina */
+.frutta {
+    position: absolute;
+    left: 270px;
+    top: 20px;
+    width: 110px;
+    z-index: 4;
 }
