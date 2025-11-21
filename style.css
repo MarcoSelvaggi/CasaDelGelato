@@ -811,7 +811,7 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   margin: 40px auto;
 }
 
-/* COPPA BASE AL CENTRO IN BASSO */
+/* COPPA BASE */
 #coppa-preview .coppa-base {
   position: absolute;
   bottom: 70px;
@@ -820,7 +820,7 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   width: 260px;
 }
 
-/* PALLINE (STESSA DIMENSIONE) */
+/* PALLINE (SU DI 20px) */
 #coppa-preview .pallina {
   position: absolute;
   width: 120px;
@@ -828,54 +828,54 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   z-index: 3;
 }
 
-/* PALLINA SINISTRA (GIALLO) */
+/* PALLINA SINISTRA (ALZATA) */
 #coppa-preview .pallina-left {
-  bottom: 170px;   /* altezza */
-  left: 95px;      /* spostamento orizzontale */
+  bottom: 190px;   /* prima 170 */
+  left: 95px;
 }
 
-/* PALLINA DESTRA (ROSA) */
+/* PALLINA DESTRA (ALZATA) */
 #coppa-preview .pallina-right {
-  bottom: 170px;
+  bottom: 190px;   /* prima 170 */
   left: 195px;
 }
 
-/* PANNA SOPRA LE PALLINE */
+/* PANNA */
 #coppa-preview .panna {
   position: absolute;
   width: 190px;
   height: auto;
-  bottom: 215px;
+  bottom: 235px;   /* alzata di 20 */
   left: 135px;
   z-index: 4;
 }
 
-/* GRANELLA / CIOTOLINA */
+/* GRANELLA (PIÙ VICINA ALLA COPPA) */
 #coppa-preview .granella {
   position: absolute;
   width: 90px;
   height: auto;
-  bottom: 40px;
-  left: 150px;
+  bottom: 65px;     /* prima 40 */
+  left: 155px;      /* leggermente più centrata */
   z-index: 5;
 }
 
-/* BOTTIGLIA TOPPING */
+/* TOPPING (PIÙ PICCOLO E PIÙ VICINO) */
 #coppa-preview .topping {
   position: absolute;
-  width: 70px;
+  width: 55px;      /* prima 70 → più piccolo */
   height: auto;
-  bottom: 40px;
-  left: 245px;
+  bottom: 65px;     /* riallineato */
+  left: 245px;      /* più vicino alla granella */
   z-index: 5;
 }
 
-/* FRAGOLA FRUTTO */
+/* FRAGOLE (AVVICINATE AL TOPPING) */
 #coppa-preview .frutta {
   position: absolute;
-  width: 110px;
+  width: 100px;     /* leggermente ridotte */
   height: auto;
-  bottom: 40px;
-  left: 320px;
+  bottom: 65px;
+  left: 315px;      /* prima 320 → più vicino */
   z-index: 5;
 }
