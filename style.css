@@ -804,63 +804,69 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 
 
 /* === COPPA PREVIEW FIX === */
-#coppa-preview {
+#preview-area {
     position: relative;
-    width: 380px;
-    margin: 20px auto;
+    width: 650px;
+    height: 420px;
+    margin: 30px auto;
+    background: #fff;
 }
 
-/* PALLINE – spostate più in alto */
+/* COPPA */
+.coppa-base {
+    position: absolute;
+    width: 260px;
+    left: 120px;
+    top: 190px;
+    z-index: 1;
+}
+
+/* PALLINE – più in alto */
 .pallina {
     position: absolute;
-    width: 95px;
-    height: 95px;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
     z-index: 3;
 }
 
 .pallina1 {
-    left: 40px;
-    top: -55px;     /* ⬅️ prima era troppo basso */
+    top: 80px;   /* alzata */
+    left: 135px;
 }
 
 .pallina2 {
-    left: 130px;
-    top: -55px;     /* ⬅️ uguale altezza */
+    top: 80px;   /* stessa altezza */
+    left: 230px;
 }
 
 /* PANNA */
 .panna {
     position: absolute;
-    top: -120px;     /* leggermente più su */
-    left: 30px;
-    width: 200px;
+    width: 240px;
+    top: 10px;
+    left: 110px;
     z-index: 2;
 }
 
-/* GRANELLA – più vicina alla coppa */
+/* ELEMENTI A DESTRA */
 .granella {
     position: absolute;
-    left: 110px;
-    top: 30px;      /* ⬅️ prima era troppo in basso */
-    width: 90px;
-    z-index: 4;
+    width: 80px;
+    top: 200px;      /* più vicino alla coppa */
+    left: 420px;
 }
 
-/* TOPPING – bottiglia più piccola e più vicina */
 .topping {
     position: absolute;
-    left: 200px;
-    top: 20px;
-    width: 60px;     /* ⬅️ RIDOTTA */
-    z-index: 4;
+    width: 55px;     /* bottiglia più piccola */
+    top: 200px;
+    left: 520px;
 }
 
-/* FRAGOLA – leggermente piú vicina */
 .frutta {
     position: absolute;
-    left: 270px;
-    top: 20px;
-    width: 110px;
-    z-index: 4;
+    width: 85px;
+    top: 205px;
+    left: 600px;
 }
