@@ -775,62 +775,6 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 
 
 
-#coppa-preview {
-    position: relative;
-    width: 320px;
-    margin: 30px auto;
-}
-
-.coppa-base {
-    width: 100%;
-    z-index: 1;
-}
-
-.pallina {
-    position: absolute;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    z-index: 2;
-}
-
-/* Posizioni palline */
-.pallina1 {
-    left: 50px;
-    top: -40px;
-}
-.pallina2 {
-    right: 50px;
-    top: -40px;
-}
-
-/* Topping (bottiglia) */
-.topping {
-    position: absolute;
-    right: -20px;
-    top: -20px;
-    width: 70px;
-    z-index: 4;
-}
-
-/* Frutta */
-.frutta {
-    position: absolute;
-    right: -30px;
-    top: 50px;
-    width: 120px;
-    z-index: 3;
-}
-
-/* Granella */
-.granella {
-    position: absolute;
-    left: 120px;
-    top: -10px;
-    width: 70px;
-    z-index: 5;
-}
-
 #top-fixed-bar {
     position: fixed;
     top: 0;
@@ -856,4 +800,64 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 .home-btn img {
     width: 28px;
     height: 28px;
+}
+
+
+#coppa-preview {
+    position: relative;
+    width: 380px;   /* proporzione ideale */
+    margin: 40px auto;
+}
+
+/* COPPA BASE */
+.coppa-base {
+    width: 100%;
+    display: block;
+}
+
+/* PALLINE */
+.pallina {
+    position: absolute;
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    z-index: 5;
+}
+
+/* Posizione palline */
+.pallina1 { left: 65px; top: -55px; }
+.pallina2 { left: 165px; top: -55px; }
+.pallina3 { left: 115px; top: -120px; } /* per coppa grande */
+
+/* AREA DESTRA */
+.area-destra {
+    position: absolute;
+    right: -170px;
+    top: -10px;
+    width: 160px;
+    height: 150px;
+}
+
+/* GRANELLA */
+.granella {
+    position: absolute;
+    left: 0;
+    top: 60px;
+    width: 85px;
+}
+
+/* TOPPING */
+.topping {
+    position: absolute;
+    left: 55px;
+    top: -12px;
+    width: 70px;
+}
+
+/* FRUTTA */
+.frutta {
+    position: absolute;
+    left: 90px;
+    top: 60px;
+    width: 95px;
 }
