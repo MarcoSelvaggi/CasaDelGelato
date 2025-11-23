@@ -734,6 +734,10 @@ mini.innerHTML = mini.dataset.mini || "";
 }
 
 function apriRegistrazione() {
+    // 👉 segno che sono nello step "registrazione" (solo per logica interna)
+    step = "registrazione";
+    updateRiepilogo(); // il mini riepilogo resta coerente
+
     const area = document.getElementById("step-container");
 
     area.innerHTML = `
@@ -750,14 +754,31 @@ function apriRegistrazione() {
     `;
 }
 
-function inviaRegistrazione() {
+async function inviaRegistrazione() {
     const email = document.getElementById("reg-email").value.trim();
     if (!email) {
         alert("Inserisci una email valida.");
         return;
     }
 
-    alert("Apri la mail e conferma la tua registrazione ✔️");
+    // 🔥 Recupero lingua attuale della web app
+    const currentLang = localStorage.getItem("lang") || "it";
+
+    try {
+        await auth.sendSignInLinkToEmail(email, {
+            url: `https://marcoselvaggi.github.io/casadel-gelato/?login=ok&lang=${currentLang}`,
+            handleCodeInApp: true
+        });
+
+        // Salvo email in localStorage per completare il login
+        window.localStorage.setItem("emailForSignIn", email);
+
+        alert("📧 Controlla la tua casella email!\nTi abbiamo inviato un link per completare la registrazione.");
+        
+    } catch (err) {
+        console.error(err);
+        alert("Errore durante l'invio della mail: " + err.message);
+    }
 }
 
 function shareWhatsApp(){

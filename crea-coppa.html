@@ -1,5 +1,19 @@
 <!DOCTYPE html>
 <html lang="it">
+  <!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAEO7AonQeZ9SsgXd1Ymw2NZW-Pg4mI8E8",
+    authDomain: "casadelgelato-db282.firebaseapp.com",
+    projectId: "casadelgelato-db282",
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -85,6 +99,76 @@
     document.getElementById("popup-coppa").style.display = "none";
   };
 </script>
+<!-- FORM REGISTRAZIONE -->
+<div id="reg-box" style="display:none; padding:20px; text-align:center;">
+  <h2>Registrazione</h2>
+  <p>Inserisci la tua email per salvare le tue coppe.</p>
 
+  <input id="reg-email" type="email" placeholder="La tua email"
+    style="padding:12px; width:80%; max-width:260px; border-radius:10px; border:1px solid #ccc; margin-bottom:14px;">
+
+  <div>
+    <button class="next-btn" onclick="inviaRegistrazione()">Invia conferma</button>
+    <br><br>
+    <button class="back-btn" onclick="chiudiRegistrazione()">⬅ Torna indietro</button>
+  </div>
+</div>
+<script>
+function apriRegistrazione() {
+    document.getElementById("step-container").style.display = "none";
+    document.getElementById("step-title").style.display = "none";
+    document.getElementById("reg-box").style.display = "block";
+}
+
+function chiudiRegistrazione() {
+    document.getElementById("reg-box").style.display = "none";
+    document.getElementById("step-container").style.display = "block";
+    document.getElementById("step-title").style.display = "block";
+}
+
+async function inviaRegistrazione() {
+    const email = document.getElementById("reg-email").value.trim();
+    if (!email) {
+        alert("Inserisci una email valida.");
+        return;
+    }
+
+    try {
+        await auth.sendSignInLinkToEmail(email, {
+            url: window.location.origin + "/crea-coppa.html",
+            handleCodeInApp: true
+        });
+
+        window.localStorage.setItem("emailForSignIn", email);
+
+        alert("📬 Ti abbiamo inviato un link di conferma.\nApri la mail per completare la registrazione!");
+    } catch (err) {
+        console.error(err);
+        alert("Errore: " + err.message);
+    }
+}
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    if (auth.isSignInWithEmailLink(window.location.href)) {
+
+        let email = window.localStorage.getItem("emailForSignIn");
+        if (!email) email = prompt("Inserisci la tua email per completare il login:");
+
+        try {
+            await auth.signInWithEmailLink(email, window.location.href);
+            window.localStorage.removeItem("emailForSignIn");
+
+            alert("🎉 Registrazione completata! Hai sbloccato la cronologia.");
+            localStorage.setItem("userLogged", "1");
+
+            window.location.href = "index.html";
+        } catch (err) {
+            console.error(err);
+            alert("Errore: " + err.message);
+        }
+    }
+});
+</script>
 </body>
 </html>

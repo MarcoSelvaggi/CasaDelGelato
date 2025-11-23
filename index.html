@@ -57,7 +57,7 @@
     }
     #lang-menu button:hover{background:#f2f2f2;}
 
-    /* ✅ BUTTONS */
+    /* BUTTONS */
     .menu-section{padding:22px;text-align:center}
     .btn{
       display:block;width:240px;text-align:center;
@@ -65,7 +65,7 @@
       text-decoration:none;margin:14px auto;font-size:17px;font-weight:600;
     }
 
-    /* ✅ CARDS I NOSTRI LOCALI */
+    /* CARDS */
     .shop-card {
       background:white;
       padding:16px;
@@ -78,7 +78,7 @@
     .shop-card b {font-size:16px;margin-bottom:4px;display:block;}
     .shop-card a {text-decoration:none;margin-top:4px;display:block;font-size:15px;color:#007aff;}
 
-    /* ✅ WHATSAPP BUTTON */
+    /* WHATSAPP */
     #whatsapp-btn {
       position:fixed;
       right:18px;
@@ -97,9 +97,7 @@
 
 <body>
 
-
-
-<!-- 🌍 LANGUAGE -->
+<!-- LANGUAGE -->
 <div id="lang-toggle">🇮🇹 ▾</div>
 <div id="lang-menu">
   <button class="lang-btn" data-lang="it">Italiano</button>
@@ -137,7 +135,7 @@
   </div>
 </section>
 
-<!-- ✅ WHATSAPP -->
+<!-- WHATSAPP -->
 <a id="whatsapp-btn" href="https://wa.me/393403788846" target="_blank">💬</a>
 
 <!-- Firebase -->
@@ -161,7 +159,7 @@
   const db = firebase.firestore();
 </script>
 
-
+<!-- LANGUAGE LOGIC -->
 <script>
 (function(){
   const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
@@ -185,17 +183,48 @@
     document.querySelectorAll("[data-lang]").forEach(el => el.textContent = LANG[l][el.dataset.lang]);
     toggle.textContent = FLAGS[l] + " ▾";
   }
+  // 🔥 Se arrivo da email di login → prendo la lingua da ?lang=xx
+const urlParams = new URLSearchParams(window.location.search);
+const urlLang = urlParams.get("lang");
+
+if (urlLang) {
+    localStorage.setItem("lang", urlLang);
+}
   apply(localStorage.getItem("lang") || "it");
 
   document.querySelectorAll(".lang-btn").forEach(btn =>
     btn.onclick = () => apply(btn.dataset.lang)
   );
 
-  // ✅ Popup ogni volta
-document.getElementById("start-coppa").onclick = () => {
+  document.getElementById("start-coppa").onclick = () => {
     window.location.href = "crea-coppa.html";
-};
+  };
 })();
+</script>
+
+<!-- 🔥 Firebase: Gestione link sign-in email -->
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+    if (auth.isSignInWithEmailLink(window.location.href)) {
+
+        let email = window.localStorage.getItem("emailForSignIn");
+        if (!email) email = prompt("Inserisci la tua email per completare il login:");
+
+        try {
+            await auth.signInWithEmailLink(email, window.location.href);
+            window.localStorage.removeItem("emailForSignIn");
+
+            alert("🎉 Registrazione completata! Hai sbloccato la Cronologia Coppe.");
+            localStorage.setItem("userLogged", "1");
+
+            window.location.href = "index.html";
+
+        } catch (err) {
+            console.error(err);
+            alert("Errore: " + err.message);
+        }
+    }
+});
 </script>
 
 </body>
