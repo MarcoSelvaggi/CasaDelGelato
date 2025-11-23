@@ -659,7 +659,31 @@ function formatGustiQuantities() {
 function mostraRiepilogo(){
   step = "riepilogo";
   const area = byId("step-container");
+  
+// === SALVATAGGIO IN CRONOLOGIA (Locale) ===
+(function salvaCoppa() {
 
+  // preparo i dati
+  const coppa = {
+    data: new Date().toLocaleString("it-IT"),
+    formato: coppaSelezionata,
+    gusti: [...scelti.gusti],
+    granelle: [...scelti.granelle],
+    topping: [...scelti.topping],
+    ingredienti: [...scelti.ingredienti],
+    extra: [...scelti.extra]
+  };
+
+  // leggo il vecchio array oppure creo uno nuovo
+  let arr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+
+  // aggiungo la nuova coppa in cima
+  arr.unshift(coppa);
+
+  // risalvo
+  localStorage.setItem("cronologiaCoppe", JSON.stringify(arr));
+
+})();
   const prezzoBase = prezziBase[coppaSelezionata] || 0;
   const prezzoExtraDettaglio = scelti.extra.map(e => ({
     nome: e,

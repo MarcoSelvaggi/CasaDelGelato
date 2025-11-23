@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronologia Coppe</title>
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f6f6f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .cup-card {
+            background: white;
+            padding: 16px;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .cup-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cup-title b {
+            font-size: 18px;
+        }
+
+        .edit-btn, .delete-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .small {
+            font-size: 14px;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        .btn {
+            display: block;
+            width: 200px;
+            text-align: center;
+            padding: 10px 14px;
+            margin: 20px auto;
+            background: #ff7a00;
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .empty-msg {
+            text-align: center;
+            margin-top: 40px;
+            color: #777;
+            font-size: 18px;
+        }
+
+        .copy-btn {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #007aff;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📚 Cronologia Coppe</h1>
+
+    <div id="lista-coppe"></div>
+
+    <a href="index.html" class="btn">⬅ Torna alla Home</a>
+
+    <script>
+        let coppe = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+
+        const lista = document.getElementById("lista-coppe");
+
+        // Salva la lista aggiornata
+        function salva() {
+            localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
+        }
+
+        // Elimina una coppa
+        function eliminaCoppa(i) {
+            if (!confirm("Vuoi eliminare questa coppa?")) return;
+
+            coppe.splice(i, 1);
+            salva();
+            location.reload();
+        }
+
+        // Rinomina una coppa
+        function rinominaCoppa(i) {
+            const nuovoNome = prompt("Nuovo nome della coppa:", coppe[i].nome || ("Coppa " + (i+1)));
+
+            if (!nuovoNome) return;
+
+            coppe[i].nome = nuovoNome;
+            salva();
+            location.reload();
+        }
+
+        if (coppe.length === 0) {
+            lista.innerHTML = `<p class="empty-msg">Nessuna coppa salvata 😢</p>`;
+        } else {
+            coppe.forEach((c, i) => {
+
+                const nome = c.nome || `Coppa #${i + 1}`;
+
+                const div = document.createElement("div");
+                div.className = "cup-card";
+
+                div.innerHTML = `
+                    <div class="cup-title">
+                        <b>${nome}</b>
+                        <div>
+                            <button class="edit-btn" onclick="rinominaCoppa(${i})">✏️</button>
+                            <button class="delete-btn" onclick="eliminaCoppa(${i})">🗑</button>
+                        </div>
+                    </div>
+
+                    <div class="small">${c.data}</div>
+                    <div class="small"><b>Formato:</b> ${c.formato}</div>
+                    <div class="small"><b>Gusti:</b> ${c.gusti.join(", ")}</div>
+                    <div class="small"><b>Granelle:</b> ${c.granelle.join(", ")}</div>
+                    <div class="small"><b>Topping:</b> ${c.topping.join(", ")}</div>
+                    <div class="small"><b>Ingredienti:</b> ${c.ingredienti.join(", ")}</div>
+
+                    <button class="copy-btn" onclick='navigator.clipboard.writeText(
+                        "Formato: ${c.formato}\nGusti: ${c.gusti.join(", ")}\nGranelle: ${c.granelle.join(", ")}\nTopping: ${c.topping.join(", ")}\nIngredienti: ${c.ingredienti.join(", ")}"
+                    )'>📋 Copia</button>
+                `;
+                lista.appendChild(div);
+            });
+        }
+    </script>
+
+</body>
+</html>
