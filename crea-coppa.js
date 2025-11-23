@@ -1,6 +1,7 @@
 console.log("JS CARICATO ✔️");
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
+let titoloGustiVisibile = true;
 let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
 let step = "size"; // iniziamo sulla scelta formato
@@ -102,6 +103,7 @@ function selectSize(size, g, gr, t, ing){
 document.body.classList.remove("step-size");
   document.querySelector("header").style.display = "none";
   coppaSelezionata = size;
+  titoloGustiVisibile = true;   // 🔁 ogni nuova coppa fa riapparire i titoli
   max = { gusti:g, granelle:gr, topping:t, ingredienti:ing, extra:Infinity };
   scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 
@@ -139,7 +141,7 @@ function selectGusto(nome) {
 
     // ➤ Se gusto era 0 → diventa 1
     if (qtyAttuale === 0) {
-
+hideStepTitle();
         // Limite raggiunto → errore
         if (totalePrima >= maxTot) {
             limitEffect("gusti", nome);
@@ -148,6 +150,11 @@ function selectGusto(nome) {
 
         gustiQuantities[nome] = 1;
         rebuildSceltiGustiFromQuantities();
+
+        // 🔥 NASCONDE IL TITOLO SOLO AL PRIMO GUSTO
+        titoloGustiVisibile = false;
+        hideStepTitle();
+
         showIsland("gusti", nome);
 
     } else {
@@ -190,20 +197,28 @@ function updateStatusGusti() {
 
 // === RENDER GUSTI CON QUANTITÀ E BOTTONI + / − ===
 function renderStepGusti() {
+    const title = document.getElementById("step-title");
+
+    // 🔥 Mostra il titolo solo se siamo all'inizio (nessun gusto selezionato)
+    if (title) {
+        if (titoloGustiVisibile) {
+            title.textContent = "Gusti";
+            title.style.display = "block";
+        } else {
+            title.style.display = "none";
+        }
+    }
+
     const cont = byId("step-container");
     if (!cont) return;
 
     const maxTot = max.gusti || 0;
     const totale = Object.values(gustiQuantities).reduce((a, b) => a + b, 0);
 
-    // 🔥 Aggiorna giallo/verde PRIMA del render
     updateStatusGusti();
 
     let html = `
-      <!-- 🔥 titolo nascosto (era “scegli i gusti (0/2)”) -->
-      <h2 style="display:none"></h2>
-
-      <div class="ingredienti-lista">
+        <div class="ingredienti-lista">
     `;
 
     gustiList.forEach(nome => {
@@ -232,21 +247,26 @@ function renderStepGusti() {
     });
 
     html += `
-      </div>
+        </div>
 
-      <!-- 🔥 BOTTONI NAVIGAZIONE -->
-      <div class="nav-buttons">
-          <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
-          <button class="next-btn" onclick="nextStep()">Avanti ➜</button>
-      </div>
+        <div class="nav-buttons">
+            <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
+            <button class="next-btn" onclick="nextStep()">Avanti ➜</button>
+        </div>
     `;
 
     cont.innerHTML = html;
 
-    // 🔥 Stabilizza mini-riepilogo (evita accartocciamenti)
     setTimeout(() => {
         stabilizeMiniRiepilogo();
     }, 10);
+}
+
+function hideStepTitle() {
+    const title = document.getElementById("step-title");
+    if (title) {
+        title.style.display = "none";
+    }
 }
 
 function openMiniRiepilogoTemporaneo() {
@@ -342,33 +362,54 @@ function rebuildSceltiGustiFromQuantities() {
 function render(){
   const area = byId("step-container");
 
-    // 🔥 Se siamo sui gusti, usiamo il nuovo renderer con +/-
+  // 🔥 GUSTI hanno un renderer speciale
   if (step === "gusti") {
     renderStepGusti();
     return;
   }
 
+  // ---------------- LISTA PER GLI ALTRI STEP ----------------
   let lista = [];
-  if(step==="gusti") lista = gustiList;
-  else if(step==="granelle") lista = granelleList;
-  else if(step==="topping") lista = toppingList;
-  else if(step==="ingredienti") lista = ingredientiList;
-  else if(step==="extra") lista = extraList.map(e => e + (prezziExtra[e] ? ` (+€${prezziExtra[e].toFixed(2)})`:""));
+  if (step === "granelle")      lista = granelleList;
+  else if (step === "topping")  lista = toppingList;
+  else if (step === "ingredienti") lista = ingredientiList;
+  else if (step === "extra") {
+    lista = extraList.map(e => 
+      e + (prezziExtra[e] ? ` (+€${prezziExtra[e].toFixed(2)})` : "")
+    );
+  }
 
-area.innerHTML = `
-  <h2></h2>
-  <div class="ingredienti-lista">
-    ${lista.map(it=>{
-      const nome = it.split(" (+€")[0].trim();
-      const sel = scelti[step].includes(nome) ? "selected" : "";
-      return `<div class="item ${sel}" onclick="toggle('${step}', '${escForOnclick(nome)}', this)">${it}</div>`;
-    }).join("")}
-  </div>
-  <div class="nav-buttons">
-    <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
-    <button class="next-btn" onclick="nextStep()">${step==="extra"?"Conferma ✅":"Avanti ➜"}</button>
-  </div>
-`;
+  // ---------------- TITOLO STEP (GRAZIE A titoloGustiVisibile) ----------------
+  const title = document.getElementById("step-title");
+  if (title) {
+    if (step === "granelle")      title.textContent = "Granelle";
+    else if (step === "topping")  title.textContent = "Topping";
+    else if (step === "ingredienti") title.textContent = "Ingredienti";
+    else if (step === "extra")    title.textContent = "Extra";
+
+    // 👇 se abbiamo già iniziato a scegliere qualcosa → il titolo sparisce
+    title.style.display = titoloGustiVisibile ? "block" : "none";
+  }
+
+  // ---------------- CONTENUTO LISTA + BOTTONI ----------------
+  area.innerHTML = `
+    <h2 style="display:none"></h2>
+    <div class="ingredienti-lista">
+      ${
+        lista.map(it=>{
+          const nome = it.split(" (+€")[0].trim();
+          const sel = scelti[step].includes(nome) ? "selected" : "";
+          return `<div class="item ${sel}" onclick="toggle('${step}', '${escForOnclick(nome)}', this)">${it}</div>`;
+        }).join("")
+      }
+    </div>
+    <div class="nav-buttons">
+      <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
+      <button class="next-btn" onclick="nextStep()">
+        ${step==="extra" ? "Conferma ✅" : "Avanti ➜"}
+      </button>
+    </div>
+  `;
 }
 
 // ---------------- TOGGLE ----------------
@@ -385,7 +426,7 @@ function limitEffect(step, nome){
 }
 
 function toggle(step, nome, el) {
-
+hideStepTitle();
     const container = document.getElementById("riepilogo-mini");
 
     // ---------------- EXTRA ----------------
@@ -421,6 +462,9 @@ function toggle(step, nome, el) {
         }
         scelti[step].push(nome);
     }
+    // 🔥 Nascondi il titolo quando l’utente seleziona la prima volta
+titoloGustiVisibile = false;
+hideStepTitle();
 
     showIsland(step, nome);
     render();
@@ -457,16 +501,14 @@ function nextStep() {
 
     step = "riepilogo-mini-open";
 
-    // apri il mini riepilogo COMPLETO
     const el = document.getElementById("riepilogo-mini");
     el.classList.remove("collapsed");
     el.innerHTML = el.dataset.full || "";
 
-    // blocca l'autocollasso
     if (collapseTimer) clearTimeout(collapseTimer);
     collapseTimer = null;
 
-    return; // fermiamo il normale passaggio
+    return;
   }
 
   // ➤ Passaggi normali
@@ -476,15 +518,27 @@ function nextStep() {
   else if(step==="ingredienti") step="extra";
   else return mostraRiepilogo();
 
+  // 🔥 FIX: ad ogni nuovo step, il titolo deve tornare visibile
+  titoloGustiVisibile = true;
+
   render();
   updateRiepilogo();
 }
+
 function prevStep(){
-  if(step==="gusti"){ showSizeScreen(); return; }
-  if(step==="granelle") step="gusti";
-  else if(step==="topping") step="granelle";
-  else if(step==="ingredienti") step="topping";
-  else if(step==="extra") step="ingredienti";
+  if(step === "gusti"){ 
+    showSizeScreen(); 
+    return; 
+  }
+
+  if(step === "granelle") step = "gusti";
+  else if(step === "topping") step = "granelle";
+  else if(step === "ingredienti") step = "topping";
+  else if(step === "extra") step = "ingredienti";
+
+  // 🔥 FIX: tornando indietro il titolo deve essere di nuovo visibile
+  titoloGustiVisibile = true;
+
   render();
 }
 
@@ -663,6 +717,7 @@ ${(() => {
       <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
       <button class="next-btn" onclick="salvaScontrinoComeImmagine()">📸 Salva immagine (Instagram)</button>
       <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
+      <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
     </div>
 
     <p style="font-size:12px; text-align:center; opacity:0.7; margin-top:4px;">
@@ -677,6 +732,34 @@ mini.classList.remove("open");
 mini.innerHTML = mini.dataset.mini || "";
   updateRiepilogo();
 }
+
+function apriRegistrazione() {
+    const area = document.getElementById("step-container");
+
+    area.innerHTML = `
+        <h2>Registrazione</h2>
+        <p>Inserisci la tua email per salvare le tue coppe nella cronologia.</p>
+
+        <input id="reg-email" type="email" placeholder="La tua email" class="email-input" 
+               style="padding:10px; font-size:16px; width:90%; max-width:280px; margin:15px auto; display:block; border-radius:8px; border:1px solid #ddd;"/>
+
+        <div class="nav-buttons" style="margin-top:15px;">
+            <button class="next-btn" onclick="inviaRegistrazione()">Invia conferma</button>
+            <button class="back-btn" onclick="mostraRiepilogo()">⬅ Torna indietro</button>
+        </div>
+    `;
+}
+
+function inviaRegistrazione() {
+    const email = document.getElementById("reg-email").value.trim();
+    if (!email) {
+        alert("Inserisci una email valida.");
+        return;
+    }
+
+    alert("Apri la mail e conferma la tua registrazione ✔️");
+}
+
 function shareWhatsApp(){
   const text = `COPPA ${coppaSelezionata}\nGusti: ${safeJoin(scelti.gusti)}\nGranelle: ${safeJoin(scelti.granelle)}\nTopping: ${safeJoin(scelti.topping)}\nIngredienti: ${safeJoin(scelti.ingredienti)}\nExtra: ${safeJoin(scelti.extra)}`;
   window.open("https://wa.me/?text=" + encodeURIComponent(text));

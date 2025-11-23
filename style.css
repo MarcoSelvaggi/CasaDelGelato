@@ -827,9 +827,30 @@ body.step-size #riepilogo-mini {
     height: 28px;
 }
 
+/* ===== TITOLO DELLA SEZIONE (Gusti, Topping, ecc.) ===== */
+.step-title {
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    margin: 10px 0 14px;
+    opacity: 0.85;
+    transition: opacity .25s ease, transform .25s ease;
+}
 
+/* quando deve sparire */
+.step-title.hidden {
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+}
 
-
+.step-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
 
 /* ========== GESTIONE GUSTI CON QUANTITÀ ========== */
 

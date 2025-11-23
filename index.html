@@ -140,6 +140,28 @@
 <!-- ✅ WHATSAPP -->
 <a id="whatsapp-btn" href="https://wa.me/393403788846" target="_blank">💬</a>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAEO7AonQeZ9SsgXd1Ymw2NZW-Pg4mI8E8",
+    authDomain: "casadelgelato-db282.firebaseapp.com",
+    projectId: "casadelgelato-db282",
+    storageBucket: "casadelgelato-db282.firebasestorage.app",
+    messagingSenderId: "121009770190",
+    appId: "1:121009770190:web:81b82b82cc9bdb686cca9f"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script>
+
+
 <script>
 (function(){
   const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };

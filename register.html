@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrazione - Casa del Gelato</title>
+
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f6f6f7;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.container {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  max-width: 350px;
+  margin: 40px auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+button {
+  margin-top: 18px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: #ff7a00;
+  color: white;
+  font-size: 17px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.message {
+  margin-top: 18px;
+  font-size: 15px;
+  color: #2c8a2c;
+  font-weight: 600;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h2>Registrati</h2>
+  <p>Inserisci la tua email per salvare la tua cronologia coppe 🍨</p>
+
+  <input type="email" id="email" placeholder="La tua email">
+  <button onclick="registerUser()">Registrati</button>
+
+  <div id="msg" class="message"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAEO7AonQeZ9SsgXd1Ymw2NZW-Pg4mI8E8",
+    authDomain: "casadelgelato-db282.firebaseapp.com",
+    projectId: "casadelgelato-db282",
+    storageBucket: "casadelgelato-db282.firebasestorage.app",
+    messagingSenderId: "121009770190",
+    appId: "1:121009770190:web:81b82b82cc9bdb686cca9f",
+    databaseURL: "https://casadelgelato-db282-default-rtdb.europe-west1.firebasedatabase.app"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // 🔥 Registrazione SUPER SEMPLICE
+  window.registerUser = function() {
+    const email = document.getElementById("email").value.trim();
+    const msg = document.getElementById("msg");
+
+    if (!email) {
+      msg.textContent = "⚠️ Inserisci una email valida";
+      msg.style.color = "red";
+      return;
+    }
+
+    const safeEmail = email.replaceAll(".", "_");
+
+    set(ref(db, "utenti/" + safeEmail), {
+      email: email,
+      registrato: true,
+      coppe: []
+    })
+    .then(() => {
+      msg.textContent = "✅ Registrazione completata!";
+      msg.style.color = "#2c8a2c";
+
+      // Salva login localmente
+      localStorage.setItem("user_email", email);
+
+      // Dopo 1.5s torna alla home
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    })
+    .catch((err) => {
+      msg.textContent = "Errore: " + err.message;
+      msg.style.color = "red";
+    });
+  }
+</script>
+
+</body>
+</html>
