@@ -94,10 +94,19 @@
 </div>
 
 <script>
-  document.getElementById("popup-coppa").style.display = "flex";
-  document.getElementById("popup-ok").onclick = () => {
+  
+ // NON mostrare il popup se arrivo da "usa questa coppa"
+const fromCrono = window.location.search.includes("from=cronologia");
+
+if (!fromCrono) {
+    document.getElementById("popup-coppa").style.display = "flex";
+    document.getElementById("popup-ok").onclick = () => {
+        document.getElementById("popup-coppa").style.display = "none";
+    };
+} else {
+    // assicura che il popup sia nascosto
     document.getElementById("popup-coppa").style.display = "none";
-  };
+}
 </script>
 <!-- FORM REGISTRAZIONE -->
 <div id="reg-box" style="display:none; padding:20px; text-align:center;">

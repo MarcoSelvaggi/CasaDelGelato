@@ -659,7 +659,7 @@ function formatGustiQuantities() {
 function mostraRiepilogo(){
   step = "riepilogo";
   const area = byId("step-container");
-  
+
 // === SALVATAGGIO IN CRONOLOGIA (Locale) ===
 (function salvaCoppa() {
 
@@ -891,4 +891,65 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+});
+
+// ================== CARICA COPPA DA CRONOLOGIA ==================
+document.addEventListener("DOMContentLoaded", () => {
+    const stored = localStorage.getItem("coppaDaUsare");
+    if (!stored) return;
+
+    let c;
+    try {
+        c = JSON.parse(stored);
+    } catch (e) {
+        console.error("Errore parsing coppaDaUsare", e);
+        localStorage.removeItem("coppaDaUsare");
+        return;
+    }
+
+    // una volta letta, la elimino
+    localStorage.removeItem("coppaDaUsare");
+
+    // In base al formato, simulo la scelta formato
+    if (c.formato === "PICCOLA") {
+        selectSize("PICCOLA", 2, 1, 1, 1);
+    } else if (c.formato === "MEDIA") {
+        selectSize("MEDIA", 3, 2, 2, 1);
+    } else if (c.formato === "GRANDE") {
+        selectSize("GRANDE", 4, 2, 2, 2);
+    } else {
+        // formato sconosciuto → fallback PICCOLA
+        selectSize(c.formato || "PICCOLA", 2,1,1,1);
+    }
+
+    // Ora riempiamo i dati salvati
+
+    // GUSTI: ricostruisco gustiQuantities
+    if (Array.isArray(c.gusti)) {
+        // azzero
+        gustiQuantities = {};
+        gustiList.forEach(g => gustiQuantities[g] = 0);
+
+        c.gusti.forEach(g => {
+            if (g in gustiQuantities) {
+                gustiQuantities[g] += 1;
+            }
+        });
+
+        rebuildSceltiGustiFromQuantities();
+    }
+
+    // Altri step (array semplici)
+    scelti.granelle     = Array.isArray(c.granelle)     ? [...c.granelle]     : [];
+    scelti.topping      = Array.isArray(c.topping)      ? [...c.topping]      : [];
+    scelti.ingredienti  = Array.isArray(c.ingredienti)  ? [...c.ingredienti]  : [];
+    scelti.extra        = Array.isArray(c.extra)        ? [...c.extra]        : [];
+
+    // Aggiorna stato gusti (giallo/verde)
+    updateStatusGusti();
+
+    // Mostra lo step gusti già compilato
+    step = "gusti";
+    renderStepGusti();
+    updateRiepilogo();
 });
