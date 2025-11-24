@@ -13,22 +13,60 @@
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
     header{text-align:center;padding:22px}
 
-    /* ✅ HOME BUTTON */
-    #home-btn {
-      position:fixed;
-      top:14px; left:14px;
-      font-size:26px;
-      text-decoration:none;
-      z-index:9999;
-      background:white;
-      padding:6px 10px;
-      border-radius:12px;
-      border:1px solid #ccc;
+    /* 🔝 BARRA FISSA + HOME */
+    #top-fixed-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 55px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: white;
+      border-bottom: 1px solid #ddd;
+      z-index: 9999;
     }
 
-    /* ✅ LANGUAGE MENU */
+    .home-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 17px;
+        color: #444;
+        text-decoration: none;
+    }
+
+    .home-btn img {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* spazio per far scendere il contenuto */
+    #top-fixed-spacer {
+      height: 55px;
+      width: 100%;
+    }
+    /* Tasto Lavora con Noi (solo in index) */
+.jobs-btn {
+    position: absolute;
+    left: 12px;
+    top: 13px;
+    padding: 6px 10px;
+    background: #ff7a00;
+    color: white;
+    font-size: 14px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    z-index: 9999;
+}
+
+    /* LANGUAGE MENU */
     #lang-toggle{
-      position:fixed; top:14px; right:14px;
+      position:fixed; 
+      top:14px; 
+      right:14px;
       padding:6px 12px;
       border-radius:12px;
       background:white;
@@ -37,8 +75,11 @@
       font-size:18px;
       z-index:10000;
     }
+
     #lang-menu{
-      position:fixed; top:50px; right:14px;
+      position:fixed; 
+      top:50px; 
+      right:14px;
       background:#fff;
       padding:6px 0;
       border-radius:10px;
@@ -46,6 +87,7 @@
       display:none;
       z-index:10001;
     }
+
     #lang-menu button{
       padding:10px 16px;
       border:none;
@@ -55,6 +97,7 @@
       text-align:left;
       width:100%;
     }
+
     #lang-menu button:hover{background:#f2f2f2;}
 
     /* BUTTONS */
@@ -97,6 +140,21 @@
 
 <body>
 
+<!-- 🔝 BARRA FISSA -->
+<div id="top-fixed-bar">
+
+  <a href="lavora-con-noi.html" class="jobs-btn">
+    💼 Lavora con Noi
+</a>
+
+    <a href="index.html" class="home-btn">
+        <img src="tastohome.png" alt="home">
+        <span>Home</span>
+    </a>
+</div>
+
+<div id="top-fixed-spacer"></div>
+
 <!-- LANGUAGE -->
 <div id="lang-toggle">🇮🇹 ▾</div>
 <div id="lang-menu">
@@ -117,24 +175,26 @@
 <section class="menu-section">
   <h2 data-lang="contacts">I nostri Locali</h2>
 
-  <div class="shop-card">
-    <b>Bibione - Viale delle Costellazioni 49</b>
-    <a href="tel:043143628">📞 0431 43628</a>
-    <a href="https://goo.gl/maps/PLxK1tzJq7E2" target="_blank">🗺 Apri su Maps</a>
-  </div>
+<div class="shop-card">
+  <b>Bibione - Viale delle Costellazioni 49</b>
+  <a href="tel:043143628">📞 0431 43628</a>
+  <a href="https://www.google.com/maps/place/Viale+delle+Costellazioni+49,+Bibione" target="_blank">🗺 Apri su Maps</a>
+  <a href="https://g.page/r/CYRHvgKQaZHjEBM/review" target="_blank">⭐ Scrivi una recensione</a>
+</div>
 
-  <div class="shop-card">
-    <b>Bibione - Viale delle Costellazioni 10</b>
-    <a href="tel:0431364365">📞 0431 364365</a>
-    <a href="https://goo.gl/maps/hJkYB1sXcQt" target="_blank">🗺 Apri su Maps</a>
-  </div>
+<div class="shop-card">
+  <b>Bibione - Viale delle Costellazioni 10</b>
+  <a href="tel:0431364365">📞 0431 364365</a>
+  <a href="https://www.google.com/maps/place/Viale+delle+Costellazioni+10,+Bibione" target="_blank">🗺 Apri su Maps</a>
+  <a href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank">⭐ Scrivi una recensione</a>
+</div>
 
-  <div class="shop-card">
-    <b>Lignano Sabbiadoro - Via Udine 1</b>
-    <a href="tel:04311961783">📞 0431 1961783</a>
-    <a href="https://goo.gl/maps/Z4q8C2e6SuM2" target="_blank">🗺 Apri su Maps</a>
-  </div>
-</section>
+<div class="shop-card">
+  <b>Lignano Sabbiadoro - Via Udine 1</b>
+  <a href="tel:04311961783">📞 0431 1961783</a>
+  <a href="https://www.google.com/maps/place/Via+Udine+1,+Lignano+Sabbiadoro" target="_blank">🗺 Apri su Maps</a>
+  <a href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank">⭐ Scrivi una recensione</a>
+</div>
 
 <!-- WHATSAPP -->
 <a id="whatsapp-btn" href="https://wa.me/393403788846" target="_blank">💬</a>
@@ -184,13 +244,11 @@
     document.querySelectorAll("[data-lang]").forEach(el => el.textContent = LANG[l][el.dataset.lang]);
     toggle.textContent = FLAGS[l] + " ▾";
   }
-  // 🔥 Se arrivo da email di login → prendo la lingua da ?lang=xx
-const urlParams = new URLSearchParams(window.location.search);
-const urlLang = urlParams.get("lang");
 
-if (urlLang) {
-    localStorage.setItem("lang", urlLang);
-}
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlLang = urlParams.get("lang");
+  if (urlLang) localStorage.setItem("lang", urlLang);
+
   apply(localStorage.getItem("lang") || "it");
 
   document.querySelectorAll(".lang-btn").forEach(btn =>
@@ -203,7 +261,7 @@ if (urlLang) {
 })();
 </script>
 
-<!-- 🔥 Firebase: Gestione link sign-in email -->
+<!-- LOGIN EMAIL -->
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
     if (auth.isSignInWithEmailLink(window.location.href)) {
@@ -227,6 +285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 </script>
+
 <script>
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js")
@@ -234,5 +293,6 @@ if ("serviceWorker" in navigator) {
         .catch(err => console.error("SW errore:", err));
 }
 </script>
+
 </body>
 </html>

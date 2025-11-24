@@ -100,6 +100,8 @@ function showSizeScreen(){
 }
 
 function selectSize(size, g, gr, t, ing){
+  // Mostra il mini riepilogo solo dopo la selezione del formato
+document.getElementById("riepilogo-mini").style.display = "block";
 document.body.classList.remove("step-size");
   document.querySelector("header").style.display = "none";
   coppaSelezionata = size;
@@ -660,30 +662,7 @@ function mostraRiepilogo(){
   step = "riepilogo";
   const area = byId("step-container");
 
-// === SALVATAGGIO IN CRONOLOGIA (Locale) ===
-(function salvaCoppa() {
-
-  // preparo i dati
-  const coppa = {
-    data: new Date().toLocaleString("it-IT"),
-    formato: coppaSelezionata,
-    gusti: [...scelti.gusti],
-    granelle: [...scelti.granelle],
-    topping: [...scelti.topping],
-    ingredienti: [...scelti.ingredienti],
-    extra: [...scelti.extra]
-  };
-
-  // leggo il vecchio array oppure creo uno nuovo
-  let arr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-
-  // aggiungo la nuova coppa in cima
-  arr.unshift(coppa);
-
-  // risalvo
-  localStorage.setItem("cronologiaCoppe", JSON.stringify(arr));
-
-})();
+  // ✅ 1) Calcolo il prezzo SUBITO, così posso salvarlo nella cronologia
   const prezzoBase = prezziBase[coppaSelezionata] || 0;
   const prezzoExtraDettaglio = scelti.extra.map(e => ({
     nome: e,
@@ -692,32 +671,51 @@ function mostraRiepilogo(){
   const sommaExtra = prezzoExtraDettaglio.reduce((t,x)=> t + x.prezzo, 0);
   const totale = prezzoBase + sommaExtra;
 
+  // ✅ 2) SALVATAGGIO IN CRONOLOGIA (Locale) + PREZZO
+  (function salvaCoppa() {
+
+    const coppa = {
+      data: new Date().toLocaleString("it-IT"),
+      formato: coppaSelezionata,
+      gusti: [...scelti.gusti],
+      granelle: [...scelti.granelle],
+      topping: [...scelti.topping],
+      ingredienti: [...scelti.ingredienti],
+      extra: [...scelti.extra],
+      prezzo: totale    // ⬅️ AGGIUNTO
+    };
+
+    let arr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    arr.unshift(coppa);
+    localStorage.setItem("cronologiaCoppe", JSON.stringify(arr));
+  })();
+
+  // ✅ 3) Il resto del riepilogo è identico a prima
   area.innerHTML = `
     <h2>Riepilogo finale</h2>
 
-<div class="scontrino" id="scontrino-da-share">      <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
+<div class="scontrino" id="scontrino-da-share">
+      <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
 <!-- GUSTI RAGGRUPPATI -->
 <p><b>Gusti:</b><br>
 ${(() => {
     const grouped = {};
 
-    // raggruppo quantità
     Object.entries(gustiQuantities).forEach(([nome, qty]) => {
         if (qty > 0) grouped[nome] = qty;
     });
 
-    // se nessun gusto → "-"
     if (Object.keys(grouped).length === 0) return "-";
 
-    // creo linee ordinate
     return Object.entries(grouped)
       .map(([nome, qty]) => {
-        if (qty === 1) return `- ${nome}`;       // niente x1
-        return `- ${nome} x${qty}`;              // x2/x3/x4
+        if (qty === 1) return `- ${nome}`;
+        return `- ${nome} x${qty}`;
       })
       .join("<br>");
 })()}
-</p>      <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
+</p>
+      <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
       <p><b>Topping:</b> ${safeJoin(scelti.topping)}</p>
       <p><b>Ingredienti:</b> ${safeJoin(scelti.ingredienti)}</p>
 
@@ -749,14 +747,14 @@ ${(() => {
       @casadelgelato.it
     </p>
   `;
-// 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
-const mini = document.getElementById("riepilogo-mini");
-mini.classList.add("collapsed");
-mini.classList.remove("open");
-mini.innerHTML = mini.dataset.mini || "";
+
+  // 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
+  const mini = document.getElementById("riepilogo-mini");
+  mini.classList.add("collapsed");
+  mini.classList.remove("open");
+  mini.innerHTML = mini.dataset.mini || "";
   updateRiepilogo();
 }
-
 function apriRegistrazione() {
     // 👉 segno che sono nello step "registrazione" (solo per logica interna)
     step = "registrazione";

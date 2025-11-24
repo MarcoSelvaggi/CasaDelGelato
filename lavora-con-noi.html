@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lavora con Noi</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f6f6f7;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        /* 🔝 BARRA FISSA CON HOME CENTRATO */
+        #top-fixed-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .home-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #444;
+            font-size: 16px;
+        }
+
+        .home-btn img {
+            width: 28px;
+            height: 28px;
+        }
+
+        #top-fixed-spacer {
+            height: 65px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* FORM CARD */
+        .form-card {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 4px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .disabled {
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: #ff7a00;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 🍏 NOTIFICA STILE APPLE */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 14px;
+            font-size: 15px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s ease-out;
+            z-index: 99999;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- 🔝 BARRA FISSA CON HOME CENTRATO -->
+<div id="top-fixed-bar">
+    <a href="index.html" class="home-btn">
+        <img src="tastohome.png" alt="home">
+        <span>Home</span>
+    </a>
+</div>
+
+<div id="top-fixed-spacer"></div>
+
+<h1>Lavora con Noi</h1>
+
+<div class="form-card">
+
+    <!-- LOCALE -->
+    <label>Per quale locale ti candidi?</label>
+    <select id="locale" required>
+        <option value="">Seleziona un locale</option>
+        <option value="Casa del Gelato">Casa del Gelato</option>
+        <option value="Casa del Gelato 2 (Asporto)">Casa del Gelato 2 (Asporto)</option>
+        <option value="Casa del Gelato Lignano (Asporto)">Casa del Gelato Lignano (Asporto)</option>
+    </select>
+
+    <!-- TUTTO IL RESTO BLOCCATO FINCHÉ NON SELEZIONI -->
+    <div id="form-body" class="disabled">
+
+        <label>Nome *</label>
+        <input id="nome" type="text" required>
+
+        <label>Cognome *</label>
+        <input id="cognome" type="text" required>
+
+        <label>Email *</label>
+        <input id="email" type="email" required>
+
+        <label>Età *</label>
+        <input id="eta" type="number" min="14" required>
+
+        <label>Cellulare *</label>
+        <input id="cell" type="tel" required>
+
+        <label>Mansione *</label>
+        <select id="mansione" required>
+            <option value="">Seleziona una mansione</option>
+            <option>Gelataio</option>
+            <option>Cameriere</option>
+            <option>Barista</option>
+            <option>Addetto coppe gelato</option>
+            <option>Banconiere asporto</option>
+        </select>
+
+        <label>Carica Curriculum (PDF o immagine) *</label>
+        <input id="cv" type="file" accept=".pdf,.jpg,.jpeg,.png" required>
+
+        <label>Messaggio aggiuntivo</label>
+        <textarea id="messaggio"></textarea>
+
+        <button class="submit-btn" onclick="inviaCandidatura()">📨 Invia candidatura</button>
+    </div>
+</div>
+
+<!-- 🍏 NOTIFICA -->
+<div id="toast">Candidatura inviata!</div>
+
+<script>
+    // 🔓 Sblocca modulo quando selezioni locale
+    document.getElementById("locale").addEventListener("change", () => {
+        const form = document.getElementById("form-body");
+        if (document.getElementById("locale").value !== "") {
+            form.classList.remove("disabled");
+        } else {
+            form.classList.add("disabled");
+        }
+    });
+
+    // 🍏 Toast notifica
+    function showToast() {
+        const t = document.getElementById("toast");
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2500);
+    }
+
+    // 📧 INVIO CANDIDATURA
+    function inviaCandidatura() {
+
+        const locale = document.getElementById("locale").value;
+        const nome = document.getElementById("nome").value;
+        const cognome = document.getElementById("cognome").value;
+        const email = document.getElementById("email").value;
+        const eta = document.getElementById("eta").value;
+        const cell = document.getElementById("cell").value;
+        const mansione = document.getElementById("mansione").value;
+        const cv = document.getElementById("cv").value;
+
+        // 🔥 CONTROLLO OBBLIGATORI
+        if (!locale || !nome || !cognome || !email || !eta || !cell || !mansione || !cv) {
+            alert("⚠️ Per favore compila tutti i campi obbligatori.");
+            return;
+        }
+
+        // Messaggio
+        const messaggio = document.getElementById("messaggio").value;
+
+        const body =
+`Locale: ${locale}
+Nome: ${nome}
+Cognome: ${cognome}
+Email: ${email}
+Età: ${eta}
+Cellulare: ${cell}
+Mansione: ${mansione}
+
+Messaggio:
+${messaggio}
+`;
+
+        // mailto
+        const mailto = `mailto:casadelgelato.it@icloud.com?subject=Candidatura - ${locale}&body=${encodeURIComponent(body)}`;
+
+        // Invia
+        window.location.href = mailto;
+
+        // Mostra notifica
+        showToast();
+    }
+</script>
+
+</body>
+</html>

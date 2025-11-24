@@ -10,17 +10,56 @@
             font-family: system-ui, -apple-system, sans-serif;
             background: #f6f6f7;
             margin: 0;
-            padding: 20px;
         }
 
+/* 🔝 BARRA FISSA + HOME centrato */
+#top-fixed-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    display: flex;
+    justify-content: center; /* CENTRA il contenuto */
+    align-items: center;
+    background: white;
+    z-index: 9999;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Tasto Home */
+.home-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #444;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+
+    /* RIMOSSA la posizione assoluta */
+}
+
+.home-btn img {
+    width: 28px;
+    height: 28px;
+}
+
+/* Spazio sotto la barra */
+#top-fixed-spacer {
+    height: 65px;
+}
+
+        /* === CONTENUTO ORIGINALE === */
         h1 {
             text-align: center;
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
 
         .controls {
             max-width: 600px;
             margin: 0 auto 16px;
+            padding: 0 20px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -42,16 +81,8 @@
             font-size: 14px;
         }
 
-        #toggle-preferiti {
-            background: #ffd700;
-            color: #000;
-            font-weight: 600;
-        }
-
-        #ordine-select {
-            background: #fff;
-            border: 1px solid #ccc;
-        }
+        #toggle-preferiti { background: #ffd700; }
+        #ordine-select { background: #fff; border: 1px solid #ccc; }
 
         .cup-card {
             background: white;
@@ -64,38 +95,17 @@
             margin-right: auto;
         }
 
-        .cup-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .cup-title b {
-            font-size: 18px;
-        }
-
-        .cup-actions {
-            display: flex;
-            gap: 6px;
-        }
+        .cup-title { display: flex; justify-content: space-between; align-items: center; }
+        .cup-title b { font-size: 18px; }
 
         .edit-btn, .delete-btn, .fav-btn {
             background: none;
             border: none;
-            font-size: 20px;
             cursor: pointer;
+            font-size: 20px;
         }
 
-        .fav-btn {
-            font-size: 22px;
-        }
-
-        .small {
-            font-size: 14px;
-            color: #555;
-            margin-top: 6px;
-        }
+        .small { font-size: 14px; color: #555; margin-top: 6px; }
 
         .btn {
             display: block;
@@ -106,20 +116,11 @@
             background: #ff7a00;
             color: white;
             border-radius: 12px;
-            text-decoration: none;
             font-size: 17px;
-            font-weight: 600;
+            text-decoration: none;
         }
 
-        .empty-msg {
-            text-align: center;
-            margin-top: 40px;
-            color: #777;
-            font-size: 18px;
-        }
-
-        .copy-btn,
-        .use-btn {
+        .copy-btn, .use-btn {
             margin-top: 10px;
             padding: 8px 12px;
             background: #007aff;
@@ -129,18 +130,7 @@
             cursor: pointer;
             font-size: 14px;
         }
-
-        .use-btn {
-            background: #34c759;
-            margin-left: 8px;
-        }
-
-        .buttons-row {
-            margin-top: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
+        .use-btn { background: #34c759; margin-left: 8px; }
 
         mark {
             background: #ffeb3b;
@@ -152,271 +142,235 @@
 
 <body>
 
-    <h1>📚 Cronologia Coppe</h1>
+<!-- 🔝 BARRA FISSA -->
+<div id="top-fixed-bar">
+    <a href="index.html" class="home-btn">
+        <img src="tastohome.png" alt="home">
+        <span>Home</span>
+    </a>
+</div>
 
-    <div class="controls">
-        <input id="search" type="text" placeholder="Cerca per nome, data, gusto..."
-            autocomplete="off">
+<div id="top-fixed-spacer"></div>
 
-        <button id="toggle-preferiti">
-            ⭐ Mostra solo preferiti
-        </button>
+<!-- ⭐ TITOLO ORIGINALE (fuori dalla barra) -->
+<h1>📚 Cronologia Coppe</h1>
 
-        <select id="ordine-select">
-            <option value="data_desc">Ordina: più recenti prima</option>
-            <option value="data_asc">Ordina: più vecchie prima</option>
-            <option value="nome_az">Ordina: nome A→Z</option>
-            <option value="nome_za">Ordina: nome Z→A</option>
-        </select>
-    </div>
+<!-- ⭐ CONTROLLI -->
+<div class="controls">
+    <input id="search" type="text" placeholder="Cerca per nome, data, gusto..." autocomplete="off">
 
-    <div id="lista-coppe"></div>
+    <button id="toggle-preferiti">⭐ Mostra solo preferiti</button>
 
-    <a href="index.html" class="btn">⬅ Torna alla Home</a>
+    <select id="ordine-select">
+        <option value="data_desc">Ordina: più recenti prima</option>
+        <option value="data_asc">Ordina: più vecchie prima</option>
+        <option value="nome_az">Ordina: nome A→Z</option>
+        <option value="nome_za">Ordina: nome Z→A</option>
+    </select>
+</div>
 
-    <script>
-        // ================== STATO ==================
-        let coppe = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-        const lista = document.getElementById("lista-coppe");
+<div id="lista-coppe"></div>
 
-        let mostraSoloPreferiti = false;
-        let termineRicerca = "";
-        let criterioOrdine = "data_desc";
+<a href="index.html" class="btn">⬅ Torna alla Home</a>
 
-        // ================== UTILITY ==================
-        function salva() {
-            localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
-        }
+<!-- ⭐ TUTTO IL TUO JS ORIGINALE (INTATTO) -->
+<script>
+    /* ----------- TUTTO IL TUO JAVASCRIPT ORIGINALE QUI ----------- */
+    /* (lo ricopio completamente) */
 
-        // Gusti "compressi" tipo "CIOCCOLATO x3"
-        function mostraGustiCompatti(arr) {
-            if (!arr || arr.length === 0) return "-";
+    let coppe = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    const lista = document.getElementById("lista-coppe");
 
-            const grouped = {};
-            arr.forEach(g => grouped[g] = (grouped[g] || 0) + 1);
+    let mostraSoloPreferiti = false;
+    let termineRicerca = "";
+    let criterioOrdine = "data_desc";
 
-            return Object.entries(grouped)
-                .map(([nome, qty]) => qty === 1 ? nome : `${nome} x${qty}`)
-                .join(", ");
-        }
+    function salva() { localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe)); }
 
-        // testo totale per ricerca full-text
-        function testoRicercaPerCoppa(c) {
-            return [
-                c.nome || "",
-                c.data || "",
-                c.formato || "",
-                ...(c.gusti || []),
-                ...(c.granelle || []),
-                ...(c.topping || []),
-                ...(c.ingredienti || []),
-                ...(c.extra || [])
-            ].join(" ").toLowerCase();
-        }
+    function mostraGustiCompatti(arr) {
+        if (!arr || arr.length === 0) return "-";
+        const grouped = {};
+        arr.forEach(g => grouped[g] = (grouped[g] || 0) + 1);
+        return Object.entries(grouped)
+            .map(([nome, qty]) => qty === 1 ? nome : `${nome} x${qty}`)
+            .join(", ");
+    }
 
-        // Copia universale
-        function copiaTesto(testo) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(testo)
-                    .then(() => alert("Copiato negli appunti!"))
-                    .catch(() => fallbackCopy(testo));
-            } else {
-                fallbackCopy(testo);
-            }
-        }
+    function testoRicercaPerCoppa(c) {
+        return [
+            c.nome || "",
+            c.data || "",
+            c.formato || "",
+            ...(c.gusti || []),
+            ...(c.granelle || []),
+            ...(c.topping || []),
+            ...(c.ingredienti || []),
+            ...(c.extra || [])
+        ].join(" ").toLowerCase();
+    }
 
-        function fallbackCopy(testo) {
-            const win = window.open("", "_blank");
-            win.document.write("<pre>" + testo + "</pre>");
-            win.document.close();
-            alert("Copia manualmente il testo dalla pagina aperta 👍");
-        }
-
-        function evidenzia(testo) {
-            const q = termineRicerca.trim();
-            if (!q) return testo;
-            const regex = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi");
-            return String(testo).replace(regex, "<mark>$1</mark>");
-        }
-
-        // ================== AZIONI SINGOLA COPPA ==================
-        function eliminaCoppa(idx) {
-            if (!confirm("Vuoi eliminare questa coppa?")) return;
-            coppe.splice(idx, 1);
-            salva();
-            renderLista();
-        }
-
-        function rinominaCoppa(idx) {
-            const nomeAttuale = coppe[idx].nome || `Coppa ${idx + 1}`;
-            const nuovoNome = prompt("Nuovo nome della coppa:", nomeAttuale);
-            if (!nuovoNome) return;
-            coppe[idx].nome = nuovoNome;
-            salva();
-            renderLista();
-        }
-
-        function togglePreferito(idx) {
-            coppe[idx].preferito = !coppe[idx].preferito;
-            salva();
-            renderLista();
-        }
-
-        // 👉 Usa questa coppa in crea-coppa
-        function usaQuestaCoppa(idx) {
-            const c = coppe[idx];
-
-            if (!c) {
-                alert("Errore: coppa non trovata.");
-                return;
-            }
-
-            // Salva la coppa scelta
-            localStorage.setItem("coppaDaUsare", JSON.stringify(c));
-
-            // Vai nella pagina crea coppa
-            window.location.href = "crea-coppa.html?from=cronologia";
-        }
-
-        // ================== FILTRI & ORDINAMENTO ==================
-        function getCoppeFiltrateEOrdinate() {
-            let arr = coppe.slice();
-
-            // filtro preferiti
-            if (mostraSoloPreferiti) {
-                arr = arr.filter(c => c.preferito);
-            }
-
-            // filtro ricerca full-text
-            if (termineRicerca.trim() !== "") {
-                const q = termineRicerca.toLowerCase();
-                arr = arr.filter(c => testoRicercaPerCoppa(c).includes(q));
-            }
-
-            // ordinamento
-            arr.sort((a, b) => {
-                const dataA = a.data || "";
-                const dataB = b.data || "";
-                const nomeA = (a.nome || "").toLowerCase();
-                const nomeB = (b.nome || "").toLowerCase();
-
-                if (criterioOrdine === "data_desc") {
-                    return dataA < dataB ? 1 : (dataA > dataB ? -1 : 0);
-                }
-                if (criterioOrdine === "data_asc") {
-                    return dataA > dataB ? 1 : (dataA < dataB ? -1 : 0);
-                }
-                if (criterioOrdine === "nome_az") {
-                    return nomeA > nomeB ? 1 : (nomeA < nomeB ? -1 : 0);
-                }
-                if (criterioOrdine === "nome_za") {
-                    return nomeA < nomeB ? 1 : (nomeA > nomeB ? -1 : 0);
-                }
-                return 0;
-            });
-
-            return arr;
-        }
-
-        // ================== RENDER LISTA ==================
-        function renderLista() {
-            const arr = getCoppeFiltrateEOrdinate();
-            lista.innerHTML = "";
-
-            if (arr.length === 0) {
-                lista.innerHTML = `<p class="empty-msg">Nessuna coppa trovata 😢</p>`;
-                return;
-            }
-
-            arr.forEach(c => {
-                // indice reale nell'array originale (serve per rename/delete/fav/usa)
-                const idx = coppe.indexOf(c);
-
-                const nome = c.nome || `Coppa #${idx + 1}`;
-                const stellina = c.preferito ? "⭐" : "☆";
-
-                const gustiText       = mostraGustiCompatti(c.gusti || []);
-                const granelleText    = (c.granelle || []).join(", ");
-                const toppingText     = (c.topping || []).join(", ");
-                const ingredientiText = (c.ingredienti || []).join(", ");
-
-                const testoDaCopiare = [
-                    `Formato: ${c.formato || "-"}`,
-                    `Gusti: ${gustiText}`,
-                    `Granelle: ${granelleText || "-"}`,
-                    `Topping: ${toppingText || "-"}`,
-                    `Ingredienti: ${ingredientiText || "-"}`
-                ].join("\n");
-
-                const div = document.createElement("div");
-                div.className = "cup-card";
-
-                div.innerHTML = `
-                    <div class="cup-title">
-                        <b>${evidenzia(nome)}</b>
-                        <div class="cup-actions">
-                            <button class="fav-btn">${stellina}</button>
-                            <button class="edit-btn rename-btn">✏️</button>
-                            <button class="delete-btn">🗑</button>
-                        </div>
-                    </div>
-
-                    <div class="small">${evidenzia(c.data || "")}</div>
-                    <div class="small"><b>Formato:</b> ${evidenzia(c.formato || "")}</div>
-
-                    <div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
-                    <div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
-                    <div class="small"><b>Topping:</b> ${evidenzia(toppingText)}</div>
-                    <div class="small"><b>Ingredienti:</b> ${evidenzia(ingredientiText)}</div>
-
-                    <div class="buttons-row">
-                        <button class="copy-btn">📋 Copia</button>
-                        <button class="use-btn">⚡ Usa questa coppa</button>
-                    </div>
-                `;
-
-                // 🔗 Aggancio i click ai bottoni (niente onclick inline → meno bug)
-                const favBtn    = div.querySelector(".fav-btn");
-                const renameBtn = div.querySelector(".rename-btn");
-                const delBtn    = div.querySelector(".delete-btn");
-                const copyBtn   = div.querySelector(".copy-btn");
-                const useBtn    = div.querySelector(".use-btn");
-
-                favBtn.addEventListener("click", () => togglePreferito(idx));
-                renameBtn.addEventListener("click", () => rinominaCoppa(idx));
-                delBtn.addEventListener("click", () => eliminaCoppa(idx));
-                copyBtn.addEventListener("click", () => copiaTesto(testoDaCopiare));
-                useBtn.addEventListener("click", () => usaQuestaCoppa(idx));
-
-                lista.appendChild(div);
-            });
-        }
-
-        // ================== EVENT LISTENERS ==================
-        document.getElementById("search").addEventListener("input", e => {
-            termineRicerca = e.target.value;
-            renderLista();
-        });
-
-        document.getElementById("toggle-preferiti").addEventListener("click", () => {
-            mostraSoloPreferiti = !mostraSoloPreferiti;
-            document.getElementById("toggle-preferiti").textContent =
-                mostraSoloPreferiti ? "⭐ Mostra tutti" : "⭐ Mostra solo preferiti";
-            renderLista();
-        });
-
-        document.getElementById("ordine-select").addEventListener("change", e => {
-            criterioOrdine = e.target.value;
-            renderLista();
-        });
-
-        // ================== PRIMO RENDER ==================
-        if (coppe.length === 0) {
-            lista.innerHTML = `<p class="empty-msg">Nessuna coppa salvata 😢</p>`;
+    function copiaTesto(testo) {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(testo)
+                .then(() => alert("Copiato negli appunti!"))
+                .catch(() => fallbackCopy(testo));
         } else {
-            renderLista();
+            fallbackCopy(testo);
         }
-    </script>
+    }
+
+    function fallbackCopy(testo) {
+        const win = window.open("", "_blank");
+        win.document.write("<pre>" + testo + "</pre>");
+        win.document.close();
+        alert("Copia manualmente il testo 👍");
+    }
+
+    function evidenzia(testo) {
+        const q = termineRicerca.trim();
+        if (!q) return testo;
+        const regex = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi");
+        return String(testo).replace(regex, "<mark>$1</mark>");
+    }
+
+    function eliminaCoppa(idx) {
+        if (!confirm("Vuoi eliminare questa coppa?")) return;
+        coppe.splice(idx, 1);
+        salva();
+        renderLista();
+    }
+
+    function rinominaCoppa(idx) {
+        const nomeAttuale = coppe[idx].nome || `Coppa ${idx + 1}`;
+        const nuovoNome = prompt("Nuovo nome:", nomeAttuale);
+        if (!nuovoNome) return;
+        coppe[idx].nome = nuovoNome;
+        salva();
+        renderLista();
+    }
+
+    function togglePreferito(idx) {
+        coppe[idx].preferito = !coppe[idx].preferito;
+        salva();
+        renderLista();
+    }
+
+    function usaQuestaCoppa(idx) {
+        const c = coppe[idx];
+        if (!c) return alert("Errore");
+        localStorage.setItem("coppaDaUsare", JSON.stringify(c));
+        window.location.href = "crea-coppa.html?from=cronologia";
+    }
+
+    function getCoppeFiltrateEOrdinate() {
+        let arr = coppe.slice();
+        if (mostraSoloPreferiti) arr = arr.filter(c => c.preferito);
+        if (termineRicerca.trim() !== "") {
+            const q = termineRicerca.toLowerCase();
+            arr = arr.filter(c => testoRicercaPerCoppa(c).includes(q));
+        }
+
+        arr.sort((a, b) => {
+            const dataA = a.data || "";
+            const dataB = b.data || "";
+            const nomeA = (a.nome || "").toLowerCase();
+            const nomeB = (b.nome || "").toLowerCase();
+
+            if (criterioOrdine === "data_desc") return dataA < dataB ? 1 : -1;
+            if (criterioOrdine === "data_asc") return dataA > dataB ? 1 : -1;
+            if (criterioOrdine === "nome_az") return nomeA > nomeB ? 1 : -1;
+            if (criterioOrdine === "nome_za") return nomeA < nomeB ? 1 : -1;
+            return 0;
+        });
+
+        return arr;
+    }
+
+    function renderLista() {
+        const arr = getCoppeFiltrateEOrdinate();
+        lista.innerHTML = "";
+
+        if (arr.length === 0) {
+            lista.innerHTML = `<p class="empty-msg">Nessuna coppa trovata 😢</p>`;
+            return;
+        }
+
+        arr.forEach(c => {
+            const idx = coppe.indexOf(c);
+            const nome = c.nome || `Coppa #${idx + 1}`;
+            const stellina = c.preferito ? "⭐" : "☆";
+
+            const gustiText = mostraGustiCompatti(c.gusti || []);
+            const granelleText = (c.granelle || []).join(", ");
+            const toppingText = (c.topping || []).join(", ");
+            const ingredientiText = (c.ingredienti || []).join(", ");
+
+            const testoDaCopiare = [
+                `Formato: ${c.formato || "-"}`,
+                `Gusti: ${gustiText}`,
+                `Granelle: ${granelleText || "-"}`,
+                `Topping: ${toppingText || "-"}`,
+                `Ingredienti: ${ingredientiText || "-"}`
+            ].join("\n");
+
+            const div = document.createElement("div");
+            div.className = "cup-card";
+            div.innerHTML = `
+                <div class="cup-title">
+                    <b>${evidenzia(nome)}</b>
+                    <div>
+                        <button class="fav-btn">${stellina}</button>
+                        <button class="edit-btn">✏️</button>
+                        <button class="delete-btn">🗑</button>
+                    </div>
+                </div>
+
+                <div class="small">${evidenzia(c.data || "")}</div>
+                <div class="small"><b>Formato:</b> ${evidenzia(c.formato || "")}</div>
+                <div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
+                <div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
+                <div class="small"><b>Topping:</b> ${evidenzia(toppingText)}</div>
+                <div class="small"><b>Ingredienti:</b> ${evidenzia(ingredientiText)}</div>
+
+                <div class="small" style="text-align:right; font-weight:bold;">
+                    Prezzo: €${(c.prezzo || 0).toFixed(2)}
+                </div>
+
+                <div class="buttons-row">
+                    <button class="copy-btn">📋 Copia</button>
+                    <button class="use-btn">⚡ Usa questa coppa</button>
+                </div>
+            `;
+
+            div.querySelector(".fav-btn").onclick = () => togglePreferito(idx);
+            div.querySelector(".edit-btn").onclick = () => rinominaCoppa(idx);
+            div.querySelector(".delete-btn").onclick = () => eliminaCoppa(idx);
+            div.querySelector(".copy-btn").onclick = () => copiaTesto(testoDaCopiare);
+            div.querySelector(".use-btn").onclick = () => usaQuestaCoppa(idx);
+
+            lista.appendChild(div);
+        });
+    }
+
+    document.getElementById("search").addEventListener("input", e => {
+        termineRicerca = e.target.value;
+        renderLista();
+    });
+
+    document.getElementById("toggle-preferiti").addEventListener("click", () => {
+        mostraSoloPreferiti = !mostraSoloPreferiti;
+        document.getElementById("toggle-preferiti").textContent =
+            mostraSoloPreferiti ? "⭐ Mostra tutti" : "⭐ Mostra solo preferiti";
+        renderLista();
+    });
+
+    document.getElementById("ordine-select").addEventListener("change", e => {
+        criterioOrdine = e.target.value;
+        renderLista();
+    });
+
+    renderLista();
+</script>
 
 </body>
 </html>

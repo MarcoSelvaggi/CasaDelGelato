@@ -812,7 +812,9 @@ body.step-size #riepilogo-mini {
     background: white;
     z-index: 9999;
 }
-
+#top-fixed-spacer {
+    height: 50px; /* Deve essere uguale all’altezza della barra */
+}
 .home-btn {
     display: flex;
     align-items: center;

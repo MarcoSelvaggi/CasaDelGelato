@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
-  <!-- Firebase -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
@@ -14,24 +14,40 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
 </script>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Crea la tua Coppa</title>
 
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- Libreria immagine -->
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
-  <!-- JS della tua app -->
   <script defer src="crea-coppa.js"></script>
 </head>
 
 <body>
 
-  <div style="height:60px;"></div>
+<!-- ⚠️ TASTO ALLERGIE – ora visibile -->
+<a href="allergie.html" 
+   style="
+        position: fixed;
+        top: 12px;
+        right: 12px;
+        background: #ff3b30;
+        color: white;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        z-index: 9999;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+   ">
+   ⚠️ Allergie
+</a>
+
+<!-- solo UNO spacer -->
+<div style="height:60px;"></div>
 
 <div id="top-fixed-bar">
     <a href="index.html" class="home-btn">
@@ -42,12 +58,9 @@
 
 <div id="top-fixed-spacer"></div>
 
-<!-- Spazio per non far coprire il contenuto -->
-<div id="top-fixed-spacer"></div>
-
 <!-- MINI RIEPILOGO: DEVE ESSERE VUOTO E SENZA CLASSI -->
 <div id="riepilogo-mini"></div>
-
+<div id="riepilogo-mini" style="display:none;"></div>
 
 <!-- 🍏 DYNAMIC ISLAND -->
 <div id="dynamic-island">
@@ -62,21 +75,46 @@
 
 <section id="step-size" style="text-align:center;">
   <h2>Scegli il Formato</h2>
+  <p style="margin-top:6px; font-size:15px; color:#444; font-weight:500;">
+    Panna inclusa
+</p>
 
-  <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
-    <b>PICCOLA • €7,50</b><br>
-    2 gusti · 1 topping · 1 granella · 1 ingrediente
-  </div>
+<p style="margin-top:2px; font-size:13px; color:#666; line-height:1.3;">
+    ⚠️Per eventuali allergie e intolleranze consultare la lista qui in alto 
+    e avvisare il cameriere⚠️
+</p>
+<!-- 🔶 Tasto Allergie direttamente sotto il testo -->
+<div style="margin-top:10px; margin-bottom:20px;">
+    <a href="allergie.html"
+       style="
+            display:inline-block;
+            background:#ff3b30;
+            color:white;
+            padding:10px 16px;
+            border-radius:10px;
+            font-size:14px;
+            font-weight:600;
+            text-decoration:none;
+            box-shadow:0 2px 5px rgba(0,0,0,0.20);
+       ">
+        ⚠️ Apri lista allergie
+    </a>
+</div>
 
-  <div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
-    <b>MEDIA • €9,00</b><br>
-    3 gusti · 2 topping · 2 granelle · 1 ingrediente
-  </div>
+<div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
+  <b>PICCOLLA • €7,50</b><br>
+  2 gusti · 1 granella · 1 topping · 1 ingrediente
+</div>
 
-  <div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
-    <b>GRANDE • €12,00</b><br>
-    4 gusti · 2 topping · 2 granelle · 2 ingredienti
-  </div>
+<div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
+  <b>MEDIA • €9,00</b><br>
+  3 gusti · 2 granelle · 2 topping · 1 ingrediente
+</div>
+
+<div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
+  <b>GRANDE • €12,00</b><br>
+  4 gusti · 2 granelle · 2 topping · 2 ingredienti
+</div>
 </section>
 
 <h2 id="step-title" class="step-title" style="display:none; text-align:center; margin-top:10px;"></h2>
@@ -94,7 +132,7 @@
 </div>
 
 <script>
-  
+
  // NON mostrare il popup se arrivo da "usa questa coppa"
 const fromCrono = window.location.search.includes("from=cronologia");
 
@@ -186,6 +224,10 @@ if ("serviceWorker" in navigator) {
         .then(() => console.log("Service Worker registrato"))
         .catch(err => console.error("Errore Service Worker:", err));
 }
+</script>
+<script>
+// Nasconde SEMPRE il mini riepilogo quando entri nella pagina
+document.getElementById("riepilogo-mini").style.display = "none";
 </script>
 </body>
 </html>
