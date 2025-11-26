@@ -755,26 +755,7 @@ ${(() => {
   mini.innerHTML = mini.dataset.mini || "";
   updateRiepilogo();
 }
-function apriRegistrazione() {
-    // 👉 segno che sono nello step "registrazione" (solo per logica interna)
-    step = "registrazione";
-    updateRiepilogo(); // il mini riepilogo resta coerente
 
-    const area = document.getElementById("step-container");
-
-    area.innerHTML = `
-        <h2>Registrazione</h2>
-        <p>Inserisci la tua email per salvare le tue coppe nella cronologia.</p>
-
-        <input id="reg-email" type="email" placeholder="La tua email" class="email-input" 
-               style="padding:10px; font-size:16px; width:90%; max-width:280px; margin:15px auto; display:block; border-radius:8px; border:1px solid #ddd;"/>
-
-        <div class="nav-buttons" style="margin-top:15px;">
-            <button class="next-btn" onclick="inviaRegistrazione()">Invia conferma</button>
-            <button class="back-btn" onclick="mostraRiepilogo()">⬅ Torna indietro</button>
-        </div>
-    `;
-}
 
 async function inviaRegistrazione() {
     const email = document.getElementById("reg-email").value.trim();

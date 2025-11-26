@@ -169,7 +169,7 @@
   <h2 data-lang="create_cup_title">Crea la tua Coppa</h2>
   <p data-lang="create_cup_subtitle">Personalizza la tua coppa come la vuoi tu</p>
   <a id="start-coppa" class="btn" data-lang="create_button">🍨 INIZIA</a>
-  <a href="cronologia.html" class="btn">📚 Cronologia Coppe</a>
+  <a href="cronologia.html" class="btn">Coppe create</a>
 </section>
 
 <section class="menu-section">
@@ -270,12 +270,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!email) email = prompt("Inserisci la tua email per completare il login:");
 
         try {
+            // 🔥 1. Completa il login Firebase
             await auth.signInWithEmailLink(email, window.location.href);
             window.localStorage.removeItem("emailForSignIn");
 
-            alert("🎉 Registrazione completata! Hai sbloccato la Cronologia Coppe.");
+            // 🔥 2. Salva che l’utente è registrato
             localStorage.setItem("userLogged", "1");
+            localStorage.setItem("userEmail", email);
 
+            // 🔥 3. Salva la registrazione nel tuo Firestore "registrazioni"
+            await db.collection("registrazioni").add({
+                email: email,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // 🔥 4. Notifica all’utente
+            alert("🎉 Registrazione completata!");
+
+            // 🔥 5. Torna alla Home
             window.location.href = "index.html";
 
         } catch (err) {
