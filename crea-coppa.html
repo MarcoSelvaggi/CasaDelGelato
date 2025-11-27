@@ -9,7 +9,14 @@
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script type="module" src="supabase.js"></script>
+  <script type="module">
+  import { salvaRegistrazioneSupabase } from "./supabase.js";
+  window.salvaRegistrazioneSupabase = salvaRegistrazioneSupabase;
+</script>
   <script defer src="crea-coppa.js"></script>
+
+
+
 </head>
 
 <body>
@@ -185,23 +192,23 @@ async function salvaRegistrazione() {
     const email = document.getElementById("reg-email").value.trim().toLowerCase();
 
     if (!nome || !cognome || !email) {
-        alert("⚠️ Compila tutti i campi.");
+        alert("⚠️ Compila tutti i campi: Nome, Cognome, Email.");
         return;
     }
 
-    // 🔥 chiama la funzione dentro supabase.js
-    const risultato = await salvaRegistrazioneSupabase(nome, cognome, email);
+    // 🔥 1. Manda i dati a Supabase
+    let res = await salvaRegistrazioneSupabase(nome, cognome, email);
 
-    if (!risultato.success) {
-        alert("Errore: " + risultato.error);
+    if (!res.success) {
+        alert("Errore durante la registrazione: " + res.error);
         return;
     }
 
-    // salva localmente
+    // 🔥 2. Salva localmente che l'utente è registrato
     localStorage.setItem("userLogged", "1");
     localStorage.setItem("user_email", email);
 
-    alert("🎉 Registrazione completata!");
+    alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
     window.location.href = "index.html";
 }
 </script>
