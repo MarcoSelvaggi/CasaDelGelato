@@ -8,6 +8,7 @@
 
   <link rel="stylesheet" href="style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script type="module" src="supabase.js"></script>
   <script defer src="crea-coppa.js"></script>
 </head>
 
@@ -182,47 +183,29 @@ function chiudiRegistrazione() {
 
 
 // SALVA REGISTRAZIONE
-function salvaRegistrazione() {
+async function salvaRegistrazione() {
     const nome = document.getElementById("reg-nome").value.trim();
     const cognome = document.getElementById("reg-cognome").value.trim();
-    const email = document.getElementById("reg-email").value.trim();
+    const email = document.getElementById("reg-email").value.trim().toLowerCase();
 
     if (!nome || !cognome || !email) {
-        alert("⚠️ Compila tutti i campi: Nome, Cognome, Email");
+        alert("⚠️ Compila tutti i campi.");
         return;
     }
 
-    // Preparo l'oggetto utente
-    const user = {
-        nome,
-        cognome,
-        email,
-        registrato: true,
-        disiscritto: false,
-        dataRegistrazione: new Date().toLocaleString("it-IT")
-    };
+    // 🔥 1. Manda tutto a Supabase
+    const res = await salvaRegistrazioneSupabase(nome, cognome, email);
 
-    // Recupero array e aggiorno
-    let lista = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
-
-    // Se email già presente → aggiorno invece di duplicare
-    const idx = lista.findIndex(u => u.email === email);
-    if (idx !== -1) {
-        lista[idx] = user; // sovrascrivo con dati nuovi
-    } else {
-        lista.push(user); // aggiungo nuovo
+    if (!res.ok) {
+        alert("Errore durante la registrazione: " + res.error.message);
+        return;
     }
 
-    localStorage.setItem("utentiRegistrati", JSON.stringify(lista));
-
-    // 🔥 IMPORTANTE: serve per il tasto Disiscriviti
+    // 🔥 2. Salva localmente che è registrato
+    localStorage.setItem("userLogged", "1");
     localStorage.setItem("user_email", email);
 
-    // Sblocca cronologia
-    localStorage.setItem("userLogged", "1");
-
-    alert("🎉 Registrazione completata! Hai sbloccato la Cronologia Coppe.");
-
+    alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
     window.location.href = "index.html";
 }
 </script>
