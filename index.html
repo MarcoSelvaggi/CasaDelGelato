@@ -281,7 +281,9 @@ if ("serviceWorker" in navigator) {
 
 <script>
 function disiscriviti() {
-    const email = localStorage.getItem("userEmail"); // ← QUESTA È QUELLA GIUSTA!
+    console.log("DEBUG email salvata:", localStorage.getItem("user_email"));
+
+    const email = localStorage.getItem("user_email");
     if (!email) {
         alert("Errore: nessun utente registrato.");
         return;
@@ -301,8 +303,7 @@ function disiscriviti() {
 
     localStorage.setItem("utentiRegistrati", JSON.stringify(lista));
 
-    // elimina login
-    localStorage.removeItem("userEmail");
+    localStorage.removeItem("user_email");
     localStorage.setItem("userLogged", "0");
 
     alert("❌ Hai cancellato la registrazione.");
