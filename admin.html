@@ -1,114 +1,159 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pannello Admin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Casa del Gelato</title>
 
-<style>
-body {
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f6f6f7;
-  margin: 0;
-  padding: 20px;
-}
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f6f6f7;
+            margin: 0;
+            padding: 0;
+        }
 
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
+        /* ⭐ Barra fissa + Home */
+        #top-fixed-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-#top-fixed-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 55px;
-  background: white;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
+        .home-btn {
+            position: absolute;
+            left: 12px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #444;
+            font-size: 16px;
+            gap: 6px;
+        }
 
-.home-btn {
-  position: absolute;
-  left: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #444;
-  text-decoration: none;
-  font-size: 16px;
-}
+        .home-btn img {
+            width: 28px;
+            height: 28px;
+        }
 
-.home-btn img {
-  width: 28px;
-  height: 28px;
-}
+        #spacer { height: 70px; }
 
-#spacer {
-  height: 60px;
-}
+        h1 {
+            text-align: center;
+            margin-top: 10px;
+        }
 
-.card {
-  background: white;
-  padding: 16px;
-  border-radius: 14px;
-  margin-bottom: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-}
+        #stats {
+            text-align: center;
+            margin: 10px 0 20px;
+            font-size: 18px;
+        }
 
-.card b {
-  font-size: 17px;
-}
+        #admin-list {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-.small {
-  font-size: 14px;
-  color: #555;
-  margin-top: 6px;
-}
-</style>
+        .utente {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border-left: 6px solid #007aff;
+        }
+
+        .utente-disiscritto {
+            background: #ffe5e5;
+            border-left: 6px solid red;
+        }
+
+        .utente b {
+            font-size: 16px;
+        }
+    </style>
 </head>
 
 <body>
 
+<!-- ⭐ Barra fissa -->
 <div id="top-fixed-bar">
-  <a href="index.html" class="home-btn">
-    <img src="tastohome.png" alt="home">
-    <span>Home</span>
-  </a>
-  <span style="font-weight:bold;">Pannello Admin</span>
+    <a class="home-btn" href="index.html">
+        <img src="tastohome.png" alt="home">
+        <span>Home</span>
+    </a>
 </div>
 
 <div id="spacer"></div>
 
-<h1>Utenti Registrati</h1>
+<h1>📊 Pannello Admin</h1>
+<div id="stats"></div>
 
-<div id="lista"></div>
+<div id="admin-list"></div>
 
 <script>
-function caricaUtenti() {
-    const lista = document.getElementById("lista");
+function renderAdmin() {
+    const listaDiv = document.getElementById("admin-list");
+    const statsDiv = document.getElementById("stats");
 
+    // Recupero utenti dal localStorage
     const utenti = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
 
     if (utenti.length === 0) {
-        lista.innerHTML = "<p style='text-align:center; color:#777;'>Nessun utente registrato</p>";
+        listaDiv.innerHTML = "<p style='text-align:center; color:#888;'>Nessun utente registrato</p>";
         return;
     }
 
-    lista.innerHTML = utenti.map(u => `
-        <div class="card">
-            <b>${u.nome} ${u.cognome}</b>
-            <div class="small">Email: ${u.email}</div>
-            <div class="small">Registrato il: ${u.data}</div>
-        </div>
-    `).join("");
+    let registrati = 0;
+    let disiscritti = 0;
+
+    listaDiv.innerHTML = "";
+
+    utenti.forEach(u => {
+        let cls = "utente";
+        let stato = "";
+
+        if (u.disiscritto) {
+            cls += " utente-disiscritto";
+            stato = "<b style='color:red;'>🚫 UTENTE DISISCRITTO</b>";
+            disiscritti++;
+        } else {
+            stato = "<b style='color:#007aff;'>✔ Utente registrato</b>";
+            registrati++;
+        }
+
+        listaDiv.innerHTML += `
+            <div class="${cls}">
+                ${stato}<br>
+                <b>Nome:</b> ${u.nome}<br>
+                <b>Cognome:</b> ${u.cognome}<br>
+                <b>Email:</b> ${u.email}<br>
+                <b>Registrato il:</b> ${u.dataRegistrazione || "-"}<br>
+                ${
+                    u.disiscritto
+                    ? `<b>Disiscritto il:</b> ${u.dataDisiscrizione || "-"}`
+                    : ""
+                }
+            </div>
+        `;
+    });
+
+    statsDiv.innerHTML = `
+        👤 Registrati: <b>${registrati}</b> &nbsp; | &nbsp;
+        ❌ Disiscritti: <b style="color:red;">${disiscritti}</b>
+    `;
 }
 
-caricaUtenti();
+document.addEventListener("DOMContentLoaded", renderAdmin);
 </script>
 
 </body>

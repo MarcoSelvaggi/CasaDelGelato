@@ -155,6 +155,14 @@
 
 <div id="top-fixed-spacer"></div>
 
+<!-- TASTO DISISCRIVITI -->
+<div style="text-align:center; margin-top:80px;">
+<button onclick="disiscriviti()"
+style="background:#ff3b30; color:white; padding:12px 20px; border:none; border-radius:12px; font-size:16px;">
+❌ Disiscriviti
+</button>
+</div>
+
 <!-- LANGUAGE -->
 <div id="lang-toggle">🇮🇹 ▾</div>
 <div id="lang-menu">
@@ -164,6 +172,7 @@
 </div>
 
 <header><h1 data-lang="title">Casa del Gelato</h1></header>
+
 
 <section class="menu-section">
   <h2 data-lang="create_cup_title">Crea la tua Coppa</h2>
@@ -303,6 +312,41 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js")
         .then(() => console.log("SW registrato"))
         .catch(err => console.error("SW errore:", err));
+}
+</script>
+
+<script>
+function disiscriviti() {
+    const email = localStorage.getItem("user_email");
+    if (!email) {
+        alert("Errore: nessun utente registrato.");
+        return;
+    }
+
+    // recupera lista utenti
+    let lista = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
+
+    // trova utente
+    const index = lista.findIndex(u => u.email === email);
+    if (index === -1) {
+        alert("Errore: utente non trovato.");
+        return;
+    }
+
+    // aggiorna stato utente
+    lista[index].registrato = false;
+    lista[index].disiscritto = true;
+    lista[index].dataDisiscrizione = new Date().toLocaleString("it-IT");
+
+    // salva
+    localStorage.setItem("utentiRegistrati", JSON.stringify(lista));
+
+    // pulizia locale
+    localStorage.removeItem("user_email");
+    localStorage.setItem("userLogged", "0");
+
+    alert("❌ Hai cancellato la registrazione.");
+    window.location.href = "index.html";
 }
 </script>
 
