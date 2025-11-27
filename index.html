@@ -157,7 +157,7 @@
 
 <!-- TASTO DISISCRIVITI -->
 <div style="text-align:center; margin-top:80px;">
-<button onclick="disiscriviti()"
+<button id="btn-disiscriviti" onclick="disiscriviti()"
 style="background:#ff3b30; color:white; padding:12px 20px; border:none; border-radius:12px; font-size:16px;">
 ❌ Disiscriviti
 </button>
@@ -322,6 +322,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const isLogged = localStorage.getItem("userLogged") === "1";
+    const btn = document.getElementById("btn-disiscriviti");
 
+    // Se NON sei registrato → nascondi il tasto
+    if (!isLogged) {
+        if (btn) btn.style.display = "none";
+    }
+});
+</script>
 </body>
 </html>
