@@ -164,22 +164,17 @@ document.getElementById("riepilogo-mini").style.display = "none";
 function apriRegistrazione() {
     console.log("Apro registrazione…");
 
-    // nascondo la parte della coppa
     document.getElementById("step-size").style.display = "none";
     document.getElementById("step-container").style.display = "none";
     document.getElementById("step-title").style.display = "none";
 
-    // mostro il modulo
     document.getElementById("reg-box").style.display = "block";
 }
 
 
 // CHIUDI MODULO
 function chiudiRegistrazione() {
-    // nascondo il box
     document.getElementById("reg-box").style.display = "none";
-
-    // riattivo la pagina dove l'utente era
     document.getElementById("step-container").style.display = "block";
     document.getElementById("step-title").style.display = "block";
 }
@@ -196,25 +191,37 @@ function salvaRegistrazione() {
         return;
     }
 
-    // oggetto utente
+    // Preparo l'oggetto utente
     const user = {
         nome,
         cognome,
         email,
-        data: new Date().toLocaleString("it-IT")
+        registrato: true,
+        disiscritto: false,
+        dataRegistrazione: new Date().toLocaleString("it-IT")
     };
 
-    // salvo nella memoria locale
-    const lista = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
-    lista.push(user);
+    // Recupero array e aggiorno
+    let lista = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
+
+    // Se email già presente → aggiorno invece di duplicare
+    const idx = lista.findIndex(u => u.email === email);
+    if (idx !== -1) {
+        lista[idx] = user; // sovrascrivo con dati nuovi
+    } else {
+        lista.push(user); // aggiungo nuovo
+    }
+
     localStorage.setItem("utentiRegistrati", JSON.stringify(lista));
 
-    // sblocco cronologia coppe
+    // 🔥 IMPORTANTE: serve per il tasto Disiscriviti
+    localStorage.setItem("user_email", email);
+
+    // Sblocca cronologia
     localStorage.setItem("userLogged", "1");
 
     alert("🎉 Registrazione completata! Hai sbloccato la Cronologia Coppe.");
 
-    // torna alla home
     window.location.href = "index.html";
 }
 </script>

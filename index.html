@@ -270,42 +270,6 @@ style="background:#ff3b30; color:white; padding:12px 20px; border:none; border-r
 })();
 </script>
 
-<!-- LOGIN EMAIL -->
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-    if (auth.isSignInWithEmailLink(window.location.href)) {
-
-        let email = window.localStorage.getItem("emailForSignIn");
-        if (!email) email = prompt("Inserisci la tua email per completare il login:");
-
-        try {
-            // 🔥 1. Completa il login Firebase
-            await auth.signInWithEmailLink(email, window.location.href);
-            window.localStorage.removeItem("emailForSignIn");
-
-            // 🔥 2. Salva che l’utente è registrato
-            localStorage.setItem("userLogged", "1");
-            localStorage.setItem("userEmail", email);
-
-            // 🔥 3. Salva la registrazione nel tuo Firestore "registrazioni"
-            await db.collection("registrazioni").add({
-                email: email,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            // 🔥 4. Notifica all’utente
-            alert("🎉 Registrazione completata!");
-
-            // 🔥 5. Torna alla Home
-            window.location.href = "index.html";
-
-        } catch (err) {
-            console.error(err);
-            alert("Errore: " + err.message);
-        }
-    }
-});
-</script>
 
 <script>
 if ("serviceWorker" in navigator) {
@@ -317,32 +281,28 @@ if ("serviceWorker" in navigator) {
 
 <script>
 function disiscriviti() {
-    const email = localStorage.getItem("user_email");
+    const email = localStorage.getItem("userEmail"); // ← QUESTA È QUELLA GIUSTA!
     if (!email) {
         alert("Errore: nessun utente registrato.");
         return;
     }
 
-    // recupera lista utenti
     let lista = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
 
-    // trova utente
     const index = lista.findIndex(u => u.email === email);
     if (index === -1) {
         alert("Errore: utente non trovato.");
         return;
     }
 
-    // aggiorna stato utente
     lista[index].registrato = false;
     lista[index].disiscritto = true;
     lista[index].dataDisiscrizione = new Date().toLocaleString("it-IT");
 
-    // salva
     localStorage.setItem("utentiRegistrati", JSON.stringify(lista));
 
-    // pulizia locale
-    localStorage.removeItem("user_email");
+    // elimina login
+    localStorage.removeItem("userEmail");
     localStorage.setItem("userLogged", "0");
 
     alert("❌ Hai cancellato la registrazione.");
