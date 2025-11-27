@@ -164,8 +164,6 @@ document.getElementById("riepilogo-mini").style.display = "none";
 <script>
 // APRI MODULO
 function apriRegistrazione() {
-    console.log("Apro registrazione…");
-
     document.getElementById("step-size").style.display = "none";
     document.getElementById("step-container").style.display = "none";
     document.getElementById("step-title").style.display = "none";
@@ -173,14 +171,12 @@ function apriRegistrazione() {
     document.getElementById("reg-box").style.display = "block";
 }
 
-
 // CHIUDI MODULO
 function chiudiRegistrazione() {
     document.getElementById("reg-box").style.display = "none";
     document.getElementById("step-container").style.display = "block";
     document.getElementById("step-title").style.display = "block";
 }
-
 
 // SALVA REGISTRAZIONE
 async function salvaRegistrazione() {
@@ -193,24 +189,21 @@ async function salvaRegistrazione() {
         return;
     }
 
-    // 🔥 1. Manda tutto a Supabase
-    const res = await salvaRegistrazioneSupabase(nome, cognome, email);
+    // 🔥 chiama la funzione dentro supabase.js
+    const risultato = await salvaRegistrazioneSupabase(nome, cognome, email);
 
-    if (!res.ok) {
-        alert("Errore durante la registrazione: " + res.error.message);
+    if (!risultato.success) {
+        alert("Errore: " + risultato.error);
         return;
     }
 
-    // 🔥 2. Salva localmente che è registrato
+    // salva localmente
     localStorage.setItem("userLogged", "1");
     localStorage.setItem("user_email", email);
 
-    alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
+    alert("🎉 Registrazione completata!");
     window.location.href = "index.html";
 }
-</script>
-<script type="module">
-  import { supabase } from "./supabase.js";
 </script>
 </body>
 </html>
