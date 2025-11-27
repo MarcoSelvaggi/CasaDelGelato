@@ -80,6 +80,73 @@
             font-size: 16px;
         }
     </style>
+
+    <!-- 🔥 IMPORT SUPABASE -->
+    <script type="module">
+        import { supabase } from "./supabase.js";
+
+        async function loadAdmin() {
+
+            const listaDiv = document.getElementById("admin-list");
+            const statsDiv = document.getElementById("stats");
+
+            // 🔥 PRENDI GLI UTENTI DA SUPABASE
+            const { data: utenti, error } = await supabase
+                .from("utenti")
+                .select("*")
+                .order("created_at", { ascending: false });
+
+            if (error) {
+                console.error(error);
+                listaDiv.innerHTML = "<p style='text-align:center;color:red;'>Errore caricamento utenti</p>";
+                return;
+            }
+
+            if (!utenti || utenti.length === 0) {
+                listaDiv.innerHTML = "<p style='text-align:center; color:#888;'>Nessun utente registrato</p>";
+                statsDiv.innerHTML = "👤 Registrati: <b>0</b> | ❌ Disiscritti: <b>0</b>";
+                return;
+            }
+
+            let registrati = 0;
+            let disiscritti = 0;
+
+            listaDiv.innerHTML = "";
+
+            utenti.forEach(u => {
+                let cls = "utente";
+                let stato = "";
+
+                if (u.disiscritto) {
+                    cls = "utente utente-disiscritto";
+                    stato = "<b style='color:red;'>🚫 Utente disiscritto</b>";
+                    disiscritti++;
+                } else {
+                    stato = "<b style='color:#007aff;'>✔ Utente registrato</b>";
+                    registrati++;
+                }
+
+                listaDiv.innerHTML += `
+                    <div class="${cls}">
+                        ${stato}<br>
+                        <b>Nome:</b> ${u.nome}<br>
+                        <b>Cognome:</b> ${u.cognome}<br>
+                        <b>Email:</b> ${u.email}<br>
+                        <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16) || "-"}<br>
+                        ${u.disiscritto ? `<b>Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
+                    </div>
+                `;
+            });
+
+            statsDiv.innerHTML = `
+                👤 Registrati: <b>${registrati}</b> |
+                ❌ Disiscritti: <b>${disiscritti}</b>
+            `;
+        }
+
+        document.addEventListener("DOMContentLoaded", loadAdmin);
+    </script>
+
 </head>
 
 <body>
@@ -97,59 +164,6 @@
 <div id="stats"></div>
 
 <div id="admin-list"></div>
-
-<script>
-function renderAdmin() {
-    const listaDiv = document.getElementById("admin-list");
-    const statsDiv = document.getElementById("stats");
-
-    // ✓ LEGGE GLI UTENTI GIUSTI
-    const utenti = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
-
-    if (utenti.length === 0) {
-        listaDiv.innerHTML = "<p style='text-align:center; color:#888;'>Nessun utente registrato</p>";
-        statsDiv.innerHTML = "👤 Registrati: <b>0</b> | ❌ Disiscritti: <b>0</b>";
-        return;
-    }
-
-    let registrati = 0;
-    let disiscritti = 0;
-
-    listaDiv.innerHTML = "";
-
-    utenti.forEach(u => {
-        let cls = "utente";
-        let stato = "";
-
-        if (u.disiscritto) {
-            cls = "utente utente-disiscritto";
-            stato = "<b style='color:red;'>🚫 Utente disiscritto</b>";
-            disiscritti++;
-        } else {
-            stato = "<b style='color:#007aff;'>✔ Utente registrato</b>";
-            registrati++;
-        }
-
-        listaDiv.innerHTML += `
-            <div class="${cls}">
-                ${stato}<br>
-                <b>Nome:</b> ${u.nome}<br>
-                <b>Cognome:</b> ${u.cognome}<br>
-                <b>Email:</b> ${u.email}<br>
-                <b>Registrato il:</b> ${u.data || "-"}<br>
-                ${u.disiscritto ? `<b>Disiscritto il:</b> ${u.dataDisiscrizione || "-"}` : ""}
-            </div>
-        `;
-    });
-
-    statsDiv.innerHTML = `
-        👤 Registrati: <b>${registrati}</b> |
-        ❌ Disiscritti: <b>${disiscritti}</b>
-    `;
-}
-
-document.addEventListener("DOMContentLoaded", renderAdmin);
-</script>
 
 </body>
 </html>
