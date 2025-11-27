@@ -178,7 +178,7 @@ style="background:#ff3b30; color:white; padding:12px 20px; border:none; border-r
   <h2 data-lang="create_cup_title">Crea la tua Coppa</h2>
   <p data-lang="create_cup_subtitle">Personalizza la tua coppa come la vuoi tu</p>
   <a id="start-coppa" class="btn" data-lang="create_button">🍨 INIZIA</a>
-  <a href="cronologia.html" class="btn">Coppe create</a>
+  <a id="btn-cronologia" href="cronologia.html" class="btn">Coppe create</a>
 </section>
 
 <section class="menu-section">
@@ -309,6 +309,18 @@ function disiscriviti() {
     alert("❌ Hai cancellato la registrazione.");
     window.location.href = "index.html";
 }
+</script>
+
+<script>
+// Nasconde il tasto "Coppe create" se NON sei registrato
+document.addEventListener("DOMContentLoaded", () => {
+    const logged = localStorage.getItem("userLogged") === "1";
+    const btnCrono = document.getElementById("btn-cronologia");
+
+    if (!logged && btnCrono) {
+        btnCrono.style.display = "none";
+    }
+});
 </script>
 
 </body>
