@@ -13,7 +13,6 @@
             padding: 0;
         }
 
-        /* ⭐ Barra fissa + Home */
         #top-fixed-bar {
             position: fixed;
             top: 0;
@@ -85,7 +84,6 @@
 
 <body>
 
-<!-- ⭐ Barra fissa -->
 <div id="top-fixed-bar">
     <a class="home-btn" href="index.html">
         <img src="tastohome.png" alt="home">
@@ -105,11 +103,12 @@ function renderAdmin() {
     const listaDiv = document.getElementById("admin-list");
     const statsDiv = document.getElementById("stats");
 
-    // Recupero utenti dal localStorage
+    // ✓ LEGGE GLI UTENTI GIUSTI
     const utenti = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
 
     if (utenti.length === 0) {
         listaDiv.innerHTML = "<p style='text-align:center; color:#888;'>Nessun utente registrato</p>";
+        statsDiv.innerHTML = "👤 Registrati: <b>0</b> | ❌ Disiscritti: <b>0</b>";
         return;
     }
 
@@ -123,8 +122,8 @@ function renderAdmin() {
         let stato = "";
 
         if (u.disiscritto) {
-            cls += " utente-disiscritto";
-            stato = "<b style='color:red;'>🚫 UTENTE DISISCRITTO</b>";
+            cls = "utente utente-disiscritto";
+            stato = "<b style='color:red;'>🚫 Utente disiscritto</b>";
             disiscritti++;
         } else {
             stato = "<b style='color:#007aff;'>✔ Utente registrato</b>";
@@ -137,19 +136,15 @@ function renderAdmin() {
                 <b>Nome:</b> ${u.nome}<br>
                 <b>Cognome:</b> ${u.cognome}<br>
                 <b>Email:</b> ${u.email}<br>
-                <b>Registrato il:</b> ${u.dataRegistrazione || "-"}<br>
-                ${
-                    u.disiscritto
-                    ? `<b>Disiscritto il:</b> ${u.dataDisiscrizione || "-"}`
-                    : ""
-                }
+                <b>Registrato il:</b> ${u.data || "-"}<br>
+                ${u.disiscritto ? `<b>Disiscritto il:</b> ${u.dataDisiscrizione || "-"}` : ""}
             </div>
         `;
     });
 
     statsDiv.innerHTML = `
-        👤 Registrati: <b>${registrati}</b> &nbsp; | &nbsp;
-        ❌ Disiscritti: <b style="color:red;">${disiscritti}</b>
+        👤 Registrati: <b>${registrati}</b> |
+        ❌ Disiscritti: <b>${disiscritti}</b>
     `;
 }
 
