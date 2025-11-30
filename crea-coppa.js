@@ -671,24 +671,33 @@ function mostraRiepilogo(){
   const sommaExtra = prezzoExtraDettaglio.reduce((t,x)=> t + x.prezzo, 0);
   const totale = prezzoBase + sommaExtra;
 
-  // ✅ 2) SALVATAGGIO IN CRONOLOGIA (Locale) + PREZZO
-  (function salvaCoppa() {
+// ✅ 2) SALVA COPPA SU SUPABASE
+(async function salvaCoppa() {
 
-    const coppa = {
-      data: new Date().toLocaleString("it-IT"),
-      formato: coppaSelezionata,
-      gusti: [...scelti.gusti],
-      granelle: [...scelti.granelle],
-      topping: [...scelti.topping],
-      ingredienti: [...scelti.ingredienti],
-      extra: [...scelti.extra],
-      prezzo: totale    // ⬅️ AGGIUNTO
-    };
+  const email = localStorage.getItem("user_email") || null;
 
-    let arr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-    arr.unshift(coppa);
-    localStorage.setItem("cronologiaCoppe", JSON.stringify(arr));
-  })();
+  const coppa = {
+    email: email,  
+    data: new Date().toLocaleString("it-IT"),
+    formato: coppaSelezionata,
+    gusti: scelti.gusti.join(", "),
+    granelle: scelti.granelle.join(", "),
+    topping: scelti.topping.join(", "),
+    ingredienti: scelti.ingredienti.join(", "),
+    extra: scelti.extra.join(", "),
+    prezzo: totale
+  };
+
+  const { error } = await supabase
+    .from("coppe")
+    .insert([coppa]);
+
+  if (error) {
+    console.error("Errore Supabase:", error);
+    alert("Errore durante il salvataggio della coppa.");
+  }
+
+})();
 
   // ✅ 3) Il resto del riepilogo è identico a prima
   area.innerHTML = `

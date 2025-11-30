@@ -281,29 +281,28 @@ if ("serviceWorker" in navigator) {
 </script>
 
 <script>
-function disiscriviti() {
-    console.log("DEBUG email salvata:", localStorage.getItem("user_email"));
-
+async function disiscriviti() {
     const email = localStorage.getItem("user_email");
     if (!email) {
         alert("Errore: nessun utente registrato.");
         return;
     }
 
-    let lista = JSON.parse(localStorage.getItem("utentiRegistrati") || "[]");
+    // 1️⃣ Aggiorna Supabase
+    const { error } = await supabase
+        .from("utenti")
+        .update({
+            disiscritto: true,
+            data_disiscrizione: new Date().toISOString()
+        })
+        .eq("email", email);
 
-    const index = lista.findIndex(u => u.email === email);
-    if (index === -1) {
-        alert("Errore: utente non trovato.");
+    if (error) {
+        alert("Errore durante disiscrizione Supabase: " + error.message);
         return;
     }
 
-    lista[index].registrato = false;
-    lista[index].disiscritto = true;
-    lista[index].dataDisiscrizione = new Date().toLocaleString("it-IT");
-
-    localStorage.setItem("utentiRegistrati", JSON.stringify(lista));
-
+    // 2️⃣ Rimuovi login locale
     localStorage.removeItem("user_email");
     localStorage.setItem("userLogged", "0");
 
