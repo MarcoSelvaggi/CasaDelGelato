@@ -280,7 +280,9 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
-<script>
+<script type="module">
+import { supabase } from "./supabase.js";
+
 async function disiscriviti() {
     const email = localStorage.getItem("user_email");
     if (!email) {
@@ -288,7 +290,7 @@ async function disiscriviti() {
         return;
     }
 
-    // 1️⃣ Aggiorna Supabase
+    // 🔥 1) Aggiorna Supabase
     const { error } = await supabase
         .from("utenti")
         .update({
@@ -298,17 +300,20 @@ async function disiscriviti() {
         .eq("email", email);
 
     if (error) {
-        alert("Errore durante disiscrizione Supabase: " + error.message);
+        alert("Errore Supabase: " + error.message);
         return;
     }
 
-    // 2️⃣ Rimuovi login locale
+    // 🔥 2) Rimuovi login locale
     localStorage.removeItem("user_email");
     localStorage.setItem("userLogged", "0");
 
     alert("❌ Hai cancellato la registrazione.");
     window.location.href = "index.html";
 }
+
+// Rendiamo la funzione disponibile nel pulsante HTML
+window.disiscriviti = disiscriviti;
 </script>
 
 <script>

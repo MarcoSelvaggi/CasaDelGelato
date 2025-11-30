@@ -178,11 +178,11 @@ async function loadCoppe() {
                 <b>Email:</b> ${c.email || "Anonimo"}<br>
                 <b>Data:</b> ${c.data}<br>
                 <b>Formato:</b> ${c.formato}<br>
-                <b>Gusti:</b> ${c.gusti.join(", ")}<br>
-                <b>Granelle:</b> ${c.granelle.join(", ")}<br>
-                <b>Topping:</b> ${c.topping.join(", ")}<br>
-                <b>Ingredienti:</b> ${c.ingredienti.join(", ")}<br>
-                <b>Extra:</b> ${c.extra.join(", ")}<br>
+                <b>Gusti:</b> ${(Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti || "[]")).join(", ")}<br>
+                <b>Granelle:</b> ${(Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle || "[]")).join(", ")}<br>
+                <b>Topping:</b> ${(Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping || "[]")).join(", ")}<br>
+                <b>Ingredienti:</b> ${(Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]")).join(", ")}<br>
+                <b>Extra:</b> ${(Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]")).join(", ")}<br>
                 <b>Prezzo:</b> €${c.prezzo.toFixed(2)}
             </div>
         `;
@@ -198,6 +198,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadCoppe();
 });
 </script>
-
+<b>Email utente:</b> ${c.email}
 </body>
 </html>
