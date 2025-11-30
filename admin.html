@@ -58,16 +58,19 @@
 
         #admin-list {
             padding: 20px;
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
         }
 
-        .utente {
+        .utente, .coppa {
             background: white;
             border-radius: 12px;
             padding: 15px;
             margin-bottom: 12px;
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .utente {
             border-left: 6px solid #007aff;
         }
 
@@ -76,77 +79,12 @@
             border-left: 6px solid red;
         }
 
-        .utente b {
-            font-size: 16px;
+        .section-title {
+            margin-top: 30px;
+            font-size: 20px;
+            font-weight: bold;
         }
     </style>
-
-    <!-- 🔥 IMPORT SUPABASE -->
-    <script type="module">
-        import { supabase } from "./supabase.js";
-
-        async function loadAdmin() {
-
-            const listaDiv = document.getElementById("admin-list");
-            const statsDiv = document.getElementById("stats");
-
-            // 🔥 PRENDI GLI UTENTI DA SUPABASE
-            const { data: utenti, error } = await supabase
-                .from("utenti")
-                .select("*")
-                .order("created_at", { ascending: false });
-
-            if (error) {
-                console.error(error);
-                listaDiv.innerHTML = "<p style='text-align:center;color:red;'>Errore caricamento utenti</p>";
-                return;
-            }
-
-            if (!utenti || utenti.length === 0) {
-                listaDiv.innerHTML = "<p style='text-align:center; color:#888;'>Nessun utente registrato</p>";
-                statsDiv.innerHTML = "👤 Registrati: <b>0</b> | ❌ Disiscritti: <b>0</b>";
-                return;
-            }
-
-            let registrati = 0;
-            let disiscritti = 0;
-
-            listaDiv.innerHTML = "";
-
-            utenti.forEach(u => {
-                let cls = "utente";
-                let stato = "";
-
-                if (u.disiscritto) {
-                    cls = "utente utente-disiscritto";
-                    stato = "<b style='color:red;'>🚫 Utente disiscritto</b>";
-                    disiscritti++;
-                } else {
-                    stato = "<b style='color:#007aff;'>✔ Utente registrato</b>";
-                    registrati++;
-                }
-
-                listaDiv.innerHTML += `
-                    <div class="${cls}">
-                        ${stato}<br>
-                        <b>Nome:</b> ${u.nome}<br>
-                        <b>Cognome:</b> ${u.cognome}<br>
-                        <b>Email:</b> ${u.email}<br>
-                        <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16) || "-"}<br>
-                        ${u.disiscritto ? `<b>Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
-                    </div>
-                `;
-            });
-
-            statsDiv.innerHTML = `
-                👤 Registrati: <b>${registrati}</b> |
-                ❌ Disiscritti: <b>${disiscritti}</b>
-            `;
-        }
-
-        document.addEventListener("DOMContentLoaded", loadAdmin);
-    </script>
-
 </head>
 
 <body>
@@ -161,9 +99,105 @@
 <div id="spacer"></div>
 
 <h1>📊 Pannello Admin</h1>
+
 <div id="stats"></div>
 
 <div id="admin-list"></div>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+// -----------------------------------------------------------
+//  🔥 1 — CARICA UTENTI
+// -----------------------------------------------------------
+async function loadUtenti() {
+    const listaDiv = document.getElementById("admin-list");
+    const statsDiv = document.getElementById("stats");
+
+    const { data: utenti, error } = await supabase
+        .from("utenti")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        listaDiv.innerHTML = "<p style='color:red'>Errore caricamento utenti</p>";
+        return;
+    }
+
+    let registrati = 0;
+    let disiscritti = 0;
+
+    listaDiv.innerHTML += `<div class="section-title">🧑‍💻 Utenti registrati</div>`;
+
+    utenti.forEach(u => {
+        const isDis = u.disiscritto === true;
+
+        if (isDis) disiscritti++;
+        else registrati++;
+
+        listaDiv.innerHTML += `
+            <div class="utente ${isDis ? "utente-disiscritto" : ""}">
+                <b>${isDis ? "🚫 DISISCRITTO" : "✔ REGISTRATO"}</b><br>
+                <b>Nome:</b> ${u.nome}<br>
+                <b>Cognome:</b> ${u.cognome}<br>
+                <b>Email:</b> ${u.email}<br>
+                <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16)}<br>
+                ${isDis ? `<b>Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
+            </div>
+        `;
+    });
+
+    statsDiv.innerHTML = `
+        👤 Registrati: <b>${registrati}</b> &nbsp; | &nbsp;
+        ❌ Disiscritti: <b style="color:red">${disiscritti}</b>
+    `;
+}
+
+
+// -----------------------------------------------------------
+//  🔥 2 — CARICA COPPE
+// -----------------------------------------------------------
+async function loadCoppe() {
+    const listaDiv = document.getElementById("admin-list");
+
+    const { data: coppe, error } = await supabase
+        .from("coppe")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error || !coppe) {
+        listaDiv.innerHTML += "<p style='color:red'>Errore caricamento coppe</p>";
+        return;
+    }
+
+    listaDiv.innerHTML += `<div class="section-title">🍨 Coppe create</div>`;
+
+    coppe.forEach(c => {
+        listaDiv.innerHTML += `
+            <div class="coppa">
+                <b>Email:</b> ${c.email || "Anonimo"}<br>
+                <b>Data:</b> ${c.data}<br>
+                <b>Formato:</b> ${c.formato}<br>
+                <b>Gusti:</b> ${c.gusti.join(", ")}<br>
+                <b>Granelle:</b> ${c.granelle.join(", ")}<br>
+                <b>Topping:</b> ${c.topping.join(", ")}<br>
+                <b>Ingredienti:</b> ${c.ingredienti.join(", ")}<br>
+                <b>Extra:</b> ${c.extra.join(", ")}<br>
+                <b>Prezzo:</b> €${c.prezzo.toFixed(2)}
+            </div>
+        `;
+    });
+}
+
+
+// -----------------------------------------------------------
+//  🔥 3 — AVVIO
+// -----------------------------------------------------------
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadUtenti();
+    await loadCoppe();
+});
+</script>
 
 </body>
 </html>

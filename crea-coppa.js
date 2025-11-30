@@ -1,3 +1,4 @@
+import { supabase, salvaCoppaSupabase } from "./supabase.js";
 console.log("JS CARICATO ✔️");
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
@@ -671,31 +672,37 @@ function mostraRiepilogo(){
   const sommaExtra = prezzoExtraDettaglio.reduce((t,x)=> t + x.prezzo, 0);
   const totale = prezzoBase + sommaExtra;
 
-// ✅ 2) SALVA COPPA SU SUPABASE
+// 🔥 SALVA COPPA SU SUPABASE
 (async function salvaCoppa() {
 
-  const email = localStorage.getItem("user_email") || null;
+    const email = localStorage.getItem("user_email") || null;
 
-  const coppa = {
-    email: email,  
-    data: new Date().toLocaleString("it-IT"),
-    formato: coppaSelezionata,
-    gusti: scelti.gusti.join(", "),
-    granelle: scelti.granelle.join(", "),
-    topping: scelti.topping.join(", "),
-    ingredienti: scelti.ingredienti.join(", "),
-    extra: scelti.extra.join(", "),
-    prezzo: totale
-  };
+    const coppa = {
+        email: email,
+        data: new Date().toISOString(),   // formato perfetto per Supabase
+        formato: coppaSelezionata,
+        gusti: scelti.gusti,
+        granelle: scelti.granelle,
+        topping: scelti.topping,
+        ingredienti: scelti.ingredienti,
+        extra: scelti.extra,
+        prezzo: totale
+    };
 
-  const { error } = await supabase
-    .from("coppe")
-    .insert([coppa]);
+    // 👉 INVIO A SUPABASE
+    const res = await salvaCoppaSupabase(coppa);
 
-  if (error) {
-    console.error("Errore Supabase:", error);
-    alert("Errore durante il salvataggio della coppa.");
-  }
+    if (!res.success) {
+        console.error("Errore Supabase:", res.error);
+        alert("⚠️ Coppa NON salvata su Supabase");
+    } else {
+        console.log("Coppa salvata correttamente su Supabase!");
+    }
+
+    // 🔒 Continua a salvare in locale
+    let arr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    arr.unshift(coppa);
+    localStorage.setItem("cronologiaCoppe", JSON.stringify(arr));
 
 })();
 
