@@ -1,3 +1,4 @@
+// supabase.js
 import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
 // 🔥 CREA CLIENT SUPABASE
@@ -7,73 +8,115 @@ export const supabase = createClient(
 );
 
 // =====================================================
-// 🔥 FUNZIONE: Salva utente in Supabase
+// 🔥 SALVA / RIATTIVA UTENTE IN SUPABASE
 // =====================================================
 export async function salvaRegistrazioneSupabase(nome, cognome, email) {
+  // 1️⃣ Controllo se esiste già
+  const { data: existing, error: checkError } = await supabase
+    .from("utenti")
+    .select("email, disiscritto")
+    .eq("email", email);
 
-    const { data: existing, error: checkError } = await supabase
+  if (checkError) {
+    return { success: false, error: checkError.message };
+  }
+
+  // 2️⃣ Se esiste già
+  if (existing && existing.length > 0) {
+    const u = existing[0];
+
+    // Se era disiscritto → riattivalo
+    if (u.disiscritto === true) {
+      const { error: updError } = await supabase
         .from("utenti")
-        .select("email")
+        .update({
+          disiscritto: false,
+          data_disiscrizione: null,
+        })
         .eq("email", email);
 
-    if (checkError) return { success:false, error:checkError.message };
-    if (existing && existing.length > 0)
-        return { success:false, error:"Email già registrata" };
+      if (updError) {
+        return { success: false, error: updError.message };
+      }
 
-    const { error: insertError } = await supabase
-        .from("utenti")
-        .insert([{ nome, cognome, email }]);
+      return { success: true };
+    }
 
-    if (insertError) return { success:false, error:insertError.message };
+    // Se NON era disiscritto → errore "già registrata"
+    return { success: false, error: "Email già registrata" };
+  }
 
-    return { success:true };
+  // 3️⃣ Non esiste → inserisco nuovo utente
+  const { error: insertError } = await supabase.from("utenti").insert([
+    {
+      nome,
+      cognome,
+      email,
+      disiscritto: false,
+      data_disiscrizione: null,
+    },
+  ]);
+
+  if (insertError) {
+    return { success: false, error: insertError.message };
+  }
+
+  return { success: true };
 }
 
 // =====================================================
-// 🔥 FUNZIONE: Salva Coppa in Supabase   <<<<<< INCOLLA QUI!!!
+// 🔥 SALVA COPPA IN SUPABASE
 // =====================================================
 export async function salvaCoppaSupabase(coppa) {
+  const { error } = await supabase.from("coppe").insert([coppa]);
 
-    const { data, error } = await supabase
-        .from("coppe")
-        .insert([coppa]);
+  if (error) {
+    console.error("Errore Supabase salvataggio coppa:", error);
+    return { success: false, error: error.message };
+  }
 
-    if (error) {
-        console.error("Errore Supabase salvataggio coppa:", error);
-        return { success:false, error:error.message };
-    }
-
-    return { success:true };
+  return { success: true };
 }
+
 // =====================================================
-// 🔥 FUNZIONE: Legge tutte le coppe da Supabase
+// 🔥 LEGGI COPPE (per admin)
 // =====================================================
 export async function getCoppeSupabase() {
-    const { data, error } = await supabase
-        .from("coppe")
-        .select("*")
-        .order("id", { ascending: false });  // mostra prima le più recenti
+  const { data, error } = await supabase
+    .from("coppe")
+    .select("*")
+    .order("id", { ascending: false });
 
-    if (error) {
-        console.error("Errore getCoppeSupabase:", error);
-        return [];
-    }
+  if (error) {
+    console.error("Errore getCoppeSupabase:", error);
+    return [];
+  }
 
-    return data;
+  return data || [];
 }
+
 // =====================================================
-// 🔥 LEGGI UTENTI DA SUPABASE (COMPRESI DISISCRITTI)
+// 🔥 LEGGI UTENTI (registrati + disiscritti) per admin
 // =====================================================
 export async function getUtentiSupabase() {
-    const { data, error } = await supabase
-        .from("utenti")
-        .select("*")
-        .order("created_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("utenti")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-    if (error) {
-        console.error("Errore lettura utenti:", error);
-        return [];
-    }
+  if (error) {
+    console.error("Errore lettura utenti:", error);
+    return [];
+  }
 
-    return data || [];
+  return data || [];
+}
+
+// =====================================================
+// 🔥 ESPORTO ANCHE SU window PER GLI SCRIPT NON-MODULO
+// =====================================================
+if (typeof window !== "undefined") {
+  window.supabase = supabase;
+  window.salvaRegistrazioneSupabase = salvaRegistrazioneSupabase;
+  window.salvaCoppaSupabase = salvaCoppaSupabase;
 }

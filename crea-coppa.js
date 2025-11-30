@@ -1,4 +1,3 @@
-import { supabase, salvaCoppaSupabase } from "./supabase.js";
 console.log("JS CARICATO ✔️");
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
@@ -659,11 +658,12 @@ function formatGustiQuantities() {
         .join(", ");
 }
 
-function mostraRiepilogo(){
+// ⬇️ SOSTITUISCI TUTTA LA TUA FUNZIONE CON QUESTA ⬇️
+async function mostraRiepilogo(){
   step = "riepilogo";
   const area = byId("step-container");
 
-  // ✅ 1) Calcolo il prezzo SUBITO, così posso salvarlo nella cronologia
+  // ✅ 1) Calcolo il prezzo SUBITO
   const prezzoBase = prezziBase[coppaSelezionata] || 0;
   const prezzoExtraDettaglio = scelti.extra.map(e => ({
     nome: e,
@@ -672,65 +672,63 @@ function mostraRiepilogo(){
   const sommaExtra = prezzoExtraDettaglio.reduce((t,x)=> t + x.prezzo, 0);
   const totale = prezzoBase + sommaExtra;
 
-// 🔥 SALVA COPPA SU SUPABASE
-(async function salvaCoppa() {
+  // ✅ 2) Oggetto coppa da salvare
+  const email = localStorage.getItem("user_email") || null;
+  const coppa = {
+      email: email,
+      data: new Date().toISOString(),   // combacia con column "data" (timestamp)
+      formato: coppaSelezionata,
+      gusti: scelti.gusti,
+      granelle: scelti.granelle,
+      topping: scelti.topping,
+      ingredienti: scelti.ingredienti,
+      extra: scelti.extra,
+      prezzo: totale
+  };
 
-    const email = localStorage.getItem("user_email") || null;
+  // ✅ 3) Salva su Supabase
+  try {
+      const res = await salvaCoppaSupabase(coppa);
 
-    const coppa = {
-        email: email,
-        data: new Date().toISOString(),   // formato perfetto per Supabase
-        formato: coppaSelezionata,
-        gusti: scelti.gusti,
-        granelle: scelti.granelle,
-        topping: scelti.topping,
-        ingredienti: scelti.ingredienti,
-        extra: scelti.extra,
-        prezzo: totale
-    };
+      if (!res.success) {
+          console.error("Errore Supabase:", res.error);
+          alert("⚠️ Coppa NON salvata su Supabase");
+      } else {
+          console.log("Coppa salvata correttamente su Supabase!");
+      }
+  } catch (err) {
+      console.error("Errore inatteso Supabase:", err);
+  }
 
-    // 👉 INVIO A SUPABASE
-    const res = await salvaCoppaSupabase(coppa);
+  // ✅ 4) Continua a salvare in locale (cronologia)
+  let arr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+  arr.unshift(coppa);
+  localStorage.setItem("cronologiaCoppe", JSON.stringify(arr));
 
-    if (!res.success) {
-        console.error("Errore Supabase:", res.error);
-        alert("⚠️ Coppa NON salvata su Supabase");
-    } else {
-        console.log("Coppa salvata correttamente su Supabase!");
-    }
-
-    // 🔒 Continua a salvare in locale
-    let arr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-    arr.unshift(coppa);
-    localStorage.setItem("cronologiaCoppe", JSON.stringify(arr));
-
-})();
-
-  // ✅ 3) Il resto del riepilogo è identico a prima
+  // ✅ 5) Riepilogo grafico (uguale a prima)
   area.innerHTML = `
     <h2>Riepilogo finale</h2>
 
-<div class="scontrino" id="scontrino-da-share">
+    <div class="scontrino" id="scontrino-da-share">
       <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
-<!-- GUSTI RAGGRUPPATI -->
-<p><b>Gusti:</b><br>
-${(() => {
-    const grouped = {};
+      <!-- GUSTI RAGGRUPPATI -->
+      <p><b>Gusti:</b><br>
+      ${(() => {
+          const grouped = {};
+          Object.entries(gustiQuantities).forEach(([nome, qty]) => {
+              if (qty > 0) grouped[nome] = qty;
+          });
 
-    Object.entries(gustiQuantities).forEach(([nome, qty]) => {
-        if (qty > 0) grouped[nome] = qty;
-    });
+          if (Object.keys(grouped).length === 0) return "-";
 
-    if (Object.keys(grouped).length === 0) return "-";
-
-    return Object.entries(grouped)
-      .map(([nome, qty]) => {
-        if (qty === 1) return `- ${nome}`;
-        return `- ${nome} x${qty}`;
-      })
-      .join("<br>");
-})()}
-</p>
+          return Object.entries(grouped)
+            .map(([nome, qty]) => {
+              if (qty === 1) return `- ${nome}`;
+              return `- ${nome} x${qty}`;
+            })
+            .join("<br>");
+      })()}
+      </p>
       <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
       <p><b>Topping:</b> ${safeJoin(scelti.topping)}</p>
       <p><b>Ingredienti:</b> ${safeJoin(scelti.ingredienti)}</p>
@@ -766,9 +764,11 @@ ${(() => {
 
   // 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
   const mini = document.getElementById("riepilogo-mini");
-  mini.classList.add("collapsed");
-  mini.classList.remove("open");
-  mini.innerHTML = mini.dataset.mini || "";
+  if (mini) {
+    mini.classList.add("collapsed");
+    mini.classList.remove("open");
+    mini.innerHTML = mini.dataset.mini || "";
+  }
   updateRiepilogo();
 }
 
