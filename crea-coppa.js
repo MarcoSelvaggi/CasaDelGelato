@@ -662,7 +662,11 @@ function formatGustiQuantities() {
 async function mostraRiepilogo(){
   step = "riepilogo";
   const area = byId("step-container");
+// 🔥 Nasconde titoli e residui dello step corrente
+const t = document.getElementById("step-title");
+if (t) t.style.display = "none";
 
+document.querySelector("header").style.display = "none";
   // ✅ 1) Calcolo il prezzo SUBITO
   const prezzoBase = prezziBase[coppaSelezionata] || 0;
   const prezzoExtraDettaglio = scelti.extra.map(e => ({

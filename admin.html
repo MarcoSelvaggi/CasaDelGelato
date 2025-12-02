@@ -38,16 +38,21 @@
             gap: 6px;
         }
 
-        .home-btn img {
-            width: 28px;
-            height: 28px;
-        }
+        .home-btn img { width: 28px; height: 28px; }
 
         #spacer { height: 70px; }
 
-        h1 {
-            text-align: center;
-            margin-top: 10px;
+        h1 { text-align: center; margin-top: 10px; }
+
+        #search-admin {
+            display:block;
+            margin: 10px auto 5px;
+            width: 90%;
+            max-width: 600px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
         }
 
         #stats {
@@ -70,19 +75,15 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
 
-        .utente {
-            border-left: 6px solid #007aff;
-        }
+        .utente { border-left: 6px solid #007aff; }
+        .utente-disiscritto { background: #ffe5e5; border-left: 6px solid red; }
 
-        .utente-disiscritto {
-            background: #ffe5e5;
-            border-left: 6px solid red;
-        }
+        .section-title { margin-top: 30px; font-size: 20px; font-weight: bold; }
 
-        .section-title {
-            margin-top: 30px;
-            font-size: 20px;
-            font-weight: bold;
+        mark {
+            background: #ffeb3b;
+            padding: 0 2px;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -100,6 +101,8 @@
 
 <h1>📊 Pannello Admin</h1>
 
+<input id="search-admin" type="text" placeholder="Cerca utenti o coppe...">
+
 <div id="stats"></div>
 
 <div id="admin-list"></div>
@@ -107,117 +110,122 @@
 <script type="module">
 import { supabase } from "./supabase.js";
 
-// -----------------------------------------------------------
-//  🔥 1 — CARICA UTENTI
-// -----------------------------------------------------------
-async function loadUtenti() {
-    const listaDiv = document.getElementById("admin-list");
-    const statsDiv = document.getElementById("stats");
+let UTENTI = [];
+let COPPE = [];
+let termineRicerca = "";
 
-    const { data: utenti, error } = await supabase
+// ----------------------------------
+// Evidenzia testo
+// ----------------------------------
+function evidenzia(testo) {
+    if (!termineRicerca.trim()) return testo;
+    const q = termineRicerca.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return testo.replace(new RegExp(q, "gi"), (m) => `<mark>${m}</mark>`);
+}
+
+// ----------------------------------
+// RENDER ADMIN COMPLETO
+// ----------------------------------
+function renderAdmin() {
+    const lista = document.getElementById("admin-list");
+    lista.innerHTML = "";
+
+    // Filtri
+    const filtro = termineRicerca.toLowerCase();
+
+    // -------- UTENTI --------
+    lista.innerHTML += `<div class="section-title">🧑‍💻 Utenti registrati</div>`;
+
+    UTENTI
+        .filter(u =>
+            JSON.stringify(u).toLowerCase().includes(filtro)
+        )
+        .forEach(u => {
+            const isDis = u.disiscritto === true;
+
+            lista.innerHTML += `
+                <div class="utente ${isDis ? "utente-disiscritto" : ""}">
+                    <b>${isDis ? "🚫 DISISCRITTO" : "✔ REGISTRATO"}</b><br>
+                    <b>Nome:</b> ${evidenzia(u.nome)}<br>
+                    <b>Cognome:</b> ${evidenzia(u.cognome)}<br>
+                    <b>Email:</b> ${evidenzia(u.email)}<br>
+                    <b>Registrato il:</b> ${evidenzia(u.created_at?.replace("T"," ").substring(0,16))}<br>
+                    ${isDis ? `<b>Disiscritto il:</b> ${evidenzia(u.data_disiscrizione || "-")}` : ""}
+                </div>
+            `;
+        });
+
+    // -------- COPPE --------
+    lista.innerHTML += `<div class="section-title">🍨 Coppe create</div>`;
+
+    COPPE
+        .filter(c =>
+            JSON.stringify(c).toLowerCase().includes(filtro)
+        )
+        .forEach(c => {
+            const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti || "[]");
+            const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle || "[]");
+            const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping || "[]");
+            const ingredienti = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]");
+            const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]");
+
+            lista.innerHTML += `
+                <div class="coppa">
+                    <b>Email:</b> ${evidenzia(c.email || "Anonimo")}<br>
+                    <b>Data:</b> ${evidenzia(c.data)}<br>
+                    <b>Formato:</b> ${evidenzia(c.formato)}<br>
+                    <b>Gusti:</b> ${evidenzia(gusti.join(", "))}<br>
+                    <b>Granelle:</b> ${evidenzia(granelle.join(", "))}<br>
+                    <b>Topping:</b> ${evidenzia(topping.join(", "))}<br>
+                    <b>Ingredienti:</b> ${evidenzia(ingredienti.join(", "))}<br>
+                    <b>Extra:</b> ${evidenzia(extra.join(", "))}<br>
+                    <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}
+                </div>
+            `;
+        });
+}
+
+// ----------------------------------
+// CARICA UTENTI
+// ----------------------------------
+async function loadUtenti() {
+    const { data, error } = await supabase
         .from("utenti")
         .select("*")
         .order("created_at", { ascending: false });
 
-    if (error) {
-        listaDiv.innerHTML = "<p style='color:red'>Errore caricamento utenti</p>";
-        return;
-    }
-
-    let registrati = 0;
-    let disiscritti = 0;
-
-    listaDiv.innerHTML += `<div class="section-title">🧑‍💻 Utenti registrati</div>`;
-
-    utenti.forEach(u => {
-        const isDis = u.disiscritto === true;
-
-        if (isDis) disiscritti++;
-        else registrati++;
-
-        listaDiv.innerHTML += `
-            <div class="utente ${isDis ? "utente-disiscritto" : ""}">
-                <b>${isDis ? "🚫 DISISCRITTO" : "✔ REGISTRATO"}</b><br>
-                <b>Nome:</b> ${u.nome}<br>
-                <b>Cognome:</b> ${u.cognome}<br>
-                <b>Email:</b> ${u.email}<br>
-                <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16)}<br>
-                ${isDis ? `<b>Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
-            </div>
-        `;
-    });
-
-    statsDiv.innerHTML = `
-        👤 Registrati: <b>${registrati}</b> &nbsp; | &nbsp;
-        ❌ Disiscritti: <b style="color:red">${disiscritti}</b>
-    `;
+    if (!error) UTENTI = data;
 }
 
-
-// -----------------------------------------------------------
-//  🔥 2 — CARICA COPPE
-// -----------------------------------------------------------
+// ----------------------------------
+// CARICA COPPE
+// ----------------------------------
 async function loadCoppe() {
-    const listaDiv = document.getElementById("admin-list");
-
-    const { data: coppe, error } = await supabase
+    const { data, error } = await supabase
         .from("coppe")
         .select("*")
         .order("created_at", { ascending: false });
 
-    if (error || !coppe) {
-        listaDiv.innerHTML += "<p style='color:red'>Errore caricamento coppe</p>";
-        return;
-    }
-
-    listaDiv.innerHTML += `<div class="section-title">🍨 Coppe create</div>`;
-
-coppe.forEach(c => {
-
-    const gusti = Array.isArray(c.gusti)
-        ? c.gusti
-        : (c.gusti ? JSON.parse(c.gusti) : []);
-
-    const granelle = Array.isArray(c.granelle)
-        ? c.granelle
-        : (c.granelle ? JSON.parse(c.granelle) : []);
-
-    const topping = Array.isArray(c.topping)
-        ? c.topping
-        : (c.topping ? JSON.parse(c.topping) : []);
-
-    const ingredienti = Array.isArray(c.ingredienti)
-        ? c.ingredienti
-        : (c.ingredienti ? JSON.parse(c.ingredienti) : []);
-
-    const extra = Array.isArray(c.extra)
-        ? c.extra
-        : (c.extra ? JSON.parse(c.extra) : []);
-
-    listaDiv.innerHTML += `
-        <div class="coppa">
-            <b>Email:</b> ${c.email || "Anonimo"}<br>
-            <b>Data:</b> ${c.data}<br>
-            <b>Formato:</b> ${c.formato}<br>
-            <b>Gusti:</b> ${gusti.join(", ")}<br>
-            <b>Granelle:</b> ${granelle.join(", ")}<br>
-            <b>Topping:</b> ${topping.join(", ")}<br>
-            <b>Ingredienti:</b> ${ingredienti.join(", ")}<br>
-            <b>Extra:</b> ${extra.join(", ")}<br>
-            <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}
-        </div>
-    `;
-});
+    if (!error) COPPE = data;
 }
 
-
-// -----------------------------------------------------------
-//  🔥 3 — AVVIO
-// -----------------------------------------------------------
+// ----------------------------------
+// AVVIO
+// ----------------------------------
 document.addEventListener("DOMContentLoaded", async () => {
     await loadUtenti();
     await loadCoppe();
+    renderAdmin();
+});
+
+// ----------------------------------
+// RICERCA LIVE
+// ----------------------------------
+document.getElementById("search-admin").addEventListener("input", e => {
+    termineRicerca = e.target.value;
+    renderAdmin();
 });
 </script>
+
 </body>
 </html>

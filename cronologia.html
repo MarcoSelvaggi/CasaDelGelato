@@ -180,6 +180,12 @@
     /* (lo ricopio completamente) */
 
     let coppe = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    // 🔥 Prezzi EXTRA (uguali alla webapp)
+const prezziExtra = {
+    "COCCO (3pz)": 0.50,
+    "MIX KINDER": 2.50,
+    "PANNA EXTRA": 1.80
+};
     const lista = document.getElementById("lista-coppe");
 
     let mostraSoloPreferiti = false;
@@ -305,6 +311,18 @@
             const granelleText = (c.granelle || []).join(", ");
             const toppingText = (c.topping || []).join(", ");
             const ingredientiText = (c.ingredienti || []).join(", ");
+// 🔥 EXTRA con prezzo corretto
+function formatExtra(lista) {
+    if (!lista || lista.length === 0) return "-";
+
+    return lista.map(nome => {
+        const prezzo = prezziExtra[nome] || 0;
+        const prezzoTxt = prezzo > 0 ? ` (+€${prezzo.toFixed(2)})` : "";
+        return `${nome}${prezzoTxt}`;
+    }).join(", ");
+}
+
+const extraText = formatExtra(c.extra);
 
             const testoDaCopiare = [
                 `Formato: ${c.formato || "-"}`,
@@ -332,6 +350,7 @@
                 <div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
                 <div class="small"><b>Topping:</b> ${evidenzia(toppingText)}</div>
                 <div class="small"><b>Ingredienti:</b> ${evidenzia(ingredientiText)}</div>
+                <div class="small"><b>Extra:</b> ${evidenzia(extraText || "-")}</div>
 
                 <div class="small" style="text-align:right; font-weight:bold;">
                     Prezzo: €${(c.prezzo || 0).toFixed(2)}
