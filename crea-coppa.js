@@ -1,5 +1,4 @@
 console.log("JS CARICATO ✔️");
-import { salvaCoppaSupabase } from "./supabase.js";
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
 let titoloGustiVisibile = true;
