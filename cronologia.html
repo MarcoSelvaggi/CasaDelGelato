@@ -373,7 +373,68 @@
     renderLista();
 </script>
 <script type="module">
-  import { supabase } from "./supabase.js";
+import { supabase } from "./supabase.js";
+
+/* ------------------------------------------
+   🔥 1) LEGGE COPPE UTENTE da SUPABASE
+---------------------------------------------*/
+async function getCoppeSupabaseUtente(email) {
+    const guest_id = localStorage.getItem("guest_id");
+
+    const { data, error } = await supabase
+        .from("coppe")
+        .select("*")
+        .or(`email.eq.${email},guest_id.eq.${guest_id}`)
+        .order("id", { ascending: false });
+
+    if (error) {
+        console.error("Errore caricamento coppe da Supabase:", error);
+        return [];
+    }
+
+    return data || [];
+}
+
+/* ------------------------------------------
+   🔥 2) UNISCE le coppe locali con quelle Supabase
+---------------------------------------------*/
+async function caricaCoppeComplete() {
+    const email = localStorage.getItem("user_email") || null;
+
+    let coppeLocali = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    let coppeSupabase = [];
+
+    if (email) {
+        coppeSupabase = await getCoppeSupabaseUtente(email);
+    }
+
+    // 🔥 UNISCE localStorage + Supabase
+    // Ma evita duplicati (stessa data e formato)
+    const tutto = [...coppeSupabase, ...coppeLocali];
+
+    // Rimuovi duplicati
+    const unique = [];
+    const seen = new Set();
+
+    for (let c of tutto) {
+        const key = (c.data || "") + (c.formato || "");
+        if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(c);
+        }
+    }
+
+    return unique;
+}
+
+/* ------------------------------------------
+   🔥 3) SOVRASCRIVE l'array “coppe” DEL TUO JS
+---------------------------------------------*/
+caricaCoppeComplete().then(all => {
+    coppe = all;   // 🔥 sovrascrive l’array locale del tuo script originale
+    renderLista(); // 🔥 riusa la tua funzione originale senza toccarla
+});
+
 </script>
 </body>
 </html>

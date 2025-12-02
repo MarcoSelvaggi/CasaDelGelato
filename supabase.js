@@ -60,7 +60,16 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
   if (insertError) {
     return { success: false, error: insertError.message };
   }
+// 🔥 SE L’UTENTE SI È REGISTRATO, COLLEGO LE COPPE ANONIME ALLA SUA EMAIL
+const guest_id = localStorage.getItem("guest_id");
 
+if (guest_id) {
+    await supabase
+        .from("coppe")
+        .update({ email: email })
+        .eq("guest_id", guest_id)
+        .is("email", null);    // aggiorna solo le coppe anonime
+}
   return { success: true };
 }
 

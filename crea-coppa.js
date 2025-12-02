@@ -674,17 +674,25 @@ async function mostraRiepilogo(){
 
   // ✅ 2) Oggetto coppa da salvare
   const email = localStorage.getItem("user_email") || null;
-  const coppa = {
-      email: email,
-      data: new Date().toISOString(),   // combacia con column "data" (timestamp)
-      formato: coppaSelezionata,
-      gusti: scelti.gusti,
-      granelle: scelti.granelle,
-      topping: scelti.topping,
-      ingredienti: scelti.ingredienti,
-      extra: scelti.extra,
-      prezzo: totale
-  };
+// 🔥 Ottieni (o crea) guest_id unico per questo dispositivo
+let guest_id = localStorage.getItem("guest_id");
+if (!guest_id) {
+    guest_id = "guest_" + crypto.randomUUID();
+    localStorage.setItem("guest_id", guest_id);
+}
+
+const coppa = {
+    email: email || null,       // se non registrato → null
+    guest_id: guest_id,         // identificazione dispositivo
+    data: new Date().toISOString(),
+    formato: coppaSelezionata,
+    gusti: scelti.gusti,
+    granelle: scelti.granelle,
+    topping: scelti.topping,
+    ingredienti: scelti.ingredienti,
+    extra: scelti.extra,
+    prezzo: totale
+};
 
   // ✅ 3) Salva su Supabase
   try {
