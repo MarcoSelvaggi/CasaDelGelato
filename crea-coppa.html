@@ -11,7 +11,10 @@
 
   <!-- Supabase: modulo che attacca le funzioni su window -->
   <script type="module" src="supabase.js"></script>
-
+<script type="module">
+  import { salvaCoppaSupabase } from "./supabase.js";
+  window.salvaCoppaSupabase = salvaCoppaSupabase;
+</script>
   <!-- Logica coppa (script normale, NON modulo) -->
   <script defer src="crea-coppa.js"></script>
 </head>
