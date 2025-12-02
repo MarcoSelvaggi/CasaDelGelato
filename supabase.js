@@ -8,9 +8,22 @@ export const supabase = createClient(
 );
 
 // =====================================================
+// 🔥 GENERA / RECUPERA guest_id
+// =====================================================
+export function getGuestID() {
+  let g = localStorage.getItem("guest_id");
+  if (!g) {
+    g = crypto.randomUUID();
+    localStorage.setItem("guest_id", g);
+  }
+  return g;
+}
+
+// =====================================================
 // 🔥 SALVA / RIATTIVA UTENTE IN SUPABASE
 // =====================================================
 export async function salvaRegistrazioneSupabase(nome, cognome, email) {
+  
   // 1️⃣ Controllo se esiste già
   const { data: existing, error: checkError } = await supabase
     .from("utenti")
@@ -39,6 +52,14 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
         return { success: false, error: updError.message };
       }
 
+      // 🔥 COLLEGO eventuali coppe anonime
+      const guest_id = getGuestID();
+      await supabase
+        .from("coppe")
+        .update({ email: email })
+        .eq("guest_id", guest_id)
+        .is("email", null);
+
       return { success: true };
     }
 
@@ -60,16 +81,15 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
   if (insertError) {
     return { success: false, error: insertError.message };
   }
-// 🔥 SE L’UTENTE SI È REGISTRATO, COLLEGO LE COPPE ANONIME ALLA SUA EMAIL
-const guest_id = localStorage.getItem("guest_id");
 
-if (guest_id) {
-    await supabase
-        .from("coppe")
-        .update({ email: email })
-        .eq("guest_id", guest_id)
-        .is("email", null);    // aggiorna solo le coppe anonime
-}
+  // 🔥 COLLEGO coppe anonime → registrazione nuova
+  const guest_id = getGuestID();
+  await supabase
+    .from("coppe")
+    .update({ email: email })
+    .eq("guest_id", guest_id)
+    .is("email", null);
+
   return { success: true };
 }
 
@@ -78,7 +98,20 @@ if (guest_id) {
 // =====================================================
 export async function salvaCoppaSupabase(coppa) {
 
-    console.log("🔍 Invio coppa a Supabase:", coppa);
+    // 🔥 1. Recupero email dell’utente loggato
+    let email = localStorage.getItem("user_email");
+    let guest_id = getGuestID();
+
+    // 🔥 2. Se NON loggato → salvo come anonimo
+    if (!email) {
+        coppa.email = null;
+        coppa.guest_id = guest_id;
+    } else {
+        coppa.email = email;
+        coppa.guest_id = null;
+    }
+
+    console.log("📤 Invio coppa:", coppa);
 
     const { data, error } = await supabase
         .from("coppe")
@@ -90,7 +123,6 @@ export async function salvaCoppaSupabase(coppa) {
         return { success:false, error:error.message };
     }
 
-    console.log("✔️ Coppa salvata su Supabase!", data);
     return { success:true };
 }
 
@@ -129,7 +161,7 @@ export async function getUtentiSupabase() {
 }
 
 // =====================================================
-// 🔥 ESPORTO ANCHE SU window PER GLI SCRIPT NON-MODULO
+// 🔥 ESPORTO SU window
 // =====================================================
 if (typeof window !== "undefined") {
   window.supabase = supabase;
