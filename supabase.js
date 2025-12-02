@@ -68,14 +68,21 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
 // 🔥 SALVA COPPA IN SUPABASE
 // =====================================================
 export async function salvaCoppaSupabase(coppa) {
-  const { error } = await supabase.from("coppe").insert([coppa]);
 
-  if (error) {
-    console.error("Errore Supabase salvataggio coppa:", error);
-    return { success: false, error: error.message };
-  }
+    console.log("🔍 Invio coppa a Supabase:", coppa);
 
-  return { success: true };
+    const { data, error } = await supabase
+        .from("coppe")
+        .insert([coppa]);
+
+    if (error) {
+        console.error("🔥 ERRORE SUPABASE:", error);
+        alert("Errore Supabase:\n" + error.message);
+        return { success:false, error:error.message };
+    }
+
+    console.log("✔️ Coppa salvata su Supabase!", data);
+    return { success:true };
 }
 
 // =====================================================
