@@ -75,6 +75,11 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.08);
         }
 
+        .coppa-eliminata {
+    background: #ffe5e5;
+    border-left: 6px solid #ff3b30;
+}
+
         .utente { border-left: 6px solid #007aff; }
         .utente-disiscritto { background: #ffe5e5; border-left: 6px solid red; }
 
@@ -169,19 +174,19 @@ function renderAdmin() {
             const ingredienti = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]");
             const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]");
 
-            lista.innerHTML += `
-                <div class="coppa">
-                    <b>Email:</b> ${evidenzia(c.email || "Anonimo")}<br>
-                    <b>Data:</b> ${evidenzia(c.data)}<br>
-                    <b>Formato:</b> ${evidenzia(c.formato)}<br>
-                    <b>Gusti:</b> ${evidenzia(gusti.join(", "))}<br>
-                    <b>Granelle:</b> ${evidenzia(granelle.join(", "))}<br>
-                    <b>Topping:</b> ${evidenzia(topping.join(", "))}<br>
-                    <b>Ingredienti:</b> ${evidenzia(ingredienti.join(", "))}<br>
-                    <b>Extra:</b> ${evidenzia(extra.join(", "))}<br>
-                    <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}
-                </div>
-            `;
+lista.innerHTML += `
+    <div class="coppa">
+        <b>Email:</b> ${evidenzia(c.email || "Anonimo")}<br>
+        <b>Data:</b> ${evidenzia(c.data)}<br>
+        <b>Formato:</b> ${evidenzia(c.formato)}<br>
+        <b>Gusti:</b> ${evidenzia(gusti.join(", "))}<br>
+        <b>Granelle:</b> ${evidenzia(granelle.join(", "))}<br>
+        <b>Topping:</b> ${evidenzia(topping.join(", "))}<br>
+        <b>Ingredienti:</b> ${evidenzia(ingredienti.join(", "))}<br>
+        <b>Extra:</b> ${evidenzia(extra.join(", "))}<br>
+        <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}
+    </div>
+`;
         });
 }
 

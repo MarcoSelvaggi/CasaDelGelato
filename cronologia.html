@@ -240,12 +240,32 @@ const prezziExtra = {
         return String(testo).replace(regex, "<mark>$1</mark>");
     }
 
-    function eliminaCoppa(idx) {
-        if (!confirm("Vuoi eliminare questa coppa?")) return;
-        coppe.splice(idx, 1);
-        salva();
-        renderLista();
+async function eliminaCoppa(idx) {
+    const c = coppe[idx];
+    if (!c) return;
+
+    if (!confirm("Vuoi eliminare questa coppa?")) return;
+
+    // 🔥 Se la coppa viene da Supabase (ha un id) → soft delete su Supabase
+    if (c.id && window.supabase) {
+        try {
+            await window.supabase
+                .from("coppe")
+                .update({
+                    eliminata: true,
+                    data_eliminazione: new Date().toISOString()
+                })
+                .eq("id", c.id);
+        } catch (err) {
+            console.error("Errore durante eliminazione su Supabase:", err);
+        }
     }
+
+    // 🔥 In ogni caso la tolgo dalla lista locale
+    coppe.splice(idx, 1);
+    salva();
+    renderLista();
+}
 
     function rinominaCoppa(idx) {
         const nomeAttuale = coppe[idx].nome || `Coppa ${idx + 1}`;
@@ -400,11 +420,24 @@ import { supabase } from "./supabase.js";
 async function getCoppeSupabaseUtente(email) {
     const guest_id = localStorage.getItem("guest_id");
 
-    const { data, error } = await supabase
+    let query = supabase
         .from("coppe")
         .select("*")
-        .or(`email.eq.${email},guest_id.eq.${guest_id}`)
         .order("id", { ascending: false });
+
+    // (per ora manteniamo la tua or, poi la sistemiamo nel punto 2)
+    if (email && guest_id) {
+        query = query.or(`email.eq.${email},guest_id.eq.${guest_id}`);
+    } else if (email) {
+        query = query.eq("email", email);
+    } else if (guest_id) {
+        query = query.eq("guest_id", guest_id);
+    }
+
+    // 🔥 filtro: mostra solo coppe NON eliminate
+    query = query.or("eliminata.is.null,eliminata.eq.false");
+
+    const { data, error } = await query;
 
     if (error) {
         console.error("Errore caricamento coppe da Supabase:", error);
