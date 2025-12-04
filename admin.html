@@ -160,35 +160,42 @@ function renderAdmin() {
             `;
         });
 
-    // -------- COPPE --------
-    lista.innerHTML += `<div class="section-title">🍨 Coppe create</div>`;
+// -------- COPPE --------
+lista.innerHTML += `<div class="section-title">🍨 Coppe create</div>`;
 
-    COPPE
-        .filter(c =>
-            JSON.stringify(c).toLowerCase().includes(filtro)
-        )
-        .forEach(c => {
-            const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti || "[]");
-            const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle || "[]");
-            const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping || "[]");
-            const ingredienti = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]");
-            const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]");
+COPPE
+    .filter(c =>
+        JSON.stringify(c).toLowerCase().includes(filtro)
+    )
+    .forEach(c => {
+        // Parsing sicuro degli array (come già avevi)
+        const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti || "[]");
+        const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle || "[]");
+        const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping || "[]");
+        const ingredienti = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]");
+        const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]");
 
-lista.innerHTML += `
-    <div class="coppa">
-        <b>Email:</b> ${evidenzia(c.email || "Anonimo")}<br>
-        <b>Data:</b> ${evidenzia(c.data)}<br>
-        <b>Formato:</b> ${evidenzia(c.formato)}<br>
-        <b>Gusti:</b> ${evidenzia(gusti.join(", "))}<br>
-        <b>Granelle:</b> ${evidenzia(granelle.join(", "))}<br>
-        <b>Topping:</b> ${evidenzia(topping.join(", "))}<br>
-        <b>Ingredienti:</b> ${evidenzia(ingredienti.join(", "))}<br>
-        <b>Extra:</b> ${evidenzia(extra.join(", "))}<br>
-        <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}
-    </div>
-`;
-        });
-}
+        // 🔥 Controllo soft delete
+        const isEliminata = c.eliminata === true;
+
+        lista.innerHTML += `
+            <div class="coppa ${isEliminata ? "coppa-eliminata" : ""}">
+                
+                ${isEliminata ? `<b style="color:#b00000;">❌ ELIMINATA</b><br>` : ""}
+                
+                <b>Email:</b> ${evidenzia(c.email || "Anonimo")}<br>
+                <b>Data:</b> ${evidenzia(c.data)}<br>
+                <b>Formato:</b> ${evidenzia(c.formato)}<br>
+                <b>Gusti:</b> ${evidenzia(gusti.join(", "))}<br>
+                <b>Granelle:</b> ${evidenzia(granelle.join(", "))}<br>
+                <b>Topping:</b> ${evidenzia(topping.join(", "))}<br>
+                <b>Ingredienti:</b> ${evidenzia(ingredienti.join(", "))}<br>
+                <b>Extra:</b> ${evidenzia(extra.join(", "))}<br>
+                <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}
+            </div>
+        `;
+    });
+    }
 
 // ----------------------------------
 // CARICA UTENTI

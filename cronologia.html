@@ -246,7 +246,7 @@ async function eliminaCoppa(idx) {
 
     if (!confirm("Vuoi eliminare questa coppa?")) return;
 
-    // 🔥 Se la coppa viene da Supabase (ha un id) → soft delete su Supabase
+    // 🔥 Se la coppa è su Supabase → soft delete
     if (c.id && window.supabase) {
         try {
             await window.supabase
@@ -261,8 +261,13 @@ async function eliminaCoppa(idx) {
         }
     }
 
-    // 🔥 In ogni caso la tolgo dalla lista locale
-    coppe.splice(idx, 1);
+    // 🔥 Soft delete ANCHE in locale (IMPORTANTE!)
+    coppe[idx].eliminata = true;
+    coppe[idx].data_eliminazione = new Date().toISOString();
+
+    // 🔥 NON usare più splice!
+    // coppe.splice(idx, 1);  ⛔ ELIMINA DAVVERO — non vogliamo questo
+
     salva();
     renderLista();
 }
@@ -312,35 +317,38 @@ async function eliminaCoppa(idx) {
 
         return arr;
     }
+    
+function renderLista() {
+    const arr = getCoppeFiltrateEOrdinate()
+                  .filter(c => !c.eliminata);   // ✅ NASCONDE LE ELIMINATE
 
-    function renderLista() {
-        const arr = getCoppeFiltrateEOrdinate();
-        lista.innerHTML = "";
+    lista.innerHTML = "";
 
-        if (arr.length === 0) {
-            lista.innerHTML = `<p class="empty-msg">Nessuna coppa trovata 😢</p>`;
-            return;
+    if (arr.length === 0) {
+        lista.innerHTML = `<p class="empty-msg">Nessuna coppa trovata 😢</p>`;
+        return;
+    }
+
+    arr.forEach(c => {
+        const idx = coppe.indexOf(c);
+        const nome = c.nome || `Coppa #${idx + 1}`;
+        const stellina = c.preferito ? "⭐" : "☆";
+
+        const gustiText = mostraGustiCompatti(c.gusti || []);
+        const granelleText = (c.granelle || []).join(", ");
+        const toppingText = (c.topping || []).join(", ");
+        const ingredientiText = (c.ingredienti || []).join(", ");
+
+        // 🔥 EXTRA con prezzo corretto
+        function formatExtra(lista) {
+            if (!lista || lista.length === 0) return "-";
+
+            return lista.map(nome => {
+                const prezzo = prezziExtra[nome] || 0;
+                const prezzoTxt = prezzo > 0 ? ` (+€${prezzo.toFixed(2)})` : "";
+                return `${nome}${prezzoTxt}`;
+            }).join(", ");
         }
-
-        arr.forEach(c => {
-            const idx = coppe.indexOf(c);
-            const nome = c.nome || `Coppa #${idx + 1}`;
-            const stellina = c.preferito ? "⭐" : "☆";
-
-            const gustiText = mostraGustiCompatti(c.gusti || []);
-            const granelleText = (c.granelle || []).join(", ");
-            const toppingText = (c.topping || []).join(", ");
-            const ingredientiText = (c.ingredienti || []).join(", ");
-// 🔥 EXTRA con prezzo corretto
-function formatExtra(lista) {
-    if (!lista || lista.length === 0) return "-";
-
-    return lista.map(nome => {
-        const prezzo = prezziExtra[nome] || 0;
-        const prezzoTxt = prezzo > 0 ? ` (+€${prezzo.toFixed(2)})` : "";
-        return `${nome}${prezzoTxt}`;
-    }).join(", ");
-}
 
 const extraText = formatExtra(c.extra);
 
