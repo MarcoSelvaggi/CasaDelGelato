@@ -30,8 +30,8 @@ async function linkCoppeAnonimeAEmail(email) {
   const { error } = await supabase
     .from("coppe")
     .update({ email })
-    .eq("guest_id", guest_id)
-    .is("email", null);   // solo coppe anonime
+   .eq("guest_id", guest_id)
+   .or("email.is.null,email.eq.");
 
   if (error) {
     console.error("Errore nel collegare le coppe anonime:", error);
