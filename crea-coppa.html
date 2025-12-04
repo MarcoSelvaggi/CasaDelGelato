@@ -199,10 +199,20 @@ async function salvaRegistrazione() {
         return;
     }
 
-    // 2️⃣ Salva localmente che l'utente è registrato
-    localStorage.setItem("userLogged", "1");
-    localStorage.setItem("user_email", email);
+// 2️⃣ Salva localmente che l'utente è registrato
+localStorage.setItem("userLogged", "1");
+localStorage.setItem("user_email", email);
 
+// 🔥 3️⃣ Collega le coppe anonime a questa email
+const guest_id = localStorage.getItem("guest_id");
+
+if (guest_id) {
+    await supabase
+        .from("coppe")
+        .update({ email: email })
+        .eq("guest_id", guest_id)
+        .is("email", null);
+}
     alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
     window.location.href = "index.html";
 }
