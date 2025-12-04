@@ -1,96 +1,126 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Casa del Gelato</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Casa del Gelato</title>
 
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f6f6f7;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #f6f6f7;
+        margin: 0;
+        padding: 0;
+    }
 
-        #top-fixed-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 55px;
-            background: white;
-            border-bottom: 1px solid #ddd;
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    #top-fixed-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 55px;
+        background: white;
+        border-bottom: 1px solid #ddd;
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .home-btn {
-            position: absolute;
-            left: 12px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: #444;
-            font-size: 16px;
-            gap: 6px;
-        }
+    .home-btn {
+        position: absolute;
+        left: 12px;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #444;
+        font-size: 16px;
+        gap: 6px;
+    }
 
-        .home-btn img { width: 28px; height: 28px; }
+    .home-btn img { width: 28px; height: 28px; }
 
-        #spacer { height: 70px; }
+    #spacer { height: 70px; }
 
-        h1 { text-align: center; margin-top: 10px; }
+    h1 { text-align: center; margin-top: 10px; }
 
-        #search-admin {
-            display:block;
-            margin: 10px auto 5px;
-            width: 90%;
-            max-width: 600px;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-        }
+    #search-admin {
+        display:block;
+        margin: 10px auto 5px;
+        width: 90%;
+        max-width: 600px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+    }
 
-        #stats {
-            text-align: center;
-            margin: 10px 0 20px;
-            font-size: 18px;
-        }
+    #admin-list {
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-        #admin-list {
-            padding: 20px;
-            max-width: 700px;
-            margin: 0 auto;
-        }
+    .utente-box {
+        background:white;
+        border-radius:12px;
+        padding:15px;
+        margin-bottom:18px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+        border-left:6px solid #007aff;
+    }
 
-        .utente, .coppa {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
+    .utente-header {
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        cursor:pointer;
+    }
 
-        .coppa-eliminata {
-    background: #ffe5e5;
-    border-left: 6px solid #ff3b30;
-}
+    .utente-coppe {
+        margin-top:12px;
+        display:none;
+    }
 
-        .utente { border-left: 6px solid #007aff; }
-        .utente-disiscritto { background: #ffe5e5; border-left: 6px solid red; }
+    .coppa {
+        background:white;
+        border-radius:10px;
+        padding:12px;
+        margin-bottom:10px;
+        border-left:6px solid #999;
+        box-shadow:0 1px 4px rgba(0,0,0,0.07);
+    }
 
-        .section-title { margin-top: 30px; font-size: 20px; font-weight: bold; }
+    .coppa-eliminata {
+        background:#ffe5e5;
+        border-left-color:#ff3b30;
+    }
 
-        mark {
-            background: #ffeb3b;
-            padding: 0 2px;
-            border-radius: 3px;
-        }
-    </style>
+    .coppa-confermata {
+        background:#e5ffe9;
+        border-left-color:#34c759;
+    }
+
+    button.conferma-btn {
+        background:#007aff;
+        color:white;
+        padding:6px 10px;
+        border-radius:8px;
+        border:none;
+        cursor:pointer;
+        margin-top:6px;
+    }
+
+    button.conferma-btn.confermato {
+        background:#34c759;
+    }
+
+    mark {
+        background:#ffeb3b;
+        padding:0 2px;
+        border-radius:3px;
+    }
+</style>
 </head>
 
 <body>
@@ -107,134 +137,150 @@
 <h1>📊 Pannello Admin</h1>
 
 <input id="search-admin" type="text" placeholder="Cerca utenti o coppe...">
-
-<div id="stats"></div>
-
 <div id="admin-list"></div>
 
 <script type="module">
 import { supabase } from "./supabase.js";
 
-let UTENTI = [];
 let COPPE = [];
 let termineRicerca = "";
 
-// ----------------------------------
-// Evidenzia testo
-// ----------------------------------
+// Evidenzia ricerca
 function evidenzia(testo) {
     if (!termineRicerca.trim()) return testo;
     const q = termineRicerca.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return testo.replace(new RegExp(q, "gi"), (m) => `<mark>${m}</mark>`);
+    return testo.replace(new RegExp(q, "gi"), m => `<mark>${m}</mark>`);
 }
 
-// ----------------------------------
-// RENDER ADMIN COMPLETO
-// ----------------------------------
+// Carica coppe
+async function loadCoppe() {
+    const { data } = await supabase
+        .from("coppe")
+        .select("*")
+        .order("created_at", { ascending:false });
+
+    COPPE = data || [];
+}
+
+// Ritorna mappa utente → coppe
+function groupByUser() {
+    const map = {};
+    COPPE.forEach(c => {
+        const email = c.email || "Anonimo";
+
+        if (!map[email]) map[email] = {
+            email,
+            coppe: [],
+            confermate: 0
+        };
+
+        map[email].coppe.push(c);
+        if (c.confermata === true) map[email].confermate++;
+    });
+    return map;
+}
+
+// Conferma coppa
+async function confermaCoppa(id) {
+    await supabase.from("coppe")
+        .update({ confermata:true })
+        .eq("id", id);
+
+    await loadCoppe();
+    renderAdmin();
+}
+
+// Render pagina admin
 function renderAdmin() {
     const lista = document.getElementById("admin-list");
     lista.innerHTML = "";
 
-    // Filtri
     const filtro = termineRicerca.toLowerCase();
+    const grouped = groupByUser();
 
-    // -------- UTENTI --------
-    lista.innerHTML += `<div class="section-title">🧑‍💻 Utenti registrati</div>`;
-
-    UTENTI
+    Object.values(grouped)
         .filter(u =>
-            JSON.stringify(u).toLowerCase().includes(filtro)
+            u.email.toLowerCase().includes(filtro) ||
+            JSON.stringify(u.coppe).toLowerCase().includes(filtro)
         )
         .forEach(u => {
-            const isDis = u.disiscritto === true;
-
             lista.innerHTML += `
-                <div class="utente ${isDis ? "utente-disiscritto" : ""}">
-                    <b>${isDis ? "🚫 DISISCRITTO" : "✔ REGISTRATO"}</b><br>
-                    <b>Nome:</b> ${evidenzia(u.nome)}<br>
-                    <b>Cognome:</b> ${evidenzia(u.cognome)}<br>
-                    <b>Email:</b> ${evidenzia(u.email)}<br>
-                    <b>Registrato il:</b> ${evidenzia(u.created_at?.replace("T"," ").substring(0,16))}<br>
-                    ${isDis ? `<b>Disiscritto il:</b> ${evidenzia(u.data_disiscrizione || "-")}` : ""}
+                <div class="utente-box">
+                    <div class="utente-header" onclick="toggleUser('${u.email}')">
+                        <div>
+                            <b>${evidenzia(u.email)}</b><br>
+                            Coppe create: <b>${u.coppe.length}</b> — Confermate: <b>${u.confermate}</b>
+                        </div>
+                        <div>▼</div>
+                    </div>
+
+                    <div class="utente-coppe" id="box-${u.email}">
+                    </div>
                 </div>
             `;
         });
+}
 
-// -------- COPPE --------
-lista.innerHTML += `<div class="section-title">🍨 Coppe create</div>`;
+// Render coppe utente quando si espande
+window.toggleUser = function(email) {
+    const box = document.getElementById(`box-${email}`);
+    if (box.style.display === "block") {
+        box.style.display = "none";
+        return;
+    }
 
-COPPE
-    .filter(c =>
-        JSON.stringify(c).toLowerCase().includes(filtro)
-    )
-    .forEach(c => {
-        const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti || "[]");
-        const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle || "[]");
-        const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping || "[]");
-        const ingredienti = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]");
-        const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]");
+    const grouped = groupByUser();
+    const user = grouped[email];
 
-        const isEliminata = c.eliminata === true;
+    box.innerHTML = "";
 
-        lista.innerHTML += `
-            <div class="coppa ${isEliminata ? "coppa-eliminata" : ""}">
-                
-                ${isEliminata ? `<b style="color:#b00000;">❌ ELIMINATA</b><br>` : ""}
-                
-                <b>Email:</b> ${evidenzia(c.email || "Anonimo")}<br>
-                <b>Data:</b> ${evidenzia(c.data)}<br>
-                <b>Nome coppa:</b> ${evidenzia(c.nome || "Coppa senza nome")}<br>
-                <b>Formato:</b> ${evidenzia(c.formato)}<br>
-                <b>Gusti:</b> ${evidenzia(gusti.join(", "))}<br>
-                <b>Granelle:</b> ${evidenzia(granelle.join(", "))}<br>
-                <b>Topping:</b> ${evidenzia(topping.join(", "))}<br>
-                <b>Ingredienti:</b> ${evidenzia(ingredienti.join(", "))}<br>
-                <b>Extra:</b> ${evidenzia(extra.join(", "))}<br>
-                <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}
+    user.coppe.forEach(c => {
+        const isEl = c.eliminata === true;
+        const isConf = c.confermata === true;
+
+        box.innerHTML += `
+            <div class="coppa ${isEl ? "coppa-eliminata" : ""} ${isConf ? "coppa-confermata" : ""}">
+                <b>Nome:</b> ${c.nome || `Coppa #${c.id}`}<br>
+                <b>Data:</b> ${c.data}<br>
+                <b>Formato:</b> ${c.formato}<br>
+                <b>Gusti:</b> ${c.gusti.join(", ")}<br>
+                <b>Granelle:</b> ${c.granelle.join(", ")}<br>
+                <b>Topping:</b> ${c.topping.join(", ")}<br>
+                <b>Ingredienti:</b> ${c.ingredienti.join(", ")}<br>
+                <b>Extra:</b> ${c.extra.join(", ")}<br>
+                <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br>
+
+                ${
+                    isConf 
+                    ? `<button class="conferma-btn confermato">✔ Confermata</button>`
+                    : `<button class="conferma-btn" onclick="conf('${c.id}', '${email}')">Conferma</button>`
+                }
             </div>
         `;
     });
 
+    box.style.display = "block";
+};
+
+// Bottone → conferma coppa + check coupon
+window.conf = async function(id, email) {
+    await confermaCoppa(id);
+
+    const grouped = groupByUser();
+    if (grouped[email].confermate >= 10) {
+        alert(`🎉 Coupon sbloccato per ${email}!`);
+    }
 }
 
-// ----------------------------------
-// CARICA UTENTI
-// ----------------------------------
-async function loadUtenti() {
-    const { data, error } = await supabase
-        .from("utenti")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-    if (!error) UTENTI = data;
-}
-
-// ----------------------------------
-// CARICA COPPE
-// ----------------------------------
-async function loadCoppe() {
-    const { data, error } = await supabase
-        .from("coppe")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-    if (!error) COPPE = data;
-}
-
-// ----------------------------------
-// AVVIO
-// ----------------------------------
-document.addEventListener("DOMContentLoaded", async () => {
-    await loadUtenti();
-    await loadCoppe();
+// Ricerca live
+document.getElementById("search-admin").addEventListener("input", e => {
+    termineRicerca = e.target.value;
     renderAdmin();
 });
 
-// ----------------------------------
-// RICERCA LIVE
-// ----------------------------------
-document.getElementById("search-admin").addEventListener("input", e => {
-    termineRicerca = e.target.value;
+// AVVIO
+document.addEventListener("DOMContentLoaded", async()=>{
+    await loadCoppe();
     renderAdmin();
 });
 </script>
