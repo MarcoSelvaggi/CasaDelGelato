@@ -168,14 +168,12 @@ COPPE
         JSON.stringify(c).toLowerCase().includes(filtro)
     )
     .forEach(c => {
-        // Parsing sicuro degli array (come già avevi)
         const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti || "[]");
         const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle || "[]");
         const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping || "[]");
         const ingredienti = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]");
         const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]");
 
-        // 🔥 Controllo soft delete
         const isEliminata = c.eliminata === true;
 
         lista.innerHTML += `
@@ -183,6 +181,7 @@ COPPE
                 
                 ${isEliminata ? `<b style="color:#b00000;">❌ ELIMINATA</b><br>` : ""}
                 
+                <b>Nome coppa:</b> ${evidenzia(c.nome || "Coppa senza nome")}<br>
                 <b>Email:</b> ${evidenzia(c.email || "Anonimo")}<br>
                 <b>Data:</b> ${evidenzia(c.data)}<br>
                 <b>Formato:</b> ${evidenzia(c.formato)}<br>
@@ -195,7 +194,8 @@ COPPE
             </div>
         `;
     });
-    }
+
+}
 
 // ----------------------------------
 // CARICA UTENTI
