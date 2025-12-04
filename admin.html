@@ -1,126 +1,166 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin - Casa del Gelato</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Casa del Gelato</title>
 
-<style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        background: #f6f6f7;
-        margin: 0;
-        padding: 0;
-    }
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f6f6f7;
+            margin: 0;
+            padding: 0;
+        }
 
-    #top-fixed-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 55px;
-        background: white;
-        border-bottom: 1px solid #ddd;
-        z-index: 999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+        #top-fixed-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .home-btn {
-        position: absolute;
-        left: 12px;
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        color: #444;
-        font-size: 16px;
-        gap: 6px;
-    }
+        .home-btn {
+            position: absolute;
+            left: 12px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #444;
+            font-size: 16px;
+            gap: 6px;
+        }
 
-    .home-btn img { width: 28px; height: 28px; }
+        .home-btn img { width: 28px; height: 28px; }
 
-    #spacer { height: 70px; }
+        #spacer { height: 70px; }
 
-    h1 { text-align: center; margin-top: 10px; }
+        h1 { text-align: center; margin-top: 10px; }
 
-    #search-admin {
-        display:block;
-        margin: 10px auto 5px;
-        width: 90%;
-        max-width: 600px;
-        padding: 10px;
-        font-size: 16px;
-        border-radius: 12px;
-        border: 1px solid #ccc;
-    }
+        #search-admin {
+            display:block;
+            margin: 10px auto 12px;
+            width: 90%;
+            max-width: 600px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+        }
 
-    #admin-list {
-        padding: 20px;
-        max-width: 800px;
-        margin: 0 auto;
-    }
+        #admin-list {
+            padding: 20px;
+            max-width: 750px;
+            margin: 0 auto;
+        }
 
-    .utente-box {
-        background:white;
-        border-radius:12px;
-        padding:15px;
-        margin-bottom:18px;
-        box-shadow:0 2px 6px rgba(0,0,0,0.08);
-        border-left:6px solid #007aff;
-    }
+        /* ---- UTENTI ---- */
+        .utente {
+            background: white;
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            border-left: 6px solid #007aff;
+            cursor: pointer;
+        }
 
-    .utente-header {
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        cursor:pointer;
-    }
+        .utente-disiscritto {
+            background: #ffecec;
+            border-left: 6px solid #ff3b30;
+        }
 
-    .utente-coppe {
-        margin-top:12px;
-        display:none;
-    }
+        .utente-dettagli {
+            margin-top: 10px;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 10px;
+            display: none;
+        }
 
-    .coppa {
-        background:white;
-        border-radius:10px;
-        padding:12px;
-        margin-bottom:10px;
-        border-left:6px solid #999;
-        box-shadow:0 1px 4px rgba(0,0,0,0.07);
-    }
+        .utente h3 {
+            margin: 0;
+            font-size: 17px;
+        }
 
-    .coppa-eliminata {
-        background:#ffe5e5;
-        border-left-color:#ff3b30;
-    }
+        .badge {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 3px 8px;
+            background: #007aff;
+            color: white;
+            font-size: 12px;
+            border-radius: 8px;
+        }
 
-    .coppa-confermata {
-        background:#e5ffe9;
-        border-left-color:#34c759;
-    }
+        .badge-green {
+            background: #34c759;
+        }
 
-    button.conferma-btn {
-        background:#007aff;
-        color:white;
-        padding:6px 10px;
-        border-radius:8px;
-        border:none;
-        cursor:pointer;
-        margin-top:6px;
-    }
+        /* ---- COPPE ---- */
+        .lista-coppe {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 10px;
+            display: none;
+        }
 
-    button.conferma-btn.confermato {
-        background:#34c759;
-    }
+        .coppa {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 5px solid #aaa;
+        }
 
-    mark {
-        background:#ffeb3b;
-        padding:0 2px;
-        border-radius:3px;
-    }
-</style>
+        .coppa-confermata {
+            border-left-color: #34c759;
+            background: #eaffea;
+        }
+
+        .coppa-eliminata {
+            border-left-color: #ff3b30 !important;
+            background: #ffe5e5 !important;
+        }
+
+        .btn-toggle {
+            margin-top: 8px;
+            padding: 6px 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        .btn-confirm {
+            background: #007aff;
+            color: white;
+        }
+
+        .btn-unconfirm {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .btn-coppe {
+            margin-top: 12px;
+            padding: 8px 14px;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -136,151 +176,157 @@
 
 <h1>📊 Pannello Admin</h1>
 
-<input id="search-admin" type="text" placeholder="Cerca utenti o coppe...">
+<input id="search-admin" type="text" placeholder="Cerca utenti...">
+
 <div id="admin-list"></div>
 
 <script type="module">
 import { supabase } from "./supabase.js";
 
+let UTENTI = [];
 let COPPE = [];
 let termineRicerca = "";
 
-// Evidenzia ricerca
-function evidenzia(testo) {
-    if (!termineRicerca.trim()) return testo;
-    const q = termineRicerca.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return testo.replace(new RegExp(q, "gi"), m => `<mark>${m}</mark>`);
+/* ---------------------------------------------
+   CARICA DATI
+----------------------------------------------*/
+async function loadUtenti() {
+    const { data } = await supabase.from("utenti").select("*");
+    UTENTI = data || [];
 }
 
-// Carica coppe
 async function loadCoppe() {
-    const { data } = await supabase
-        .from("coppe")
-        .select("*")
-        .order("created_at", { ascending:false });
-
+    const { data } = await supabase.from("coppe").select("*");
     COPPE = data || [];
 }
 
-// Ritorna mappa utente → coppe
-function groupByUser() {
-    const map = {};
-    COPPE.forEach(c => {
-        const email = c.email || "Anonimo";
-
-        if (!map[email]) map[email] = {
-            email,
-            coppe: [],
-            confermate: 0
-        };
-
-        map[email].coppe.push(c);
-        if (c.confermata === true) map[email].confermate++;
-    });
-    return map;
-}
-
-// Conferma coppa
-async function confermaCoppa(id) {
-    await supabase.from("coppe")
-        .update({ confermata:true })
-        .eq("id", id);
-
-    await loadCoppe();
-    renderAdmin();
-}
-
-// Render pagina admin
+/* ---------------------------------------------
+   RENDER: LIVELLO 1 - LISTA UTENTI
+----------------------------------------------*/
 function renderAdmin() {
-    const lista = document.getElementById("admin-list");
-    lista.innerHTML = "";
+    const div = document.getElementById("admin-list");
+    div.innerHTML = "";
 
-    const filtro = termineRicerca.toLowerCase();
-    const grouped = groupByUser();
+    const filter = termineRicerca.toLowerCase();
 
-    Object.values(grouped)
-        .filter(u =>
-            u.email.toLowerCase().includes(filtro) ||
-            JSON.stringify(u.coppe).toLowerCase().includes(filtro)
-        )
-        .forEach(u => {
-            lista.innerHTML += `
-                <div class="utente-box">
-                    <div class="utente-header" onclick="toggleUser('${u.email}')">
-                        <div>
-                            <b>${evidenzia(u.email)}</b><br>
-                            Coppe create: <b>${u.coppe.length}</b> — Confermate: <b>${u.confermate}</b>
-                        </div>
-                        <div>▼</div>
-                    </div>
+    UTENTI.filter(u =>
+        JSON.stringify(u).toLowerCase().includes(filter)
+    ).forEach(u => {
+        const email = u.email || "Anonimo";
 
-                    <div class="utente-coppe" id="box-${u.email}">
-                    </div>
-                </div>
-            `;
-        });
+        const coppeUtente = COPPE.filter(c => c.email === email);
+        const tot = coppeUtente.length;
+        const confermate = coppeUtente.filter(c => c.confermata === true).length;
+
+        const coupon = confermate >= 10 ? `<span class="badge badge-green">⭐ Coupon!</span>` : "";
+
+        div.innerHTML += `
+            <div class="utente ${u.disiscritto ? "utente-disiscritto" : ""}"
+                 onclick="toggleDettagli('${email}')">
+
+                <h3>${email}</h3>
+                <div class="badge">Coppe: ${tot}</div>
+                <div class="badge badge-green">Confermate: ${confermate}</div>
+                ${coupon}
+
+                <div id="dettagli-${email}" class="utente-dettagli"></div>
+            </div>
+        `;
+    });
 }
 
-// Render coppe utente quando si espande
-window.toggleUser = function(email) {
-    const box = document.getElementById(`box-${email}`);
+/* ---------------------------------------------
+   RENDER: LIVELLO 2 - DETTAGLI UTENTE
+----------------------------------------------*/
+window.toggleDettagli = function(email) {
+    const el = document.getElementById("dettagli-" + email);
+    if (!el) return;
+
+    if (el.style.display === "block") {
+        el.style.display = "none";
+        return;
+    }
+
+    const u = UTENTI.find(x => x.email === email);
+    if (!u) return;
+
+    el.innerHTML = `
+        <b>Nome:</b> ${u.nome}<br>
+        <b>Cognome:</b> ${u.cognome}<br>
+        <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16)}<br>
+        ${u.disiscritto ? `<b>Disiscritto il:</b> ${u.data_disiscrizione}<br>` : ""}
+        
+        <button class="btn-coppe" onclick="toggleCoppe('${email}', event)">
+            Coppe create
+        </button>
+
+        <div id="coppe-${email}" class="lista-coppe"></div>
+    `;
+    el.style.display = "block";
+};
+
+/* ---------------------------------------------
+   RENDER: LIVELLO 3 - LISTA COPPE UTENTE
+----------------------------------------------*/
+window.toggleCoppe = function(email, ev) {
+    ev.stopPropagation();
+    const box = document.getElementById("coppe-" + email);
+
     if (box.style.display === "block") {
         box.style.display = "none";
         return;
     }
 
-    const grouped = groupByUser();
-    const user = grouped[email];
+    const list = COPPE.filter(c => c.email === email);
 
-    box.innerHTML = "";
+    box.innerHTML = list.map(c => `
+        <div class="coppa ${c.confermata ? "coppa-confermata" : ""}">
+            <b>Nome:</b> ${c.nome || "Coppa senza nome"}<br>
+            <b>Data:</b> ${c.data}<br>
+            <b>Formato:</b> ${c.formato}<br>
+            <b>Gusti:</b> ${c.gusti?.join(", ")}<br>
+            <b>Granelle:</b> ${c.granelle?.join(", ")}<br>
+            <b>Topping:</b> ${c.topping?.join(", ")}<br>
+            <b>Ingredienti:</b> ${c.ingredienti?.join(", ")}<br>
+            <b>Extra:</b> ${c.extra?.join(", ")}<br>
+            <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br>
 
-    user.coppe.forEach(c => {
-        const isEl = c.eliminata === true;
-        const isConf = c.confermata === true;
-
-        box.innerHTML += `
-            <div class="coppa ${isEl ? "coppa-eliminata" : ""} ${isConf ? "coppa-confermata" : ""}">
-                <b>Nome:</b> ${c.nome || `Coppa #${c.id}`}<br>
-                <b>Data:</b> ${c.data}<br>
-                <b>Formato:</b> ${c.formato}<br>
-                <b>Gusti:</b> ${c.gusti.join(", ")}<br>
-                <b>Granelle:</b> ${c.granelle.join(", ")}<br>
-                <b>Topping:</b> ${c.topping.join(", ")}<br>
-                <b>Ingredienti:</b> ${c.ingredienti.join(", ")}<br>
-                <b>Extra:</b> ${c.extra.join(", ")}<br>
-                <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br>
-
-                ${
-                    isConf 
-                    ? `<button class="conferma-btn confermato">✔ Confermata</button>`
-                    : `<button class="conferma-btn" onclick="conf('${c.id}', '${email}')">Conferma</button>`
-                }
-            </div>
-        `;
-    });
+            <button class="btn-toggle ${c.confermata ? "btn-unconfirm" : "btn-confirm"}"
+                    onclick="toggleConferma(${c.id}, ${c.confermata ? 1 : 0}, '${email}', event)">
+                ${c.confermata ? "Annulla" : "Conferma"}
+            </button>
+        </div>
+    `).join("");
 
     box.style.display = "block";
 };
 
-// Bottone → conferma coppa + check coupon
-window.conf = async function(id, email) {
-    await confermaCoppa(id);
+/* ---------------------------------------------
+   TOGGLE CONFERMA COPPA
+----------------------------------------------*/
+window.toggleConferma = async function(id, stato, email, ev) {
+    ev.stopPropagation();
 
-    const grouped = groupByUser();
-    if (grouped[email].confermate >= 10) {
-        alert(`🎉 Coupon sbloccato per ${email}!`);
-    }
-}
+    await supabase
+        .from("coppe")
+        .update({ confermata: !stato })
+        .eq("id", id);
 
-// Ricerca live
-document.getElementById("search-admin").addEventListener("input", e => {
-    termineRicerca = e.target.value;
+    await loadCoppe();
+    toggleCoppe(email, ev);  // Ricarica senza chiudere il pannello
+};
+
+/* ---------------------------------------------
+   INIT
+----------------------------------------------*/
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadUtenti();
+    await loadCoppe();
     renderAdmin();
 });
 
-// AVVIO
-document.addEventListener("DOMContentLoaded", async()=>{
-    await loadCoppe();
+document.getElementById("search-admin").addEventListener("input", e => {
+    termineRicerca = e.target.value;
     renderAdmin();
 });
 </script>
