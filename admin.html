@@ -76,6 +76,12 @@
         background: #ffecec !important;
     }
 
+    .utente-details {
+        margin-top: 10px;
+        padding-left: 5px;
+        font-size: 15px;
+    }
+
     .counter-row {
         margin-top: 6px;
         display: flex;
@@ -193,6 +199,11 @@ async function load(){
 }
 load();
 
+function matchSearch(obj){
+    if (!filtro) return true;
+    return JSON.stringify(obj).toLowerCase().includes(filtro);
+}
+
 function getStats(email){
     const list = COPPE.filter(c => (c.email || "Anonimo") === email);
     const tot = list.length;
@@ -200,11 +211,6 @@ function getStats(email){
     const elim = list.filter(c=>c.eliminata).length;
     const coupon = Math.floor(conf / 10);
     return {tot, conf, elim, coupon, list};
-}
-
-function matchSearch(obj){
-    if (!filtro) return true;
-    return JSON.stringify(obj).toLowerCase().includes(filtro);
 }
 
 function toggleFilters(email){
@@ -217,11 +223,17 @@ async function toggleConferma(id, current){
     await supabase.from("coppe").update({
         confermata: !current
     }).eq("id", id);
-    load();
+
+    const coppa = COPPE.find(c => c.id === id);
+    if (coppa) coppa.confermata = !current;
+
+    renderCoppe(coppa.email || "Anonimo");
 }
 
-function render(){
+window.toggleFilters = toggleFilters;
+window.toggleConferma = toggleConferma;
 
+function render(){
     const out = document.getElementById("admin-list");
     out.innerHTML = "";
 
@@ -237,30 +249,29 @@ function render(){
         out.innerHTML += `
             <div class="${cardCls}" onclick="toggleFilters('${email}')">
                 <b>${email}</b>
+
                 <div class="counter-row">
                     <span class="badge badge-blue">Coppe: ${stats.tot}</span>
                     <span class="badge badge-green">Confermate: ${stats.conf}</span>
                     <span class="badge badge-red">Eliminate: ${stats.elim}</span>
                     <span class="badge badge-coupon">🎁 ${stats.coupon}</span>
                 </div>
+
+                <div class="utente-details">
+                    <b>Nome:</b> ${u.nome || "-"}<br>
+                    <b>Cognome:</b> ${u.cognome || "-"}<br>
+                    <b>Email:</b> ${u.email}<br>
+                    <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16) || "-"}<br>
+                    ${u.disiscritto ? `<b style="color:red;">Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
+                </div>
             </div>
 
             <div id="c-${email}" class="coppe-container"></div>
-<div class="utente-details">
-    <b>Nome:</b> ${u.nome || "-"}<br>
-    <b>Cognome:</b> ${u.cognome || "-"}<br>
-    <b>Email:</b> ${u.email}<br>
-    <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16) || "-"}<br>
-    ${u.disiscritto ? `<b style="color:red;">Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
-</div>
         `;
     });
 
     UTENTI.forEach(u => renderCoppe(u.email));
 }
-
-window.toggleFilters = toggleFilters;
-window.toggleConferma = toggleConferma;
 
 function renderCoppe(email){
     const box = document.getElementById("c-" + email);
@@ -268,49 +279,41 @@ function renderCoppe(email){
 
     const stats = getStats(email);
 
-    // CREO LA LISTA BASE (tutte le coppe dell’utente)
-    let arr = stats.coppe.slice();  // <-- questa è l’unica giusta
+    let arr = stats.list.slice();
 
-    // ---- FILTRO CONFERMATE ----
-    if (filtroConfermate[email] === true) {
-        arr = arr.filter(c => c.confermata === true);
-    }
-
-    // ---- FILTRO ELIMINATE ----
-    if (filtroEliminate[email] === true) {
-        arr = arr.filter(c => c.eliminata === true);
-    }
+    if (filtroConfermate[email]) arr = arr.filter(c => c.confermata);
+    if (filtroEliminate[email]) arr = arr.filter(c => c.eliminata);
 
     box.innerHTML = `
         <div style="margin-bottom:10px;">
             <span class="filter-btn ${!filtroConfermate[email] && !filtroEliminate[email] ? "active":""}" 
-                  onclick="filtroConfermate['${email}']=false; filtroEliminate['${email}']=false; render(); event.stopPropagation();">
-                  Tutte
+                onclick="filtroConfermate['${email}']=false; filtroEliminate['${email}']=false; render(); event.stopPropagation();">
+                Tutte
             </span>
 
             <span class="filter-btn ${filtroConfermate[email] ? "active":""}"
-                  onclick="filtroConfermate['${email}']=!filtroConfermate['${email}']; filtroEliminate['${email}']=false; render(); event.stopPropagation();">
-                  Confermate
+                onclick="filtroConfermate['${email}']=!filtroConfermate['${email}']; filtroEliminate['${email}']=false; render(); event.stopPropagation();">
+                Confermate
             </span>
 
             <span class="filter-btn ${filtroEliminate[email] ? "active":""}"
-                  onclick="filtroEliminate['${email}']=!filtroEliminate['${email}']; filtroConfermate['${email}']=false; render(); event.stopPropagation();">
-                  Eliminate
+                onclick="filtroEliminate['${email}']=!filtroEliminate['${email}']; filtroConfermate['${email}']=false; render(); event.stopPropagation();">
+                Eliminate
             </span>
         </div>
     `;
 
     arr.forEach(c => {
-
         const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti||"[]");
         const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle||"[]");
         const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping||"[]");
         const ingr = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti||"[]");
         const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra||"[]");
 
-        const coppaCls = c.eliminata ? "coppa-box coppa-eliminata"
-                       : c.confermata ? "coppa-box coppa-confermata"
-                       : "coppa-box";
+        const coppaCls =
+              c.eliminata ? "coppa-box coppa-eliminata"
+            : c.confermata ? "coppa-box coppa-confermata"
+            : "coppa-box";
 
         box.innerHTML += `
             <div class="${coppaCls}">
@@ -327,10 +330,8 @@ function renderCoppe(email){
 
                 ${
                     c.confermata
-                    ? `<button class="undo-btn"
-        onclick="toggleConferma(${c.id}, true); event.stopPropagation();">`
-                    : `<button class="confirm-btn"
-        onclick="toggleConferma(${c.id}, false); event.stopPropagation();">`
+                    ? `<button class="undo-btn" onclick="toggleConferma(${c.id}, true); event.stopPropagation();">Annulla</button>`
+                    : `<button class="confirm-btn" onclick="toggleConferma(${c.id}, false); event.stopPropagation();">Conferma</button>`
                 }
             </div>
         `;
