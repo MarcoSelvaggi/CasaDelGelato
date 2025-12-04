@@ -307,13 +307,39 @@ window.toggleCoppe = function(email, ev) {
 window.toggleConferma = async function(id, stato, email, ev) {
     ev.stopPropagation();
 
+    // Aggiorna stato conferma su Supabase
     await supabase
         .from("coppe")
         .update({ confermata: !stato })
         .eq("id", id);
 
+    // Ricarico le coppe aggiornate
     await loadCoppe();
-    toggleCoppe(email, ev);  // Ricarica senza chiudere il pannello
+
+    // 🔥 RENDER SOLO IL BLOCCO coppe UTENTE SENZA CHIUDERE
+    const box = document.getElementById("coppe-" + email);
+    if (!box) return;
+
+    const list = COPPE.filter(c => c.email === email);
+
+    box.innerHTML = list.map(c => `
+        <div class="coppa ${c.confermata ? "coppa-confermata" : ""}">
+            <b>Nome:</b> ${c.nome || "Coppa senza nome"}<br>
+            <b>Data:</b> ${c.data}<br>
+            <b>Formato:</b> ${c.formato}<br>
+            <b>Gusti:</b> ${c.gusti?.join(", ")}<br>
+            <b>Granelle:</b> ${c.granelle?.join(", ")}<br>
+            <b>Topping:</b> ${c.topping?.join(", ")}<br>
+            <b>Ingredienti:</b> ${c.ingredienti?.join(", ")}<br>
+            <b>Extra:</b> ${c.extra?.join(", ")}<br>
+            <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br>
+
+            <button class="btn-toggle ${c.confermata ? "btn-unconfirm" : "btn-confirm"}"
+                    onclick="toggleConferma(${c.id}, ${c.confermata ? 1 : 0}, '${email}', event)">
+                ${c.confermata ? "Annulla" : "Conferma"}
+            </button>
+        </div>
+    `).join("");
 };
 
 /* ---------------------------------------------
