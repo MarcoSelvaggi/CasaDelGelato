@@ -1,119 +1,154 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Casa del Gelato</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Casa del Gelato</title>
 
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f6f6f7;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #f6f6f7;
+        margin: 0;
+        padding: 0;
+    }
 
-        #top-fixed-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 55px;
-            background: white;
-            border-bottom: 1px solid #ddd;
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    #top-fixed-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 55px;
+        background: white;
+        border-bottom: 1px solid #ddd;
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .home-btn {
-            position: absolute;
-            left: 12px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: #444;
-            font-size: 16px;
-            gap: 6px;
-        }
+    .home-btn {
+        position: absolute;
+        left: 12px;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #444;
+        font-size: 16px;
+        gap: 6px;
+    }
 
-        .home-btn img { width: 28px; height: 28px; }
+    .home-btn img { width: 28px; height: 28px; }
 
-        #spacer { height: 70px; }
+    #spacer { height: 70px; }
 
-        h1 { text-align: center; margin-top: 10px; }
+    h1 { text-align: center; margin-top: 10px; }
 
-        #search-admin {
-            display:block;
-            margin: 10px auto 5px;
-            width: 90%;
-            max-width: 600px;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-        }
+    #search-admin {
+        display:block;
+        margin: 10px auto 5px;
+        width: 90%;
+        max-width: 600px;
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 12px;
+        border: 1px solid #ccc;
+    }
 
-        #admin-list {
-            padding: 20px;
-            max-width: 700px;
-            margin: 0 auto;
-        }
+    #admin-list {
+        padding: 20px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
 
-        /* CARD UTENTE */
-        .utente-card {
-            background: white;
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            border-left: 6px solid #007aff;
-            cursor:pointer;
-        }
-        .utente-dis {
-            background: #ffe5e5;
-            border-left: 6px solid #ff3b30;
-        }
+    .utente-card {
+        background: white;
+        border-radius: 14px;
+        padding: 15px 18px;
+        margin-bottom: 14px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        cursor: pointer;
+        border-left: 8px solid #007aff;
+    }
 
-        .counter {
-            display:inline-block;
-            padding:4px 10px;
-            border-radius:8px;
-            margin-right:6px;
-            font-size:14px;
-            font-weight:600;
-        }
-        .c-blue { background:#dbe9ff; color:#0047cc; }
-        .c-green { background:#d7ffdb; color:#008f22; cursor:pointer; }
-        .c-red { background:#ffd6d6; color:#b80000; cursor:pointer; }
+    .utente-disiscritto {
+        border-left-color: #ff3b30 !important;
+        background: #ffecec !important;
+    }
 
-        /* CARD COPPA */
-        .coppa {
-            background:white;
-            padding:12px;
-            border-radius:10px;
-            margin:10px 0;
-            border-left:5px solid #ccc;
-        }
-        .coppa-confermata { border-left:5px solid #00b341 !important; }
-        .coppa-eliminata { border-left:5px solid #ff3333 !important; background:#ffe5e5; }
+    .counter-row {
+        margin-top: 6px;
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+    }
 
-        .conf-btn {
-            margin-top:6px;
-            padding:8px 12px;
-            border-radius:8px;
-            background:#eee;
-            cursor:pointer;
-            display:inline-block;
-            font-weight:600;
-        }
-        .conf-btn.active {
-            background:#00b341;
-            color:white;
-        }
+    .badge {
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+    }
 
-    </style>
+    .badge-blue { background: #e4f0ff; color: #0052cc; }
+    .badge-green { background: #e8ffe8; color: #008a00; }
+    .badge-red  { background: #ffe5e5; color: #b20000; }
+    .badge-coupon { background: #fff5cc; color: #a67c00; }
+
+    .coppe-container {
+        display:none;
+        margin-top: 10px;
+        padding: 15px;
+        background: #ffffff;
+        border-radius: 14px;
+        border: 1px solid #ddd;
+    }
+
+    .coppa-box {
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        background: #fafafa;
+        border-left: 6px solid #007aff;
+    }
+
+    .coppa-eliminata { border-left-color: #ff3b30 !important; background:#ffecec;}
+    .coppa-confermata { border-left-color: #00b341 !important; background:#e7ffe9;}
+
+    .filter-btn {
+        margin-right: 8px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: #eee;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .filter-btn.active {
+        background: #007aff;
+        color: white;
+    }
+
+    .confirm-btn {
+        padding: 6px 12px;
+        background: #00c851;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 6px;
+    }
+
+    .undo-btn {
+        padding: 6px 12px;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 6px;
+    }
+</style>
 </head>
 
 <body>
@@ -138,233 +173,151 @@ import { supabase } from "./supabase.js";
 
 let UTENTI = [];
 let COPPE = [];
-let termineRicerca = "";
+let filtro = "";
 let filtroConfermate = {};
 let filtroEliminate = {};
 
-// ----------------------------------
-// EVIDENZIA TESTO
-// ----------------------------------
-function evidenzia(t) {
-    if (!termineRicerca.trim()) return t;
-    const q = termineRicerca.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return t.replace(new RegExp(q, "gi"), m => `<mark>${m}</mark>`);
+document.getElementById("search-admin").addEventListener("input", e => {
+    filtro = e.target.value.toLowerCase();
+    render();
+});
+
+async function load(){
+    const u = await supabase.from("utenti").select("*");
+    const c = await supabase.from("coppe").select("*");
+
+    if (!u.error) UTENTI = u.data;
+    if (!c.error) COPPE = c.data;
+
+    render();
+}
+load();
+
+function getStats(email){
+    const list = COPPE.filter(c => (c.email || "Anonimo") === email);
+    const tot = list.length;
+    const conf = list.filter(c=>c.confermata).length;
+    const elim = list.filter(c=>c.eliminata).length;
+    const coupon = Math.floor(conf / 10);
+    return {tot, conf, elim, coupon, list};
 }
 
-// ----------------------------------
-// GRUPPA COPPE PER EMAIL
-// ----------------------------------
-function groupCoppeByUser() {
-    const map = {};
-
-    COPPE.forEach(c => {
-        const email = c.email || "Anonimo";
-
-        if (!map[email]) map[email] = {
-            coppe: [],
-            tot: 0,
-            conf: 0,
-            del: 0
-        };
-
-        map[email].coppe.push(c);
-        map[email].tot++;
-
-        if (c.confermata) map[email].conf++;
-        if (c.eliminata) map[email].del++;
-    });
-
-    return map;
+function matchSearch(obj){
+    if (!filtro) return true;
+    return JSON.stringify(obj).toLowerCase().includes(filtro);
 }
 
-// ----------------------------------
-// RENDER ADMIN
-// ----------------------------------
-function renderAdmin() {
-    const lista = document.getElementById("admin-list");
-    lista.innerHTML = "";
-
-    const filtro = termineRicerca.toLowerCase();
-    const grouped = groupCoppeByUser();
-
-    // ⚠️ unisco utenti registrati + utenti che hanno coppe
-    const emails = new Set([
-        ...UTENTI.map(u => u.email),
-        ...Object.keys(grouped)
-    ]);
-
-    emails.forEach(email => {
-        if (!email.toLowerCase().includes(filtro)) return;
-
-        const u = UTENTI.find(x => x.email === email);
-        const stats = grouped[email] || { tot:0, conf:0, del:0 };
-
-        const coupon = Math.floor(stats.conf / 10);
-
-        lista.innerHTML += `
-            <div class="utente-card ${u?.disiscritto ? "utente-dis" : ""}"
-                 onclick="toggleUser('${email}')">
-
-                <b>${email}</b><br>
-
-                <span class="counter c-blue">Coppe: ${stats.tot}</span>
-                <span class="counter c-green" onclick="event.stopPropagation(); toggleFiltroConf('${email}')">
-                    Confermate: ${stats.conf}
-                </span>
-                <span class="counter c-red" onclick="event.stopPropagation(); toggleFiltroElim('${email}')">
-                    Eliminate: ${stats.del}
-                </span>
-                <span class="counter c-green">🎟️ ${coupon}</span>
-
-                <div id="box-${email}" style="display:none;"></div>
-            </div>
-        `;
-    });
+function toggleFilters(email){
+    const box = document.getElementById("c-" + email);
+    if (!box) return;
+    box.style.display = box.style.display === "block" ? "none" : "block";
 }
 
-// ----------------------------------
-// MOSTRA / NASCONDI DETTAGLI UTENTE
-// ----------------------------------
-window.toggleUser = function(email) {
-    const box = document.getElementById(`box-${email}`);
-
-    if (box.style.display === "none") {
-        renderDettagliUtente(email, box);
-        renderCoppeUtente(email, box);
-        box.style.display = "block";
-    } else {
-        box.style.display = "none";
-    }
-};
-
-// ----------------------------------
-// DETTAGLI UTENTE
-// ----------------------------------
-function renderDettagliUtente(email, box){
-    const u = UTENTI.find(x => x.email === email);
-    if (!u) {
-        box.innerHTML = "<p>Nessun dato utente.</p>";
-        return;
-    }
-
-    box.innerHTML = `
-        <div style="background:#fff;border-radius:10px;padding:12px;margin:10px 0;">
-            <b>Nome:</b> ${u.nome}<br>
-            <b>Cognome:</b> ${u.cognome}<br>
-            <b>Email:</b> ${u.email}<br>
-            <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16)}<br>
-            ${u.disiscritto ? `<b style="color:red;">Disiscritto:</b> ${u.data_disiscrizione}` : ""}
-        </div>
-
-        <div id="coppe-${email}"></div>
-    `;
+async function toggleConferma(id, current){
+    await supabase.from("coppe").update({
+        confermata: !current
+    }).eq("id", id);
+    load();
 }
 
-// ----------------------------------
-// RENDER COPPE UTENTE
-// ----------------------------------
-window.renderCoppeUtente = function(email, container){
-    const ctn = document.getElementById(`coppe-${email}`);
-    ctn.innerHTML = "<h3>🍨 Coppe create</h3>";
+function render(){
 
-    let arr = COPPE.filter(c => (c.email || "Anonimo") === email);
+    const out = document.getElementById("admin-list");
+    out.innerHTML = "";
 
-    // FILTRI
-    if (filtroConfermate[email]) arr = arr.filter(c => c.confermata);
-    if (filtroEliminate[email]) arr = arr.filter(c => c.eliminata);
+    UTENTI.forEach(u => {
 
-    arr.forEach(c => {
-        const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti || "[]");
-        const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle || "[]");
-        const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping || "[]");
-        const ingredienti = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]");
-        const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]");
+        const email = u.email || "Anonimo";
+        const stats = getStats(email);
 
-        ctn.innerHTML += `
-            <div class="coppa ${c.eliminata ? "coppa-eliminata" : c.confermata ? "coppa-confermata" : ""}">
-                <b>${c.nome || "Coppa senza nome"}</b><br>
-                <b>Data:</b> ${c.data}<br>
-                <b>Formato:</b> ${c.formato}<br>
+        if (!matchSearch({...u, ...stats})) return;
 
-                <b>Gusti:</b> ${gusti.join(", ")}<br>
-                <b>Granelle:</b> ${granelle.join(", ")}<br>
-                <b>Topping:</b> ${topping.join(", ")}<br>
-                <b>Ingredienti:</b> ${ingredienti.join(", ")}<br>
-                <b>Extra:</b> ${extra.join(", ")}<br>
+        const cardCls = u.disiscritto ? "utente-card utente-disiscritto" : "utente-card";
 
-                <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br><br>
-
-                <div class="conf-btn ${c.confermata ? "active" : ""}"
-                     onclick="event.stopPropagation(); toggleConferma(${c.id}, '${email}')">
-                    ${c.confermata ? "✓ Confermata" : "Conferma"}
+        out.innerHTML += `
+            <div class="${cardCls}" onclick="toggleFilters('${email}')">
+                <b>${email}</b>
+                <div class="counter-row">
+                    <span class="badge badge-blue">Coppe: ${stats.tot}</span>
+                    <span class="badge badge-green">Confermate: ${stats.conf}</span>
+                    <span class="badge badge-red">Eliminate: ${stats.elim}</span>
+                    <span class="badge badge-coupon">🎁 ${stats.coupon}</span>
                 </div>
             </div>
+
+            <div id="c-${email}" class="coppe-container"></div>
         `;
     });
-};
 
-// ----------------------------------
-// TOGGLE FILTRI
-// ----------------------------------
-window.toggleFiltroConf = function(email){
-    filtroConfermate[email] = !filtroConfermate[email];
-    filtroEliminate[email] = false;
-    renderCoppeUtente(email);
-};
-
-window.toggleFiltroElim = function(email){
-    filtroEliminate[email] = !filtroEliminate[email];
-    filtroConfermate[email] = false;
-    renderCoppeUtente(email);
-};
-
-// ----------------------------------
-// TOGGLE CONFERMA COPPA
-// ----------------------------------
-window.toggleConferma = async function(id, email){
-    const c = COPPE.find(x => x.id === id);
-    if (!c) return;
-
-    const nuova = !c.confermata;
-
-    await supabase.from("coppe")
-        .update({ confermata: nuova })
-        .eq("id", id);
-
-    c.confermata = nuova;
-
-    renderAdmin();
-    renderCoppeUtente(email);
-};
-
-// ----------------------------------
-// CARICA DATA
-// ----------------------------------
-async function loadUtenti() {
-    const { data } = await supabase.from("utenti").select("*");
-    UTENTI = data || [];
-}
-async function loadCoppe() {
-    const { data } = await supabase.from("coppe").select("*");
-    COPPE = data || [];
+    UTENTI.forEach(u => renderCoppe(u.email));
 }
 
-// ----------------------------------
-// AVVIO
-// ----------------------------------
-document.addEventListener("DOMContentLoaded", async () => {
-    await loadUtenti();
-    await loadCoppe();
-    renderAdmin();
-});
+window.toggleFilters = toggleFilters;
+window.toggleConferma = toggleConferma;
 
-// ----------------------------------
-// RICERCA LIVE
-// ----------------------------------
-document.getElementById("search-admin").addEventListener("input", e => {
-    termineRicerca = e.target.value;
-    renderAdmin();
-});
+function renderCoppe(email){
+    const box = document.getElementById("c-" + email);
+    if (!box) return;
+
+    const stats = getStats(email);
+    let arr = stats.list;
+
+    if (filtroConfermate[email]) arr = arr.filter(c=>c.confermata);
+    if (filtroEliminate[email]) arr = arr.filter(c=>c.eliminata);
+
+    box.innerHTML = `
+        <div style="margin-bottom:10px;">
+            <span class="filter-btn ${!filtroConfermate[email] && !filtroEliminate[email] ? "active":""}" 
+                  onclick="filtroConfermate['${email}']=false; filtroEliminate['${email}']=false; render(); event.stopPropagation();">
+                  Tutte
+            </span>
+
+            <span class="filter-btn ${filtroConfermate[email] ? "active":""}"
+                  onclick="filtroConfermate['${email}']=!filtroConfermate['${email}']; filtroEliminate['${email}']=false; render(); event.stopPropagation();">
+                  Confermate
+            </span>
+
+            <span class="filter-btn ${filtroEliminate[email] ? "active":""}"
+                  onclick="filtroEliminate['${email}']=!filtroEliminate['${email}']; filtroConfermate['${email}']=false; render(); event.stopPropagation();">
+                  Eliminate
+            </span>
+        </div>
+    `;
+
+    arr.forEach(c => {
+
+        const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti||"[]");
+        const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle||"[]");
+        const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping||"[]");
+        const ingr = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti||"[]");
+        const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra||"[]");
+
+        const coppaCls = c.eliminata ? "coppa-box coppa-eliminata"
+                       : c.confermata ? "coppa-box coppa-confermata"
+                       : "coppa-box";
+
+        box.innerHTML += `
+            <div class="${coppaCls}">
+                <b>${c.nome || "Coppa senza nome"}</b><br>
+                <b>Data:</b> ${c.data}<br>
+                <b>Formato:</b> ${c.formato}<br><br>
+
+                <b>Gusti:</b> ${gusti.join(", ") || "-"}<br>
+                <b>Granelle:</b> ${granelle.join(", ") || "-"}<br>
+                <b>Topping:</b> ${topping.join(", ") || "-"}<br>
+                <b>Ingredienti:</b> ${ingr.join(", ") || "-"}<br>
+                <b>Extra:</b> ${extra.join(", ") || "-"}<br>
+                <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br><br>
+
+                ${
+                    c.confermata
+                    ? `<button class="undo-btn" onclick="toggleConferma(${c.id}, true); event.stopPropagation();">Annulla</button>`
+                    : `<button class="confirm-btn" onclick="toggleConferma(${c.id}, false); event.stopPropagation();">Conferma</button>`
+                }
+            </div>
+        `;
+    });
+}
 </script>
 
 </body>
