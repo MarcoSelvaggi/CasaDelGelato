@@ -5,179 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Casa del Gelato</title>
 
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f6f6f7;
-            margin: 0;
-            padding: 0;
-        }
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #f6f6f7;
+        margin: 0;
+        padding: 0;
+    }
 
-        #top-fixed-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 55px;
-            background: white;
-            border-bottom: 1px solid #ddd;
-            z-index: 999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    #top-fixed-bar {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 55px;
+        background: white;
+        border-bottom: 1px solid #ddd;
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .home-btn {
-            position: absolute;
-            left: 12px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: #444;
-            font-size: 16px;
-            gap: 6px;
-        }
+    .home-btn {
+        position: absolute;
+        left: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: #444;
+    }
+    .home-btn img { width: 28px; height: 28px; }
 
-        .home-btn img { width: 28px; height: 28px; }
+    #spacer { height: 70px; }
+    h1 { text-align:center; margin-top:10px; }
 
-        #spacer { height: 70px; }
+    #search-admin {
+        display:block;
+        margin:10px auto 5px;
+        width:90%; max-width:600px;
+        padding:10px;
+        font-size:16px;
+        border-radius:12px;
+        border:1px solid #ccc;
+    }
 
-        h1 { text-align: center; margin-top: 10px; }
+    #admin-list {
+        padding:20px;
+        max-width:700px;
+        margin:0 auto;
+    }
 
-        #search-admin {
-            display:block;
-            margin: 10px auto 12px;
-            width: 90%;
-            max-width: 600px;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-        }
+    .utente {
+        background:white;
+        border-left:6px solid #007aff;
+        border-radius:12px;
+        padding:15px;
+        margin-bottom:12px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+        cursor:pointer;
+    }
+    .utente-disiscritto {
+        background:#ffe5e5;
+        border-left:6px solid red;
+    }
 
-        #admin-list {
-            padding: 20px;
-            max-width: 750px;
-            margin: 0 auto;
-        }
+    .coppe-box {
+        margin-top:12px;
+        padding-left:5px;
+        display:none;
+    }
 
-        /* ---- UTENTI ---- */
-        .utente {
-            background: white;
-            border-radius: 14px;
-            padding: 15px;
-            margin-bottom: 14px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            border-left: 6px solid #007aff;
-            cursor: pointer;
-        }
+    .coppa {
+        background:white;
+        padding:12px;
+        border-radius:10px;
+        margin-bottom:10px;
+        border-left:6px solid #007aff30;
+    }
+    .coppa-confermata {
+        background:#e5ffe5;
+        border-left:6px solid #00c729;
+    }
 
-        .utente-disiscritto {
-            background: #ffecec;
-            border-left: 6px solid #ff3b30;
-        }
+    .btn-confirm, .btn-unconfirm {
+        margin-top:8px;
+        padding:6px 12px;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        font-size:14px;
+    }
+    .btn-confirm { background:#34C759; color:white; }
+    .btn-unconfirm { background:#ff3b30; color:white; }
 
-        .utente-dettagli {
-            margin-top: 10px;
-            padding: 12px;
-            background: #fafafa;
-            border-radius: 10px;
-            display: none;
-        }
+    .badge {
+        display:inline-block;
+        background:#34c759;
+        color:white;
+        padding:6px 12px;
+        border-radius:12px;
+        font-size:14px;
+        cursor:pointer;
+        user-select:none;
+        transition:0.25s;
+    }
+    .badge.active {
+        background:#0a7d30;
+        box-shadow:0 0 8px rgba(0,0,0,0.3);
+    }
 
-        .utente h3 {
-            margin: 0;
-            font-size: 17px;
-        }
-
-        .badge {
-            display: inline-block;
-            margin-top: 6px;
-            padding: 3px 8px;
-            background: #007aff;
-            color: white;
-            font-size: 12px;
-            border-radius: 8px;
-        }
-
-        .badge-green {
-            background: #34c759;
-        }
-
-        /* ---- COPPE ---- */
-        .lista-coppe {
-            margin-top: 10px;
-            padding: 10px;
-            background: #fff;
-            border-radius: 10px;
-            display: none;
-        }
-
-        .coppa {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 5px solid #aaa;
-        }
-
-        .coppa-confermata {
-            border-left-color: #34c759;
-            background: #eaffea;
-        }
-
-        .coppa-eliminata {
-            border-left-color: #ff3b30 !important;
-            background: #ffe5e5 !important;
-        }
-
-        .btn-toggle {
-            margin-top: 8px;
-            padding: 6px 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            cursor: pointer;
-            width: 150px;
-        }
-
-        .btn-confirm {
-            background: #007aff;
-            color: white;
-        }
-
-        .btn-unconfirm {
-            background: #ff3b30;
-            color: white;
-        }
-
-        .btn-coppe {
-            margin-top: 12px;
-            padding: 8px 14px;
-            background: #007aff;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-    </style>
+    mark {
+        background:#ffeb3b;
+        padding:0 2px;
+        border-radius:3px;
+    }
+</style>
 </head>
 
 <body>
 
 <div id="top-fixed-bar">
     <a class="home-btn" href="index.html">
-        <img src="tastohome.png" alt="home">
-        <span>Home</span>
+        <img src="tastohome.png"><span>Home</span>
     </a>
 </div>
 
 <div id="spacer"></div>
-
 <h1>📊 Pannello Admin</h1>
 
-<input id="search-admin" type="text" placeholder="Cerca utenti...">
-
+<input id="search-admin" type="text" placeholder="Cerca utenti o coppe...">
 <div id="admin-list"></div>
 
 <script type="module">
@@ -187,171 +143,173 @@ let UTENTI = [];
 let COPPE = [];
 let termineRicerca = "";
 
-/* ---------------------------------------------
-   CARICA DATI
-----------------------------------------------*/
-async function loadUtenti() {
+// stato filtro: per utente → mostra solo confermate?
+let filtroConfermate = {};
+
+function evidenzia(testo){
+    if (!termineRicerca.trim()) return testo;
+    const q = termineRicerca.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+    return testo.replace(new RegExp(q,"gi"), m=>`<mark>${m}</mark>`);
+}
+
+// -------- GRUPPO COPPE PER UTENTE --------
+function groupCoppeByUser(){
+    const map = {};
+    COPPE.forEach(c=>{
+        const email = c.email || "Anonimo";
+        if (!map[email]) map[email] = {
+            email,
+            coppe:[],
+            confermate:0
+        };
+
+        map[email].coppe.push(c);
+        if (c.confermata) map[email].confermate++;
+    });
+    return map;
+}
+
+// -------- RENDER LISTA COMPLETA --------
+function renderAdmin(){
+    const lista = document.getElementById("admin-list");
+    lista.innerHTML = "";
+
+    const filtro = termineRicerca.toLowerCase();
+    const grouped = groupCoppeByUser();
+
+    // MOSTRA TUTTI GLI UTENTI (registrati + disiscritti)
+    UTENTI.filter(u => JSON.stringify(u).toLowerCase().includes(filtro))
+    .forEach(u => {
+        const isDis = u.disiscritto === true;
+        const email = u.email;
+
+        const confermate = grouped[email]?.confermate || 0;
+        const coupon = Math.floor(confermate / 10);
+
+        lista.innerHTML += `
+        <div class="utente ${isDis ? "utente-disiscritto" : ""}"
+             onclick="toggleDettagli('${email}')">
+
+            <b>${isDis ? "🚫 DISISCRITTO" : "✔ REGISTRATO"}</b><br>
+            <b>Email:</b> ${evidenzia(email)}<br>
+
+            <div style="margin-top:10px;">
+                <span class="badge ${filtroConfermate[email] ? "active" : ""}"
+                      onclick="event.stopPropagation(); toggleFiltro('${email}')">
+                      Confermate: ${confermate}
+                      ${coupon > 0 ? " | 🎉 Coupon: " + coupon : ""}
+                </span>
+            </div>
+
+            <div id="dettagli-${email}" style="display:none; margin-top:10px;">
+                <b>Nome:</b> ${u.nome} ${u.cognome}<br>
+                <b>Registrato:</b> ${u.created_at?.replace("T"," ").substring(0,16)}<br>
+                ${isDis ? `<b>Disiscritto:</b> ${u.data_disiscrizione || "-"}` : ""}
+                <br><br>
+
+                <button onclick="event.stopPropagation(); toggleCoppe('${email}')"
+                        style="padding:8px 14px; border:none; background:#007aff; color:white; border-radius:8px; cursor:pointer;">
+                    Coppe create
+                </button>
+
+                <div id="coppe-${email}" class="coppe-box"></div>
+            </div>
+        </div>`;
+    });
+}
+
+// -------- APRI / CHIUDI DETTAGLI UTENTE --------
+window.toggleDettagli = function(email){
+    const box = document.getElementById("dettagli-"+email);
+    box.style.display = box.style.display === "block" ? "none" : "block";
+};
+
+// -------- APRI / CHIUDI LISTA COPPE --------
+window.toggleCoppe = function(email){
+    const box = document.getElementById("coppe-"+email);
+
+    if (box.style.display === "none" || box.style.display === "") {
+        renderCoppeUtente(email, box);
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
+    }
+};
+
+// -------- FILTRO (SOLO CONFERMATE) --------
+window.toggleFiltro = function(email){
+    filtroConfermate[email] = !filtroConfermate[email];
+    renderAdmin();
+};
+
+// -------- RENDER COPPE DELL’UTENTE --------
+window.renderCoppeUtente = function(email, container){
+    let list = COPPE.filter(c => c.email === email);
+
+    if (filtroConfermate[email]) {
+        list = list.filter(c => c.confermata);
+    }
+
+    if (list.length === 0) {
+        container.innerHTML = `<p style="opacity:.6">Nessuna coppa trovata.</p>`;
+        return;
+    }
+
+    container.innerHTML = list.map(c => `
+        <div class="coppa ${c.confermata ? "coppa-confermata" : ""}">
+            <b>${c.nome || "Coppa senza nome"}</b><br>
+            <b>Data:</b> ${c.data}<br>
+            <b>Formato:</b> ${c.formato}<br>
+            Gusti: ${c.gusti?.join(", ")}<br>
+            Granelle: ${c.granelle?.join(", ")}<br>
+            Topping: ${c.topping?.join(", ")}<br>
+            Ingredienti: ${c.ingredienti?.join(", ")}<br>
+            Extra: ${c.extra?.join(", ")}<br>
+            Prezzo: €${Number(c.prezzo).toFixed(2)}<br>
+
+            <button class="${c.confermata ? "btn-unconfirm":"btn-confirm"}"
+                    onclick="toggleConferma(${c.id}, ${c.confermata ? 1:0}, '${email}', event)">
+                ${c.confermata ? "Annulla" : "Conferma"}
+            </button>
+        </div>
+    `).join("");
+};
+
+// -------- TOGGLE CONFERMA COPPA --------
+window.toggleConferma = async function(id, stato, email, ev){
+    ev.stopPropagation();
+
+    await supabase.from("coppe")
+        .update({ confermata: !stato })
+        .eq("id", id);
+
+    await loadCoppe();
+    renderAdmin();
+
+    const box = document.getElementById("coppe-"+email);
+    if (box.style.display === "block") {
+        renderCoppeUtente(email, box);
+    }
+};
+
+// -------- CARICAMENTO DATI --------
+async function loadUtenti(){
     const { data } = await supabase.from("utenti").select("*");
     UTENTI = data || [];
 }
-
-async function loadCoppe() {
+async function loadCoppe(){
     const { data } = await supabase.from("coppe").select("*");
     COPPE = data || [];
 }
 
-/* ---------------------------------------------
-   RENDER: LIVELLO 1 - LISTA UTENTI
-----------------------------------------------*/
-function renderAdmin() {
-    const div = document.getElementById("admin-list");
-    div.innerHTML = "";
-
-    const filter = termineRicerca.toLowerCase();
-
-    UTENTI.filter(u =>
-        JSON.stringify(u).toLowerCase().includes(filter)
-    ).forEach(u => {
-        const email = u.email || "Anonimo";
-
-        const coppeUtente = COPPE.filter(c => c.email === email);
-        const tot = coppeUtente.length;
-        const confermate = coppeUtente.filter(c => c.confermata === true).length;
-
-        const coupon = confermate >= 10 ? `<span class="badge badge-green">⭐ Coupon!</span>` : "";
-
-        div.innerHTML += `
-            <div class="utente ${u.disiscritto ? "utente-disiscritto" : ""}"
-                 onclick="toggleDettagli('${email}')">
-
-                <h3>${email}</h3>
-                <div class="badge">Coppe: ${tot}</div>
-                <div class="badge badge-green">Confermate: ${confermate}</div>
-                ${coupon}
-
-                <div id="dettagli-${email}" class="utente-dettagli"></div>
-            </div>
-        `;
-    });
-}
-
-/* ---------------------------------------------
-   RENDER: LIVELLO 2 - DETTAGLI UTENTE
-----------------------------------------------*/
-window.toggleDettagli = function(email) {
-    const el = document.getElementById("dettagli-" + email);
-    if (!el) return;
-
-    if (el.style.display === "block") {
-        el.style.display = "none";
-        return;
-    }
-
-    const u = UTENTI.find(x => x.email === email);
-    if (!u) return;
-
-    el.innerHTML = `
-        <b>Nome:</b> ${u.nome}<br>
-        <b>Cognome:</b> ${u.cognome}<br>
-        <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16)}<br>
-        ${u.disiscritto ? `<b>Disiscritto il:</b> ${u.data_disiscrizione}<br>` : ""}
-        
-        <button class="btn-coppe" onclick="toggleCoppe('${email}', event)">
-            Coppe create
-        </button>
-
-        <div id="coppe-${email}" class="lista-coppe"></div>
-    `;
-    el.style.display = "block";
-};
-
-/* ---------------------------------------------
-   RENDER: LIVELLO 3 - LISTA COPPE UTENTE
-----------------------------------------------*/
-window.toggleCoppe = function(email, ev) {
-    ev.stopPropagation();
-    const box = document.getElementById("coppe-" + email);
-
-    if (box.style.display === "block") {
-        box.style.display = "none";
-        return;
-    }
-
-    const list = COPPE.filter(c => c.email === email);
-
-    box.innerHTML = list.map(c => `
-        <div class="coppa ${c.confermata ? "coppa-confermata" : ""}">
-            <b>Nome:</b> ${c.nome || "Coppa senza nome"}<br>
-            <b>Data:</b> ${c.data}<br>
-            <b>Formato:</b> ${c.formato}<br>
-            <b>Gusti:</b> ${c.gusti?.join(", ")}<br>
-            <b>Granelle:</b> ${c.granelle?.join(", ")}<br>
-            <b>Topping:</b> ${c.topping?.join(", ")}<br>
-            <b>Ingredienti:</b> ${c.ingredienti?.join(", ")}<br>
-            <b>Extra:</b> ${c.extra?.join(", ")}<br>
-            <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br>
-
-            <button class="btn-toggle ${c.confermata ? "btn-unconfirm" : "btn-confirm"}"
-                    onclick="toggleConferma(${c.id}, ${c.confermata ? 1 : 0}, '${email}', event)">
-                ${c.confermata ? "Annulla" : "Conferma"}
-            </button>
-        </div>
-    `).join("");
-
-    box.style.display = "block";
-};
-
-/* ---------------------------------------------
-   TOGGLE CONFERMA COPPA
-----------------------------------------------*/
-window.toggleConferma = async function(id, stato, email, ev) {
-    ev.stopPropagation();
-
-    // Aggiorna stato conferma su Supabase
-    await supabase
-        .from("coppe")
-        .update({ confermata: !stato })
-        .eq("id", id);
-
-    // Ricarico le coppe aggiornate
-    await loadCoppe();
-
-    // 🔥 RENDER SOLO IL BLOCCO coppe UTENTE SENZA CHIUDERE
-    const box = document.getElementById("coppe-" + email);
-    if (!box) return;
-
-    const list = COPPE.filter(c => c.email === email);
-
-    box.innerHTML = list.map(c => `
-        <div class="coppa ${c.confermata ? "coppa-confermata" : ""}">
-            <b>Nome:</b> ${c.nome || "Coppa senza nome"}<br>
-            <b>Data:</b> ${c.data}<br>
-            <b>Formato:</b> ${c.formato}<br>
-            <b>Gusti:</b> ${c.gusti?.join(", ")}<br>
-            <b>Granelle:</b> ${c.granelle?.join(", ")}<br>
-            <b>Topping:</b> ${c.topping?.join(", ")}<br>
-            <b>Ingredienti:</b> ${c.ingredienti?.join(", ")}<br>
-            <b>Extra:</b> ${c.extra?.join(", ")}<br>
-            <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br>
-
-            <button class="btn-toggle ${c.confermata ? "btn-unconfirm" : "btn-confirm"}"
-                    onclick="toggleConferma(${c.id}, ${c.confermata ? 1 : 0}, '${email}', event)">
-                ${c.confermata ? "Annulla" : "Conferma"}
-            </button>
-        </div>
-    `).join("");
-};
-
-/* ---------------------------------------------
-   INIT
-----------------------------------------------*/
-document.addEventListener("DOMContentLoaded", async () => {
+// -------- AVVIO --------
+document.addEventListener("DOMContentLoaded", async ()=>{
     await loadUtenti();
     await loadCoppe();
     renderAdmin();
 });
 
-document.getElementById("search-admin").addEventListener("input", e => {
+document.getElementById("search-admin").addEventListener("input", e=>{
     termineRicerca = e.target.value;
     renderAdmin();
 });
