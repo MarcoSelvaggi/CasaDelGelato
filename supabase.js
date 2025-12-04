@@ -19,11 +19,31 @@ export function getGuestID() {
   return g;
 }
 
+// 🔗 COLLEGA COPPE ANONIME ALLA MAIL
+async function linkCoppeAnonimeAEmail(email) {
+  const guest_id = localStorage.getItem("guest_id");
+  if (!guest_id) {
+    console.log("Nessun guest_id trovato, niente da collegare");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("coppe")
+    .update({ email })
+    .eq("guest_id", guest_id)
+    .is("email", null);   // solo coppe anonime
+
+  if (error) {
+    console.error("Errore nel collegare le coppe anonime:", error);
+  } else {
+    console.log("Coppe anonime collegate all'email:", email);
+  }
+}
+
 // =====================================================
 // 🔥 SALVA / RIATTIVA UTENTE IN SUPABASE
 // =====================================================
 export async function salvaRegistrazioneSupabase(nome, cognome, email) {
-  
   // 1️⃣ Controllo se esiste già
   const { data: existing, error: checkError } = await supabase
     .from("utenti")
@@ -52,14 +72,8 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
         return { success: false, error: updError.message };
       }
 
-      // 🔥 COLLEGO eventuali coppe anonime
-      const guest_id = getGuestID();
-      await supabase
-        .from("coppe")
-        .update({ email: email })
-        .eq("guest_id", guest_id)
-        .is("email", null);
-
+      // 🔗 collega coppe anonime → questa mail
+      await linkCoppeAnonimeAEmail(email);
       return { success: true };
     }
 
@@ -82,13 +96,8 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
     return { success: false, error: insertError.message };
   }
 
-  // 🔥 COLLEGO coppe anonime → registrazione nuova
-  const guest_id = getGuestID();
-  await supabase
-    .from("coppe")
-    .update({ email: email })
-    .eq("guest_id", guest_id)
-    .is("email", null);
+  // 🔗 collega coppe anonime → questa mail
+  await linkCoppeAnonimeAEmail(email);
 
   return { success: true };
 }
