@@ -246,6 +246,13 @@ function render(){
             </div>
 
             <div id="c-${email}" class="coppe-container"></div>
+<div class="utente-details">
+    <b>Nome:</b> ${u.nome || "-"}<br>
+    <b>Cognome:</b> ${u.cognome || "-"}<br>
+    <b>Email:</b> ${u.email}<br>
+    <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16) || "-"}<br>
+    ${u.disiscritto ? `<b style="color:red;">Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
+</div>
         `;
     });
 
@@ -260,10 +267,19 @@ function renderCoppe(email){
     if (!box) return;
 
     const stats = getStats(email);
-    let arr = stats.list;
 
-    if (filtroConfermate[email]) arr = arr.filter(c=>c.confermata);
-    if (filtroEliminate[email]) arr = arr.filter(c=>c.eliminata);
+    // CREO LA LISTA BASE (tutte le coppe dell’utente)
+    let arr = stats.coppe.slice();  // <-- questa è l’unica giusta
+
+    // ---- FILTRO CONFERMATE ----
+    if (filtroConfermate[email] === true) {
+        arr = arr.filter(c => c.confermata === true);
+    }
+
+    // ---- FILTRO ELIMINATE ----
+    if (filtroEliminate[email] === true) {
+        arr = arr.filter(c => c.eliminata === true);
+    }
 
     box.innerHTML = `
         <div style="margin-bottom:10px;">
@@ -311,8 +327,10 @@ function renderCoppe(email){
 
                 ${
                     c.confermata
-                    ? `<button class="undo-btn" onclick="toggleConferma(${c.id}, true); event.stopPropagation();">Annulla</button>`
-                    : `<button class="confirm-btn" onclick="toggleConferma(${c.id}, false); event.stopPropagation();">Conferma</button>`
+                    ? `<button class="undo-btn"
+        onclick="toggleConferma(${c.id}, true); event.stopPropagation();">`
+                    : `<button class="confirm-btn"
+        onclick="toggleConferma(${c.id}, false); event.stopPropagation();">`
                 }
             </div>
         `;
