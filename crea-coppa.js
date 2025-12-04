@@ -658,15 +658,15 @@ function formatGustiQuantities() {
         .join(", ");
 }
 
-// ⬇️ SOSTITUISCI TUTTA LA TUA FUNZIONE CON QUESTA ⬇️
 async function mostraRiepilogo(){
   step = "riepilogo";
   const area = byId("step-container");
-// 🔥 Nasconde titoli e residui dello step corrente
-const t = document.getElementById("step-title");
-if (t) t.style.display = "none";
 
-document.querySelector("header").style.display = "none";
+  // 🔥 Nasconde titoli e residui dello step corrente
+  const t = document.getElementById("step-title");
+  if (t) t.style.display = "none";
+  document.querySelector("header").style.display = "none";
+
   // ✅ 1) Calcolo il prezzo SUBITO
   const prezzoBase = prezziBase[coppaSelezionata] || 0;
   const prezzoExtraDettaglio = scelti.extra.map(e => ({
@@ -676,29 +676,35 @@ document.querySelector("header").style.display = "none";
   const sommaExtra = prezzoExtraDettaglio.reduce((t,x)=> t + x.prezzo, 0);
   const totale = prezzoBase + sommaExtra;
 
-  // ✅ 2) Oggetto coppa da salvare
+  // ✅ 2) Recupero email e guest_id
   const email = localStorage.getItem("user_email") || null;
-// 🔥 Ottieni (o crea) guest_id unico per questo dispositivo
-let guest_id = localStorage.getItem("guest_id");
-if (!guest_id) {
-    guest_id = "guest_" + crypto.randomUUID();
-    localStorage.setItem("guest_id", guest_id);
-}
 
-const coppa = {
-    email: email || null,       // se non registrato → null
-    guest_id: guest_id,         // identificazione dispositivo
-    data: new Date().toISOString(),
-    formato: coppaSelezionata,
-    gusti: scelti.gusti,
-    granelle: scelti.granelle,
-    topping: scelti.topping,
-    ingredienti: scelti.ingredienti,
-    extra: scelti.extra,
-    prezzo: totale
-};
+  let guest_id = localStorage.getItem("guest_id");
+  if (!guest_id) {
+      guest_id = "guest_" + crypto.randomUUID();
+      localStorage.setItem("guest_id", guest_id);
+  }
 
-  // ✅ 3) Salva su Supabase
+  // ✅ 3) Leggo la cronologia per calcolare il nome di default (Coppa #N)
+  let cronologiaArr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+  const coppaNome = `Coppa #${cronologiaArr.length + 1}`;
+
+  // ✅ 4) Oggetto coppa da salvare (ORA CON NOME)
+  const coppa = {
+      nome: coppaNome,          // 🔥 NOME DI DEFAULT (es. Coppa #1)
+      email: email || null,     // se non registrato → null
+      guest_id: guest_id,       // identificazione dispositivo
+      data: new Date().toISOString(),
+      formato: coppaSelezionata,
+      gusti: scelti.gusti,
+      granelle: scelti.granelle,
+      topping: scelti.topping,
+      ingredienti: scelti.ingredienti,
+      extra: scelti.extra,
+      prezzo: totale
+  };
+
+  // ✅ 5) Salva su Supabase
   try {
       const res = await salvaCoppaSupabase(coppa);
 
@@ -712,12 +718,11 @@ const coppa = {
       console.error("Errore inatteso Supabase:", err);
   }
 
-  // ✅ 4) Continua a salvare in locale (cronologia)
-  let arr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-  arr.unshift(coppa);
-  localStorage.setItem("cronologiaCoppe", JSON.stringify(arr));
+  // ✅ 6) Continua a salvare in locale (cronologia) CON NOME
+  cronologiaArr.unshift(coppa);
+  localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologiaArr));
 
-  // ✅ 5) Riepilogo grafico (uguale a prima)
+  // ✅ 7) Riepilogo grafico (come prima)
   area.innerHTML = `
     <h2>Riepilogo finale</h2>
 

@@ -272,14 +272,50 @@ async function eliminaCoppa(idx) {
     renderLista();
 }
 
-    function rinominaCoppa(idx) {
-        const nomeAttuale = coppe[idx].nome || `Coppa ${idx + 1}`;
-        const nuovoNome = prompt("Nuovo nome:", nomeAttuale);
-        if (!nuovoNome) return;
-        coppe[idx].nome = nuovoNome;
-        salva();
-        renderLista();
+async function rinominaCoppa(idx) {
+    const c = coppe[idx];
+    if (!c) return;
+
+    const nuovoNome = prompt("Nuovo nome per questa coppa:", c.nome || "");
+    if (!nuovoNome || !nuovoNome.trim()) return;
+
+    const nomePulito = nuovoNome.trim();
+
+    // 🔥 1. Aggiorna subito localmente
+    c.nome = nomePulito;
+    salva();
+    renderLista();
+
+    // 🔥 2. Aggiorna anche nelle coppe salvate in localStorage
+    let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    cronologia = cronologia.map(item => {
+        if (item.data === c.data) {   // usa timestamp come identificatore
+            item.nome = nomePulito;
+        }
+        return item;
+    });
+    localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologia));
+
+    // 🔥 3. Se ha un id → aggiorna su Supabase (rinomina globale)
+    if (c.id && window.supabase) {
+        try {
+            const { error } = await supabase
+                .from("coppe")
+                .update({ nome: nomePulito })
+                .eq("id", c.id);
+
+            if (error) {
+                console.error("Errore Supabase rename:", error);
+                alert("⚠️ Nome aggiornato solo localmente. Errore Supabase.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("⚠️ Errore di rete durante la rinomina.");
+        }
     }
+
+    alert("Nome coppa aggiornato!");
+}
 
     function togglePreferito(idx) {
         coppe[idx].preferito = !coppe[idx].preferito;
@@ -317,7 +353,7 @@ async function eliminaCoppa(idx) {
 
         return arr;
     }
-    
+
 function renderLista() {
     const arr = getCoppeFiltrateEOrdinate()
                   .filter(c => !c.eliminata);   // ✅ NASCONDE LE ELIMINATE
