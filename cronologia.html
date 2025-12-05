@@ -182,16 +182,33 @@
     let coppe = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
 
 function dedupCoppe(lista) {
-    const mappa = new Map();
+    const map = new Map();
 
-    lista.forEach(c => {
-        const key = (c.id || "") + "|" + (c.data || "") + "|" + (c.guest_id || "") + "|" + (c.email || "");
-        if (!mappa.has(key)) {
-            mappa.set(key, c);
+    for (let c of lista) {
+        if (!c.data) continue;
+
+        // Usa timestamp per avere uniformità
+        const timestamp = new Date(c.data).getTime();
+
+        // guest_id identifica UNIVOCAMENTE il dispositivo
+        const guest = c.guest_id || "";
+
+        const key = guest + "|" + timestamp;
+
+        // Se stessa coppa ma una ha ID e l’altra no → tieni quella con ID
+        if (map.has(key)) {
+            const existing = map.get(key);
+
+            if (!existing.id && c.id) {
+                map.set(key, c); // preferisci versione Supabase
+            }
+
+        } else {
+            map.set(key, c);
         }
-    });
+    }
 
-    return Array.from(mappa.values());
+    return Array.from(map.values());
 }
 
     // 🔥 Prezzi EXTRA (uguali alla webapp)
