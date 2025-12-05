@@ -250,28 +250,20 @@ function render(){
 
         const cardCls = u.disiscritto ? "utente-card utente-disiscritto" : "utente-card";
 
-        out.innerHTML += `
-            <div class="${cardCls}" onclick="toggleFilters('${email}')">
-                <b>${email}</b>
+out.innerHTML += `
+    <div class="${cardCls}" onclick="toggleFilters('${email}')">
+        <b>${email}</b>
 
-                <div class="counter-row">
-                    <span class="badge badge-blue">Coppe: ${stats.tot}</span>
-                    <span class="badge badge-green">Confermate: ${stats.conf}</span>
-                    <span class="badge badge-red">Eliminate: ${stats.elim}</span>
-                    <span class="badge badge-coupon">🎁 ${stats.coupon}</span>
-                </div>
+        <div class="counter-row">
+            <span class="badge badge-blue">Coppe: ${stats.tot}</span>
+            <span class="badge badge-green">Confermate: ${stats.conf}</span>
+            <span class="badge badge-red">Eliminate: ${stats.elim}</span>
+            <span class="badge badge-coupon">🎁 ${stats.coupon}</span>
+        </div>
+    </div>
 
-                <div class="utente-details">
-                    <b>Nome:</b> ${u.nome || "-"}<br>
-                    <b>Cognome:</b> ${u.cognome || "-"}<br>
-                    <b>Email:</b> ${u.email}<br>
-                    <b>Registrato il:</b> ${u.created_at?.replace("T"," ").substring(0,16) || "-"}<br>
-                    ${u.disiscritto ? `<b style="color:red;">Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
-                </div>
-            </div>
-
-            <div id="c-${email}" class="coppe-container"></div>
-        `;
+    <div id="c-${email}" class="coppe-container"></div>
+`;
     });
 
     UTENTI.forEach(u => renderCoppe(u.email));
@@ -291,8 +283,19 @@ function renderCoppe(email){
         arr = arr.filter(c => c.eliminata);
     }
 
+    // 🔎 Recupero utente per mostrare i dati sopra i filtri
+    const u = UTENTI.find(u => (u.email || "Anonimo") === email);
+
     box.innerHTML = `
-        <div style="margin-bottom:10px;">
+        <div class="utente-details">
+            <b>Nome:</b> ${u?.nome || "-"}<br>
+            <b>Cognome:</b> ${u?.cognome || "-"}<br>
+            <b>Email:</b> ${u?.email || email}<br>
+            <b>Registrato il:</b> ${u?.created_at ? u.created_at.replace("T"," ").substring(0,16) : "-"}<br>
+            ${u?.disiscritto ? `<b style="color:red;">Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
+        </div>
+
+        <div style="margin:10px 0;">
             <span class="filter-btn ${!window.filtroConfermate[email] && !window.filtroEliminate[email] ? "active":""}" 
                 onclick="window.filtroConfermate['${email}']=false; window.filtroEliminate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
                 Tutte
