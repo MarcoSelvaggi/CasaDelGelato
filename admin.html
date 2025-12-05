@@ -377,12 +377,25 @@ arr.forEach(c => {
                     <b>Data:</b> ${c.data}<br>
                     <b>Formato:</b> ${c.formato}<br><br>
 
-                    <b>Gusti:</b> ${gusti.join(", ") || "-"}<br>
-                    <b>Granelle:</b> ${granelle.join(", ") || "-"}<br>
-                    <b>Topping:</b> ${topping.join(", ") || "-"}<br>
-                    <b>Ingredienti:</b> ${ingr.join(", ") || "-"}<br>
-                    <b>Extra:</b> ${extra.join(", ") || "-"}<br>
-                    <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br><br>
+<b>Formato:</b> ${c.formato} 
+${prezziBase[c.formato] ? ` (€${prezziBase[c.formato].toFixed(2)})` : ""}<br><br>
+
+<b>Gusti:</b> ${gusti.join(", ") || "-"}<br>
+<b>Granelle:</b> ${granelle.join(", ") || "-"}<br>
+<b>Topping:</b> ${topping.join(", ") || "-"}<br>
+<b>Ingredienti:</b> ${ingr.join(", ") || "-"}<br>
+
+<b>Extra:</b> 
+${
+    extra.length
+        ? extra.map(e => {
+            const prezzo = prezziExtra[e] || 0;
+            return prezzo > 0 ? `${e} (+€${prezzo.toFixed(2)})` : e;
+        }).join(", ")
+        : "-"
+}<br>
+
+<b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br><br>
 
                     ${
                         c.confermata
