@@ -180,6 +180,24 @@
     /* (lo ricopio completamente) */
 
     let coppe = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+
+function dedupCoppe(arr) {
+    const seen = new Set();
+    const out = [];
+
+    for (let c of arr) {
+        // 🔑 chiave unica: data ISO
+        const key = c.data;
+        if (!key) continue;
+
+        if (!seen.has(key)) {
+            seen.add(key);
+            out.push(c);
+        }
+    }
+    return out;
+}
+
     // 🔥 Prezzi EXTRA (uguali alla webapp)
 const prezziExtra = {
     "COCCO (3pz)": 0.50,
@@ -532,23 +550,13 @@ async function caricaCoppeComplete() {
         coppeSupabase = await getCoppeSupabaseUtente(email);
     }
 
-    // 🔥 UNISCE localStorage + Supabase
-    // Ma evita duplicati (stessa data e formato)
+    // 🔥 Unione localStorage + Supabase
     const tutto = [...coppeSupabase, ...coppeLocali];
 
-    // Rimuovi duplicati
-    const unique = [];
-    const seen = new Set();
+    // 🔥 Deduplica SOLO usando dedupCoppe
+    const dedup = dedupCoppe(tutto);
 
-    for (let c of tutto) {
-        const key = (c.data || "") + (c.formato || "");
-        if (!seen.has(key)) {
-            seen.add(key);
-            unique.push(c);
-        }
-    }
-
-    return unique;
+    return dedup;
 }
 
 /* ------------------------------------------
