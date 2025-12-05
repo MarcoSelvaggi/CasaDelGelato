@@ -182,6 +182,7 @@ let COPPE = [];
 let filtro = "";
 let filtroConfermate = {};
 let filtroEliminate = {};
+let coppeCollapsed = {}; // memorizza quali coppe sono chiuse/aperte per id
 
 document.getElementById("search-admin").addEventListener("input", e => {
     filtro = e.target.value.toLowerCase();
@@ -236,6 +237,23 @@ window.toggleConferma = toggleConferma;
 window.renderCoppe = renderCoppe;
 window.filtroConfermate = filtroConfermate;
 window.filtroEliminate = filtroEliminate;
+
+// =========================
+// COLLASSA / ESPANDI COPPA
+// =========================
+window.toggleCoppaCollapse = function (id) {
+    // inverti stato aperto/chiuso
+    coppeCollapsed[id] = !coppeCollapsed[id];
+
+    // trova la coppa per capire di quale utente è
+    const c = COPPE.find(x => x.id === id);
+    if (!c) return;
+
+    const email = c.email || "Anonimo";
+
+    // ricarica solo quella sezione (non tutta la pagina)
+    renderCoppe(email);
+};
 
 function render(){
     const out = document.getElementById("admin-list");
@@ -327,39 +345,61 @@ arr.sort((a, b) => {
         </div>
     `;
 
-    arr.forEach(c => {
-        const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti||"[]");
-        const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle||"[]");
-        const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping||"[]");
-        const ingr = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti||"[]");
-        const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra||"[]");
+arr.forEach(c => {
 
-        const coppaCls =
-              c.eliminata ? "coppa-box coppa-eliminata"
-            : c.confermata ? "coppa-box coppa-confermata"
-            : "coppa-box";
+    const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti||"[]");
+    const granelle = Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle||"[]");
+    const topping = Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping||"[]");
+    const ingr = Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti||"[]");
+    const extra = Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra||"[]");
 
-        box.innerHTML += `
-            <div class="${coppaCls}">
-                <b>${c.nome || "Coppa senza nome"}</b><br>
-                <b>Data:</b> ${c.data}<br>
-                <b>Formato:</b> ${c.formato}<br><br>
+    const collapsed = coppeCollapsed[c.id] === true;
 
-                <b>Gusti:</b> ${gusti.join(", ") || "-"}<br>
-                <b>Granelle:</b> ${granelle.join(", ") || "-"}<br>
-                <b>Topping:</b> ${topping.join(", ") || "-"}<br>
-                <b>Ingredienti:</b> ${ingr.join(", ") || "-"}<br>
-                <b>Extra:</b> ${extra.join(", ") || "-"}<br>
-                <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br><br>
+    const coppaCls =
+        c.eliminata ? "coppa-box coppa-eliminata" :
+        c.confermata ? "coppa-box coppa-confermata" :
+        "coppa-box";
 
-                ${
-                    c.confermata
-                    ? `<button class="undo-btn" onclick="window.toggleConferma(${c.id}, true); event.stopPropagation();">Annulla</button>`
-                    : `<button class="confirm-btn" onclick="window.toggleConferma(${c.id}, false); event.stopPropagation();">Conferma</button>`
-                }
+    // ▼ icona apertura / ▲ icona chiusura
+    const icon = collapsed ? "▶️" : "🔽";
+
+    box.innerHTML += `
+        <div class="${coppaCls}">
+            <div style="display:flex; justify-content:space-between; align-items:center;"
+                 onclick="toggleCoppaCollapse(${c.id}); event.stopPropagation();">
+
+                <b>${c.nome || "Coppa senza nome"}</b>
+                <span style="font-size:20px; cursor:pointer;">${icon}</span>
             </div>
-        `;
-    });
+
+            ${collapsed ? "" : `
+                <div style="margin-top:8px;">
+                    <b>Data:</b> ${c.data}<br>
+                    <b>Formato:</b> ${c.formato}<br><br>
+
+                    <b>Gusti:</b> ${gusti.join(", ") || "-"}<br>
+                    <b>Granelle:</b> ${granelle.join(", ") || "-"}<br>
+                    <b>Topping:</b> ${topping.join(", ") || "-"}<br>
+                    <b>Ingredienti:</b> ${ingr.join(", ") || "-"}<br>
+                    <b>Extra:</b> ${extra.join(", ") || "-"}<br>
+                    <b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br><br>
+
+                    ${
+                        c.confermata
+                        ? `<button class="undo-btn"
+                             onclick="toggleConferma(${c.id}, true); event.stopPropagation();">
+                             Annulla conferma
+                           </button>`
+                        : `<button class="confirm-btn"
+                             onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
+                             Conferma
+                           </button>`
+                    }
+                </div>
+            `}
+        </div>
+    `;
+});
 }
 </script>
 
