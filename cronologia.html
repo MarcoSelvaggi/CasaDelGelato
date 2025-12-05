@@ -316,6 +316,19 @@ async function rinominaCoppa(idx) {
         }
     }
 
+    // 🔥 4. Aggiorna admin se è aperto
+if (window.COPPE) {
+    for (let i = 0; i < window.COPPE.length; i++) {
+        if (window.COPPE[i].id === c.id) {
+            window.COPPE[i].nome = nomePulito;
+        }
+    }
+
+    if (window.render) {
+        window.render(); // aggiorna admin live
+    }
+}
+
     alert("Nome coppa aggiornato!");
 }
 
