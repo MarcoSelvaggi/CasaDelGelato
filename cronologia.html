@@ -182,27 +182,16 @@
     let coppe = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
 
 function dedupCoppe(lista) {
-    const unique = [];
-    const seen = new Set();
+    const mappa = new Map();
 
-    for (const c of lista) {
-        // 🔥 normalizzo la data eliminando millisecondi
-        const normalizedDate = (c.data || "").split(".")[0];
-
-        // 🔑 chiave UNICA affidabile:
-        const key =
-            (c.id || "") +            // se esiste un id Supabase → garantisce unicità
-            (c.guest_id || "") +      // fallback per coppe vecchie
-            normalizedDate +          // data senza millisecondi → evita duplicati locali/Supabase
-            (c.formato || "");        // evita false collisioni
-
-        if (!seen.has(key)) {
-            seen.add(key);
-            unique.push(c);
+    lista.forEach(c => {
+        const key = (c.id || "") + "|" + (c.data || "") + "|" + (c.guest_id || "") + "|" + (c.email || "");
+        if (!mappa.has(key)) {
+            mappa.set(key, c);
         }
-    }
+    });
 
-    return unique;
+    return Array.from(mappa.values());
 }
 
     // 🔥 Prezzi EXTRA (uguali alla webapp)
@@ -557,13 +546,13 @@ async function caricaCoppeComplete() {
         coppeSupabase = await getCoppeSupabaseUtente(email);
     }
 
-    // 🔥 Unione localStorage + Supabase
-    const tutto = [...coppeSupabase, ...coppeLocali];
+    // FUSIONE locale + remoto
+    let unite = [...coppeSupabase, ...coppeLocali];
 
-    // 🔥 Deduplica SOLO usando dedupCoppe
-    const dedup = dedupCoppe(tutto);
+    // DEDUPLICA CORRETTA
+    let finali = dedupCoppe(unite);
 
-    return dedup;
+    return finali;
 }
 
 /* ------------------------------------------
