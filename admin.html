@@ -230,8 +230,12 @@ async function toggleConferma(id, current){
     renderCoppe(coppa.email || "Anonimo");
 }
 
+// 👉 espongo oggetti e funzioni usati negli onclick HTML
 window.toggleFilters = toggleFilters;
 window.toggleConferma = toggleConferma;
+window.renderCoppe = renderCoppe;
+window.filtroConfermate = filtroConfermate;
+window.filtroEliminate = filtroEliminate;
 
 function render(){
     const out = document.getElementById("admin-list");
@@ -278,26 +282,29 @@ function renderCoppe(email){
     if (!box) return;
 
     const stats = getStats(email);
-
     let arr = stats.list.slice();
 
-    if (filtroConfermate[email]) arr = arr.filter(c => c.confermata);
-    if (filtroEliminate[email]) arr = arr.filter(c => c.eliminata);
+    if (window.filtroConfermate[email]) {
+        arr = arr.filter(c => c.confermata);
+    }
+    if (window.filtroEliminate[email]) {
+        arr = arr.filter(c => c.eliminata);
+    }
 
     box.innerHTML = `
         <div style="margin-bottom:10px;">
-            <span class="filter-btn ${!filtroConfermate[email] && !filtroEliminate[email] ? "active":""}" 
-                onclick="filtroConfermate['${email}']=false; filtroEliminate['${email}']=false; render(); event.stopPropagation();">
+            <span class="filter-btn ${!window.filtroConfermate[email] && !window.filtroEliminate[email] ? "active":""}" 
+                onclick="window.filtroConfermate['${email}']=false; window.filtroEliminate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
                 Tutte
             </span>
 
-            <span class="filter-btn ${filtroConfermate[email] ? "active":""}"
-                onclick="filtroConfermate['${email}']=!filtroConfermate['${email}']; filtroEliminate['${email}']=false; render(); event.stopPropagation();">
+            <span class="filter-btn ${window.filtroConfermate[email] ? 'active' : ''}"
+                onclick="window.filtroConfermate['${email}']=!window.filtroConfermate['${email}']; window.filtroEliminate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
                 Confermate
             </span>
 
-            <span class="filter-btn ${filtroEliminate[email] ? "active":""}"
-                onclick="filtroEliminate['${email}']=!filtroEliminate['${email}']; filtroConfermate['${email}']=false; render(); event.stopPropagation();">
+            <span class="filter-btn ${window.filtroEliminate[email] ? 'active' : ''}"
+                onclick="window.filtroEliminate['${email}']=!window.filtroEliminate['${email}']; window.filtroConfermate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
                 Eliminate
             </span>
         </div>
@@ -330,8 +337,8 @@ function renderCoppe(email){
 
                 ${
                     c.confermata
-                    ? `<button class="undo-btn" onclick="toggleConferma(${c.id}, true); event.stopPropagation();">Annulla</button>`
-                    : `<button class="confirm-btn" onclick="toggleConferma(${c.id}, false); event.stopPropagation();">Conferma</button>`
+                    ? `<button class="undo-btn" onclick="window.toggleConferma(${c.id}, true); event.stopPropagation();">Annulla</button>`
+                    : `<button class="confirm-btn" onclick="window.toggleConferma(${c.id}, false); event.stopPropagation();">Conferma</button>`
                 }
             </div>
         `;

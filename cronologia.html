@@ -281,22 +281,24 @@ async function rinominaCoppa(idx) {
 
     const nomePulito = nuovoNome.trim();
 
-    // 🔥 1. Aggiorna subito localmente
+    // --- 1. Aggiorna localmente ---
     c.nome = nomePulito;
     salva();
     renderLista();
 
-    // 🔥 2. Aggiorna anche nelle coppe salvate in localStorage
+    // --- 2. Aggiorna cronologia locale usando l'ID (non la data!) ---
     let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-    cronologia = cronologia.map(item => {
-        if (item.data === c.data) {   // usa timestamp come identificatore
-            item.nome = nomePulito;
+
+    cronologia = cronologia.map(x => {
+        if (x.id && c.id && x.id === c.id) {
+            x.nome = nomePulito;
         }
-        return item;
+        return x;
     });
+
     localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologia));
 
-    // 🔥 3. Se ha un id → aggiorna su Supabase (rinomina globale)
+    // --- 3. Aggiorna Supabase ---
     if (c.id && window.supabase) {
         try {
             const { error } = await supabase
@@ -306,10 +308,10 @@ async function rinominaCoppa(idx) {
 
             if (error) {
                 console.error("Errore Supabase rename:", error);
-                alert("⚠️ Nome aggiornato solo localmente. Errore Supabase.");
+                alert("⚠️ Errore Supabase — nome salvato solo in locale.");
             }
         } catch (err) {
-            console.error(err);
+            console.error("Errore rete:", err);
             alert("⚠️ Errore di rete durante la rinomina.");
         }
     }
