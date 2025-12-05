@@ -499,6 +499,12 @@ hideStepTitle();
 // ---------------- NAV ----------------
 function nextStep() {
 
+  // 🚫 EVITA DOPPIO SALVATAGGIO
+  // Se siamo già nel riepilogo-mini-open NON dobbiamo rifare mostraRiepilogo()
+  if (step === "riepilogo-mini-open") {
+      return;
+  }
+
   // ➤ Quando premi "Conferma" nello step EXTRA:
   if (step === "extra") {
 
@@ -515,10 +521,10 @@ function nextStep() {
   }
 
   // ➤ Passaggi normali
-  if(step==="gusti") step="granelle";
-  else if(step==="granelle") step="topping";
-  else if(step==="topping") step="ingredienti";
-  else if(step==="ingredienti") step="extra";
+  if (step === "gusti") step = "granelle";
+  else if (step === "granelle") step = "topping";
+  else if (step === "topping") step = "ingredienti";
+  else if (step === "ingredienti") step = "extra";
   else return mostraRiepilogo();
 
   // 🔥 FIX: ad ogni nuovo step, il titolo deve tornare visibile
