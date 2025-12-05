@@ -283,6 +283,20 @@ function renderCoppe(email){
         arr = arr.filter(c => c.eliminata);
     }
 
+    // ORDINAMENTO:
+// 1️⃣ prima le non eliminate
+// 2️⃣ poi le eliminate
+// 3️⃣ all’interno di ogni gruppo, dalla più recente alla più vecchia
+arr.sort((a, b) => {
+
+    // eliminate vanno in fondo
+    if (a.eliminata && !b.eliminata) return 1;
+    if (!a.eliminata && b.eliminata) return -1;
+
+    // ordine cronologico inverso (più recente prima)
+    return new Date(b.data) - new Date(a.data);
+});
+
     // 🔎 Recupero utente per mostrare i dati sopra i filtri
     const u = UTENTI.find(u => (u.email || "Anonimo") === email);
 
