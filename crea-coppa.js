@@ -9,6 +9,7 @@ let step = "size"; // iniziamo sulla scelta formato
 let gustiQuantities = {};      // es: { VANIGLIA: 2, FRAGOLA: 1 }
 let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in modifica)
 let collapseTimer = null
+let coppaSalvata = false;
 // ---------------- LISTE ----------------
 const gustiList = [
   "VANIGLIA","FIOR DI LATTE","CIOCCOLATO","NOCCIOLA","FRAGOLA","PISTACCHIO","LIMONE",
@@ -659,6 +660,12 @@ function formatGustiQuantities() {
 }
 
 async function mostraRiepilogo(){
+
+  if (coppaSalvata) {
+      console.log("⛔ Coppa già salvata");
+      return;
+  }
+  coppaSalvata = true;
   step = "riepilogo";
   const area = byId("step-container");
 
