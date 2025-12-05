@@ -312,36 +312,35 @@ async function rinominaCoppa(idx) {
 
     localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologia));
 
-    // 3️⃣ Aggiorna anche su Supabase (così admin vede il nome nuovo)
-    if (window.supabase) {
-        try {
-            let error = null;
+// 3️⃣ Aggiorna anche su Supabase (così admin vede il nome nuovo)
+if (window.supabase) {
+    try {
+        let error = null;
 
-            if (c.id) {
-                // caso nuovo: abbiamo l'id della coppa
-                ({ error } = await supabase
-                    .from("coppe")
-                    .update({ nome: nomePulito })
-                    .eq("id", c.id));
-            } else {
-                // caso vecchie coppe senza id salvato localmente
-                ({ error } = await supabase
-                    .from("coppe")
-                    .update({ nome: nomePulito })
-                    .eq("data", c.data)
-                    .eq("formato", c.formato)
-                    .eq("guest_id", c.guest_id || null));
-            }
-
-            if (error) {
-                console.error("Errore Supabase rename:", error);
-                alert("⚠️ Nome aggiornato solo localmente. Errore Supabase.");
-            }
-        } catch (err) {
-            console.error(err);
-            alert("⚠️ Errore di rete durante la rinomina (Supabase).");
+        if (c.id) {
+            // Caso coppe nuove → identificazione certa tramite ID
+            ({ error } = await supabase
+                .from("coppe")
+                .update({ nome: nomePulito })
+                .eq("id", c.id));
+        } else {
+            // Coppe vecchie senza id → identifico tramite guest_id + data
+            ({ error } = await supabase
+                .from("coppe")
+                .update({ nome: nomePulito })
+                .eq("guest_id", c.guest_id || null)
+                .eq("data", c.data));
         }
+
+        if (error) {
+            console.error("Errore Supabase rename:", error);
+            alert("⚠️ Nome aggiornato solo localmente. Errore Supabase.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("⚠️ Errore di rete durante la rinomina (Supabase).");
     }
+}
 
     alert("Nome coppa aggiornato!");
 }
