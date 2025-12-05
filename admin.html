@@ -184,6 +184,20 @@ let filtroConfermate = {};
 let filtroEliminate = {};
 let coppeCollapsed = {}; // memorizza quali coppe sono chiuse/aperte per id
 
+// 🔥 Prezzi base coppe
+const prezziBase = {
+    PICCOLA: 7.50,
+    MEDIA: 9.00,
+    GRANDE: 12.00
+};
+
+// 🔥 Prezzi extra (uguali alla webapp)
+const prezziExtra = {
+    "COCCO (3pz)": 0.50,
+    "MIX KINDER": 2.50,
+    "PANNA EXTRA": 1.80
+};
+
 document.getElementById("search-admin").addEventListener("input", e => {
     filtro = e.target.value.toLowerCase();
     render();
