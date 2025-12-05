@@ -718,9 +718,12 @@ async function mostraRiepilogo(){
       console.error("Errore inatteso Supabase:", err);
   }
 
-  // ✅ 6) Continua a salvare in locale (cronologia) CON NOME
-  cronologiaArr.unshift(coppa);
-  localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologiaArr));
+ // 🔥 Evita duplicazioni: salva la coppa solo se non esiste già
+if (!cronologiaArr.some(x => x.data === coppa.data)) {
+    cronologiaArr.unshift(coppa);
+    localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologiaArr));
+}
+console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
 
   // ✅ 7) Riepilogo grafico (come prima)
   area.innerHTML = `
