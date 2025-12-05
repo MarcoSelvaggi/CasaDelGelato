@@ -281,53 +281,67 @@ async function rinominaCoppa(idx) {
 
     const nomePulito = nuovoNome.trim();
 
-    // --- 1. Aggiorna localmente ---
+    // 1️⃣ Aggiorna subito in memoria (lista corrente)
     c.nome = nomePulito;
     salva();
     renderLista();
 
-    // --- 2. Aggiorna cronologia locale usando l'ID (non la data!) ---
+    // 2️⃣ Aggiorna anche nella cronologia salvata in localStorage
     let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
 
-    cronologia = cronologia.map(x => {
-        if (x.id && c.id && x.id === c.id) {
-            x.nome = nomePulito;
+    cronologia = cronologia.map(item => {
+        // caso ideale: abbiamo l'id sia in item che in c
+        if (item.id && c.id && item.id === c.id) {
+            item.nome = nomePulito;
+            return item;
         }
-        return x;
+
+        // fallback vecchie coppe senza id:
+        // uso data + formato + email/guest_id per riconoscerla
+        if (!item.id && !c.id &&
+            item.data === c.data &&
+            item.formato === c.formato &&
+            (item.email || null) === (c.email || null) &&
+            (item.guest_id || null) === (c.guest_id || null)
+        ) {
+            item.nome = nomePulito;
+        }
+
+        return item;
     });
 
     localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologia));
 
-    // --- 3. Aggiorna Supabase ---
-    if (c.id && window.supabase) {
+    // 3️⃣ Aggiorna anche su Supabase (così admin vede il nome nuovo)
+    if (window.supabase) {
         try {
-            const { error } = await supabase
-                .from("coppe")
-                .update({ nome: nomePulito })
-                .eq("id", c.id);
+            let error = null;
+
+            if (c.id) {
+                // caso nuovo: abbiamo l'id della coppa
+                ({ error } = await supabase
+                    .from("coppe")
+                    .update({ nome: nomePulito })
+                    .eq("id", c.id));
+            } else {
+                // caso vecchie coppe senza id salvato localmente
+                ({ error } = await supabase
+                    .from("coppe")
+                    .update({ nome: nomePulito })
+                    .eq("data", c.data)
+                    .eq("formato", c.formato)
+                    .eq("guest_id", c.guest_id || null));
+            }
 
             if (error) {
                 console.error("Errore Supabase rename:", error);
-                alert("⚠️ Errore Supabase — nome salvato solo in locale.");
+                alert("⚠️ Nome aggiornato solo localmente. Errore Supabase.");
             }
         } catch (err) {
-            console.error("Errore rete:", err);
-            alert("⚠️ Errore di rete durante la rinomina.");
+            console.error(err);
+            alert("⚠️ Errore di rete durante la rinomina (Supabase).");
         }
     }
-
-    // 🔥 4. Aggiorna admin se è aperto
-if (window.COPPE) {
-    for (let i = 0; i < window.COPPE.length; i++) {
-        if (window.COPPE[i].id === c.id) {
-            window.COPPE[i].nome = nomePulito;
-        }
-    }
-
-    if (window.render) {
-        window.render(); // aggiorna admin live
-    }
-}
 
     alert("Nome coppa aggiornato!");
 }
