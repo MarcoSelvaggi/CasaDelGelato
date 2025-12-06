@@ -485,7 +485,7 @@ async function toggleConferma(id, current){
     const coppa = COPPE.find(c => c.id === id);
     if (coppa) coppa.confermata = !current;
 
-    renderCoppe(coppa.email || "Anonimo");
+    await load(); // ricarica TUTTO ma non chiude nulla
 }
 
 // 👉 espongo oggetti e funzioni usati negli onclick HTML
@@ -495,18 +495,61 @@ window.renderCoppe = renderCoppe;
 window.filtroConfermate = filtroConfermate;
 window.filtroEliminate = filtroEliminate;
 
-window.apriSezioneCoupon = function(email) {
-    // assicurati che la sezione di quell'utente sia aperta
+window.apriSezioneCoupon = async function(email) {
+
+    // Mostra la sezione utente
     sezioniAperte[email] = true;
     renderCoppe(email);
 
-    // scroll alla sezione coupon
-    setTimeout(() => {
-        const el = document.getElementById("coupon-section-" + email);
-        if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
-    }, 200);
+    const box = document.getElementById("coupon-box-" + email);
+    if (!box) return;
+
+    // 1) Sincronizzo i coupon giusti
+    await syncCouponUtente(email);
+
+    // 2) Prendo i coupon
+    const { data: couponFinali } = await supabase
+        .from("coupon")
+        .select("*")
+        .eq("email", email)
+        .order("created_at", { ascending: true });
+
+    // 3) Costruisco l’HTML della card coupon
+    let html = `
+        <div style="
+            margin-top:15px;
+            padding:15px;
+            background:#fff7d1;
+            border-radius:12px;
+            border:1px solid #e0c676;
+        ">
+            <h3>🎁 Coupon Utente (${couponFinali.length})</h3>
+    `;
+
+    couponFinali.forEach(cpn => {
+        html += `
+            <div style="margin-top:12px; padding:10px; background:white; border-radius:8px;">
+                <b>Coupon #${cpn.id}</b><br>
+
+                <textarea id="coupon-text-${cpn.id}"
+                    style="width:100%; padding:8px; border-radius:8px; margin-top:5px;">${cpn.codice || ""}</textarea>
+
+                <button onclick="salvaCoupon(${cpn.id})"
+                    style="margin-top:6px; padding:6px 12px; background:#007aff; color:white; border:none; border-radius:8px;">
+                    💾 Salva
+                </button>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+
+    // 4) Inserisco nel box coupon
+    box.innerHTML = html;
+    box.style.display = "block";
+
+    // Scroll
+    box.scrollIntoView({ behavior: "smooth", block: "center" });
 };
 
 // 💾 SALVA COUPON
@@ -586,6 +629,7 @@ out.innerHTML += `
 
     <div id="c-${email}" class="coppe-container"
          style="display:${sezioniAperte[email] ? "block" : "none"}"></div>
+         <div id="coupon-box-${email}" style="display:none;"></div>
 `;
     });
 
@@ -663,54 +707,6 @@ box.innerHTML = `
     </div>
 `;
 
-// --- COUPON SECTION ---
-
-// 1) Leggo coupon esistenti
-const { data: listaCoupon } = await supabase
-    .from("coupon")
-    .select("*")
-    .eq("email", email)
-    .order("created_at", { ascending: true });
-
-// 2) Sincronizzo coupon necessari (10 coppe = 1 coupon)
-await syncCouponUtente(email);
-
-// 3) Ricarico dopo eventuali nuovi inseriti
-const { data: couponFinali } = await supabase
-    .from("coupon")
-    .select("*")
-    .eq("email", email)
-    .order("created_at", { ascending: true });
-
-let couponHTML = "";
-
-couponFinali.forEach(cpn => {
-    couponHTML += `
-        <div style="margin-top:10px; padding:10px; background:#fff7d1; border-radius:10px;">
-            <b>Coupon #${cpn.id}</b><br>
-
-            <textarea 
-                id="coupon-text-${cpn.id}"
-                style="width:100%; margin-top:5px; padding:8px; border-radius:8px;" 
-            >${cpn.codice || ""}</textarea>
-
-            <button 
-                onclick="salvaCoupon(${cpn.id})"
-                style="
-                    margin-top:8px;
-                    padding:6px 12px;
-                    border:none;
-                    border-radius:8px;
-                    background:#007aff;
-                    color:white;
-                    font-size:14px;
-                    cursor:pointer;
-                ">
-                💾 Salva
-            </button>
-        </div>
-    `;
-});
 
 box.innerHTML += `
     <h3 id="coupon-section-${email}" 
