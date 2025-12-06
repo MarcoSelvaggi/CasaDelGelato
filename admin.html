@@ -495,6 +495,20 @@ window.renderCoppe = renderCoppe;
 window.filtroConfermate = filtroConfermate;
 window.filtroEliminate = filtroEliminate;
 
+window.apriSezioneCoupon = function(email) {
+    // assicurati che la sezione di quell'utente sia aperta
+    sezioniAperte[email] = true;
+    renderCoppe(email);
+
+    // scroll alla sezione coupon
+    setTimeout(() => {
+        const el = document.getElementById("coupon-section-" + email);
+        if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }, 200);
+};
+
 // 💾 SALVA COUPON
 window.salvaCoupon = async function(id) {
     const textarea = document.getElementById("coupon-text-" + id);
@@ -517,7 +531,7 @@ window.salvaCoupon = async function(id) {
     }, 800);
 
     // ⭐ MOSTRA POPUP SALVATO
-    mostraPopup("Coupon salvato correttamente!");
+    showPopupSaved();
 };
 
 // =========================
@@ -563,7 +577,10 @@ out.innerHTML += `
             <span class="badge badge-blue">Coppe: ${stats.tot}</span>
             <span class="badge badge-green">Confermate: ${stats.conf}</span>
             <span class="badge badge-red">Eliminate: ${stats.elim}</span>
-            <span class="badge badge-coupon">🎁 ${stats.coupon}</span>
+            <span class="badge badge-coupon"
+      onclick="apriSezioneCoupon('${email}'); event.stopPropagation();">
+    🎁 ${stats.coupon}
+</span>
         </div>
     </div>
 
@@ -696,7 +713,10 @@ couponFinali.forEach(cpn => {
 });
 
 box.innerHTML += `
-    <h3 style="margin-top:20px; margin-bottom:8px;">🎁 Coupon Utente (${couponFinali.length})</h3>
+    <h3 id="coupon-section-${email}" 
+        style="margin-top:20px; margin-bottom:8px;">
+        🎁 Coupon Utente (${couponFinali.length})
+    </h3>
     ${couponHTML}
 `;
 
@@ -717,7 +737,7 @@ arr.forEach(c => {
         c.confermata ? "coppa-box coppa-confermata" :
         "coppa-box";
 
-    const icon = collapsed ? "✖️" : "👁️‍🗨️";
+    const icon = collapsed ? "👁️‍🗨️" : "✖️";
 
     // SCROLL AUTOMATICO sul primo risultato trovato
     if (!primoRisultato) {
@@ -856,15 +876,6 @@ document.addEventListener("click", () => {
     const menu = document.getElementById("email-dropdown");
     if (menu) menu.style.display = "none";
 });
-
-window.salvaCoupon = async function(id, testo) {
-    await supabase
-        .from("coupon")
-        .update({ codice: testo })
-        .eq("id", id);
-
-    console.log("Coupon aggiornato", id, testo);
-};
 
 </script>
 
