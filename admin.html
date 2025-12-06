@@ -214,6 +214,32 @@ async function load(){
 }
 load();
 
+// 🔥 AGGIORNAMENTO IN TEMPO REALE
+supabase
+  .channel('coppe-realtime')
+  .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'coppe' },
+      payload => {
+          console.log("🔄 Cambio su COPPE:", payload);
+          load();  // 🔥 ricarica UTENTI + COPPE + aggiorna tutto
+      }
+  )
+  .subscribe();
+
+// Aggiornamento realtime utenti (opzionale ma utile)
+supabase
+  .channel('utenti-realtime')
+  .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'utenti' },
+      payload => {
+          console.log("🔄 Cambio su UTENTI:", payload);
+          load();  
+      }
+  )
+  .subscribe();
+
 function matchSearch(obj){
     if (!filtro) return true;
     return JSON.stringify(obj).toLowerCase().includes(filtro);
