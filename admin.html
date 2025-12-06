@@ -183,6 +183,7 @@ let filtro = "";
 let filtroConfermate = {};
 let filtroEliminate = {};
 let coppeCollapsed = {}; // memorizza quali coppe sono chiuse/aperte per id
+let sezioniAperte = {};
 
 // 🔥 Prezzi base coppe
 const prezziBase = {
@@ -255,9 +256,13 @@ function getStats(email){
 }
 
 function toggleFilters(email){
+    // inverti stato "aperto/chiuso" in memoria
+    sezioniAperte[email] = !sezioniAperte[email];
+
     const box = document.getElementById("c-" + email);
     if (!box) return;
-    box.style.display = box.style.display === "block" ? "none" : "block";
+
+    box.style.display = sezioniAperte[email] ? "block" : "none";
 }
 
 async function toggleConferma(id, current){
@@ -320,7 +325,8 @@ out.innerHTML += `
         </div>
     </div>
 
-    <div id="c-${email}" class="coppe-container"></div>
+    <div id="c-${email}" class="coppe-container"
+         style="display:${sezioniAperte[email] ? "block" : "none"}"></div>
 `;
     });
 
