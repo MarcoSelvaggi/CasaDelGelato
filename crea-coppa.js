@@ -24,7 +24,7 @@ let DISPONIBILITA = {};
 // Carica la tabella "disponibilita" da Supabase
 async function caricaDisponibilita() {
     try {
-        const { data, error } = await window.supabase
+        const { data, error } = await supabase
             .from("disponibilita")
             .select("*");
 
@@ -33,24 +33,66 @@ async function caricaDisponibilita() {
             return;
         }
 
-        // Reset oggetto
         DISPONIBILITA = {};
 
-        // Raggruppiamo per categoria e nome
         data.forEach(riga => {
-            if (!DISPONIBILITA[riga.categoria]) {
-                DISPONIBILITA[riga.categoria] = {};
+            if (!DISPONIBILITA[riga.tipo]) {
+                DISPONIBILITA[riga.tipo] = {};
             }
-            // riga.disponibile è true/false nel DB
-            DISPONIBILITA[riga.categoria][riga.nome] = riga.disponibile;
+            DISPONIBILITA[riga.tipo][riga.nome] = riga.disponibile; // true/false
         });
 
-        console.log("✅ DISPONIBILITÀ CARICATA:", DISPONIBILITA);
+        console.log("Disponibilità caricata:", DISPONIBILITA);
     } catch (e) {
-        console.error("Eccezione in caricaDisponibilita:", e);
+        console.error("Errore fetch disponibilità:", e);
     }
 }
 
+// =================== AVVIO PAGINA ===================
+document.addEventListener("DOMContentLoaded", async () => {
+    console.log("🌐 Avvio pagina...");
+
+    // 1️⃣ Carica disponibilità da Supabase
+    await caricaDisponibilita();
+
+    // 2️⃣ Attiva aggiornamento realtime
+    attivaRealtimeDisponibilita();
+
+    console.log("🔄 Disponibilità pronta con aggiornamento realtime");
+});
+
+// ===========================
+// 🔥 REALTIME DISPONIBILITÀ
+// ===========================
+function attivaRealtimeDisponibilita() {
+    if (!window.supabase) {
+        console.error("❌ Supabase non trovato!");
+        return;
+    }
+
+    console.log("🔌 Attivo aggiornamento realtime disponibilita...");
+
+    window.supabase
+        .channel("disponibilita-realtime")
+        .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: "disponibilita" },
+            payload => {
+                console.log("⚡ Aggiornamento disponibilità:", payload);
+
+                // ricarico i dati
+                caricaDisponibilita().then(() => {
+                    // Se l’utente è in uno step, aggiorno subito la grafica
+                    if (step === "gusti") {
+                        renderStepGusti();
+                    } else {
+                        render();
+                    }
+                });
+            }
+        )
+        .subscribe();
+}
 
 // ---------------- LISTE ----------------
 const gustiList = [
@@ -439,31 +481,48 @@ function render(){
     title.style.display = titoloGustiVisibile ? "block" : "none";
   }
 
-  // ---------------- CONTENUTO LISTA + BOTTONI ----------------
-  area.innerHTML = `
+// ---------------- CONTENUTO LISTA + BOTTONI ----------------
+area.innerHTML = `
     <h2 style="display:none"></h2>
     <div class="ingredienti-lista">
       ${
-        lista.map(it=>{
+        lista.map(it => {
           const nome = it.split(" (+€")[0].trim();
-          const sel = scelti[step].includes(nome) ? "selected" : "";
-          const disponibile = DISPONIBILITA[step.charAt(0).toUpperCase() + step.slice(1)]?.[nome] !== false;
 
-return `
-<div class="item ${sel} ${disponibile ? "" : "item-disabled"}"
-     onclick="${disponibile ? `toggle('${step}', '${escForOnclick(nome)}', this)` : ''}">
-    ${it}
-</div>`;
+          // 🔥 Mappa corretta step → categoria database
+          const categoria = (
+              step === "granelle" ? "Granelle" :
+              step === "topping" ? "Topping" :
+              step === "ingredienti" ? "Ingredienti" :
+              step === "extra" ? "Extra" :
+              "Gusti"
+          );
+
+          // 🔥 Controllo disponibilità
+          const disponibile = DISPONIBILITA[categoria]?.[nome] !== false;
+
+          const sel = scelti[step].includes(nome) ? "selected" : "";
+          const disabledClass = disponibile ? "" : "item-disabled";
+          const labelTerminato = disponibile ? "" : `<span class="label-terminato">Terminato</span>`;
+
+          return `
+            <div class="item ${sel} ${disabledClass}"
+                 ${disponibile ? `onclick="toggle('${step}','${escForOnclick(nome)}',this)"` : ""}>
+                ${it}
+                ${labelTerminato}
+            </div>
+          `;
         }).join("")
       }
     </div>
+
     <div class="nav-buttons">
       <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
       <button class="next-btn" onclick="nextStep()">
         ${step==="extra" ? "Conferma ✅" : "Avanti ➜"}
       </button>
     </div>
-  `;
+`;
 }
 
 // ---------------- TOGGLE ----------------
@@ -958,12 +1017,6 @@ function stabilizeMiniRiepilogo() {
       el.style.maxWidth = "260px";
   }
 }
-
-// 🔥 Carica disponibilità ingredienti all'avvio
-document.addEventListener("DOMContentLoaded", async () => {
-    await caricaDisponibilita();
-});
-
 
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
