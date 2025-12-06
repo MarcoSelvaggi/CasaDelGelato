@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accedi - Casa del Gelato</title>
+
+<!-- Import Supabase -->
+<script type="module">
+    import { supabase } from "./supabase.js";
+    window.supabase = supabase; // lo rendo disponibile allo script sotto
+</script>
+
+<style>
+    body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f6f6f7;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    h1 {
+        margin-top: 40px;
+        font-size: 28px;
+        color: #333;
+    }
+
+    .container {
+        background: white;
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 14px;
+        max-width: 360px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    input {
+        width: 90%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+
+    button {
+        width: 94%;
+        padding: 12px;
+        background: #ff7a00;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 17px;
+        font-weight: 600;
+        margin-top: 10px;
+        cursor: pointer;
+    }
+</style>
+
+</head>
+<body>
+
+<h1>Accedi</h1>
+
+<div class="container">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="text" id="name" placeholder="Nome">
+    <input type="text" id="surname" placeholder="Cognome">
+
+    <button onclick="login()">Continua</button>
+</div>
+
+<!-- Script di login con controllo Supabase -->
+<script type="module">
+import { supabase } from "./supabase.js";
+
+window.login = async function() {
+    const email = document.getElementById("email").value.trim();
+    const name  = document.getElementById("name").value.trim();
+    const surname = document.getElementById("surname").value.trim();
+
+    if (!email) {
+        alert("Inserisci una email valida.");
+        return;
+    }
+
+    // 1️⃣ Controllo se l'utente esiste
+    const { data, error } = await supabase
+        .from("utenti")
+        .select("*")
+        .eq("email", email)
+        .single();
+
+    if (error && error.code === "PGRST116") {
+        alert("❌ Email non registrata.\nRegistrati per continuare.");
+        return;
+    }
+
+    if (error) {
+        alert("Errore Supabase: " + error.message);
+        return;
+    }
+
+    // 2️⃣ Controllo se è disiscritto
+    if (data.disiscritto === true) {
+        alert("❌ Questa email è stata disiscritta.\nRegistrati nuovamente per continuare.");
+        return;
+    }
+
+    // 3️⃣ Login accettato
+    localStorage.setItem("user_email", data.email);
+    localStorage.setItem("user_name", name || data.nome || "");
+    localStorage.setItem("user_surname", surname || data.cognome || "");
+    localStorage.setItem("userLogged", "1");
+
+    alert("Accesso effettuato!");
+    window.location.href = "index.html";
+};
+</script>
+</body>
+</html>

@@ -529,13 +529,13 @@ async function getCoppeSupabaseUtente(email) {
         .order("id", { ascending: false });
 
     // (per ora manteniamo la tua or, poi la sistemiamo nel punto 2)
-    if (email && guest_id) {
-        query = query.or(`email.eq.${email},guest_id.eq.${guest_id}`);
-    } else if (email) {
-        query = query.eq("email", email);
-    } else if (guest_id) {
-        query = query.eq("guest_id", guest_id);
-    }
+if (email) {
+    // 🔥 Mostra SOLO coppe dell’email loggata
+    query = query.eq("email", email);
+} else {
+    // Nessuna email loggata → nessuna coppa
+    return [];
+}
 
     // 🔥 filtro: mostra solo coppe NON eliminate
     query = query.or("eliminata.is.null,eliminata.eq.false");

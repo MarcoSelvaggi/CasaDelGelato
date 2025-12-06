@@ -344,6 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
   import { supabase } from "./supabase.js";
 </script>
 
+<script>
 function gestisciLoginLogout() {
     const email = localStorage.getItem("user_email");
 
@@ -365,25 +366,7 @@ function gestisciLoginLogout() {
         window.location.href = "login.html";
     }
 }
-function gestisciLoginLogout() {
-    const email = localStorage.getItem("user_email");
-
-    if (!email) {
-        window.location.href = "login.html"; 
-        return;
-    }
-
-    if (confirm(`Sei loggato come:\n${email}\n\nVuoi cambiare profilo?`)) {
-        localStorage.removeItem("user_email");
-        localStorage.removeItem("user_name");
-        localStorage.removeItem("user_surname");
-
-        alert("Hai effettuato il logout. Ora puoi accedere con un altro profilo.");
-        window.location.href = "login.html";
-    }
-}
-
-window.gestisciLoginLogout = gestisciLoginLogout;  // 👈 OBBLIGATORIO
+</script>
 
 </body>
 </html>
