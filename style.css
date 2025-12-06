@@ -1003,3 +1003,24 @@ body.step-size #riepilogo-mini {
     top: 205px;
     left: 600px;
 }
+
+.gusto-disabled,
+.item-disabled {
+    opacity: 0.4;
+    background: #ddd !important;
+    pointer-events: none;
+    filter: grayscale(100%);
+    position: relative;
+}
+
+.gusto-disabled::after,
+.item-disabled::after {
+    content: "Terminato";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: red;
+    font-weight: bold;
+    font-size: 14px;
+}

@@ -10,6 +10,48 @@ let gustiQuantities = {};      // es: { VANIGLIA: 2, FRAGOLA: 1 }
 let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in modifica)
 let collapseTimer = null
 let coppaSalvata = false;
+
+// =======================
+// DISPONIBILITÀ INGREDIENTI
+// =======================
+
+// Qui salveremo cosa è disponibile o terminato.
+// Struttura prevista:
+// DISPONIBILITA["Gusti"]["VANIGLIA"] = true / false
+// DISPONIBILITA["Granelle"]["NOCCIOLA"] = true / false
+let DISPONIBILITA = {};
+
+// Carica la tabella "disponibilita" da Supabase
+async function caricaDisponibilita() {
+    try {
+        const { data, error } = await window.supabase
+            .from("disponibilita")
+            .select("*");
+
+        if (error) {
+            console.error("Errore caricamento disponibilità:", error);
+            return;
+        }
+
+        // Reset oggetto
+        DISPONIBILITA = {};
+
+        // Raggruppiamo per categoria e nome
+        data.forEach(riga => {
+            if (!DISPONIBILITA[riga.categoria]) {
+                DISPONIBILITA[riga.categoria] = {};
+            }
+            // riga.disponibile è true/false nel DB
+            DISPONIBILITA[riga.categoria][riga.nome] = riga.disponibile;
+        });
+
+        console.log("✅ DISPONIBILITÀ CARICATA:", DISPONIBILITA);
+    } catch (e) {
+        console.error("Eccezione in caricaDisponibilita:", e);
+    }
+}
+
+
 // ---------------- LISTE ----------------
 const gustiList = [
   "VANIGLIA","FIOR DI LATTE","CIOCCOLATO","NOCCIOLA","FRAGOLA","PISTACCHIO","LIMONE",
@@ -225,17 +267,20 @@ function renderStepGusti() {
     `;
 
     gustiList.forEach(nome => {
+      // 🚫 Controllo disponibilità
+const disponibile = DISPONIBILITA["Gusti"]?.[nome] !== false;
         const qty = gustiQuantities[nome] || 0;
         const isEditing = (gustoInModifica === nome);
         const isConfirmed = qty > 0 && !isEditing;
         const showControls = isEditing || qty > 0;
 
         let cls = "item gusto-item";
+if (!disponibile) cls += " gusto-disabled";
         if (isEditing) cls += " gusto-pending";
         else if (isConfirmed) cls += " gusto-confirmed";
 
         html += `
-            <div class="${cls}" onclick="selectGusto('${nome}')">
+            <div class="${cls}" onclick="${disponibile ? `selectGusto('${nome}')` : ''}">
                 <span class="gusto-name">${escapeHtml(nome)}</span>
 
                 ${showControls ? `
@@ -402,7 +447,13 @@ function render(){
         lista.map(it=>{
           const nome = it.split(" (+€")[0].trim();
           const sel = scelti[step].includes(nome) ? "selected" : "";
-          return `<div class="item ${sel}" onclick="toggle('${step}', '${escForOnclick(nome)}', this)">${it}</div>`;
+          const disponibile = DISPONIBILITA[step.charAt(0).toUpperCase() + step.slice(1)]?.[nome] !== false;
+
+return `
+<div class="item ${sel} ${disponibile ? "" : "item-disabled"}"
+     onclick="${disponibile ? `toggle('${step}', '${escForOnclick(nome)}', this)` : ''}">
+    ${it}
+</div>`;
         }).join("")
       }
     </div>
@@ -907,6 +958,13 @@ function stabilizeMiniRiepilogo() {
       el.style.maxWidth = "260px";
   }
 }
+
+// 🔥 Carica disponibilità ingredienti all'avvio
+document.addEventListener("DOMContentLoaded", async () => {
+    await caricaDisponibilita();
+});
+
+
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
 document.addEventListener("DOMContentLoaded", () => {

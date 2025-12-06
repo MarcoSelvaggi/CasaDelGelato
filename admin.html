@@ -170,6 +170,44 @@
 
 <h1>📊 Pannello Admin</h1>
 
+<div style="text-align:center; margin: 20px 0;">
+    <button id="btn-dashboard"
+            onclick="apriDashboard()" 
+            class="tab-btn active">
+        Dashboard
+    </button>
+
+    <button id="btn-dispo"
+            onclick="apriDisponibilita()" 
+            class="tab-btn">
+        Disponibilità ingredienti
+    </button>
+</div>
+
+<style>
+.tab-btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    margin: 0 5px;
+    background: #007aff;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+.tab-btn.active {
+    background: #005ecb;
+}
+</style>
+<!-- 🔥 Sezione Dashboard (lista utenti + coppe) -->
+<div id="sezione-dashboard">
+    <div id="admin-list"></div>
+</div>
+
+<!-- 🔥 Sezione Disponibilità (inizialmente nascosta) -->
+<div id="sezione-disponibilita" style="display:none; padding:20px;"></div>
+
+
 <input id="search-admin" type="text" placeholder="Cerca utenti o coppe...">
 
 <div style="text-align:center; margin-top:10px; position:relative;">
@@ -607,6 +645,146 @@ window.toggleCoppaCollapse = function (id) {
 
     // ricarica solo quella sezione (non tutta la pagina)
     renderCoppe(email);
+};
+
+window.apriDashboard = function() {
+    document.getElementById("sezione-dashboard").style.display = "block";
+    document.getElementById("sezione-disponibilita").style.display = "none";
+
+    // aggiorno pulsanti
+    document.getElementById("btn-dashboard").classList.add("active");
+    document.getElementById("btn-dispo").classList.remove("active");
+};
+
+window.apriDisponibilita = function() {
+    document.getElementById("sezione-dashboard").style.display = "none";
+    document.getElementById("sezione-disponibilita").style.display = "block";
+
+    document.getElementById("btn-dashboard").classList.remove("active");
+    document.getElementById("btn-dispo").classList.add("active");
+
+    // carica ingredienti non disponibili
+    caricaDisponibilita();
+};
+
+window.caricaDisponibilita = async function () {
+    const box = document.getElementById("sezione-disponibilita");
+    box.innerHTML = "<h2>🍨 Disponibilità Ingredienti</h2><p>Caricamento...</p>";
+
+    // prendo TUTTE le righe della tabella disponibilità
+    const { data: righe, error } = await supabase
+        .from("disponibilita")
+        .select("*");
+
+    if (error) {
+        box.innerHTML = "<p>Errore caricamento: " + error.message + "</p>";
+        return;
+    }
+
+    // se mai inizializzata → creo le voci partendo dai tuoi array
+    if (!righe.length) {
+        await inizializzaIngrediti();
+        return window.caricaDisponibilita();
+    }
+
+    // raggruppo per categoria
+    const gruppi = {};
+    for (const r of righe) {
+        if (!gruppi[r.categoria]) gruppi[r.categoria] = [];
+        gruppi[r.categoria].push(r);
+    }
+
+    let html = "";
+
+    for (const categoria in gruppi) {
+        html += `<h3 style="margin-top:20px;">${categoria}</h3>`;
+
+        gruppi[categoria].forEach(item => {
+            html += `
+                <div style="
+                    padding:10px; 
+                    margin:6px 0; 
+                    background:${item.disponibile ? '#eaffea' : '#ffe1e1'};
+                    border-radius:10px;
+                    display:flex; 
+                    justify-content:space-between;
+                    align-items:center;
+                ">
+                    <b>${item.nome}</b>
+
+                    <label style="display:flex; align-items:center; gap:8px;">
+                        <span style="color:${item.disponibile ? 'green' : 'red'};">
+                            ${item.disponibile ? "Disponibile" : "Terminato"}
+                        </span>
+
+                        <input 
+                            type="checkbox" 
+                            ${item.disponibile ? "checked" : ""} 
+                            onchange="toggleDisponibilita(${item.id}, this.checked)"
+                        >
+                    </label>
+                </div>
+            `;
+        });
+    }
+
+    box.innerHTML = html;
+};
+
+async function inizializzaIngrediti() {
+    const categorie = {
+        "Gusti": [
+            "VANIGLIA","FIOR DI LATTE","CIOCCOLATO","NOCCIOLA","FRAGOLA","PISTACCHIO","LIMONE",
+            "MELONE","KIWI","BANANA","COCCO","LAMPONE","MANGO","ANANAS","VARIEGATO AMARENA",
+            "STRACCIATELLA","YOGURT","YOGURT FRAGOLINE","CREME CARAMEL","BACIO","CAFFÈ",
+            "TIRAMISÙ","CROCCANTINO AL RUM","AMARETTO","MALAGA","CHEESECAKE","COOKIES",
+            "CREMA ANDALUSA","CREMINO","CREMINO AL PISTACCHIO","AFTER EIGHT",
+            "VARIEGATO FICHI NOCI MIELE"
+        ],
+
+        "Granelle": [
+            "NOCCIOLA","CROCCANTE","PISTACCHIO","COCCO RAPE'","SCAGLIETTE AL CIOCCOLATO","SMARTIES","ZUCCHERINI COLORATI"
+        ],
+
+        "Topping": [
+            "ANANAS","ARANCIA","FRAGOLA","FRUTTI DI BOSCO","KIWI","MELONE","MENTA","CARAMELLO","MALAGA","CIOCCOLATO","NOCCIOLA","PISTACCHIO",
+            "LIQUORE AMARETTO","LIQUORE AL CAFFE'","LIQUORE AL COCCO","SCIROPPO AMARENA","JOGURT NATURALE","VOV","CAFFÈ ESPRESSO","CAFFÈ DECA","ORZO"
+        ],
+
+        "Ingredienti": [
+            "AMARENE(4PZ)","MACEDONIA","ANGURIA","ANANAS","BANANA","FRAGOLE","KIWI","MELONE",
+            "MIX BOSCO","PESCA","UVA","FRUTTI DI BOSCO","AMARETTI","NOCCIOLINE","NOCI","UVETTA",
+            "MIKADO","AFTER EIGHT","BOUNTY","KITKAT","DUPLO","CIOCCOLATINI"
+        ],
+
+        "Extra": [
+            "COCCO (3pz)","MIX KINDER","PANNA EXTRA"
+        ]
+    };
+
+    const insertRows = [];
+
+    for (const tipo in categorie) {
+        categorie[tipo].forEach(nome => {
+            insertRows.push({
+                tipo: tipo,           // ← colonna del DB
+                nome: nome,
+                indisponibile: false  // false = disponibile
+            });
+        });
+    }
+
+    await supabase.from("disponibilita").insert(insertRows);
+}
+
+window.toggleDisponibilita = async function(id, nuovoValore) {
+
+    await supabase
+        .from("disponibilita")
+        .update({ disponibile: nuovoValore })
+        .eq("id", id);
+
+    caricaDisponibilita();
 };
 
 function render(){
