@@ -552,6 +552,21 @@ window.apriSezioneCoupon = async function(email) {
     box.scrollIntoView({ behavior: "smooth", block: "center" });
 };
 
+window.toggleSezioneCoupon = function(email) {
+    const box = document.getElementById("coupon-box-" + email);
+    if (!box) return;
+
+    // Se è visibile → nascondi
+    if (box.style.display === "block") {
+        box.style.display = "none";
+        box.innerHTML = ""; // pulizia
+        return;
+    }
+
+    // Se è nascosto → apri
+    apriSezioneCoupon(email);
+};
+
 // 💾 SALVA COUPON
 window.salvaCoupon = async function(id) {
     const textarea = document.getElementById("coupon-text-" + id);
@@ -620,8 +635,8 @@ out.innerHTML += `
             <span class="badge badge-blue">Coppe: ${stats.tot}</span>
             <span class="badge badge-green">Confermate: ${stats.conf}</span>
             <span class="badge badge-red">Eliminate: ${stats.elim}</span>
-            <span class="badge badge-coupon"
-      onclick="apriSezioneCoupon('${email}'); event.stopPropagation();">
+<span class="badge badge-coupon"
+      onclick="toggleSezioneCoupon('${email}'); event.stopPropagation();">
     🎁 ${stats.coupon}
 </span>
         </div>
@@ -707,14 +722,6 @@ box.innerHTML = `
     </div>
 `;
 
-
-box.innerHTML += `
-    <h3 id="coupon-section-${email}" 
-        style="margin-top:20px; margin-bottom:8px;">
-        🎁 Coupon Utente (${couponFinali.length})
-    </h3>
-    ${couponHTML}
-`;
 
 let primoRisultato = false;
 
