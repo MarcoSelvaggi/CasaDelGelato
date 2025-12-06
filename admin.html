@@ -185,6 +185,37 @@ let filtroEliminate = {};
 let coppeCollapsed = {}; // memorizza quali coppe sono chiuse/aperte per id
 let sezioniAperte = {};
 
+function formatDate(d) {
+    if (!d) return "-";
+
+    // se viene passato un oggetto date, ok
+    if (d instanceof Date) {
+        return d.toLocaleString("it-IT", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    // se è una stringa → converto a Date
+    const date = new Date(String(d));
+
+    if (isNaN(date.getTime())) {
+        console.warn("⚠️ Data non valida:", d);
+        return d;
+    }
+
+    return date.toLocaleString("it-IT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
 // 🔥 Prezzi base coppe
 const prezziBase = {
     PICCOLA: 7.50,
@@ -369,8 +400,8 @@ arr.sort((a, b) => {
             <b>Nome:</b> ${u?.nome || "-"}<br>
             <b>Cognome:</b> ${u?.cognome || "-"}<br>
             <b>Email:</b> ${u?.email || email}<br>
-            <b>Registrato il:</b> ${u?.created_at ? u.created_at.replace("T"," ").substring(0,16) : "-"}<br>
-            ${u?.disiscritto ? `<b style="color:red;">Disiscritto il:</b> ${u.data_disiscrizione || "-"}` : ""}
+            <b>Registrato il:</b> ${formatDate(u?.created_at)}<br>
+            ${u?.disiscritto ? `<b style="color:red;">Disiscritto il:</b> ${formatDate(u.data_disiscrizione)}` : ""}
         </div>
 
         <div style="margin:10px 0;">
@@ -420,7 +451,7 @@ arr.forEach(c => {
 
             ${collapsed ? "" : `
                 <div style="margin-top:8px;">
-                    <b>Data:</b> ${c.data}<br>
+                    <b>Data creazione:</b> ${formatDate(c.data)}<br>
                     
 
 <b>Formato:</b> ${c.formato} 
