@@ -187,6 +187,24 @@
         ✉️ Invia Email ▼
     </button>
 
+    <div id="popup-saved" 
+     style="
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.85);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-size: 16px;
+        display: none;
+        z-index: 9999;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+     ">
+    💾 Salvato correttamente
+</div>
+
     <div id="email-dropdown" 
          style="
             display:none;
@@ -241,6 +259,17 @@ let filtroEliminate = {};
 let coppeCollapsed = {}; // memorizza quali coppe sono chiuse/aperte per id
 let sezioniAperte = {};
 
+
+function showPopupSaved() {
+    const p = document.getElementById("popup-saved");
+    p.style.display = "block";
+    p.style.opacity = "1";
+
+    setTimeout(() => {
+        p.style.opacity = "0";
+        setTimeout(() => p.style.display = "none", 300);
+    }, 1000);
+}
 
 // ✨ Evidenziazione ricerca
 function highlight(text) {
@@ -408,6 +437,36 @@ function getStats(email){
     return {tot, conf, elim, coupon, list};
 }
 
+async function syncCouponUtente(email) {
+    const stats = getStats(email);
+    const numeroCouponDovuti = Math.floor(stats.conf / 10);
+
+    // Leggi coupon esistenti da Supabase
+    const { data: esistenti } = await supabase
+        .from("coupon")
+        .select("*")
+        .eq("email", email);
+
+    const giaCreati = esistenti?.length || 0;
+
+    // Se siamo già allineati → fine
+    if (giaCreati >= numeroCouponDovuti) return;
+
+    // Quanti coupon mancano
+    const daCreare = numeroCouponDovuti - giaCreati;
+
+    // Crea i coupon mancanti
+    for (let i = 0; i < daCreare; i++) {
+        await supabase.from("coupon").insert([
+            {
+                email: email,
+                codice: "",        // campo vuoto: lo compili tu
+                redento: false
+            }
+        ]);
+    }
+}
+
 function toggleFilters(email){
     // inverti stato "aperto/chiuso" in memoria
     sezioniAperte[email] = !sezioniAperte[email];
@@ -435,6 +494,31 @@ window.toggleConferma = toggleConferma;
 window.renderCoppe = renderCoppe;
 window.filtroConfermate = filtroConfermate;
 window.filtroEliminate = filtroEliminate;
+
+// 💾 SALVA COUPON
+window.salvaCoupon = async function(id) {
+    const textarea = document.getElementById("coupon-text-" + id);
+    const valore = textarea.value.trim();
+
+    const { error } = await supabase
+        .from("coupon")
+        .update({ codice: valore })
+        .eq("id", id);
+
+    if (error) {
+        alert("Errore nel salvataggio del coupon: " + error.message);
+        return;
+    }
+
+    // Effetto verde
+    textarea.style.background = "#d8ffd8";
+    setTimeout(() => {
+        textarea.style.background = "white";
+    }, 800);
+
+    // ⭐ MOSTRA POPUP SALVATO
+    mostraPopup("Coupon salvato correttamente!");
+};
 
 // =========================
 // COLLASSA / ESPANDI COPPA
@@ -491,7 +575,7 @@ out.innerHTML += `
     UTENTI.forEach(u => renderCoppe(u.email));
 }
 
-function renderCoppe(email){
+async function renderCoppe(email){
     const box = document.getElementById("c-" + email);
     if (!box) return;
 
@@ -560,6 +644,60 @@ box.innerHTML = `
             Eliminate
         </span>
     </div>
+`;
+
+// --- COUPON SECTION ---
+
+// 1) Leggo coupon esistenti
+const { data: listaCoupon } = await supabase
+    .from("coupon")
+    .select("*")
+    .eq("email", email)
+    .order("created_at", { ascending: true });
+
+// 2) Sincronizzo coupon necessari (10 coppe = 1 coupon)
+await syncCouponUtente(email);
+
+// 3) Ricarico dopo eventuali nuovi inseriti
+const { data: couponFinali } = await supabase
+    .from("coupon")
+    .select("*")
+    .eq("email", email)
+    .order("created_at", { ascending: true });
+
+let couponHTML = "";
+
+couponFinali.forEach(cpn => {
+    couponHTML += `
+        <div style="margin-top:10px; padding:10px; background:#fff7d1; border-radius:10px;">
+            <b>Coupon #${cpn.id}</b><br>
+
+            <textarea 
+                id="coupon-text-${cpn.id}"
+                style="width:100%; margin-top:5px; padding:8px; border-radius:8px;" 
+            >${cpn.codice || ""}</textarea>
+
+            <button 
+                onclick="salvaCoupon(${cpn.id})"
+                style="
+                    margin-top:8px;
+                    padding:6px 12px;
+                    border:none;
+                    border-radius:8px;
+                    background:#007aff;
+                    color:white;
+                    font-size:14px;
+                    cursor:pointer;
+                ">
+                💾 Salva
+            </button>
+        </div>
+    `;
+});
+
+box.innerHTML += `
+    <h3 style="margin-top:20px; margin-bottom:8px;">🎁 Coupon Utente (${couponFinali.length})</h3>
+    ${couponHTML}
 `;
 
 let primoRisultato = false;
@@ -718,6 +856,15 @@ document.addEventListener("click", () => {
     const menu = document.getElementById("email-dropdown");
     if (menu) menu.style.display = "none";
 });
+
+window.salvaCoupon = async function(id, testo) {
+    await supabase
+        .from("coupon")
+        .update({ codice: testo })
+        .eq("id", id);
+
+    console.log("Coupon aggiornato", id, testo);
+};
 
 </script>
 
