@@ -228,23 +228,6 @@
 }
 </style>
 
-<button 
-    onclick="inviaEmailAListaUtenti()" 
-    style="
-        display:block;
-        margin:12px auto;
-        padding:10px 18px;
-        border:none;
-        border-radius:10px;
-        background:#007aff;
-        color:white;
-        font-size:15px;
-        font-weight:600;
-        cursor:pointer;
-    ">
-    ✉️ Invia email a TUTTI gli utenti registrati
-</button>
-
 <div id="admin-list"></div>
 
 <script type="module">
@@ -345,9 +328,41 @@ supabase
   )
   .subscribe();
 
-function matchSearch(obj){
+function matchSearch(user) {
     if (!filtro) return true;
-    return JSON.stringify(obj).toLowerCase().includes(filtro);
+
+    const search = filtro.toLowerCase();
+
+    // 🔍 Cerca nei campi utente
+    if (
+        (user.nome || "").toLowerCase().includes(search) ||
+        (user.cognome || "").toLowerCase().includes(search) ||
+        (user.email || "").toLowerCase().includes(search)
+    ) {
+        return true;
+    }
+
+    // 🔍 Cerca nelle coppe dell'utente
+    const stats = getStats(user.email || "Anonimo");
+
+    for (const c of stats.list) {
+        const testoCoppa = JSON.stringify({
+            nome: c.nome,
+            formato: c.formato,
+            gusti: c.gusti,
+            granelle: c.granelle,
+            topping: c.topping,
+            ingredienti: c.ingredienti,
+            extra: c.extra,
+            data: c.data
+        }).toLowerCase();
+
+        if (testoCoppa.includes(search)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function getStats(email){
@@ -413,7 +428,7 @@ function render(){
         const email = u.email || "Anonimo";
         const stats = getStats(email);
 
-        if (!matchSearch({...u, ...stats})) return;
+        if (!matchSearch(u)) return;
 
         const cardCls = u.disiscritto ? "utente-card utente-disiscritto" : "utente-card";
 
@@ -572,28 +587,6 @@ ${
 // ------------------------------------------------------------
 // ✉️ INVIA EMAIL A TUTTI GLI UTENTI REGISTRATI
 // ------------------------------------------------------------
-window.inviaEmailAListaUtenti = function() {
-    if (!UTENTI || !UTENTI.length) {
-        alert("Nessun utente registrato.");
-        return;
-    }
-
-    // solo utenti con email valida e non disiscritti
-    const emails = UTENTI
-        .filter(u => u.email && !u.disiscritto)
-        .map(u => u.email);
-
-    if (emails.length === 0) {
-        alert("Nessun utente attivo da contattare.");
-        return;
-    }
-
-    const mailto =
-        "mailto:?bcc=" + encodeURIComponent(emails.join(",")) +
-        "&subject=" + encodeURIComponent("Comunicazione Casa del Gelato");
-
-    window.location.href = mailto;
-};
 
 window.inviaEmail_Registrati = function() {
     const emails = UTENTI
