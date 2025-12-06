@@ -557,6 +557,9 @@ async function caricaCoppeComplete() {
     const email = localStorage.getItem("user_email") || null;
 
     let coppeLocali = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+
+// 🔥 FILTRA ANCHE LE COPPE LOCALI per email
+coppeLocali = coppeLocali.filter(c => c.email === email);
     let coppeSupabase = [];
 
     if (email) {
