@@ -241,6 +241,19 @@ let filtroEliminate = {};
 let coppeCollapsed = {}; // memorizza quali coppe sono chiuse/aperte per id
 let sezioniAperte = {};
 
+
+// ✨ Evidenziazione ricerca
+function highlight(text) {
+    if (!filtro || !text) return text;
+
+    const search = filtro.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // escape regex
+    const regex = new RegExp(search, "gi");
+
+    return String(text).replace(regex, match =>
+        `<span style="background:yellow; border-radius:4px;">${match}</span>`
+    );
+}
+
 function formatDate(d) {
     if (!d) return "-";
 
@@ -333,33 +346,30 @@ function matchSearch(user) {
 
     const search = filtro.toLowerCase();
 
-    // 🔍 Cerca nei campi utente
+    // 🔍 Campi utente
     if (
         (user.nome || "").toLowerCase().includes(search) ||
         (user.cognome || "").toLowerCase().includes(search) ||
         (user.email || "").toLowerCase().includes(search)
-    ) {
-        return true;
-    }
+    ) return true;
 
-    // 🔍 Cerca nelle coppe dell'utente
+    // 🔍 Cerchiamo nelle coppe
     const stats = getStats(user.email || "Anonimo");
 
     for (const c of stats.list) {
-        const testoCoppa = JSON.stringify({
-            nome: c.nome,
-            formato: c.formato,
-            gusti: c.gusti,
-            granelle: c.granelle,
-            topping: c.topping,
-            ingredienti: c.ingredienti,
-            extra: c.extra,
-            data: c.data
-        }).toLowerCase();
+        // unisco tutta la coppa in testo unico
+        const testo = [
+            c.nome,
+            c.formato,
+            JSON.stringify(c.gusti),
+            JSON.stringify(c.granelle),
+            JSON.stringify(c.topping),
+            JSON.stringify(c.ingredienti),
+            JSON.stringify(c.extra),
+            c.data
+        ].join(" ").toLowerCase();
 
-        if (testoCoppa.includes(search)) {
-            return true;
-        }
+        if (testo.includes(search)) return true;
     }
 
     return false;
@@ -434,7 +444,7 @@ function render(){
 
 out.innerHTML += `
     <div class="${cardCls}" onclick="toggleFilters('${email}')">
-        <b>${email}</b>
+        <b>${highlight(email)}</b>
 
         <div class="counter-row">
             <span class="badge badge-blue">Coppe: ${stats.tot}</span>
@@ -483,36 +493,40 @@ arr.sort((a, b) => {
     // 🔎 Recupero utente per mostrare i dati sopra i filtri
     const u = UTENTI.find(u => (u.email || "Anonimo") === email);
 
-    box.innerHTML = `
-        <div class="utente-details">
-            <b>Nome:</b> ${u?.nome || "-"}<br>
-            <b>Cognome:</b> ${u?.cognome || "-"}<br>
-            <b>Email:</b> 
-<a href="mailto:${u?.email || email}" 
-   style="color:#007aff; text-decoration:none;">
-   ${u?.email || email}
-</a><br>
-            <b>Registrato il:</b> ${formatDate(u?.created_at)}<br>
-            ${u?.disiscritto ? `<b style="color:red;">Disiscritto il:</b> ${formatDate(u.data_disiscrizione)}` : ""}
-        </div>
+box.innerHTML = `
+    <div class="utente-details">
+        <b>Nome:</b> ${highlight(u?.nome || "-")}<br>
+        <b>Cognome:</b> ${highlight(u?.cognome || "-")}<br>
+        <b>Email:</b> 
+        <a href="mailto:${u?.email || email}" 
+           style="color:#007aff; text-decoration:none;">
+           ${highlight(u?.email || email)}
+        </a><br>
+        <b>Registrato il:</b> ${highlight(formatDate(u?.created_at))}<br>
+        ${
+            u?.disiscritto 
+            ? `<b style="color:red;">Disiscritto il:</b> ${highlight(formatDate(u.data_disiscrizione))}` 
+            : ""
+        }
+    </div>
 
-        <div style="margin:10px 0;">
-            <span class="filter-btn ${!window.filtroConfermate[email] && !window.filtroEliminate[email] ? "active":""}" 
-                onclick="window.filtroConfermate['${email}']=false; window.filtroEliminate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
-                Tutte
-            </span>
+    <div style="margin:10px 0;">
+        <span class="filter-btn ${!window.filtroConfermate[email] && !window.filtroEliminate[email] ? "active":""}" 
+            onclick="window.filtroConfermate['${email}']=false; window.filtroEliminate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
+            Tutte
+        </span>
 
-            <span class="filter-btn ${window.filtroConfermate[email] ? 'active' : ''}"
-                onclick="window.filtroConfermate['${email}']=!window.filtroConfermate['${email}']; window.filtroEliminate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
-                Confermate
-            </span>
+        <span class="filter-btn ${window.filtroConfermate[email] ? 'active' : ''}"
+            onclick="window.filtroConfermate['${email}']=!window.filtroConfermate['${email}']; window.filtroEliminate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
+            Confermate
+        </span>
 
-            <span class="filter-btn ${window.filtroEliminate[email] ? 'active' : ''}"
-                onclick="window.filtroEliminate['${email}']=!window.filtroEliminate['${email}']; window.filtroConfermate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
-                Eliminate
-            </span>
-        </div>
-    `;
+        <span class="filter-btn ${window.filtroEliminate[email] ? 'active' : ''}"
+            onclick="window.filtroEliminate['${email}']=!window.filtroEliminate['${email}']; window.filtroConfermate['${email}']=false; window.renderCoppe('${email}'); event.stopPropagation();">
+            Eliminate
+        </span>
+    </div>
+`;
 
 arr.forEach(c => {
 
@@ -530,57 +544,64 @@ arr.forEach(c => {
         "coppa-box";
 
     // ▼ icona apertura / ▲ icona chiusura
-    const icon = collapsed ? "▶️" : "🔽";
+    const icon = collapsed ? "▶👁️‍🗨️" : "✖️";
 
-    box.innerHTML += `
-        <div class="${coppaCls}">
-            <div style="display:flex; justify-content:space-between; align-items:center;"
-                 onclick="toggleCoppaCollapse(${c.id}); event.stopPropagation();">
+box.innerHTML += `
+    <div class="${coppaCls}">
+        <div style="display:flex; justify-content:space-between; align-items:center;"
+             onclick="toggleCoppaCollapse(${c.id}); event.stopPropagation();">
 
-                <b>${c.nome || "Coppa senza nome"}</b>
-                <span style="font-size:20px; cursor:pointer;">${icon}</span>
-            </div>
-
-            ${collapsed ? "" : `
-                <div style="margin-top:8px;">
-                    <b>Data creazione:</b> ${formatDate(c.data)}<br>
-                    
-
-<b>Formato:</b> ${c.formato} 
-${prezziBase[c.formato] ? ` (€${prezziBase[c.formato].toFixed(2)})` : ""}<br><br>
-
-<b>Gusti:</b> ${gusti.join(", ") || "-"}<br>
-<b>Granelle:</b> ${granelle.join(", ") || "-"}<br>
-<b>Topping:</b> ${topping.join(", ") || "-"}<br>
-<b>Ingredienti:</b> ${ingr.join(", ") || "-"}<br>
-
-<b>Extra:</b> 
-${
-    extra.length
-        ? extra.map(e => {
-            const prezzo = prezziExtra[e] || 0;
-            return prezzo > 0 ? `${e} (+€${prezzo.toFixed(2)})` : e;
-        }).join(", ")
-        : "-"
-}<br>
-
-<b>Prezzo:</b> €${Number(c.prezzo).toFixed(2)}<br><br>
-
-                    ${
-                        c.confermata
-                        ? `<button class="undo-btn"
-                             onclick="toggleConferma(${c.id}, true); event.stopPropagation();">
-                             Annulla conferma
-                           </button>`
-                        : `<button class="confirm-btn"
-                             onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
-                             Conferma
-                           </button>`
-                    }
-                </div>
-            `}
+            <b>${highlight(c.nome || "Coppa senza nome")}</b>
+            <span style="font-size:20px; cursor:pointer;">${icon}</span>
         </div>
-    `;
+
+        ${collapsed ? "" : `
+            <div style="margin-top:8px;">
+                <b>Data creazione:</b> ${highlight(formatDate(c.data))}<br>
+
+                <b>Formato:</b> ${highlight(c.formato)} 
+                ${
+                    prezziBase[c.formato] 
+                    ? ` (${highlight("€" + prezziBase[c.formato].toFixed(2))})`
+                    : ""
+                }<br><br>
+
+                <b>Gusti:</b> ${highlight(gusti.join(", ") || "-")}<br>
+                <b>Granelle:</b> ${highlight(granelle.join(", ") || "-")}<br>
+                <b>Topping:</b> ${highlight(topping.join(", ") || "-")}<br>
+                <b>Ingredienti:</b> ${highlight(ingr.join(", ") || "-")}<br>
+
+                <b>Extra:</b> ${
+                    extra.length
+                        ? extra
+                            .map(e => {
+                                const prezzo = prezziExtra[e] || 0;
+                                const label = prezzo > 0 
+                                    ? `${e} (+€${prezzo.toFixed(2)})`
+                                    : e;
+                                return highlight(label);
+                            })
+                            .join(", ")
+                        : "-"
+                }<br>
+
+                <b>Prezzo:</b> ${highlight("€" + Number(c.prezzo).toFixed(2))}<br><br>
+
+                ${
+                    c.confermata
+                    ? `<button class="undo-btn"
+                         onclick="toggleConferma(${c.id}, true); event.stopPropagation();">
+                         Annulla conferma
+                       </button>`
+                    : `<button class="confirm-btn"
+                         onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
+                         Conferma
+                       </button>`
+                }
+            </div>
+        `}
+    </div>
+`;
 });
 }
 
