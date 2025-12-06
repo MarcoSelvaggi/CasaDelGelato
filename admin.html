@@ -375,6 +375,30 @@ function matchSearch(user) {
     return false;
 }
 
+// 🔍 Controlla se una COPPA contiene il testo cercato
+function coppaMatchSearch(c) {
+    if (!filtro) return true;
+
+    const search = filtro.toLowerCase();
+
+    const fields = [
+        c.nome,
+        c.formato,
+        c.prezzo,
+        c.data,
+        JSON.stringify(c.gusti),
+        JSON.stringify(c.granelle),
+        JSON.stringify(c.topping),
+        JSON.stringify(c.ingredienti),
+        JSON.stringify(c.extra)
+    ]
+    .join(" ")
+    .toLowerCase();
+
+    return fields.includes(search);
+}
+
+
 function getStats(email){
     const list = COPPE.filter(c => (c.email || "Anonimo") === email);
     const tot = list.length;
@@ -438,7 +462,12 @@ function render(){
         const email = u.email || "Anonimo";
         const stats = getStats(email);
 
-        if (!matchSearch(u)) return;
+        // Mostra utente solo se la ricerca combacia
+// con l'utente OPPURE con almeno una sua coppa
+const contieneNelleCoppe = stats.list.some(c => coppaMatchSearch(c));
+const matchUtente = matchSearch({...u, ...stats});
+
+if (!matchUtente && !contieneNelleCoppe) return;
 
         const cardCls = u.disiscritto ? "utente-card utente-disiscritto" : "utente-card";
 
@@ -468,6 +497,11 @@ function renderCoppe(email){
 
     const stats = getStats(email);
     let arr = stats.list.slice();
+
+// 🔍 filtra solo le coppe che matchano
+if (filtro) {
+    arr = arr.filter(c => coppaMatchSearch(c));
+}
 
     if (window.filtroConfermate[email]) {
         arr = arr.filter(c => c.confermata);
@@ -528,6 +562,8 @@ box.innerHTML = `
     </div>
 `;
 
+let primoRisultato = false;
+
 arr.forEach(c => {
 
     const gusti = Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti||"[]");
@@ -543,65 +579,73 @@ arr.forEach(c => {
         c.confermata ? "coppa-box coppa-confermata" :
         "coppa-box";
 
-    // ▼ icona apertura / ▲ icona chiusura
-    const icon = collapsed ? "▶👁️‍🗨️" : "✖️";
+    const icon = collapsed ? "✖️" : "👁️‍🗨️";
 
-box.innerHTML += `
-    <div class="${coppaCls}">
-        <div style="display:flex; justify-content:space-between; align-items:center;"
-             onclick="toggleCoppaCollapse(${c.id}); event.stopPropagation();">
+    // SCROLL AUTOMATICO sul primo risultato trovato
+    if (!primoRisultato) {
+        setTimeout(() => {
+            const el = document.getElementById("coppa-" + c.id);
+            if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 200);
+        primoRisultato = true;
+    }
 
-            <b>${highlight(c.nome || "Coppa senza nome")}</b>
-            <span style="font-size:20px; cursor:pointer;">${icon}</span>
-        </div>
+    box.innerHTML += `
+        <div id="coppa-${c.id}" class="${coppaCls}">
+            <div style="display:flex; justify-content:space-between; align-items:center;"
+                 onclick="toggleCoppaCollapse(${c.id}); event.stopPropagation();">
 
-        ${collapsed ? "" : `
-            <div style="margin-top:8px;">
-                <b>Data creazione:</b> ${highlight(formatDate(c.data))}<br>
-
-                <b>Formato:</b> ${highlight(c.formato)} 
-                ${
-                    prezziBase[c.formato] 
-                    ? ` (${highlight("€" + prezziBase[c.formato].toFixed(2))})`
-                    : ""
-                }<br><br>
-
-                <b>Gusti:</b> ${highlight(gusti.join(", ") || "-")}<br>
-                <b>Granelle:</b> ${highlight(granelle.join(", ") || "-")}<br>
-                <b>Topping:</b> ${highlight(topping.join(", ") || "-")}<br>
-                <b>Ingredienti:</b> ${highlight(ingr.join(", ") || "-")}<br>
-
-                <b>Extra:</b> ${
-                    extra.length
-                        ? extra
-                            .map(e => {
-                                const prezzo = prezziExtra[e] || 0;
-                                const label = prezzo > 0 
-                                    ? `${e} (+€${prezzo.toFixed(2)})`
-                                    : e;
-                                return highlight(label);
-                            })
-                            .join(", ")
-                        : "-"
-                }<br>
-
-                <b>Prezzo:</b> ${highlight("€" + Number(c.prezzo).toFixed(2))}<br><br>
-
-                ${
-                    c.confermata
-                    ? `<button class="undo-btn"
-                         onclick="toggleConferma(${c.id}, true); event.stopPropagation();">
-                         Annulla conferma
-                       </button>`
-                    : `<button class="confirm-btn"
-                         onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
-                         Conferma
-                       </button>`
-                }
+                <b>${highlight(c.nome || "Coppa senza nome")}</b>
+                <span style="font-size:20px; cursor:pointer;">${icon}</span>
             </div>
-        `}
-    </div>
-`;
+
+            ${collapsed ? "" : `
+                <div style="margin-top:8px;">
+                    <b>Data creazione:</b> ${highlight(formatDate(c.data))}<br>
+
+                    <b>Formato:</b> ${highlight(c.formato)} 
+                    ${
+                        prezziBase[c.formato] 
+                        ? ` (${highlight("€" + prezziBase[c.formato].toFixed(2))})`
+                        : ""
+                    }<br><br>
+
+                    <b>Gusti:</b> ${highlight(gusti.join(", ") || "-")}<br>
+                    <b>Granelle:</b> ${highlight(granelle.join(", ") || "-")}<br>
+                    <b>Topping:</b> ${highlight(topping.join(", ") || "-")}<br>
+                    <b>Ingredienti:</b> ${highlight(ingr.join(", ") || "-")}<br>
+
+                    <b>Extra:</b> ${
+                        extra.length
+                            ? extra
+                                .map(e => {
+                                    const prezzo = prezziExtra[e] || 0;
+                                    const label = prezzo > 0 
+                                        ? `${e} (+€${prezzo.toFixed(2)})`
+                                        : e;
+                                    return highlight(label);
+                                })
+                                .join(", ")
+                            : "-"
+                    }<br>
+
+                    <b>Prezzo:</b> ${highlight("€" + Number(c.prezzo).toFixed(2))}<br><br>
+
+                    ${
+                        c.confermata
+                        ? `<button class="undo-btn"
+                             onclick="toggleConferma(${c.id}, true); event.stopPropagation();">
+                             Annulla conferma
+                           </button>`
+                        : `<button class="confirm-btn"
+                             onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
+                             Conferma
+                           </button>`
+                    }
+                </div>
+            `}
+        </div>
+    `;
 });
 }
 
