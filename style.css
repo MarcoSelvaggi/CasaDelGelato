@@ -1004,66 +1004,48 @@ body.step-size #riepilogo-mini {
     left: 600px;
 }
 
-.gusto-disabled,
-.item-disabled {
-    opacity: 0.4;
-    background: #ddd !important;
-    pointer-events: none;
-    filter: grayscale(100%);
-    position: relative;
-}
-
-.gusto-disabled::after,
-.item-disabled::after {
-    content: "Terminato";
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: red;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.item-disabled {
-    opacity: 0.35;
-    filter: grayscale(100%);
-    position: relative;
-}
 .gusto-disabled {
-    opacity: 0.35;
+    opacity: 0.25;
     filter: grayscale(100%);
     position: relative;
+    pointer-events: none;
 }
 
 .gusto-disabled::after {
-    content: "Terminato";
+    content: "TERMINATO";
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-weight: 700;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 6px 14px;
+    border-radius: 12px;
     font-size: 14px;
-    color: rgba(200, 0, 0, 0.85);
-    text-shadow: 0 0 3px rgba(255,255,255,0.6);
+    font-weight: bold;
+    color: #c80000;
+    backdrop-filter: blur(3px);
     pointer-events: none;
 }
 
 .item-disabled {
-    opacity: 0.35;
+    opacity: 0.25;
     filter: grayscale(100%);
     position: relative;
+    pointer-events: none;
 }
 
 .item-disabled::after {
-    content: "Terminato";
+    content: "TERMINATO";
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-weight: 700;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 6px 14px;
+    border-radius: 12px;
     font-size: 14px;
-    color: rgba(200, 0, 0, 0.85);
-    text-shadow: 0 0 3px rgba(255,255,255,0.6);
+    font-weight: bold;
+    color: #c80000;
+    backdrop-filter: blur(3px);
     pointer-events: none;
 }
