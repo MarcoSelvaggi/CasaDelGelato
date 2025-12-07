@@ -321,17 +321,11 @@ if (!disponibile) cls += " gusto-disabled";
 if (isEditing) cls += " gusto-pending";
 else if (isConfirmed) cls += " gusto-confirmed";
 
-const labelTerminato = (!disponibile)
-    ? `<span class="label-terminato">Terminato</span>`
-    : "";
-
    
 
  html += `
     <div class="${cls}" onclick="${disponibile ? `selectGusto('${nome}')` : ''}">
         <span class="gusto-name">${escapeHtml(nome)}</span>
-
-        ${labelTerminato}
 
         ${showControls ? `
         <div class="gusto-controls" onclick="event.stopPropagation()">
@@ -509,14 +503,11 @@ function render() {
           const disponibile   = DISPONIBILITA[categoria]?.[nome] !== false;
           const sel           = scelti[step].includes(nome) ? "selected" : "";
           const disabledClass = disponibile ? "" : "item-disabled";
-          const labelTerminato = disponibile ? "" :
-            `<span class="label-terminato">Terminato</span>`;
 
           return `
             <div class="item ${sel} ${disabledClass}"
                  ${disponibile ? `onclick="toggle('${step}','${escForOnclick(nome)}',this)"` : ""}>
               ${it}
-              ${labelTerminato}
             </div>
           `;
         }).join("")
