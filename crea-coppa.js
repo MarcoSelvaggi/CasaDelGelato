@@ -503,8 +503,7 @@ area.innerHTML = `
 
           const sel = scelti[step].includes(nome) ? "selected" : "";
           const disabledClass = disponibile ? "" : "item-disabled";
-          const labelTerminato = disponibile ? "" : `<span class="label-terminato">Terminato</span>`;
-
+          
           return `
             <div class="item ${sel} ${disabledClass}"
                  ${disponibile ? `onclick="toggle('${step}','${escForOnclick(nome)}',this)"` : ""}>
