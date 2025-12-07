@@ -408,6 +408,18 @@ supabase
   )
   .subscribe();
 
+  supabase
+  .channel('disponibilita-realtime')
+  .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'disponibilita' },
+      payload => {
+          console.log("🔄 Cambio su DISPONIBILITA:", payload);
+          caricaDisponibilita(); // aggiorna la lista
+      }
+  )
+  .subscribe();
+
 function matchSearch(user) {
     if (!filtro) return true;
 
