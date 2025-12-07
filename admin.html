@@ -674,7 +674,7 @@ window.caricaDisponibilita = async function () {
     const { data: righe, error } = await supabase
         .from("disponibilita")
         .select("*")
-        .order("categoria", { ascending: true })
+        .order("tipo", { ascending: true })
         .order("nome", { ascending: true });
 
     if (error) {
@@ -682,7 +682,7 @@ window.caricaDisponibilita = async function () {
         return;
     }
 
-    // GRUPPIAMO PER CATEGORIA
+    // GRUPPIAMO PER TIPO (NON categoria)
     const gruppi = {
         Gusti: [],
         Granelle: [],
@@ -692,8 +692,8 @@ window.caricaDisponibilita = async function () {
     };
 
     righe.forEach(r => {
-        if (!gruppi[r.categoria]) gruppi[r.categoria] = [];
-        gruppi[r.categoria].push(r);
+        if (!gruppi[r.tipo]) gruppi[r.tipo] = [];
+        gruppi[r.tipo].push(r);
     });
 
     let html = "";
@@ -705,6 +705,7 @@ window.caricaDisponibilita = async function () {
         html += `<h3 style="margin-top:25px; font-size:20px;">${categoria}</h3>`;
 
         gruppi[categoria].forEach(item => {
+
             html += `
                 <div style="
                     padding:10px; 
