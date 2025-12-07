@@ -671,33 +671,38 @@ window.caricaDisponibilita = async function () {
     const box = document.getElementById("sezione-disponibilita");
     box.innerHTML = "<h2>🍨 Disponibilità Ingredienti</h2><p>Caricamento...</p>";
 
-    // prendo TUTTE le righe della tabella disponibilità
     const { data: righe, error } = await supabase
         .from("disponibilita")
-        .select("*");
+        .select("*")
+        .order("categoria", { ascending: true })
+        .order("nome", { ascending: true });
 
     if (error) {
         box.innerHTML = "<p>Errore caricamento: " + error.message + "</p>";
         return;
     }
 
-    // se mai inizializzata → creo le voci partendo dai tuoi array
-    if (!righe.length) {
-        await inizializzaIngrediti();
-        return window.caricaDisponibilita();
-    }
+    // GRUPPIAMO PER CATEGORIA
+    const gruppi = {
+        Gusti: [],
+        Granelle: [],
+        Topping: [],
+        Ingredienti: [],
+        Extra: []
+    };
 
-    // raggruppo per categoria
-    const gruppi = {};
-    for (const r of righe) {
+    righe.forEach(r => {
         if (!gruppi[r.categoria]) gruppi[r.categoria] = [];
         gruppi[r.categoria].push(r);
-    }
+    });
 
     let html = "";
 
-    for (const categoria in gruppi) {
-        html += `<h3 style="margin-top:20px;">${categoria}</h3>`;
+    for (const categoria of ["Gusti", "Granelle", "Topping", "Ingredienti", "Extra"]) {
+
+        if (!gruppi[categoria] || gruppi[categoria].length === 0) continue;
+
+        html += `<h3 style="margin-top:25px; font-size:20px;">${categoria}</h3>`;
 
         gruppi[categoria].forEach(item => {
             html += `
