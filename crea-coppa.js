@@ -449,8 +449,9 @@ function rebuildSceltiGustiFromQuantities() {
 }
 
 // ---------------- RENDER ----------------
-function render(){
+function render() {
   const area = byId("step-container");
+  if (!area) return;
 
   // 🔥 GUSTI hanno un renderer speciale
   if (step === "gusti") {
@@ -464,51 +465,50 @@ function render(){
   else if (step === "topping")  lista = toppingList;
   else if (step === "ingredienti") lista = ingredientiList;
   else if (step === "extra") {
-    lista = extraList.map(e => 
+    lista = extraList.map(e =>
       e + (prezziExtra[e] ? ` (+€${prezziExtra[e].toFixed(2)})` : "")
     );
   }
 
-  // ---------------- TITOLO STEP (GRAZIE A titoloGustiVisibile) ----------------
+  // ---------------- TITOLO STEP ----------------
   const title = document.getElementById("step-title");
   if (title) {
-    if (step === "granelle")      title.textContent = "Granelle";
-    else if (step === "topping")  title.textContent = "Topping";
-    else if (step === "ingredienti") title.textContent = "Ingredienti";
-    else if (step === "extra")    title.textContent = "Extra";
+    if (step === "granelle")        title.textContent = "Granelle";
+    else if (step === "topping")    title.textContent = "Topping";
+    else if (step === "ingredienti")title.textContent = "Ingredienti";
+    else if (step === "extra")      title.textContent = "Extra";
 
-    // 👇 se abbiamo già iniziato a scegliere qualcosa → il titolo sparisce
     title.style.display = titoloGustiVisibile ? "block" : "none";
   }
 
-// ---------------- CONTENUTO LISTA + BOTTONI ----------------
-area.innerHTML = `
+  // ---------------- CONTENUTO LISTA + BOTTONI ----------------
+  area.innerHTML = `
     <h2 style="display:none"></h2>
     <div class="ingredienti-lista">
       ${
         lista.map(it => {
           const nome = it.split(" (+€")[0].trim();
 
-          // 🔥 Mappa corretta step → categoria database
-          const categoria = (
-              step === "granelle" ? "Granelle" :
-              step === "topping" ? "Topping" :
-              step === "ingredienti" ? "Ingredienti" :
-              step === "extra" ? "Extra" :
-              "Gusti"
-          );
+          // 🔥 Mappa step → categoria DB
+          const categoria =
+              step === "granelle"     ? "Granelle" :
+              step === "topping"      ? "Topping" :
+              step === "ingredienti"  ? "Ingredienti" :
+              step === "extra"        ? "Extra" :
+                                        "Gusti";
 
           // 🔥 Controllo disponibilità
-          const disponibile = DISPONIBILITA[categoria]?.[nome] !== false;
-
-          const sel = scelti[step].includes(nome) ? "selected" : "";
+          const disponibile   = DISPONIBILITA[categoria]?.[nome] !== false;
+          const sel           = scelti[step].includes(nome) ? "selected" : "";
           const disabledClass = disponibile ? "" : "item-disabled";
-          
+          const labelTerminato = disponibile ? "" :
+            `<span class="label-terminato">Terminato</span>`;
+
           return `
             <div class="item ${sel} ${disabledClass}"
                  ${disponibile ? `onclick="toggle('${step}','${escForOnclick(nome)}',this)"` : ""}>
-                ${it}
-                ${labelTerminato}
+              ${it}
+              ${labelTerminato}
             </div>
           `;
         }).join("")
@@ -518,10 +518,10 @@ area.innerHTML = `
     <div class="nav-buttons">
       <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
       <button class="next-btn" onclick="nextStep()">
-        ${step==="extra" ? "Conferma ✅" : "Avanti ➜"}
+        ${step === "extra" ? "Conferma ✅" : "Avanti ➜"}
       </button>
     </div>
-`;
+  `;
 }
 
 // ---------------- TOGGLE ----------------
