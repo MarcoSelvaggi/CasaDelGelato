@@ -1004,48 +1004,22 @@ body.step-size #riepilogo-mini {
     left: 600px;
 }
 
+.item-disabled,
 .gusto-disabled {
-    opacity: 0.25;
+    opacity: 0.35;
     filter: grayscale(100%);
     position: relative;
     pointer-events: none;
 }
 
-.gusto-disabled::after {
-    content: "TERMINATO";
+.label-terminato {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.6);
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #c80000;
-    backdrop-filter: blur(3px);
-    pointer-events: none;
-}
-
-.item-disabled {
-    opacity: 0.25;
-    filter: grayscale(100%);
-    position: relative;
-    pointer-events: none;
-}
-
-.item-disabled::after {
-    content: "TERMINATO";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(255, 255, 255, 0.6);
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #c80000;
-    backdrop-filter: blur(3px);
+    font-weight: 700;
+    font-size: 16px;
+    color: rgba(200, 0, 0, 0.9);
+    text-shadow: 0 0 4px rgba(255,255,255,0.7);
     pointer-events: none;
 }

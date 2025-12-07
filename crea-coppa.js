@@ -318,22 +318,30 @@ const disponibile = DISPONIBILITA["Gusti"]?.[nome] !== false;
 
         let cls = "item gusto-item";
 if (!disponibile) cls += " gusto-disabled";
-        if (isEditing) cls += " gusto-pending";
-        else if (isConfirmed) cls += " gusto-confirmed";
+if (isEditing) cls += " gusto-pending";
+else if (isConfirmed) cls += " gusto-confirmed";
 
-        html += `
-            <div class="${cls}" onclick="${disponibile ? `selectGusto('${nome}')` : ''}">
-                <span class="gusto-name">${escapeHtml(nome)}</span>
+const labelTerminato = (!disponibile)
+    ? `<span class="label-terminato">Terminato</span>`
+    : "";
 
-                ${showControls ? `
-                <div class="gusto-controls" onclick="event.stopPropagation()">
-                    <button class="gusto-btn minus" onclick="changeGustoQty('${nome}', -1)">−</button>
-                    <span class="gusto-qty">${qty}</span>
-                    <button class="gusto-btn plus" onclick="changeGustoQty('${nome}', +1)">+</button>
-                </div>
-                ` : ""}
-            </div>
-        `;
+   
+
+ html += `
+    <div class="${cls}" onclick="${disponibile ? `selectGusto('${nome}')` : ''}">
+        <span class="gusto-name">${escapeHtml(nome)}</span>
+
+        ${labelTerminato}
+
+        ${showControls ? `
+        <div class="gusto-controls" onclick="event.stopPropagation()">
+            <button class="gusto-btn minus" onclick="changeGustoQty('${nome}', -1)">−</button>
+            <span class="gusto-qty">${qty}</span>
+            <button class="gusto-btn plus" onclick="changeGustoQty('${nome}', +1)">+</button>
+        </div>
+        ` : ""}
+    </div>
+`;
     });
 
     html += `
