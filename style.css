@@ -1024,3 +1024,34 @@ body.step-size #riepilogo-mini {
     font-weight: bold;
     font-size: 14px;
 }
+
+.item-disabled {
+    opacity: 0.35;
+    filter: grayscale(100%);
+    position: relative;
+}
+
+/* Scritta TERMINATO sopra l’elemento */
+.item-disabled::after {
+    content: "Terminato";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(200, 0, 0, 0.8); /* rosso, semi trasparente */
+    font-weight: 700;
+    font-size: 16px;
+    text-shadow: 0 0 4px rgba(255,255,255,0.6);
+    pointer-events: none;
+}
+
+.item-disabled {
+    opacity: 0.35;
+    filter: grayscale(100%);
+    position: relative;
+}
+
+
+.item-disabled {
+    border: 1px solid rgba(200,0,0,0.3);
+}
