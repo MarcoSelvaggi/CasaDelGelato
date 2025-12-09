@@ -1206,7 +1206,7 @@ contenuto.innerHTML = html;
 
 window.apriCronologia = function() {
     // 🔥 metti qui il path giusto se diverso
-    window.location.href = "cronologia-coppe.html";
+    window.location.href = "cronologia.html";
 };
 // 🚀 Pulsante procedi ordine (per ora solo alert)
 window.procediOrdine = function() {
