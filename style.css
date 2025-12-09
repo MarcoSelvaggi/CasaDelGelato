@@ -1010,3 +1010,179 @@ body.step-size #riepilogo-mini {
     filter: grayscale(100%);
     pointer-events: none;
 }
+
+/* ============================
+   🛒 OVERLAY CARRELLO (VERSIONE FINALE)
+   ============================ */
+#carrello-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+#carrello-box {
+    width: 92%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+}
+
+/* HEADER */
+#carrello-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+#carrello-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+#chiudi-carrello {
+    font-size: 22px;
+    cursor: pointer;
+    color: #ff3b30;
+}
+
+/* ============================
+   🧊 CARD COPPA
+   ============================ */
+.carrello-card {
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+/* titolo formato */
+.carrello-formato {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+/* dettagli (gusti, topping ecc.) */
+.carrello-dettagli div {
+    font-size: 13px;
+    margin-bottom: 2px;
+    line-height: 1.25;
+}
+
+/* Prezzo */
+.carrello-prezzo {
+    margin-top: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #007aff;
+}
+
+/* ============================
+   ➕➖ CONTROLLI QUANTITÀ
+   ============================ */
+.carrello-qty-controls {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.qty-btn {
+    width: 26px;
+    height: 26px;
+    background: #007aff;
+    border-radius: 50%;
+    color: white;
+    font-size: 18px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qty-number {
+    font-size: 14px;
+    min-width: 16px;
+    text-align: center;
+}
+
+/* ============================
+   🔴 SVUOTA CARRELLO
+   ============================ */
+#carrello-svuota {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 12px;
+    background: #ff3b30;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#carrello-svuota:active {
+    opacity: 0.8;
+}
+
+/* ============================
+   💶 TOTALE CARRELLO
+   ============================ */
+#carrello-totale {
+    text-align: right;
+    font-size: 15px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+#carrello-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    background: #ff3b30;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow: 0 0 6px rgba(0,0,0,0.25);
+}
+
+#btn-cronologia {
+    background: #007aff;
+    color: white;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 15px;
+    cursor: pointer;
+    flex: 1;
+}
+
+#carrello-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}

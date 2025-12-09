@@ -52,13 +52,13 @@ async function caricaDisponibilita() {
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("🌐 Avvio pagina...");
 
-    // 1️⃣ Carica disponibilità da Supabase
     await caricaDisponibilita();
-
-    // 2️⃣ Attiva aggiornamento realtime
     attivaRealtimeDisponibilita();
 
     console.log("🔄 Disponibilità pronta con aggiornamento realtime");
+
+    // 🔥 aggiorno il numeretto carrello al caricamento
+    updateCarrelloBadge();
 });
 
 // ===========================
@@ -862,61 +862,64 @@ if (!cronologiaArr.some(x => x.data === coppa.data)) {
 console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
 
   // ✅ 7) Riepilogo grafico (come prima)
-  area.innerHTML = `
-    <h2>Riepilogo finale</h2>
+area.innerHTML = `
+    <h2 style="display:flex; justify-content:space-between; align-items:center;">
+        Riepilogo finale
+        <span style="position:relative; display:inline-flex; align-items:center;">
+            <span onclick="apriCarrello()" style="cursor:pointer; font-size:24px;">🛒</span>
+            <span id="carrello-badge" class="carrello-badge">0</span>
+        </span>
+    </h2>
 
-    <div class="scontrino" id="scontrino-da-share">
-      <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
-      <!-- GUSTI RAGGRUPPATI -->
-      <p><b>Gusti:</b><br>
-      ${(() => {
-          const grouped = {};
-          Object.entries(gustiQuantities).forEach(([nome, qty]) => {
-              if (qty > 0) grouped[nome] = qty;
-          });
+<div class="scontrino" id="scontrino-da-share">
+  <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
 
-          if (Object.keys(grouped).length === 0) return "-";
+  <p><b>Gusti:</b><br>
+  ${(() => {
+      const grouped = {};
+      Object.entries(gustiQuantities).forEach(([nome, qty]) => {
+          if (qty > 0) grouped[nome] = qty;
+      });
 
-          return Object.entries(grouped)
-            .map(([nome, qty]) => {
-              if (qty === 1) return `- ${nome}`;
-              return `- ${nome} x${qty}`;
-            })
-            .join("<br>");
-      })()}
-      </p>
-      <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
-      <p><b>Topping:</b> ${safeJoin(scelti.topping)}</p>
-      <p><b>Ingredienti:</b> ${safeJoin(scelti.ingredienti)}</p>
+      if (Object.keys(grouped).length === 0) return "-";
 
-      <p><b>Extra:</b> 
-        ${
-          prezzoExtraDettaglio.length
-          ? prezzoExtraDettaglio.map(x=> `${x.nome} (+€${x.prezzo.toFixed(2)})`).join(", ")
-          : "-"
-        }
-      </p>
+      return Object.entries(grouped)
+        .map(([nome, qty]) => qty === 1 ? `- ${nome}` : `- ${nome} x${qty}`)
+        .join("<br>");
+  })()}
+  </p>
 
-      <hr>
-      <p><b>Totale:</b> €${totale.toFixed(2)}</p>
-    </div>
+  <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
+  <p><b>Topping:</b> ${safeJoin(scelti.topping)}</p>
+  <p><b>Ingredienti:</b> ${safeJoin(scelti.ingredienti)}</p>
 
-    <p style="margin-top:12px; font-size:14px; text-align:center; opacity:0.75;">
-     📣 Comunica al cameriere la tua coppa gelato 📣
-    </p>
+  <p><b>Extra:</b> 
+    ${
+      prezzoExtraDettaglio.length
+      ? prezzoExtraDettaglio.map(x=> `${x.nome} (+€${x.prezzo.toFixed(2)})`).join(", ")
+      : "-"
+    }
+  </p>
 
-    <div class="nav-buttons" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-      <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
-      <button class="next-btn" onclick="salvaScontrinoComeImmagine()">📸 Salva immagine (Instagram)</button>
-      <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
-      <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
-    </div>
+  <hr>
+  <p><b>Totale:</b> €${totale.toFixed(2)}</p>
+</div>
 
-    <p style="font-size:12px; text-align:center; opacity:0.7; margin-top:4px;">
-      Dopo aver salvato l'immagine puoi pubblicarla nelle Storie su Instagram 📲
-      @casadelgelato.it
-    </p>
-  `;
+<button class="next-btn" style="margin-top:15px;" onclick="aggiungiAlCarrello()">
+    🛒 Aggiungi al carrello
+</button>
+
+<p style="margin-top:12px; font-size:14px; text-align:center; opacity:0.75;">
+ 📣 Comunica al cameriere la tua coppa gelato 📣
+</p>
+
+<div class="nav-buttons" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+  <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
+  <button class="next-btn" onclick="salvaScontrinoComeImmagine()">📸 Salva immagine (Instagram)</button>
+  <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
+  <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
+</div>
+`;
 
   // 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
   const mini = document.getElementById("riepilogo-mini");
@@ -926,8 +929,72 @@ console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
     mini.innerHTML = mini.dataset.mini || "";
   }
   updateRiepilogo();
+  updateCarrelloBadge();
 }
 
+window.aggiungiAlCarrello = function () {
+    const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+
+    const nuovaCoppa = {
+        id: crypto.randomUUID(),
+        formato: coppaSelezionata,
+        gusti: [...scelti.gusti],
+        granelle: [...scelti.granelle],
+        topping: [...scelti.topping],
+        ingredienti: [...scelti.ingredienti],
+        extra: [...scelti.extra],
+        quantita: 1
+    };
+
+    carrello.push(nuovaCoppa);
+    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+
+    // piccolo feedback
+    alert("🛒 Coppa aggiunta al carrello!");
+
+    // 🔥 aggiorno il numeretto del carrello
+    updateCarrelloBadge();
+
+    // 👉 RESTO nel riepilogo finale, NON torno alla home
+};
+
+function getCarrelloCount() {
+    const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+    if (!Array.isArray(carrello)) return 0;
+
+    // somma le quantità
+    return carrello.reduce((sum, c) => {
+        const q = typeof c.quantita === "number" ? c.quantita : 1;
+        return sum + q;
+    }, 0);
+}
+
+function updateCarrelloBadge() {
+    const badge = document.getElementById("carrello-badge");
+    if (!badge) return;
+
+    const count = getCarrelloCount();
+    if (count <= 0) {
+        badge.style.display = "none";
+    } else {
+        badge.style.display = "inline-flex";
+        badge.textContent = count;
+    }
+}
+
+
+function calcolaPrezzoCoppa(c) {
+    const prezzoBase = prezziBase[c.formato] || 0;
+
+    let sommaExtra = 0;
+    if (Array.isArray(c.extra)) {
+        sommaExtra = c.extra.reduce((acc, nome) => {
+            return acc + (prezziExtra[nome] || 0);
+        }, 0);
+    }
+
+    return (prezzoBase + sommaExtra);
+}
 
 async function inviaRegistrazione() {
     const email = document.getElementById("reg-email").value.trim();
@@ -1017,6 +1084,157 @@ function stabilizeMiniRiepilogo() {
 }
 
 // ⬇️ FINE FILE — METTILO QUI ⬇️
+
+// 🛒 APRE IL CARRELLO
+window.apriCarrello = function() {
+    const overlay = document.getElementById("carrello-overlay");
+
+    // 🔥 Aggiorno SUBITO la UI del carrello
+    aggiornaCarrelloUI();
+
+    // 🔥 Aggiorno il numeretto (badge) del carrello
+    updateCarrelloBadge();
+
+    // 🔥 Mostro overlay
+    overlay.style.display = "flex";
+
+    // 🔥 Mostro il bottone cronologia solo se registrato
+    const btnCron = document.getElementById("btn-cronologia");
+    if (btnCron) {
+        const email = localStorage.getItem("user_email");
+        btnCron.style.display = email ? "inline-flex" : "none";
+    }
+};
+
+// 🔢 CAMBIA QUANTITÀ COPPA NEL CARRELLO
+window.cambiaQuantita = function(id, delta) {
+
+    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+    const idx = carrello.findIndex(c => c.id === id);
+    if (idx === -1) return;
+
+    const coppa = carrello[idx];
+
+    // 👉 CASO: quantità = 1 e utente preme "-"
+    if (delta === -1 && coppa.quantita === 1) {
+        const conferma = confirm("Vuoi rimuovere questa coppa dal carrello?");
+        if (!conferma) return;
+
+        // Elimina la coppa
+        carrello.splice(idx, 1);
+    } else {
+        // Incremento/decremento normale
+        coppa.quantita += delta;
+        if (coppa.quantita < 1) coppa.quantita = 1;
+    }
+
+    // Salvo aggiornamento
+    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+
+    // 🔥 AGGIORNO IMMEDIATAMENTE UI e BADGE
+    aggiornaCarrelloUI();
+    updateCarrelloBadge();
+};
+
+// ✖ CHIUDE IL CARRELLO
+window.chiudiCarrello = function() {
+    const overlay = document.getElementById("carrello-overlay");
+    overlay.style.display = "none";
+};
+
+window.svuotaCarrello = function () {
+    if (!confirm("Vuoi svuotare tutto il carrello?")) return;
+
+    localStorage.setItem("carrelloCoppe", "[]");
+
+    updateCarrelloBadge();
+    aggiornaCarrelloUI();
+};
+
+window.aggiornaCarrelloUI = function() {
+    const contenuto = document.getElementById("carrello-contenuto");
+    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+
+    if (!carrello.length) {
+        contenuto.innerHTML = `<p style="text-align:center; opacity:0.6;">Carrello vuoto</p>`;
+        return;
+    }
+
+    let html = "";
+
+    carrello.forEach(coppa => {
+
+        // 🔥 Raggruppa gusti x2, x3 ecc
+        const count = {};
+        coppa.gusti.forEach(g => count[g] = (count[g] || 0) + 1);
+        const gustiFormattati = Object.entries(count)
+            .map(([g, q]) => q > 1 ? `${g} x${q}` : g)
+            .join(", ");
+
+        // 🔥 Calcolo totale di quella coppa
+        let prezzoBase = prezziBase[coppa.formato] || 0;
+        let extraSomma = 0;
+        coppa.extra.forEach(e => extraSomma += (prezziExtra[e] || 0));
+        let totaleCoppa = (prezzoBase + extraSomma) * coppa.quantita;
+
+   html += `
+<div class="carrello-card">
+    <div class="carrello-info">
+        <div class="carrello-formato"><b>${coppa.formato}</b></div>
+
+        <div class="carrello-dettagli">
+            <div><b>Gusti:</b> ${gustiFormattati || "-"}</div>
+            <div><b>Granelle:</b> ${coppa.granelle.join(", ") || "-"}</div>
+            <div><b>Topping:</b> ${coppa.topping.join(", ") || "-"}</div>
+            <div><b>Ingredienti:</b> ${coppa.ingredienti.join(", ") || "-"}</div>
+            <div><b>Extra:</b> ${
+    coppa.extra.length
+        ? coppa.extra
+            .map(e => `${e} (+ €${(prezziExtra[e] || 0).toFixed(2)})`)
+            .join(", ")
+        : "-"
+}</div>
+        </div>
+
+        <div class="carrello-prezzo">€ ${totaleCoppa.toFixed(2)}</div>
+    </div>
+
+    <div class="carrello-qty-controls">
+        <button class="qty-btn" onclick="cambiaQuantita('${coppa.id}', -1)">−</button>
+        <span class="qty-number">${coppa.quantita}</span>
+        <button class="qty-btn" onclick="cambiaQuantita('${coppa.id}', +1)">+</button>
+    </div>
+</div>`;
+    });
+
+    // 🔥 CALCOLO TOTALE GENERALE DEL CARRELLO
+let totaleGenerale = 0;
+carrello.forEach(c => {
+    let prezzoBase = prezziBase[c.formato] || 0;
+    let extraSomma = 0;
+    c.extra.forEach(e => extraSomma += (prezziExtra[e] || 0));
+    totaleGenerale += (prezzoBase + extraSomma) * c.quantita;
+});
+
+// 🧾 Aggiungo il totale in fondo
+html += `
+  <div id="carrello-totale">
+      Totale: <b>€ ${totaleGenerale.toFixed(2)}</b>
+  </div>
+`;
+
+// Inserisco tutta la UI
+contenuto.innerHTML = html;
+};
+
+window.apriCronologia = function() {
+    // 🔥 metti qui il path giusto se diverso
+    window.location.href = "cronologia-coppe.html";
+};
+// 🚀 Pulsante procedi ordine (per ora solo alert)
+window.procediOrdine = function() {
+    alert("Funzione ordine in arrivo!");
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   const riepilogo = document.getElementById("riepilogo-mini");

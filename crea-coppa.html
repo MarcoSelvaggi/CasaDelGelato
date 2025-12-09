@@ -46,6 +46,21 @@
     </a>
 </div>
 
+<!-- 🛒 ICONA CARRELLO FISSA IN ALTO A DESTRA -->
+<div id="carrello-icon-fixed"
+     onclick="apriCarrello()"
+     style="
+        position:fixed;
+        top:58px;
+        right:14px;
+        font-size:26px;
+        cursor:pointer;
+        z-index:9999;
+     ">
+    🛒
+    <span id="carrello-badge" class="carrello-badge">0</span>
+</div>
+
 <div id="top-fixed-spacer"></div>
 
 <!-- MINI RIEPILOGO: SOLO UNO (niente doppio id) -->
@@ -216,6 +231,29 @@ if (guest_id) {
     window.location.href = "index.html";
 }
 </script>
+
+<!-- 🛒 OVERLAY CARRELLO -->
+<div id="carrello-overlay">
+    <div id="carrello-box">
+        <div id="carrello-header">
+            <h3>Carrello</h3>
+            <span id="chiudi-carrello" onclick="chiudiCarrello()">✖</span>
+        </div>
+
+        <div id="carrello-contenuto">
+            <p style="text-align:center; opacity:0.6;">Carrello vuoto</p>
+        </div>
+
+        <div id="carrello-footer">
+            <button id="carrello-svuota" onclick="svuotaCarrello()">
+    Svuota carrello
+</button>
+            <button id="btn-cronologia" onclick="apriCronologia()" style="display:none;">
+                Cronologia coppe
+            </button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
