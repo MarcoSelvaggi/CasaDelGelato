@@ -607,51 +607,32 @@ hideStepTitle();
 // ---------------- NAV ----------------
 function nextStep() {
 
-  // 🔹 Passaggi normali tra gli step
-  if (step === "gusti") {
-    step = "granelle";
-  } else if (step === "granelle") {
-    step = "topping";
-  } else if (step === "topping") {
-    step = "ingredienti";
-  } else if (step === "ingredienti") {
-    step = "extra";
-  } 
-  
-  // 🔹 Quando sei nello step EXTRA e premi "Conferma ✅"
+  if (step === "gusti") step = "granelle";
+  else if (step === "granelle") step = "topping";
+  else if (step === "topping") step = "ingredienti";
+  else if (step === "ingredienti") step = "extra";
+
+  // 🔥 STEP EXTRA → APRI RIEPILOGO MINI OPEN
   else if (step === "extra") {
+      step = "riepilogo-mini-open";
 
-    // NON vado ancora al riepilogo finale,
-    // apro solo il mini-riepilogo completo
-    step = "riepilogo-mini-open";
+      const el = document.getElementById("riepilogo-mini");
+      if (el) {
+        el.classList.remove("collapsed");
+        el.classList.add("open");
+        el.innerHTML = el.dataset.full || "";
+      }
 
-    const el = document.getElementById("riepilogo-mini");
-    if (el) {
-      el.classList.remove("collapsed");
-      el.classList.add("open");
-      el.innerHTML = el.dataset.full || "";
-    }
-
-    if (collapseTimer) clearTimeout(collapseTimer);
-    collapseTimer = null;
-
-    // fermo qui: il riepilogo finale lo farà il bottone "Avanti" nel mini
-    return;
+      if (collapseTimer) clearTimeout(collapseTimer);
+      collapseTimer = null;
+      return;
   }
 
-  // 🔹 Quando sei nello stato "riepilogo-mini-open"
-  // e premi il bottone "Avanti ➜" dentro il mini-riepilogo
+  // 🔥 quando lo step è già "riepilogo-mini-open"
   else if (step === "riepilogo-mini-open") {
-    // QUI vado al riepilogo finale UNA SOLA VOLTA
-    return mostraRiepilogo();
+      return mostraRiepilogo(); 
   }
 
-  // 🔹 Se per qualche motivo lo step è altro, non fare nulla
-  else {
-    return;
-  }
-
-  // Per gli step normali (gusti → granelle → topping → ingredienti → extra)
   titoloGustiVisibile = true;
   render();
   updateRiepilogo();
@@ -865,10 +846,6 @@ console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
 area.innerHTML = `
     <h2 style="display:flex; justify-content:space-between; align-items:center;">
         Riepilogo finale
-        <span style="position:relative; display:inline-flex; align-items:center;">
-            <span onclick="apriCarrello()" style="cursor:pointer; font-size:24px;">🛒</span>
-            <span id="carrello-badge" class="carrello-badge">0</span>
-        </span>
     </h2>
 
 <div class="scontrino" id="scontrino-da-share">
