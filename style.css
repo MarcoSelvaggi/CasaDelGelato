@@ -1233,3 +1233,20 @@ body.step-size #riepilogo-mini {
     padding: 2px 6px;
     border-radius: 50px;
 }
+#carrello-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(3px);
+    justify-content: center;
+    align-items: center;
+    z-index: 200000 !important; /* 🔥 METTILO COSÌ */
+}
+#carrello-box {
+    max-height: 85vh;    /* 🔥 impedisce di uscire fuori dallo schermo */
+    overflow-y: auto;    /* 🔥 scroll verticale quando è pieno */
+}
+body {
+    padding-bottom: 90px !important;
+}

@@ -6,7 +6,7 @@
     <title>Lavora con Noi</title>
     <link rel="stylesheet" href="bottom-nav.css">
     <script src="global.js"></script>
-    <script src="carrello.js"></script>
+    
 
     <style>
         body {
@@ -169,15 +169,10 @@
         <label>Cellulare *</label>
         <input id="cell" type="tel" required>
 
-        <label>Mansione *</label>
-        <select id="mansione" required>
-            <option value="">Seleziona una mansione</option>
-            <option>Gelataio</option>
-            <option>Cameriere</option>
-            <option>Barista</option>
-            <option>Addetto coppe gelato</option>
-            <option>Banconiere asporto</option>
-        </select>
+       <label>Mansione *</label>
+<select id="mansione" required>
+    <option value="">Seleziona prima un locale</option>
+</select>
 
         <label>Carica Curriculum (PDF o immagine) *</label>
         <input id="cv" type="file" accept=".pdf,.jpg,.jpeg,.png" required>
@@ -202,7 +197,44 @@
             form.classList.add("disabled");
         }
     });
+// 🔥 Mansioni disponibili in base al locale
+const mansioniPerLocale = {
+    "Casa del Gelato": [
+        "Gelataio",
+        "Cameriere",
+        "Barista",
+        "Addetto coppe gelato",
+        "Banconiere asporto"
+    ],
 
+    "Casa del Gelato 2 (Asporto)": [
+        "Gelataio",
+        "Banconiere asporto"
+    ],
+
+    "Casa del Gelato Lignano (Asporto)": [
+        "Gelataio",
+        "Banconiere asporto"
+    ]
+};
+
+// 🔥 Aggiorna la lista mansioni quando selezioni un locale
+document.getElementById("locale").addEventListener("change", () => {
+    const locale = document.getElementById("locale").value;
+    const mansioneSelect = document.getElementById("mansione");
+
+    // Resetta lista
+    mansioneSelect.innerHTML = `<option value="">Seleziona una mansione</option>`;
+
+    if (locale && mansioniPerLocale[locale]) {
+        mansioniPerLocale[locale].forEach(m => {
+            const opt = document.createElement("option");
+            opt.value = m;
+            opt.textContent = m;
+            mansioneSelect.appendChild(opt);
+        });
+    }
+});
     // 🍏 Toast notifica
     function showToast() {
         const t = document.getElementById("toast");
@@ -265,14 +297,6 @@ ${messaggio}
         <span>Crea Coppa</span>
     </a>
 
-<a href="crea-coppa.html?cart=1" class="nav-item">
-    <div style="position:relative;">
-        <img src="icone/cart.png" alt="">
-        <span id="badge-nav" class="nav-badge">0</span>
-    </div>
-    <span>Carrello</span>
-</a>
-
     <a href="profilo.html" class="nav-item">
         <img src="icone/user.png" alt="">
         <span>Profilo</span>
@@ -283,10 +307,6 @@ ${messaggio}
         <span>Menu</span>
     </a>
 
-    <a href="lavora-con-noi.html" class="nav-item">
-        <img src="icone/job.png" alt="">
-        <span>Lavora Con Noi</span>
-    </a>
 </div>
 
 </div>

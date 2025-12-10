@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilo</title>
+    <link rel="stylesheet" href="bottom-nav.css">
+    <script src="global.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            background: #f6f6f7;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding-bottom: 90px; /* per non far coprire la pagina dalla bottom bar */
+        }
+
+        /* 🔝 Barra fissa */
+        #top-fixed-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            z-index: 9999;
+        }
+
+        .home-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 17px;
+            color: #444;
+            text-decoration: none;
+        }
+
+        .home-btn img {
+            width: 28px;
+            height: 28px;
+        }
+
+        #top-fixed-spacer {
+            height: 65px;
+        }
+
+        /* Contenuto */
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 { margin-bottom: 10px; }
+
+        .email-box {
+            background: white;
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 12px;
+            background: #ff7a00;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: #ff3b30;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- 🔝 Barra -->
+<div id="top-fixed-bar">
+    <a href="index.html" class="home-btn">
+        <img src="tastohome.png" alt="home">
+        <span>Home</span>
+    </a>
+</div>
+<div id="top-fixed-spacer"></div>
+
+<div class="container">
+    <h1>Profilo</h1>
+
+    <div id="profile-info">
+        <!-- Qui inseriamo email o messaggio -->
+    </div>
+
+    <button class="btn" onclick="gestisciLoginLogout()">👤 Accedi / Cambia Profilo</button>
+
+    <button id="btn-disiscriviti" class="btn btn-danger" onclick="disiscriviti()">
+        ❌ Disiscriviti
+    </button>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const email = localStorage.getItem("user_email");
+    const logged = localStorage.getItem("userLogged") === "1";
+
+    const box = document.getElementById("profile-info");
+    const btnDis = document.getElementById("btn-disiscriviti");
+
+    if (!logged || !email) {
+        box.innerHTML = `
+            <div class="email-box">
+                <b>Nessun profilo attualmente loggato.</b>
+            </div>
+        `;
+        btnDis.style.display = "none"; // nasconde disiscrizione
+    } else {
+        box.innerHTML = `
+            <div class="email-box">
+                <b>Email:</b> ${email}
+            </div>
+        `;
+        btnDis.style.display = "block";
+    }
+});
+</script>
+
+<!-- ⭐ Bottom bar -->
+<div id="bottom-nav">
+    <a href="crea-coppa.html" class="nav-item">
+        <img src="icone/crea.png" alt="">
+        <span>Crea</span>
+    </a>
+
+    <a href="profilo.html" class="nav-item">
+        <img src="icone/user.png" alt="">
+        <span>Profilo</span>
+    </a>
+
+    <a href="menu.html" class="nav-item">
+        <img src="icone/menu.png" alt="">
+        <span>Menu</span>
+    </a>
+</div>
+
+</body>
+</html>

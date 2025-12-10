@@ -6,7 +6,6 @@
     <title>Cronologia Coppe</title>
     <link rel="stylesheet" href="bottom-nav.css">
     <script src="global.js"></script>
-    <script src="carrello.js"></script>
 
     <style>
         body {
@@ -608,14 +607,6 @@ caricaCoppeComplete().then(all => {
         <span>Crea Coppa</span>
     </a>
 
-<a href="crea-coppa.html?cart=1" class="nav-item">
-    <div style="position:relative;">
-        <img src="icone/cart.png" alt="">
-        <span id="badge-nav" class="nav-badge">0</span>
-    </div>
-    <span>Carrello</span>
-</a>
-
     <a href="profilo.html" class="nav-item">
         <img src="icone/user.png" alt="">
         <span>Profilo</span>
@@ -632,7 +623,13 @@ caricaCoppeComplete().then(all => {
     </a>
 </div>
 
-</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof aggiornaCarrelloUI === "function") {
+        aggiornaCarrelloUI(); // 🔥 AGGIORNA ORA il carrello nella pagina cronologia
+    }
+});
+</script>
 
 </body>
 </html>

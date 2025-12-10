@@ -9,7 +9,7 @@
   <link rel="icon" href="favicon.png">
   <link rel="apple-touch-icon" href="icon-192.png">
   <script src="global.js"></script>
-  <script src="carrello.js"></script>
+
 
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
@@ -157,10 +157,6 @@ body {
 <!-- 🔝 BARRA FISSA -->
 <div id="top-fixed-bar">
 
-  <a href="lavora-con-noi.html" class="jobs-btn">
-    💼 Lavora con Noi
-</a>
-
     <a href="index.html" class="home-btn">
         <img src="tastohome.png" alt="home">
         <span>Home</span>
@@ -169,13 +165,6 @@ body {
 
 <div id="top-fixed-spacer"></div>
 
-<!-- TASTO DISISCRIVITI -->
-<div style="text-align:center; margin-top:80px;">
-<button id="btn-disiscriviti" onclick="disiscriviti()"
-style="background:#ff3b30; color:white; padding:12px 20px; border:none; border-radius:12px; font-size:16px;">
-❌ Disiscriviti
-</button>
-</div>
 
 <button onclick="gestisciLoginLogout()" class="login-btn">
     👤 Accedi / Cambia profilo
@@ -381,20 +370,13 @@ function gestisciLoginLogout() {
 }
 </script>
 
+
 <!-- 🔥 BOTTOM NAV BAR FISSA -->
 <div id="bottom-nav">
     <a href="crea-coppa.html" class="nav-item">
         <img src="icone/crea.png" alt="">
         <span>Crea Coppa</span>
     </a>
-
-<a href="crea-coppa.html?cart=1" class="nav-item">
-    <div style="position:relative;">
-        <img src="icone/cart.png" alt="">
-        <span id="badge-nav" class="nav-badge">0</span>
-    </div>
-    <span>Carrello</span>
-</a>
 
     <a href="profilo.html" class="nav-item">
         <img src="icone/user.png" alt="">
