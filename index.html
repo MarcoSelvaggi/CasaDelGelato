@@ -166,10 +166,6 @@ body {
 <div id="top-fixed-spacer"></div>
 
 
-<button onclick="gestisciLoginLogout()" class="login-btn">
-    👤 Accedi / Cambia profilo
-</button>
-
 <!-- LANGUAGE -->
 <div id="lang-toggle">🇮🇹 ▾</div>
 <div id="lang-menu">
@@ -286,40 +282,6 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
-<script type="module">
-import { supabase } from "./supabase.js";
-
-window.disiscriviti = async function() {
-    const email = localStorage.getItem("user_email");
-
-    if (!email) {
-        alert("Errore: nessun utente registrato.");
-        return;
-    }
-
-    // 1️⃣ Aggiorno Supabase
-    const { error } = await supabase
-        .from("utenti")
-        .update({
-            disiscritto: true,
-            data_disiscrizione: new Date().toISOString()
-        })
-        .eq("email", email);
-
-    if (error) {
-        alert("Errore durante disiscrizione Supabase: " + error.message);
-        return;
-    }
-
-    // 2️⃣ Rimuovo login locale
-    localStorage.removeItem("user_email");
-    localStorage.setItem("userLogged", "0");
-
-    alert("❌ Hai cancellato la registrazione.");
-    window.location.href = "index.html";
-};
-</script>
-
 <script>
 // Nasconde il tasto "Coppe create" se NON sei registrato
 document.addEventListener("DOMContentLoaded", () => {
@@ -345,31 +307,6 @@ document.addEventListener("DOMContentLoaded", () => {
 <script type="module">
   import { supabase } from "./supabase.js";
 </script>
-
-<script>
-function gestisciLoginLogout() {
-    const email = localStorage.getItem("user_email");
-
-    // 🔹 Caso 1: NON loggato → vai a login
-    if (!email) {
-        window.location.href = "login.html"; 
-        return;
-    }
-
-    // 🔹 Caso 2: Loggato → chiedi se vuole cambiare profilo
-    if (confirm(`Sei loggato come:\n${email}\n\nVuoi cambiare profilo?`)) {
-
-        // 🔥 NON tocchiamo guest_id → importante per tenere la cronologia collegata
-        localStorage.removeItem("user_email");
-        localStorage.removeItem("user_name");
-        localStorage.removeItem("user_surname");
-
-        alert("Hai effettuato il logout. Ora puoi accedere con un altro profilo.");
-        window.location.href = "login.html";
-    }
-}
-</script>
-
 
 <!-- 🔥 BOTTOM NAV BAR FISSA -->
 <div id="bottom-nav">
