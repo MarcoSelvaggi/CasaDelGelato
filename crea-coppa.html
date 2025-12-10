@@ -13,8 +13,15 @@
 <script type="module" src="supabase.js"></script>
 
 <!-- Logica Crea Coppa (una sola volta) -->
+<script src="carrello.js"></script>
 <script defer src="crea-coppa.js"></script>
-
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    if (typeof updateCarrelloBadge === "function") {
+        updateCarrelloBadge();
+    }
+});
+</script>
 <body>
 
 <!-- ⚠️ TASTO ALLERGIE – ora visibile -->
@@ -44,21 +51,6 @@
         <img src="tastohome.png" alt="home">
         <span>Home</span>
     </a>
-</div>
-
-<!-- 🛒 ICONA CARRELLO FISSA IN ALTO A DESTRA -->
-<div id="carrello-icon-fixed"
-     onclick="apriCarrello()"
-     style="
-        position:fixed;
-        top:58px;
-        right:14px;
-        font-size:26px;
-        cursor:pointer;
-        z-index:9999;
-     ">
-    🛒
-    <span id="carrello-badge" class="carrello-badge">0</span>
 </div>
 
 <div id="top-fixed-spacer"></div>
@@ -114,7 +106,7 @@
 
   <div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
     <b>MEDIA • €9,00</b><br>
-    3 gusti · 2 granelle · 2 topping · 1 ingrediente
+   3 gusti · 2 granelle · 2 topping · 1 ingrediente
   </div>
 
   <div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
@@ -253,6 +245,37 @@ if (guest_id) {
             </button>
         </div>
     </div>
+</div>
+
+<!-- ⭐ BOTTOM NAV BAR -->
+<div id="bottom-nav">
+    <a href="crea-coppa.html" class="nav-item">
+        <img src="icone/crea.png" alt="">
+        <span>Crea Coppa</span>
+    </a>
+
+    <div class="nav-item" onclick="apriCarrello()">
+        <div style="position:relative;">
+            <img src="icone/cart.png" alt="">
+            <span id="badge-nav" class="nav-badge">0</span>
+        </div>
+        <span>Carrello</span>
+    </div>
+
+    <a href="profilo.html" class="nav-item">
+        <img src="icone/user.png" alt="">
+        <span>Profilo</span>
+    </a>
+
+    <a href="menu.html" class="nav-item">
+        <img src="icone/menu.png" alt="">
+        <span>Menu</span>
+    </a>
+
+    <a href="lavora-con-noi.html" class="nav-item">
+        <img src="icone/job.png" alt="">
+        <span>Lavora Con Noi</span>
+    </a>
 </div>
 
 </body>

@@ -8,11 +8,23 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="icon" href="favicon.png">
   <link rel="apple-touch-icon" href="icon-192.png">
+  <script src="global.js"></script>
+  <script src="carrello.js"></script>
 
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;margin:0;background:#f6f6f7;color:#111}
     header{text-align:center;padding:22px}
 
+    /* Spazio sotto per non schiacciare la bottom bar */
+body {
+    padding-bottom: 90px;
+}
+/* Protezione icone bottom nav */
+#bottom-nav img {
+    width: 26px !important;
+    height: 26px !important;
+    object-fit: contain !important;
+}
     /* 🔝 BARRA FISSA + HOME */
     #top-fixed-bar {
       position: fixed;
@@ -121,21 +133,22 @@
     .shop-card b {font-size:16px;margin-bottom:4px;display:block;}
     .shop-card a {text-decoration:none;margin-top:4px;display:block;font-size:15px;color:#007aff;}
 
-    /* WHATSAPP */
-    #whatsapp-btn {
-      position:fixed;
-      right:18px;
-      bottom:18px;
-      background:#25D366;
-      color:white;
-      padding:14px 18px;
-      border-radius:50%;
-      font-size:24px;
-      text-decoration:none;
-      z-index:9999;
-      box-shadow:0 4px 14px rgba(0,0,0,0.25);
-    }
+/* WHATSAPP – spostato sopra la bottom bar */
+#whatsapp-btn {
+  position:fixed;
+  right:18px;
+  bottom:88px;          /* ⬅️ prima era 18px */
+  background:#25D366;
+  color:white;
+  padding:14px 18px;
+  border-radius:50%;
+  font-size:24px;
+  text-decoration:none;
+  z-index:9999;
+  box-shadow:0 4px 14px rgba(0,0,0,0.25);
+}
   </style>
+  <link rel="stylesheet" href="bottom-nav.css">
 </head>
 
 <body>
@@ -368,5 +381,37 @@ function gestisciLoginLogout() {
 }
 </script>
 
+<!-- 🔥 BOTTOM NAV BAR FISSA -->
+<div id="bottom-nav">
+    <a href="crea-coppa.html" class="nav-item">
+        <img src="icone/crea.png" alt="">
+        <span>Crea Coppa</span>
+    </a>
+
+<a href="crea-coppa.html?cart=1" class="nav-item">
+    <div style="position:relative;">
+        <img src="icone/cart.png" alt="">
+        <span id="badge-nav" class="nav-badge">0</span>
+    </div>
+    <span>Carrello</span>
+</a>
+
+    <a href="profilo.html" class="nav-item">
+        <img src="icone/user.png" alt="">
+        <span>Profilo</span>
+    </a>
+
+    <a href="menu.html" class="nav-item">
+        <img src="icone/menu.png" alt="">
+        <span>Menu</span>
+    </a>
+
+    <a href="lavora-con-noi.html" class="nav-item">
+        <img src="icone/job.png" alt="">
+        <span>Lavora Con Noi</span>
+    </a>
+</div>
+
+</div>
 </body>
 </html>

@@ -930,7 +930,7 @@ window.aggiungiAlCarrello = function () {
     alert("🛒 Coppa aggiunta al carrello!");
 
     // 🔥 aggiorno il numeretto del carrello
-    updateCarrelloBadge();
+    updateBadgeNav();
 
     // 👉 RESTO nel riepilogo finale, NON torno alla home
 };
@@ -947,18 +947,30 @@ function getCarrelloCount() {
 }
 
 function updateCarrelloBadge() {
-    const badge = document.getElementById("carrello-badge");
-    if (!badge) return;
-
     const count = getCarrelloCount();
-    if (count <= 0) {
-        badge.style.display = "none";
-    } else {
-        badge.style.display = "inline-flex";
-        badge.textContent = count;
+
+    // 🔺 Badge vecchio in alto (se esiste ancora)
+    const badgeTop = document.getElementById("carrello-badge");
+    if (badgeTop) {
+        if (count <= 0) {
+            badgeTop.style.display = "none";
+        } else {
+            badgeTop.style.display = "inline-flex";
+            badgeTop.textContent = count;
+        }
+    }
+
+    // 🔻 Badge nella bottom bar (id="badge-nav")
+    const badgeNav = document.getElementById("badge-nav");
+    if (badgeNav) {
+        if (count <= 0) {
+            badgeNav.style.display = "none";
+        } else {
+            badgeNav.style.display = "inline-block";
+            badgeNav.textContent = count;
+        }
     }
 }
-
 
 function calcolaPrezzoCoppa(c) {
     const prezzoBase = prezziBase[c.formato] || 0;
@@ -1060,6 +1072,22 @@ function stabilizeMiniRiepilogo() {
   }
 }
 
+// 🔓 Se arrivo alla pagina con ?cart=1 apro subito il carrello
+document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const openCart = params.get("cart");
+
+    if (openCart === "1") {
+        const overlay = document.getElementById("carrello-overlay");
+
+        // se l'overlay esiste e c'è la funzione di render → apro
+        if (overlay && typeof window.aggiornaCarrelloUI === "function") {
+            window.aggiornaCarrelloUI();
+            overlay.style.display = "flex";
+        }
+    }
+});
+
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
 // 🛒 APRE IL CARRELLO
@@ -1080,6 +1108,7 @@ window.apriCarrello = function() {
     if (btnCron) {
         const email = localStorage.getItem("user_email");
         btnCron.style.display = email ? "inline-flex" : "none";
+        updateBadgeNav();
     }
 };
 
@@ -1110,7 +1139,7 @@ window.cambiaQuantita = function(id, delta) {
 
     // 🔥 AGGIORNO IMMEDIATAMENTE UI e BADGE
     aggiornaCarrelloUI();
-    updateCarrelloBadge();
+    updateBadgeNav();
 };
 
 // ✖ CHIUDE IL CARRELLO
@@ -1124,8 +1153,20 @@ window.svuotaCarrello = function () {
 
     localStorage.setItem("carrelloCoppe", "[]");
 
-    updateCarrelloBadge();
+    updateBadgeNav();
     aggiornaCarrelloUI();
+};
+
+// 🔥 Aggiorna il badge della NAV BOTTOM
+window.updateBadgeNav = function() {
+    const badge = document.getElementById("badge-nav");
+    if (!badge) return;
+
+    const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+    const totale = carrello.reduce((sum, c) => sum + (c.quantita || 1), 0);
+
+    badge.textContent = totale;
+    badge.style.display = totale > 0 ? "inline-flex" : "none";
 };
 
 window.aggiornaCarrelloUI = function() {
@@ -1183,6 +1224,8 @@ window.aggiornaCarrelloUI = function() {
     </div>
 </div>`;
     });
+    // 🔥 Aggiorna badge nella bottom bar
+updateBadgeNav();
 
     // 🔥 CALCOLO TOTALE GENERALE DEL CARRELLO
 let totaleGenerale = 0;

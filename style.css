@@ -1186,3 +1186,50 @@ body.step-size #riepilogo-mini {
     gap: 10px;
     margin-top: 12px;
 }
+
+/* ⭐ Bottom Navigation Bar */
+#bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #dadada;
+    box-shadow: 0 -3px 12px rgba(0,0,0,0.08);
+    z-index: 99999;
+}
+
+/* Singola voce */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #333;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Icone */
+.nav-item img {
+    width: 26px;
+    height: 26px;
+    margin-bottom: 3px;
+}
+
+/* Badge rosso del carrello */
+.nav-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: #ff3b30;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50px;
+}
