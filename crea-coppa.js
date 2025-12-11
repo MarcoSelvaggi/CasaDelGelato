@@ -888,9 +888,30 @@ area.innerHTML = `
   <p><b>Totale:</b> €${totale.toFixed(2)}</p>
 </div>
 
+<div id="qr-wrapper" style="
+    margin-top:18px;
+    text-align:center;
+">
+    <p><b>QR Code per conferma coppa</b></p>
+    <div id="qr-code"></div>
+</div>
+
 <button class="next-btn" style="margin-top:15px;" onclick="aggiungiAlCarrello()">
     🛒 Aggiungi al carrello
 </button>
+
+// === QR CODE ===
+if (window.QRCode) {
+    const qrContainer = document.getElementById("qr-code");
+    qrContainer.innerHTML = "";
+    new QRCode(qrContainer, {
+        text: qrToken,
+        width: 160,
+        height: 160,
+    });
+} else {
+    console.error("Libreria QRCode non trovata");
+}
 
 <p style="margin-top:12px; font-size:14px; text-align:center; opacity:0.75;">
  📣 Comunica al cameriere la tua coppa gelato 📣
