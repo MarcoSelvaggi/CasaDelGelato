@@ -494,6 +494,22 @@ const extraText = formatExtra(c.extra);
                     Prezzo: €${(c.prezzo || 0).toFixed(2)}
                 </div>
 
+                <div class="qr-box" style="text-align:center; margin-top:12px;">
+    <button class="toggle-qr" style="
+        padding:6px 12px; 
+        border: none; 
+        background:#007aff; 
+        color:white; 
+        border-radius:8px;
+        cursor:pointer;
+        font-size:14px;
+    ">Mostra QR</button>
+
+    <div class="qr-wrapper" style="display:none; margin-top:10px;">
+        <div class="qr-code" id="qr-${c.qr_token}"></div>
+    </div>
+</div>
+
                 <div class="buttons-row">
                     <button class="copy-btn">📋 Copia</button>
                     <button class="use-btn">⚡ Usa questa coppa</button>
@@ -507,6 +523,34 @@ const extraText = formatExtra(c.extra);
             div.querySelector(".use-btn").onclick = () => usaQuestaCoppa(idx);
 
             lista.appendChild(div);
+            // === QR CODE nella cronologia ===
+const btn = div.querySelector(".toggle-qr");
+const box = div.querySelector(".qr-wrapper");
+const qrDiv = div.querySelector(`.qr-code`);
+
+if (btn) {
+    btn.onclick = () => {
+        const visible = box.style.display === "block";
+
+        if (visible) {
+            box.style.display = "none";
+            btn.textContent = "Mostra QR";
+        } else {
+            box.style.display = "block";
+            btn.textContent = "Nascondi QR";
+
+            // genera QR SOLO quando aperto
+            if (window.QRCode && qrDiv && !qrDiv.dataset.generated) {
+                new QRCode(qrDiv, {
+                    text: c.qr_token,
+                    width: 140,
+                    height: 140
+                });
+                qrDiv.dataset.generated = "1";
+            }
+        }
+    };
+}
         });
     }
 
