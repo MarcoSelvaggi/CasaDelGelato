@@ -179,7 +179,10 @@ function startScanner() {
             confermaCoppa(qrCodeMessage);
 
             // stop scanner dopo la lettura
-            html5QrCode.stop();
+            html5QrCode.stop().then(() => {
+    // ⏳ 1 secondo per dare tempo al messaggio di comparire
+    setTimeout(() => startScanner(), 1200);
+});
         },
         errorMessage => {
             // errori lettura, NON stampare nulla
