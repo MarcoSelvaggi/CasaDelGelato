@@ -900,6 +900,18 @@ area.innerHTML = `
     🛒 Aggiungi al carrello
 </button>
 
+<p style="margin-top:12px; font-size:14px; text-align:center; opacity:0.75;">
+ 📣 Comunica al cameriere la tua coppa gelato 📣
+</p>
+
+<div class="nav-buttons" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+  <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
+  <button class="next-btn" onclick="salvaScontrinoComeImmagine()">📸 Salva immagine (Instagram)</button>
+  <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
+  <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
+</div>
+`;
+
 // === QR CODE ===
 if (window.QRCode) {
     const qrContainer = document.getElementById("qr-code");
@@ -912,18 +924,6 @@ if (window.QRCode) {
 } else {
     console.error("Libreria QRCode non trovata");
 }
-
-<p style="margin-top:12px; font-size:14px; text-align:center; opacity:0.75;">
- 📣 Comunica al cameriere la tua coppa gelato 📣
-</p>
-
-<div class="nav-buttons" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-  <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
-  <button class="next-btn" onclick="salvaScontrinoComeImmagine()">📸 Salva immagine (Instagram)</button>
-  <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
-  <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
-</div>
-`;
 
   // 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
   const mini = document.getElementById("riepilogo-mini");
