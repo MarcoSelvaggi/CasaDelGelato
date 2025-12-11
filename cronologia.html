@@ -6,6 +6,7 @@
     <title>Cronologia Coppe</title>
     <link rel="stylesheet" href="bottom-nav.css">
     <script src="global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
         body {
@@ -472,55 +473,67 @@ const extraText = formatExtra(c.extra);
 
             const div = document.createElement("div");
             div.className = "cup-card";
-            div.innerHTML = `
-                <div class="cup-title">
-                    <b>${evidenzia(nome)}</b>
-                    <div>
-                        <button class="fav-btn">${stellina}</button>
-                        <button class="edit-btn">✏️</button>
-                        <button class="delete-btn">🗑</button>
-                    </div>
-                </div>
-
-                <div class="small">${formattaDataBella(c.data)}</div>
-                <div class="small"><b>Formato:</b> ${evidenzia(c.formato || "")}</div>
-                <div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
-                <div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
-                <div class="small"><b>Topping:</b> ${evidenzia(toppingText)}</div>
-                <div class="small"><b>Ingredienti:</b> ${evidenzia(ingredientiText)}</div>
-                <div class="small"><b>Extra:</b> ${evidenzia(extraText || "-")}</div>
-
-                <div class="small" style="text-align:right; font-weight:bold;">
-                    Prezzo: €${(c.prezzo || 0).toFixed(2)}
-                </div>
-
-                <div class="qr-box" style="text-align:center; margin-top:12px;">
-    <button class="toggle-qr" style="
-        padding:6px 12px; 
-        border: none; 
-        background:#007aff; 
-        color:white; 
-        border-radius:8px;
-        cursor:pointer;
-        font-size:14px;
-    ">Mostra QR</button>
-
-    <div class="qr-wrapper" style="display:none; margin-top:10px;">
-        <div class="qr-code" id="qr-${c.qr_token}"></div>
+div.innerHTML = `
+    <div class="cup-title">
+        <b>${evidenzia(nome)}</b>
+        <div>
+            <button class="fav-btn">${stellina}</button>
+            <button class="edit-btn">✏️</button>
+            <button class="delete-btn">🗑</button>
+        </div>
     </div>
-</div>
 
-                <div class="buttons-row">
-                    <button class="copy-btn">📋 Copia</button>
-                    <button class="use-btn">⚡ Usa questa coppa</button>
-                </div>
-            `;
+    <div class="small">${formattaDataBella(c.data)}</div>
+    <div class="small"><b>Formato:</b> ${evidenzia(c.formato || "")}</div>
+    <div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
+    <div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
+    <div class="small"><b>Topping:</b> ${evidenzia(toppingText)}</div>
+    <div class="small"><b>Ingredienti:</b> ${evidenzia(ingredientiText)}</div>
+    <div class="small"><b>Extra:</b> ${evidenzia(extraText || "-")}</div>
+
+    <div class="small" style="text-align:right; font-weight:bold;">
+        Prezzo: €${(c.prezzo || 0).toFixed(2)}
+    </div>
+
+    <button class="show-qr-btn">📱 Mostra QR</button>
+
+    <div class="qr-box" id="qr-${idx}" style="
+        display:none;
+        margin-top:12px;
+        text-align:center;
+    "></div>
+
+    <div class="buttons-row">
+        <button class="copy-btn">📋 Copia</button>
+        <button class="use-btn">⚡ Usa questa coppa</button>
+    </div>
+`;
 
             div.querySelector(".fav-btn").onclick = () => togglePreferito(idx);
             div.querySelector(".edit-btn").onclick = () => rinominaCoppa(idx);
             div.querySelector(".delete-btn").onclick = () => eliminaCoppa(idx);
             div.querySelector(".copy-btn").onclick = () => copiaTesto(testoDaCopiare);
             div.querySelector(".use-btn").onclick = () => usaQuestaCoppa(idx);
+            div.querySelector(".show-qr-btn").onclick = () => {
+    const box = document.getElementById(`qr-${idx}`);
+
+    // toggle
+    box.style.display = box.style.display === "none" ? "block" : "none";
+
+    // se QR già generato → non rigenerare
+    if (box.dataset.generated === "1") return;
+
+    if (window.QRCode && c.qr_token) {
+        new QRCode(box, {
+            text: c.qr_token,
+            width: 160,
+            height: 160
+        });
+        box.dataset.generated = "1";
+    } else {
+        box.innerHTML = "<p style='color:red;'>QR non disponibile</p>";
+    }
+};
 
             lista.appendChild(div);
             // === QR CODE nella cronologia ===
