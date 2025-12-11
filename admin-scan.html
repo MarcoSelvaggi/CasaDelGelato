@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scanner QR - Casa del Gelato</title>
+
+<!-- Libreria per scanner QR -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<!-- Supabase -->
+<script type="module" src="supabase.js"></script>
+
+<style>
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background:#f7f7f7;
+        margin:0;
+        padding:20px;
+        text-align:center;
+    }
+
+    h1 { margin-top: 12px; }
+
+    #reader {
+        width: 310px;
+        margin: 0 auto;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    #risultato {
+        margin-top:20px;
+        background:white;
+        padding:18px;
+        border-radius:12px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.15);
+        font-size:17px;
+    }
+
+    .ok {
+        color:green;
+        font-weight:bold;
+        font-size:18px;
+    }
+    .error {
+        color:#d60000;
+        font-weight:bold;
+        font-size:18px;
+    }
+
+    button {
+        margin-top:20px;
+        padding:10px 16px;
+        background:#007aff;
+        border:none;
+        color:white;
+        font-size:16px;
+        border-radius:10px;
+        cursor:pointer;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>📷 Scanner QR Coppe</h1>
+<p>Inquadra il QR del cliente per confermare automaticamente la coppa</p>
+
+<div id="reader"></div>
+
+<div id="risultato" style="display:none;"></div>
+
+<a href="admin.html">
+    <button>Torna all’Admin</button>
+</a>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+function mostra(msg, ok = false) {
+    const box = document.getElementById("risultato");
+    box.style.display = "block";
+    box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
+}
+
+async function confermaCoppa( qrToken ) {
+
+    // 1️⃣ CERCO la coppa nel DB
+    const { data, error } = await supabase
+        .from("coppe")
+        .select("*")
+        .eq("qr_token", qrToken)
+        .limit(1);
+
+    if (error || !data || !data.length) {
+        mostra("❌ QR NON valido!");
+        return;
+    }
+
+    const coppa = data[0];
+
+    // 2️⃣ Se è già confermata → messaggio
+    if (coppa.confermata) {
+        mostra("⚠️ Coppa già confermata!", true);
+        return;
+    }
+
+    // 3️⃣ CONFERMO la coppa
+    await supabase
+        .from("coppe")
+        .update({ confermata: true })
+        .eq("id", coppa.id);
+
+    mostra(`✅ Coppa confermata!
+    <br><br>
+    <b>${coppa.nome}</b><br>
+    (${coppa.formato})`, true);
+}
+
+// Avvio scanner
+function startScanner() {
+    const html5QrCode = new Html5Qrcode("reader");
+
+    html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        qrCodeMessage => {
+            console.log("QR:", qrCodeMessage);
+
+            // 🔥 Appena leggo il QR → confermo coppa
+            confermaCoppa(qrCodeMessage);
+
+            // stop scanner dopo la lettura
+            html5QrCode.stop();
+        },
+        errorMessage => {
+            // errori lettura, NON stampare nulla
+        }
+    );
+}
+
+startScanner();
+</script>
+
+</body>
+</html>

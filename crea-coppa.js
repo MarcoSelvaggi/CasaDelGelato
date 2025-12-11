@@ -811,6 +811,8 @@ async function mostraRiepilogo(){
       ? crypto.randomUUID()
       : ("qr_" + Date.now() + "_" + Math.floor(Math.random() * 100000));
 
+      window.__lastQrToken = qrToken;
+
   // ✅ 4) Oggetto coppa da salvare (ORA CON NOME + qr_token)
   const coppa = {
       nome: coppaNome,
@@ -937,30 +939,34 @@ if (window.QRCode) {
 }
 
 window.aggiungiAlCarrello = function () {
+
+    // recupero la coppa appena salvata in locale
+    let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    const ultima = cronologia[0];  // la coppa creata ora
+
+    if (!ultima) {
+        alert("Errore: impossibile aggiungere la coppa!");
+        return;
+    }
+
     const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
 
     const nuovaCoppa = {
         id: crypto.randomUUID(),
-        formato: coppaSelezionata,
-        gusti: [...scelti.gusti],
-        granelle: [...scelti.granelle],
-        topping: [...scelti.topping],
-        ingredienti: [...scelti.ingredienti],
-        extra: [...scelti.extra],
+        formato: ultima.formato,
+        gusti: [...ultima.gusti],
+        granelle: [...ultima.granelle],
+        topping: [...ultima.topping],
+        ingredienti: [...ultima.ingredienti],
+        extra: [...ultima.extra],
         quantita: 1,
-        qr_token: token   // 🔥 nuovo
     };
 
     carrello.push(nuovaCoppa);
     localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
 
-    // piccolo feedback
     alert("🛒 Coppa aggiunta al carrello!");
-
-    // 🔥 aggiorno il numeretto del carrello
     updateBadgeNav();
-
-    // 👉 RESTO nel riepilogo finale, NON torno alla home
 };
 
 function getCarrelloCount() {
@@ -1100,36 +1106,6 @@ function stabilizeMiniRiepilogo() {
       el.style.maxWidth = "260px";
   }
 }
-
-window.toggleQR = function(coppaId) {
-    const box = document.getElementById("qr-" + coppaId);
-    const target = document.getElementById("qr-code-" + coppaId);
-
-    if (!box || !target) return;
-
-    // toggle
-    if (box.style.display === "none") {
-        box.style.display = "block";
-    } else {
-        box.style.display = "none";
-        return;
-    }
-
-    // 🔄 pulisco qr precedente
-    target.innerHTML = "";
-
-    // cerco la coppa
-    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
-    let c = carrello.find(x => x.id === coppaId);
-    if (!c || !c.qr_token) return;
-
-    // genero QR
-    new QRCode(target, {
-        text: c.qr_token,
-        width: 140,
-        height: 140,
-    });
-};
 
 // 🔓 Se arrivo alla pagina con ?cart=1 apro subito il carrello
 document.addEventListener("DOMContentLoaded", () => {
@@ -1281,13 +1257,6 @@ window.aggiornaCarrelloUI = function() {
         <span class="qty-number">${coppa.quantita}</span>
         <button class="qty-btn" onclick="cambiaQuantita('${coppa.id}', +1)">+</button>
     </div>
-<div class="qr-top-right">
-    <button class="qr-btn-small" onclick="toggleQR('${coppa.id}')">📱 QR</button>
-</div>
-
-<div id="qr-${coppa.id}" class="qr-box" style="display:none; text-align:center; margin-top:10px;">
-    <div class="qr-inner" id="qr-code-${coppa.id}"></div>
-</div>
 </div>`;
     });
     // 🔥 Aggiorna badge nella bottom bar
