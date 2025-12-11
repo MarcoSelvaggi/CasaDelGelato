@@ -78,6 +78,53 @@
 <script type="module">
 import { supabase } from "./supabase.js";
 
+// Funzione che verrà chiamata quando lo scanner legge un QR
+window.confermaCoppaDaQR = async function(qrValue) {
+    console.log("📥 QR letto:", qrValue);
+
+    // 1️⃣ Cerca la coppa con quel qr_token
+    const { data, error } = await supabase
+        .from("coppe")
+        .select("*")
+        .eq("qr_token", qrValue)
+        .limit(1);
+
+    if (error) {
+        alert("Errore nella lettura del QR");
+        console.error(error);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        alert("❌ Nessuna coppa trovata con questo QR");
+        return;
+    }
+
+    const coppa = data[0];
+
+    // 2️⃣ Aggiorna la coppa → confermata = true
+    const { error: updErr } = await supabase
+        .from("coppe")
+        .update({ confermata: true })
+        .eq("id", coppa.id);
+
+    if (updErr) {
+        alert("❌ Errore durante la conferma");
+        console.error(updErr);
+        return;
+    }
+
+    // 3️⃣ Conferma riuscita
+    alert(`✅ Coppa confermata!\n(${coppa.nome})`);
+
+    // 4️⃣ Effetto vibrazione (se disponibile)
+    if (navigator.vibrate) navigator.vibrate(150);
+};
+</script>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
 function mostra(msg, ok = false) {
     const box = document.getElementById("risultato");
     box.style.display = "block";
