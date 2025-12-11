@@ -893,7 +893,7 @@ area.innerHTML = `
     text-align:center;
 ">
     <p><b>QR Code per conferma coppa</b></p>
-    <div id="qr-code"></div>
+    <div id="qr-code" data-token="${qrToken}"></div>
 </div>
 
 <button class="next-btn" style="margin-top:15px;" onclick="aggiungiAlCarrello()">
@@ -947,7 +947,8 @@ window.aggiungiAlCarrello = function () {
         topping: [...scelti.topping],
         ingredienti: [...scelti.ingredienti],
         extra: [...scelti.extra],
-        quantita: 1
+        quantita: 1,
+        qr_token: token   // 🔥 nuovo
     };
 
     carrello.push(nuovaCoppa);
@@ -1011,6 +1012,7 @@ function calcolaPrezzoCoppa(c) {
 
     return (prezzoBase + sommaExtra);
 }
+
 
 async function inviaRegistrazione() {
     const email = document.getElementById("reg-email").value.trim();
@@ -1098,6 +1100,36 @@ function stabilizeMiniRiepilogo() {
       el.style.maxWidth = "260px";
   }
 }
+
+window.toggleQR = function(coppaId) {
+    const box = document.getElementById("qr-" + coppaId);
+    const target = document.getElementById("qr-code-" + coppaId);
+
+    if (!box || !target) return;
+
+    // toggle
+    if (box.style.display === "none") {
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
+        return;
+    }
+
+    // 🔄 pulisco qr precedente
+    target.innerHTML = "";
+
+    // cerco la coppa
+    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+    let c = carrello.find(x => x.id === coppaId);
+    if (!c || !c.qr_token) return;
+
+    // genero QR
+    new QRCode(target, {
+        text: c.qr_token,
+        width: 140,
+        height: 140,
+    });
+};
 
 // 🔓 Se arrivo alla pagina con ?cart=1 apro subito il carrello
 document.addEventListener("DOMContentLoaded", () => {
@@ -1249,6 +1281,13 @@ window.aggiornaCarrelloUI = function() {
         <span class="qty-number">${coppa.quantita}</span>
         <button class="qty-btn" onclick="cambiaQuantita('${coppa.id}', +1)">+</button>
     </div>
+<div class="qr-top-right">
+    <button class="qr-btn-small" onclick="toggleQR('${coppa.id}')">📱 QR</button>
+</div>
+
+<div id="qr-${coppa.id}" class="qr-box" style="display:none; text-align:center; margin-top:10px;">
+    <div class="qr-inner" id="qr-code-${coppa.id}"></div>
+</div>
 </div>`;
     });
     // 🔥 Aggiorna badge nella bottom bar

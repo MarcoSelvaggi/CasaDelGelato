@@ -1250,3 +1250,23 @@ body.step-size #riepilogo-mini {
 body {
     padding-bottom: 90px !important;
 }
+
+.carrello-card {
+    position: relative;
+}
+
+.qr-top-right {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+}
+
+.qr-btn-small {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 8px;
+    background: #0066ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
