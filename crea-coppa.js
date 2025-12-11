@@ -806,11 +806,16 @@ async function mostraRiepilogo(){
   let cronologiaArr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
   const coppaNome = `Coppa #${cronologiaArr.length + 1}`;
 
-  // ✅ 4) Oggetto coppa da salvare (ORA CON NOME)
+  // ✅ 3bis) Genero un token univoco per il QR
+  const qrToken = (crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : ("qr_" + Date.now() + "_" + Math.floor(Math.random() * 100000));
+
+  // ✅ 4) Oggetto coppa da salvare (ORA CON NOME + qr_token)
   const coppa = {
-      nome: coppaNome,          // 🔥 NOME DI DEFAULT (es. Coppa #1)
-      email: email || null,     // se non registrato → null
-      guest_id: guest_id,       // identificazione dispositivo
+      nome: coppaNome,
+      email: email || null,
+      guest_id: guest_id,
       data: new Date().toISOString(),
       formato: coppaSelezionata,
       gusti: scelti.gusti,
@@ -818,7 +823,8 @@ async function mostraRiepilogo(){
       topping: scelti.topping,
       ingredienti: scelti.ingredienti,
       extra: scelti.extra,
-      prezzo: totale
+      prezzo: totale,
+      qr_token: qrToken   // 🔥 NUOVO CAMPO
   };
 
   // ✅ 5) Salva su Supabase
