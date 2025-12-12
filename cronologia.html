@@ -180,6 +180,20 @@
   <div id="fedelta-msg" style="margin-top:10px; font-size:14px; color:#444;">
     Caricamento...
   </div>
+  <button id="btn-vedi-coupon" style="
+  display:none;
+  margin-top:10px;
+  width:100%;
+  padding:10px 12px;
+  border:none;
+  border-radius:12px;
+  background:#007aff;
+  color:white;
+  font-weight:700;
+  cursor:pointer;
+">
+  🎁 Vedi coupon
+</button>
 </div>
 
 <!-- ⭐ CONTROLLI -->
@@ -453,65 +467,50 @@ function formattaDataBella(iso) {
 }
 
 function aggiornaFedelta() {
-    const email = localStorage.getItem("user_email");
-    if (!email) return;
+  // conta SOLO coppe dell’utente già filtrate (coppe array) e NON eliminate
+  const confermateTot = coppe.filter(c => c && c.confermata === true && !c.eliminata).length;
 
-    // solo coppe dell'utente
-    const mieCoppe = coppe.filter(c => c.email === email && c.confermata);
+  // quante volte ho completato 10
+  const couponSbloccati = Math.floor(confermateTot / 10);
 
-    const totConfermate = mieCoppe.length;
+  // progress attuale (0..9)
+  const progress = confermateTot % 10;
 
-    // coupon già sbloccati
-    const key = "coupon_sbloccati_" + email;
-    const couponSbloccati = parseInt(localStorage.getItem(key) || "0");
+  const countEl = document.getElementById("fedelta-count");
+  const barEl   = document.getElementById("fedelta-bar");
+  const msgEl   = document.getElementById("fedelta-msg");
+  const btnEl   = document.getElementById("btn-vedi-coupon");
 
-    // progresso attuale (0–9)
-    const progresso = totConfermate - (couponSbloccati * 10);
-    const progressoClamp = Math.max(0, Math.min(progresso, 10));
+  if (!countEl || !barEl || !msgEl) return;
 
-    const countEl = document.getElementById("fedelta-count");
-    const barEl   = document.getElementById("fedelta-bar");
-    const msgEl   = document.getElementById("fedelta-msg");
+  // ✅ REGOLA: quando arrivo a 10 → reset visivo a 0/10
+  // ma messaggio "coupon sbloccato" resta FINCHÉ non arriva un'altra conferma:
+  // Questo succede naturalmente perché:
+  // - a 10,20,30... => progress=0 e confermateTot>0 => sbloccato
+  // - a 11 => progress=1 => torna normale
+  const justUnlocked = (confermateTot >= 10 && progress === 0);
 
-    if (!countEl || !barEl || !msgEl) return;
+  // aggiorno contatore e barra
+  countEl.textContent = `${progress}/10`;
+  barEl.style.width = ((progress / 10) * 100) + "%";
 
-    countEl.textContent = `${progressoClamp}/10`;
-    barEl.style.width = (progressoClamp / 10) * 100 + "%";
+  if (justUnlocked) {
+    msgEl.innerHTML = `🎉 <b>Coupon sbloccato!</b><br>Rivolgiti alla cassa 💚`;
+  } else {
+    msgEl.textContent = couponSbloccati > 0
+      ? `Hai già sbloccato ${couponSbloccati} coupon 🎁 Continua per il prossimo!`
+      : `Continua a creare coppe per sbloccare il coupon 🎁`;
+  }
 
-    // 🎉 COUPON SBLOCCATO
-    if (progresso >= 10) {
-        localStorage.setItem(key, couponSbloccati + 1);
-
-        countEl.textContent = "0/10";
-        barEl.style.width = "0%";
-
-        msgEl.innerHTML = `
-            🎉 <b>Coupon sbloccato!</b><br>
-            <button id="btn-vedi-coupon"
-                style="
-                    margin-top:8px;
-                    padding:8px 14px;
-                    background:#34c759;
-                    color:white;
-                    border:none;
-                    border-radius:10px;
-                    font-size:14px;
-                    cursor:pointer;
-                ">
-                🎁 Vedi coupon
-            </button>
-        `;
-
-        document.getElementById("btn-vedi-coupon").onclick = () => {
-            window.location.href = "profilo.html";
-        };
-
-        return;
-    }
-
-    // stato normale
-    msgEl.textContent = "Continua a creare coppe per sbloccare il coupon 🎁";
+  // bottone: lo mostro se ho almeno 1 coupon sbloccato
+  if (btnEl) {
+    btnEl.style.display = couponSbloccati > 0 ? "block" : "none";
+    btnEl.onclick = () => {
+      window.location.href = "profilo.html#coupon";
+    };
+  }
 }
+
 function renderLista() {
     const arr = getCoppeFiltrateEOrdinate()
                   .filter(c => !c.eliminata);   // ✅ NASCONDE LE ELIMINATE
