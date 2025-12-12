@@ -455,8 +455,45 @@ function formattaDataBella(iso) {
 function renderLista() {
     const arr = getCoppeFiltrateEOrdinate()
                   .filter(c => !c.eliminata);   // ✅ NASCONDE LE ELIMINATE
+                  // ✅ Conteggio coppe confermate
+const confermate = arr.filter(c => c.confermata).length;
 
-    lista.innerHTML = "";
+let bannerHTML = `
+  <div style="
+    max-width:600px;
+    margin:0 auto 14px;
+    padding:14px;
+    border-radius:12px;
+    background:#e8f5ff;
+    color:#003a66;
+    font-weight:600;
+    text-align:center;
+  ">
+    ✅ Coppe confermate: <b>${confermate} / 10</b>
+  </div>
+`;
+
+if (confermate >= 10) {
+  bannerHTML = `
+    <div style="
+      max-width:600px;
+      margin:0 auto 14px;
+      padding:16px;
+      border-radius:14px;
+      background:#e8ffe8;
+      color:#006600;
+      font-weight:700;
+      text-align:center;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    ">
+      🎉 CONGRATULAZIONI! 🎉<br>
+      Hai sbloccato un <b>COUPON</b><br>
+      👉 Rivolgiti alla cassa
+    </div>
+  `;
+}
+
+    lista.innerHTML = bannerHTML;
 
     if (arr.length === 0) {
         lista.innerHTML = `<p class="empty-msg">Nessuna coppa trovata 😢</p>`;
