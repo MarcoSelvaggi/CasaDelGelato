@@ -314,16 +314,53 @@ function renderCoupons(coupons) {
           Scade il ${scadenza.toLocaleDateString()}
         </div>
       </div>
-      ${
-        c.redento
-          ? `<button disabled>Usato</button>`
-          : `<button onclick="apriQR('${c.codice}')">Mostra QR</button>`
-      }
+    ${
+  c.redento
+    ? `<button disabled>Usato</button>`
+    : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
+}
+
+<div id="qr-${c.codice}" style="
+  display:none;
+  margin-top:12px;
+  text-align:center;
+"></div>
     `;
 
     list.appendChild(div);
   });
 }
+
+window.toggleQR = function(codice) {
+  const box = document.getElementById(`qr-${codice}`);
+  if (!box) return;
+
+  // toggle
+  if (box.style.display === "block") {
+    box.innerHTML = "";
+    box.style.display = "none";
+    return;
+  }
+
+  box.style.display = "block";
+  box.innerHTML = "";
+
+  const qrDiv = document.createElement("div");
+  box.appendChild(qrDiv);
+
+  new QRCode(qrDiv, {
+    text: `${location.origin}/admin-scan.html?coupon=${codice}`,
+    width: 160,
+    height: 160,
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  const note = document.createElement("div");
+  note.style = "font-size:12px;color:#666;margin-top:6px";
+  note.innerText = "Mostra questo QR al cameriere (valido una sola volta)";
+  box.appendChild(note);
+};
+
 </script>
 
 </body>
