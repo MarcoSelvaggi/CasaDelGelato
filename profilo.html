@@ -338,17 +338,130 @@ function gestisciLoginLogout() {
 <script type="module">
 import { supabase } from "./supabase.js";
 
-window.disiscriviti = async function() {
-    const email = localStorage.getItem("user_email");
-    if (!email) return alert("Errore");
+/* ===============================
+   UTILS
+================================ */
 
-    await supabase.from("utenti")
-      .update({ disiscritto: true })
-      .eq("email", email);
+function fineAnnoCorrente() {
+  const now = new Date();
+  return new Date(now.getFullYear(), 11, 31, 23, 59, 59).toISOString();
+}
 
-    localStorage.removeItem("user_email");
-    localStorage.setItem("userLogged", "0");
-    location.href = "index.html";
+function formatoPiuUsato(coppe) {
+  const count = { piccola: 0, media: 0, grande: 0 };
+
+  coppe.forEach(c => {
+    if (count[c.formato] !== undefined) count[c.formato]++;
+  });
+
+  const ordine = ["piccola", "media", "grande"];
+  return ordine.reduce((best, cur) =>
+    count[cur] > count[best] ? cur : best
+  );
+}
+
+/* ===============================
+   PROFILO
+================================ */
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const email = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+
+  const box = document.getElementById("profile-info");
+  const btnDis = document.getElementById("btn-disiscriviti");
+  const couponSection = document.getElementById("coupon-section");
+
+  if (!logged || !email) {
+    box.innerHTML = `<div class="email-box"><b>Nessun profilo loggato.</b></div>`;
+    btnDis.style.display = "none";
+    return;
+  }
+
+  box.innerHTML = `<div class="email-box"><b>Email:</b> ${email}</div>`;
+  btnDis.style.display = "block";
+  couponSection.style.display = "block";
+
+  await verificaECreaCoupon(email);
+  await caricaCoupon(email);
+});
+
+/* ===============================
+   COUPON LOGIC
+================================ */
+
+async function verificaECreaCoupon(email) {
+
+  // 👉 esempio: 10 coppe = premio
+  const { data: coppe } = await supabase
+    .from("coppe")
+    .select("formato")
+    .eq("email", email)
+    .eq("confermata", true);
+
+  if (!coppe || coppe.length < 10) return;
+
+  // controllo se esiste già un coupon NON usato
+  const { data: esistenti } = await supabase
+    .from("coupon")
+    .select("id")
+    .eq("email", email)
+    .eq("used", false);
+
+  if (esistenti && esistenti.length) return;
+
+  const formato = formatoPiuUsato(coppe);
+
+  await supabase.from("coupon").insert({
+    id: "cp_" + crypto.randomUUID(),
+    email,
+    tipo: formato,
+    titolo: `Coppa ${formato} omaggio`,
+    used: false,
+    created_at: new Date().toISOString(),
+    expires_at: fineAnnoCorrente()
+  });
+}
+
+async function caricaCoupon(email) {
+  const { data: coupons } = await supabase
+    .from("coupon")
+    .select("*")
+    .eq("email", email)
+    .order("created_at", { ascending: false });
+
+  renderCoupons(coupons || []);
+}
+
+/* ===============================
+   RENDER
+================================ */
+
+window.renderCoupons = function(coupons) {
+  const list = document.getElementById("coupon-list");
+  list.innerHTML = "";
+
+  coupons.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "coupon" + (c.used ? " used" : "");
+
+    div.innerHTML = `
+      <div>
+        <div class="coupon-title">${c.titolo}</div>
+        <div class="coupon-desc">Coppa ${c.tipo} omaggio</div>
+        <div class="coupon-expiry">
+          Scade il ${new Date(c.expires_at).toLocaleDateString()}
+        </div>
+      </div>
+      ${
+        c.used
+          ? `<button disabled>Usato</button>`
+          : `<button onclick="apriQR('${c.id}')">Mostra QR</button>`
+      }
+    `;
+
+    list.appendChild(div);
+  });
 };
 </script>
 
