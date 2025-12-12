@@ -260,9 +260,15 @@ function renderCoupons() {
 }
 
 function apriQR(couponId) {
-    const url = `${location.origin}/admin-scan.html?id=${couponId}`;
+
+    // ❌ rimuove eventuali popup già aperti
+    const old = document.getElementById("qr-overlay");
+    if (old) old.remove();
+
+    const url = `${location.origin}/admin-scan.html?coupon=${couponId}`;
 
     const overlay = document.createElement("div");
+    overlay.id = "qr-overlay";
     overlay.style = `
         position:fixed;
         inset:0;
@@ -281,11 +287,18 @@ function apriQR(couponId) {
             text-align:center;
             width:260px;
         ">
-            <h3 style="margin-top:0">🎟️ Mostra al cameriere</h3>
-            <div id="qr-box"></div>
+            <h3 style="margin:0 0 10px">🎟️ Mostra al cameriere</h3>
+
+            <div id="qr-box" style="
+                width:180px;
+                height:180px;
+                margin:0 auto;
+            "></div>
+
             <p style="font-size:13px;color:#666;margin-top:10px">
               Valido una sola volta
             </p>
+
             <button style="
                 margin-top:12px;
                 padding:8px 14px;
@@ -294,7 +307,7 @@ function apriQR(couponId) {
                 background:#000;
                 color:#fff;
                 font-size:14px;
-            " onclick="this.closest('div').parentNode.remove()">
+            " onclick="document.getElementById('qr-overlay').remove()">
                 Chiudi
             </button>
         </div>
@@ -305,7 +318,8 @@ function apriQR(couponId) {
     new QRCode(document.getElementById("qr-box"), {
         text: url,
         width: 180,
-        height: 180
+        height: 180,
+        correctLevel: QRCode.CorrectLevel.M
     });
 }
 
