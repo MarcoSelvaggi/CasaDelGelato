@@ -287,10 +287,6 @@ function subscribeCouponRealtime(email) {
     .subscribe();
 }
 
-window.addEventListener("focus", async () => {
-  const email = localStorage.getItem("user_email");
-  if (email) await caricaCoupon(email);
-});
 
 /* ===============================
    COUPON
