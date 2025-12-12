@@ -1,91 +1,155 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profilo</title>
-    <link rel="stylesheet" href="bottom-nav.css">
-    <script src="global.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profilo</title>
 
-    <style>
-        body {
-            margin: 0;
-            background: #f6f6f7;
-            font-family: system-ui, -apple-system, sans-serif;
-            padding-bottom: 90px; /* per non far coprire la pagina dalla bottom bar */
-        }
+<link rel="stylesheet" href="bottom-nav.css">
+<script src="global.js"></script>
 
-        /* 🔝 Barra fissa */
-        #top-fixed-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 55px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: white;
-            border-bottom: 1px solid #ddd;
-            z-index: 9999;
-        }
+<style>
+body {
+    margin: 0;
+    background: #f6f6f7;
+    font-family: system-ui, -apple-system, sans-serif;
+    padding-bottom: 90px;
+}
 
-        .home-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 17px;
-            color: #444;
-            text-decoration: none;
-        }
+/* 🔝 Barra fissa */
+#top-fixed-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    z-index: 9999;
+}
 
-        .home-btn img {
-            width: 28px;
-            height: 28px;
-        }
+.home-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 17px;
+    color: #444;
+    text-decoration: none;
+}
 
-        #top-fixed-spacer {
-            height: 65px;
-        }
+.home-btn img {
+    width: 28px;
+    height: 28px;
+}
 
-        /* Contenuto */
-        .container {
-            max-width: 450px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
+#top-fixed-spacer {
+    height: 65px;
+}
 
-        h1 { margin-bottom: 10px; }
+/* Contenuto */
+.container {
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
 
-        .email-box {
-            background: white;
-            padding: 14px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
+h1 { margin-bottom: 10px; }
 
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-top: 12px;
-            background: #ff7a00;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 17px;
-            font-weight: 600;
-            cursor: pointer;
-        }
+.email-box {
+    background: white;
+    padding: 14px;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    font-size: 16px;
+    margin-bottom: 20px;
+}
 
-        .btn-danger {
-            background: #ff3b30;
-        }
+.btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    background: #ff7a00;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+}
 
-    </style>
+.btn-danger {
+    background: #ff3b30;
+}
+
+/* 🎟️ COUPON */
+.coupon-section {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.coupon-section h2 {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.coupon-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.coupon {
+    background: white;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.coupon.used,
+.coupon.expired {
+    opacity: 0.45;
+}
+
+.coupon-title {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.coupon-desc {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.coupon-expiry {
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+}
+
+.coupon button {
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-size: 13px;
+}
+
+.coupon.used button,
+.coupon.expired button {
+    background: #ccc;
+    color: #444;
+}
+</style>
 </head>
 
 <body>
@@ -102,81 +166,89 @@
 <div class="container">
     <h1>Profilo</h1>
 
-    <div id="profile-info">
-        <!-- Qui inseriamo email o messaggio -->
-    </div>
+    <div id="profile-info"></div>
 
     <button class="btn" onclick="gestisciLoginLogout()">👤 Accedi / Cambia Profilo</button>
 
     <button id="btn-disiscriviti" class="btn btn-danger" onclick="disiscriviti()">
         ❌ Disiscriviti
     </button>
+
+    <!-- 🎟️ COUPON -->
+    <section id="coupon-section" class="coupon-section" style="display:none;">
+        <h2>🎟️ I miei Coupon</h2>
+        <div id="coupon-list" class="coupon-list"></div>
+    </section>
+</div>
+
+<!-- ⭐ Bottom bar -->
+<div id="bottom-nav">
+    <a href="crea-coppa.html" class="nav-item">
+        <img src="icone/crea.png">
+        <span>Crea</span>
+    </a>
+    <a href="profilo.html" class="nav-item">
+        <img src="icone/user.png">
+        <span>Profilo</span>
+    </a>
+    <a href="menu.html" class="nav-item">
+        <img src="icone/menu.png">
+        <span>Menu</span>
+    </a>
 </div>
 
 <script>
+const couponsDemo = [
+  { title: "Sconto 10%", desc: "Coppa media o grande", expiry: "2025-12-31", used: false },
+  { title: "Coppa Gratis", desc: "Dopo 5 coppe", expiry: "2025-10-01", used: true }
+];
+
 document.addEventListener("DOMContentLoaded", () => {
     const email = localStorage.getItem("user_email");
     const logged = localStorage.getItem("userLogged") === "1";
 
     const box = document.getElementById("profile-info");
     const btnDis = document.getElementById("btn-disiscriviti");
+    const couponSection = document.getElementById("coupon-section");
 
     if (!logged || !email) {
-        box.innerHTML = `
-            <div class="email-box">
-                <b>Nessun profilo attualmente loggato.</b>
-            </div>
-        `;
-        btnDis.style.display = "none"; // nasconde disiscrizione
+        box.innerHTML = `<div class="email-box"><b>Nessun profilo loggato.</b></div>`;
+        btnDis.style.display = "none";
     } else {
-        box.innerHTML = `
-            <div class="email-box">
-                <b>Email:</b> ${email}
-            </div>
-        `;
+        box.innerHTML = `<div class="email-box"><b>Email:</b> ${email}</div>`;
         btnDis.style.display = "block";
+        couponSection.style.display = "block";
+        renderCoupons();
     }
 });
-</script>
 
-<!-- ⭐ Bottom bar -->
-<div id="bottom-nav">
-    <a href="crea-coppa.html" class="nav-item">
-        <img src="icone/crea.png" alt="">
-        <span>Crea</span>
-    </a>
+function renderCoupons() {
+    const list = document.getElementById("coupon-list");
+    list.innerHTML = "";
 
-    <a href="profilo.html" class="nav-item">
-        <img src="icone/user.png" alt="">
-        <span>Profilo</span>
-    </a>
+    couponsDemo.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "coupon" + (c.used ? " used" : "");
+        div.innerHTML = `
+            <div>
+                <div class="coupon-title">${c.title}</div>
+                <div class="coupon-desc">${c.desc}</div>
+                <div class="coupon-expiry">Scade il ${c.expiry}</div>
+            </div>
+            <button disabled>${c.used ? "Usato" : "Usa"}</button>
+        `;
+        list.appendChild(div);
+    });
+}
 
-    <a href="menu.html" class="nav-item">
-        <img src="icone/menu.png" alt="">
-        <span>Menu</span>
-    </a>
-</div>
-
-<script>
 function gestisciLoginLogout() {
     const email = localStorage.getItem("user_email");
+    if (!email) return location.href = "login.html";
 
-    // 🔹 Caso 1: NON loggato → vai a login
-    if (!email) {
-        window.location.href = "login.html"; 
-        return;
-    }
-
-    // 🔹 Caso 2: Loggato → chiedi se vuole cambiare profilo
     if (confirm(`Sei loggato come:\n${email}\n\nVuoi cambiare profilo?`)) {
-
-        // 🔥 NON tocchiamo guest_id → mantiene la cronologia corretta
         localStorage.removeItem("user_email");
-        localStorage.removeItem("user_name");
-        localStorage.removeItem("user_surname");
-
-        alert("Hai effettuato il logout. Ora puoi accedere con un altro profilo.");
-        window.location.href = "login.html";
+        localStorage.setItem("userLogged", "0");
+        location.href = "login.html";
     }
 }
 </script>
@@ -186,32 +258,15 @@ import { supabase } from "./supabase.js";
 
 window.disiscriviti = async function() {
     const email = localStorage.getItem("user_email");
+    if (!email) return alert("Errore");
 
-    if (!email) {
-        alert("Errore: nessun utente registrato.");
-        return;
-    }
+    await supabase.from("utenti")
+      .update({ disiscritto: true })
+      .eq("email", email);
 
-    // 1️⃣ Aggiorno Supabase
-    const { error } = await supabase
-        .from("utenti")
-        .update({
-            disiscritto: true,
-            data_disiscrizione: new Date().toISOString()
-        })
-        .eq("email", email);
-
-    if (error) {
-        alert("Errore durante disiscrizione Supabase: " + error.message);
-        return;
-    }
-
-    // 2️⃣ Rimuovo login locale
     localStorage.removeItem("user_email");
     localStorage.setItem("userLogged", "0");
-
-    alert("❌ Hai cancellato la registrazione.");
-    window.location.href = "index.html";
+    location.href = "index.html";
 };
 </script>
 
