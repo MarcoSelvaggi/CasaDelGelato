@@ -453,20 +453,21 @@ function formattaDataBella(iso) {
 }
 
 function aggiornaFedelta() {
-    const userEmail = localStorage.getItem("user_email");
+    const email = localStorage.getItem("user_email");
+    if (!email) return;
 
-const email = (localStorage.getItem("user_email") || "").toLowerCase();
-const guest_id = localStorage.getItem("guest_id") || "";
+    // solo coppe dell'utente
+    const mieCoppe = coppe.filter(c => c.email === email && c.confermata);
 
-// ✅ coppe SOLO di questo utente (email se loggato, altrimenti guest)
-const coppeUtente = coppe.filter(c => {
-  const ce = (c.email || "").toLowerCase();
-  const cg = c.guest_id || "";
-  return email ? (ce === email) : (cg === guest_id);
-});
+    const totConfermate = mieCoppe.length;
 
-// ✅ conteggio confermate SOLO utente (e non eliminate)
-const confermate = coppeUtente.filter(c => c.confermata && !c.eliminata).length;
+    // coupon già sbloccati
+    const key = "coupon_sbloccati_" + email;
+    const couponSbloccati = parseInt(localStorage.getItem(key) || "0");
+
+    // progresso attuale (0–9)
+    const progresso = totConfermate - (couponSbloccati * 10);
+    const progressoClamp = Math.max(0, Math.min(progresso, 10));
 
     const countEl = document.getElementById("fedelta-count");
     const barEl   = document.getElementById("fedelta-bar");
@@ -474,20 +475,43 @@ const confermate = coppeUtente.filter(c => c.confermata && !c.eliminata).length;
 
     if (!countEl || !barEl || !msgEl) return;
 
-    countEl.textContent = `${confermate}/10`;
+    countEl.textContent = `${progressoClamp}/10`;
+    barEl.style.width = (progressoClamp / 10) * 100 + "%";
 
-    const percent = Math.min((confermate / 10) * 100, 100);
-    barEl.style.width = percent + "%";
+    // 🎉 COUPON SBLOCCATO
+    if (progresso >= 10) {
+        localStorage.setItem(key, couponSbloccati + 1);
 
-    if (confermate >= 10) {
-        msgEl.innerHTML = "🎉 <b>Coupon sbloccato!</b><br>Rivolgiti alla cassa 💚";
-        barEl.style.background = "#34c759";
-    } else {
-        msgEl.textContent = "Continua a creare coppe per sbloccare il coupon 🎁";
-        barEl.style.background = "#34c759";
+        countEl.textContent = "0/10";
+        barEl.style.width = "0%";
+
+        msgEl.innerHTML = `
+            🎉 <b>Coupon sbloccato!</b><br>
+            <button id="btn-vedi-coupon"
+                style="
+                    margin-top:8px;
+                    padding:8px 14px;
+                    background:#34c759;
+                    color:white;
+                    border:none;
+                    border-radius:10px;
+                    font-size:14px;
+                    cursor:pointer;
+                ">
+                🎁 Vedi coupon
+            </button>
+        `;
+
+        document.getElementById("btn-vedi-coupon").onclick = () => {
+            window.location.href = "profilo.html";
+        };
+
+        return;
     }
-}
 
+    // stato normale
+    msgEl.textContent = "Continua a creare coppe per sbloccare il coupon 🎁";
+}
 function renderLista() {
     const arr = getCoppeFiltrateEOrdinate()
                   .filter(c => !c.eliminata);   // ✅ NASCONDE LE ELIMINATE
@@ -757,6 +781,10 @@ if (emailUtente) {
             }
         )
         .subscribe();
+}
+
+function vaiAiCoupon() {
+    window.location.href = "profilo.html#coupon";
 }
 
 </script>
