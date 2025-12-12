@@ -235,29 +235,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-function renderCoupons() {
-    const list = document.getElementById("coupon-list");
-    list.innerHTML = "";
 
-    couponsDemo.forEach(c => {
-        const div = document.createElement("div");
-        div.className = "coupon" + (c.used ? " used" : "");
-     div.innerHTML = `
-    <div>
-        <div class="coupon-title">${c.title}</div>
-        <div class="coupon-desc">${c.desc}</div>
-        <div class="coupon-expiry">Scade il ${c.expiry}</div>
-    </div>
+window.renderCoupons = function(coupons) {
+  const list = document.getElementById("coupon-list");
+  list.innerHTML = "";
 
-    ${
-      c.used
-        ? `<button disabled>Usato</button>`
-        : `<button onclick="apriQR('${c.id}')">Mostra QR</button>`
-    }
-`;
-        list.appendChild(div);
-    });
-}
+  coupons.forEach(c => {
+    const tipo = c.tipo || "piccola";
+    const titolo = c.titolo || `Coppa ${tipo} omaggio`;
+
+    let scadenzaTxt = "—";
+    if (c.created_at) {
+      const d = new Date(c.created_at);
+      if (!isNaN(d)) {
+        scadenzaTxt = new Date(d.getFullYear(), 11, 31).toLocaleDateString();
+      }
+    }
+
+    const div = document.createElement("div");
+    div.className = "coupon" + (c.redento ? " used" : "");
+
+    div.innerHTML = `
+      <div>
+        <div class="coupon-title">${titolo}</div>
+        <div class="coupon-desc">Coppa ${tipo} omaggio</div>
+        <div class="coupon-expiry">Scade il ${scadenzaTxt}</div>
+      </div>
+      ${
+        c.redento
+          ? `<button disabled>Usato</button>`
+          : `<button onclick="apriQR('${c.codice}')">Mostra QR</button>`
+      }
+    `;
+
+    list.appendChild(div);
+  });
+};
 
 function apriQR(couponId) {
 
@@ -333,6 +346,12 @@ function gestisciLoginLogout() {
         location.href = "login.html";
     }
 }
+
+window.addEventListener("focus", () => {
+  const email = localStorage.getItem("user_email");
+  if (email) caricaCoupon(email);
+});
+
 </script>
 
 <script type="module">
@@ -342,9 +361,9 @@ import { supabase } from "./supabase.js";
    UTILS
 ================================ */
 
-function fineAnnoCorrente() {
-  const now = new Date();
-  return new Date(now.getFullYear(), 11, 31, 23, 59, 59).toISOString();
+function scadenzaDaCreazione(created_at) {
+  const d = new Date(created_at);
+  return new Date(d.getFullYear(), 11, 31);
 }
 
 function formatoPiuUsato(coppe) {
@@ -392,45 +411,44 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function verificaECreaCoupon(email) {
 
-  // 👉 esempio: 10 coppe = premio
-  const { data: coppe } = await supabase
-    .from("coppe")
-    .select("formato")
-    .eq("email", email)
-    .eq("confermata", true);
+  // esempio: premio ogni 10 coppe
+  const { data: coppe } = await supabase
+    .from("coppe")
+    .select("formato")
+    .eq("email", email)
+    .eq("confermata", true);
 
-  if (!coppe || coppe.length < 10) return;
+  if (!coppe || coppe.length < 10) return;
 
-  // controllo se esiste già un coupon NON usato
-  const { data: esistenti } = await supabase
-    .from("coupon")
-    .select("id")
-    .eq("email", email)
-    .eq("used", false);
+  // se esiste già un coupon NON redento → stop
+  const { data: esistenti } = await supabase
+    .from("coupon")
+    .select("id")
+    .eq("email", email)
+    .eq("redento", false);
 
-  if (esistenti && esistenti.length) return;
+  if (esistenti && esistenti.length) return;
 
-  const formato = formatoPiuUsato(coppe);
+  // formato più usato
+  const count = { piccola: 0, media: 0, grande: 0 };
+  coppe.forEach(c => {
+    if (count[c.formato] !== undefined) count[c.formato]++;
+  });
 
-  await supabase.from("coupon").insert({
-    id: "cp_" + crypto.randomUUID(),
-    email,
-    tipo: formato,
-    titolo: `Coppa ${formato} omaggio`,
-    used: false,
-    created_at: new Date().toISOString(),
-    expires_at: fineAnnoCorrente()
-  });
-}
+  const tipo = ["piccola","media","grande"].reduce((a,b) =>
+    count[b] > count[a] ? b : a
+  );
 
-async function caricaCoupon(email) {
-  const { data: coupons } = await supabase
-    .from("coupon")
-    .select("*")
-    .eq("email", email)
-    .order("created_at", { ascending: false });
+  const titolo = `Coppa ${tipo} omaggio`;
 
-  renderCoupons(coupons || []);
+  // 👉 INSERT CORRETTO
+  await supabase.from("coupon").insert({
+    email,
+    codice: "cp_" + crypto.randomUUID(),
+    tipo,
+    titolo,
+    redento: false
+  });
 }
 
 /* ===============================
@@ -438,30 +456,34 @@ async function caricaCoupon(email) {
 ================================ */
 
 window.renderCoupons = function(coupons) {
-  const list = document.getElementById("coupon-list");
-  list.innerHTML = "";
+  const list = document.getElementById("coupon-list");
+  list.innerHTML = "";
 
-  coupons.forEach(c => {
-    const div = document.createElement("div");
-    div.className = "coupon" + (c.used ? " used" : "");
+  coupons.forEach(c => {
+    const scadenza = scadenzaDaCreazione(c.created_at);
 
-    div.innerHTML = `
-      <div>
-        <div class="coupon-title">${c.titolo}</div>
-        <div class="coupon-desc">Coppa ${c.tipo} omaggio</div>
-        <div class="coupon-expiry">
-          Scade il ${new Date(c.expires_at).toLocaleDateString()}
-        </div>
-      </div>
-      ${
-        c.used
-          ? `<button disabled>Usato</button>`
-          : `<button onclick="apriQR('${c.id}')">Mostra QR</button>`
-      }
-    `;
+    const div = document.createElement("div");
+    div.className = "coupon" + (c.redento ? " used" : "");
 
-    list.appendChild(div);
-  });
+    div.innerHTML = `
+      <div>
+        <div class="coupon-title">${c.titolo}</div>
+        <div class="coupon-desc">
+          Coppa ${c.tipo} omaggio
+        </div>
+        <div class="coupon-expiry">
+          Scade il ${scadenza.toLocaleDateString()}
+        </div>
+      </div>
+      ${
+        c.redento
+          ? `<button disabled>Usato</button>`
+          : `<button onclick="apriQR('${c.codice}')">Mostra QR</button>`
+      }
+    `;
+
+    list.appendChild(div);
+  });
 };
 </script>
 
