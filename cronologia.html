@@ -455,10 +455,18 @@ function formattaDataBella(iso) {
 function aggiornaFedelta() {
     const userEmail = localStorage.getItem("user_email");
 
-const confermate = coppe.filter(c =>
-    c.confermata === true &&
-    c.email === userEmail
-).length;
+const email = (localStorage.getItem("user_email") || "").toLowerCase();
+const guest_id = localStorage.getItem("guest_id") || "";
+
+// ✅ coppe SOLO di questo utente (email se loggato, altrimenti guest)
+const coppeUtente = coppe.filter(c => {
+  const ce = (c.email || "").toLowerCase();
+  const cg = c.guest_id || "";
+  return email ? (ce === email) : (cg === guest_id);
+});
+
+// ✅ conteggio confermate SOLO utente (e non eliminate)
+const confermate = coppeUtente.filter(c => c.confermata && !c.eliminata).length;
 
     const countEl = document.getElementById("fedelta-count");
     const barEl   = document.getElementById("fedelta-bar");
