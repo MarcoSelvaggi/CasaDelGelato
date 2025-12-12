@@ -7,6 +7,7 @@
 
 <link rel="stylesheet" href="bottom-nav.css">
 <script src="global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
 <style>
 body {
@@ -199,8 +200,20 @@ h1 { margin-bottom: 10px; }
 
 <script>
 const couponsDemo = [
-  { title: "Sconto 10%", desc: "Coppa media o grande", expiry: "2025-12-31", used: false },
-  { title: "Coppa Gratis", desc: "Dopo 5 coppe", expiry: "2025-10-01", used: true }
+  {
+    id: "cp_001",
+    title: "Sconto 10%",
+    desc: "Coppa media o grande",
+    expiry: "2025-12-31",
+    used: false
+  },
+  {
+    id: "cp_002",
+    title: "Coppa Gratis",
+    desc: "Dopo 5 coppe",
+    expiry: "2025-10-01",
+    used: true
+  }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -229,16 +242,71 @@ function renderCoupons() {
     couponsDemo.forEach(c => {
         const div = document.createElement("div");
         div.className = "coupon" + (c.used ? " used" : "");
-        div.innerHTML = `
-            <div>
-                <div class="coupon-title">${c.title}</div>
-                <div class="coupon-desc">${c.desc}</div>
-                <div class="coupon-expiry">Scade il ${c.expiry}</div>
-            </div>
-            <button disabled>${c.used ? "Usato" : "Usa"}</button>
-        `;
+     div.innerHTML = `
+    <div>
+        <div class="coupon-title">${c.title}</div>
+        <div class="coupon-desc">${c.desc}</div>
+        <div class="coupon-expiry">Scade il ${c.expiry}</div>
+    </div>
+
+    ${
+      c.used
+        ? `<button disabled>Usato</button>`
+        : `<button onclick="apriQR('${c.id}')">Mostra QR</button>`
+    }
+`;
         list.appendChild(div);
     });
+}
+
+function apriQR(couponId) {
+    const url = `${location.origin}/admin-scan.html?id=${couponId}`;
+
+    const overlay = document.createElement("div");
+    overlay.style = `
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.6);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        z-index:10000;
+    `;
+
+    overlay.innerHTML = `
+        <div style="
+            background:white;
+            padding:22px;
+            border-radius:22px;
+            text-align:center;
+            width:260px;
+        ">
+            <h3 style="margin-top:0">🎟️ Mostra al cameriere</h3>
+            <div id="qr-box"></div>
+            <p style="font-size:13px;color:#666;margin-top:10px">
+              Valido una sola volta
+            </p>
+            <button style="
+                margin-top:12px;
+                padding:8px 14px;
+                border:none;
+                border-radius:12px;
+                background:#000;
+                color:#fff;
+                font-size:14px;
+            " onclick="this.closest('div').parentNode.remove()">
+                Chiudi
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    new QRCode(document.getElementById("qr-box"), {
+        text: url,
+        width: 180,
+        height: 180
+    });
 }
 
 function gestisciLoginLogout() {
