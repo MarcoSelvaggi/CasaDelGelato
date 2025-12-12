@@ -127,121 +127,98 @@ window.confermaCoppaDaQR = async function(qrValue) {
 import { supabase } from "./supabase.js";
 
 function mostra(msg, ok = false) {
-    const box = document.getElementById("risultato");
-    box.style.display = "block";
-    box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
+  const box = document.getElementById("risultato");
+  box.style.display = "block";
+  box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
 }
 
-async function confermaCoppa( qrToken ) {
+async function confermaCoppa(qrToken) {
+  const { data, error } = await supabase
+    .from("coppe")
+    .select("*")
+    .eq("qr_token", qrToken)
+    .limit(1);
 
-    // 1️⃣ CERCO la coppa nel DB
-    const { data, error } = await supabase
-        .from("coppe")
-        .select("*")
-        .eq("qr_token", qrToken)
-        .limit(1);
+  if (error || !data || !data.length) {
+    mostra("❌ QR NON valido!");
+    return;
+  }
 
-    if (error || !data || !data.length) {
-        mostra("❌ QR NON valido!");
-        return;
-    }
+  const coppa = data[0];
 
-    const coppa = data[0];
+  if (coppa.confermata) {
+    mostra("⚠️ Coppa già confermata!", true);
+    return;
+  }
 
-    // 2️⃣ Se è già confermata → messaggio
-    if (coppa.confermata) {
-        mostra("⚠️ Coppa già confermata!", true);
-        return;
-    }
+  await supabase
+    .from("coppe")
+    .update({ confermata: true })
+    .eq("id", coppa.id);
 
-    // 3️⃣ CONFERMO la coppa
-    await supabase
-        .from("coppe")
-        .update({ confermata: true })
-        .eq("id", coppa.id);
+  if (navigator.vibrate) navigator.vibrate(150);
 
-    mostra(`✅ Coppa confermata!
-    <br><br>
-    <b>${coppa.nome}</b><br>
-    (${coppa.formato})`, true);
+  mostra(`✅ Coppa confermata<br><b>${coppa.nome}</b>`, true);
 }
 
-async function confermaCoupon(couponId) {
+async function confermaCoupon(codice) {
 
-    // 1️⃣ Cerco coupon
-    const { data, error } = await supabase
-        .from("coupon")
-        .select("*")
-        .eq("id", couponId)
-        .single();
+  const { data, error } = await supabase
+    .from("coupon")
+    .select("*")
+    .eq("codice", codice)
+    .single();
 
-    if (error || !data) {
-        mostra("❌ Coupon NON valido!");
-        return;
-    }
+  if (error || !data) {
+    mostra("❌ Coupon NON valido!");
+    return;
+  }
 
-    // 2️⃣ Già usato
-    if (data.used) {
-        mostra("⚠️ Coupon già usato!", false);
-        return;
-    }
+  if (data.redento) {
+    mostra("⚠️ Coupon già usato");
+    return;
+  }
 
-    // 3️⃣ Segno come usato
-    await supabase
-        .from("coupon")
-        .update({
-            used: true,
-            used_at: new Date().toISOString()
-        })
-        .eq("id", couponId);
+  await supabase
+    .from("coupon")
+    .update({ redento: true })
+    .eq("codice", codice);
 
-    feedbackOk();
+  if (navigator.vibrate) navigator.vibrate(200);
 
-    mostra(`🎟️ Coupon riscattato!
-    <br><br>
-    <b>${data.titolo}</b>`, true);
+  mostra(`🎟️ Coupon riscattato<br><b>${data.titolo}</b>`, true);
 }
 
-function feedbackOk() {
-    if (navigator.vibrate) navigator.vibrate(200);
-
-    const beep = document.getElementById("beep-sound");
-    if (beep) {
-        beep.currentTime = 0;
-        beep.play().catch(()=>{});
-    }
-}
-
-// Avvio scanner
+// 🚀 Avvio scanner
 function startScanner() {
-    const html5QrCode = new Html5Qrcode("reader");
+  const html5QrCode = new Html5Qrcode("reader");
 
-    html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-qrCodeMessage => {
-    console.log("QR:", qrCodeMessage);
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    async qrCodeMessage => {
 
-    // 🎟️ COUPON
-    if (qrCodeMessage.includes("coupon=")) {
-        const params = new URL(qrCodeMessage).searchParams;
-        const couponId = params.get("coupon");
-        confermaCoupon(couponId);
-    }
-    // 🍨 COPPA
-    else {
-        confermaCoppa(qrCodeMessage);
-        feedbackOk();
-    }
+      console.log("QR letto:", qrCodeMessage);
 
-    html5QrCode.stop().then(() => {
-        setTimeout(() => startScanner(), 1500);
-    });
-},
-        errorMessage => {
-            // errori lettura, NON stampare nulla
-        }
-    );
+      // 🎟️ COUPON
+      if (qrCodeMessage.includes("coupon=")) {
+        const url = new URL(qrCodeMessage);
+        const codice = url.searchParams.get("coupon");
+
+        await confermaCoupon(codice);
+      } 
+      // 🍨 COPPA
+      else {
+        await confermaCoppa(qrCodeMessage);
+      }
+
+      // stop e riavvia dopo 1.5s
+      html5QrCode.stop().then(() => {
+        setTimeout(() => startScanner(), 1500);
+      });
+    },
+    () => {}
+  );
 }
 
 startScanner();
