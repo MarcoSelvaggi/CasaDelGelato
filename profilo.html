@@ -234,8 +234,58 @@ document.addEventListener("DOMContentLoaded", async () => {
   couponSection.style.display = "block";
 
   await verificaECreaCoupon(email);
-  await caricaCoupon(email);
+await caricaCoupon(email);
+subscribeCouponRealtime(email);
 });
+
+function aggiornaCouponUI(coupon) {
+  const card = document.getElementById(`coupon-${coupon.codice}`);
+  if (!card) return;
+
+  // oscura
+  card.classList.add("used");
+
+  // bottone
+  const btn = card.querySelector("button");
+  if (btn) {
+    btn.innerText = "Usato";
+    btn.disabled = true;
+  }
+
+  // data utilizzo
+  if (coupon.used_at) {
+    let usedBox = card.querySelector(".coupon-used-at");
+    if (!usedBox) {
+      usedBox = document.createElement("div");
+      usedBox.className = "coupon-used-at";
+      usedBox.style = "font-size:12px;color:#888;margin-top:6px";
+      card.querySelector(".coupon-expiry").after(usedBox);
+    }
+
+    const d = new Date(coupon.used_at);
+    usedBox.innerText = `Usato il ${d.toLocaleDateString()}`;
+  }
+}
+
+function subscribeCouponRealtime(email) {
+  supabase
+    .channel("coupon-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "coupon",
+        filter: `email=eq.${email}`
+      },
+      payload => {
+        console.log("🔁 Coupon aggiornato realtime:", payload.new);
+
+        aggiornaCouponUI(payload.new);
+      }
+    )
+    .subscribe();
+}
 
 window.addEventListener("focus", async () => {
   const email = localStorage.getItem("user_email");
@@ -304,28 +354,39 @@ function renderCoupons(coupons) {
     const scadenza = scadenzaDaCreazione(c.created_at);
 
     const div = document.createElement("div");
+div.id = `coupon-${c.codice}`;
     div.className = "coupon" + (c.redento ? " used" : "");
 
-    div.innerHTML = `
-      <div>
-        <div class="coupon-title">${c.titolo}</div>
-        <div class="coupon-desc">Coppa ${c.tipo} omaggio</div>
-        <div class="coupon-expiry">
-          Scade il ${scadenza.toLocaleDateString()}
-        </div>
-      </div>
-    ${
-  c.redento
-    ? `<button disabled>Usato</button>`
-    : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
-}
+div.innerHTML = `
+  <div>
+    <div class="coupon-title">${c.titolo}</div>
+    <div class="coupon-desc">Coppa ${c.tipo} omaggio</div>
 
-<div id="qr-${c.codice}" style="
-  display:none;
-  margin-top:12px;
-  text-align:center;
-"></div>
-    `;
+    <div class="coupon-expiry">
+      Scade il ${scadenza.toLocaleDateString()}
+    </div>
+
+    ${
+      c.redento && c.used_at
+        ? `<div class="coupon-used-at" style="font-size:12px;color:#888;margin-top:6px">
+             Usato il ${new Date(c.used_at).toLocaleDateString()}
+           </div>`
+        : ``
+    }
+  </div>
+
+  ${
+    c.redento
+      ? `<button disabled>Usato</button>`
+      : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
+  }
+
+  <div id="qr-${c.codice}" style="
+    display:none;
+    margin-top:12px;
+    text-align:center;
+  "></div>
+`;
 
     list.appendChild(div);
   });

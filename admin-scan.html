@@ -181,7 +181,10 @@ async function confermaCoupon(codice) {
 
   await supabase
     .from("coupon")
-    .update({ redento: true })
+    .update({
+  redento: true,
+  used_at: new Date().toISOString()
+})
     .eq("codice", codice);
 
   if (navigator.vibrate) navigator.vibrate(200);
