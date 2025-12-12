@@ -731,6 +731,34 @@ caricaCoppeComplete().then(all => {
     aggiornaFedelta(); // 🔥 QUI, SUBITO DOPO renderLista
 });
 
+// 🔴 REALTIME: aggiorna cronologia e fedeltà senza refresh
+const emailUtente = localStorage.getItem("user_email");
+
+if (emailUtente) {
+    supabase
+        .channel("coppe-realtime-cronologia")
+        .on(
+            "postgres_changes",
+            {
+                event: "*",
+                schema: "public",
+                table: "coppe",
+                filter: `email=eq.${emailUtente}`
+            },
+            payload => {
+                console.log("🔄 Coppa aggiornata in realtime:", payload);
+
+                // ricarica dati utente
+                caricaCoppeComplete().then(all => {
+                    coppe = all;
+                    renderLista();
+                    aggiornaFedelta();
+                });
+            }
+        )
+        .subscribe();
+}
+
 </script>
 
 <!-- ⭐ BOTTOM NAV BAR -->
