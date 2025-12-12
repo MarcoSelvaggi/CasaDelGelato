@@ -267,20 +267,21 @@ function aggiornaCouponUI(coupon) {
   }
 }
 
+let couponChannel = null;
+
 function subscribeCouponRealtime(email) {
-  supabase
+  if (couponChannel) supabase.removeChannel(couponChannel);
+
+  couponChannel = supabase
     .channel("coupon-realtime")
     .on(
       "postgres_changes",
-      {
-        event: "UPDATE",
-        schema: "public",
-        table: "coupon",
-        filter: `email=eq.${email}`
-      },
+      { event: "UPDATE", schema: "public", table: "coupon" },
       payload => {
-        console.log("🔁 Coupon aggiornato realtime:", payload.new);
+        // filtro lato client (sicuro)
+        if (payload?.new?.email !== email) return;
 
+        console.log("🔁 Coupon aggiornato realtime:", payload.new);
         aggiornaCouponUI(payload.new);
       }
     )
@@ -304,26 +305,32 @@ async function caricaCoupon(email) {
 }
 
 async function verificaECreaCoupon(email) {
+  // 1) quante coppe confermate ha
   const { data: coppe } = await supabase
     .from("coppe")
     .select("formato")
     .eq("email", email)
     .eq("confermata", true);
 
-  if (!coppe || coppe.length < 10) return;
+  const n = coppe?.length || 0;
+  if (n < 10) return;
 
-  const { data: esistenti } = await supabase
+  // 2) quanti coupon ha già ricevuto IN TOTALE (anche usati)
+  const { count: couponCount } = await supabase
     .from("coupon")
-    .select("id")
-    .eq("email", email)
-    .eq("redento", false);
+    .select("*", { count: "exact", head: true })
+    .eq("email", email);
 
-  if (esistenti && esistenti.length) return;
+  const giaEmessi = couponCount || 0;
 
+  // 3) nuovo coupon solo se ha raggiunto un nuovo scaglione
+  // es: 10 coppe => 1 coupon, 20 coppe => 2 coupon, ecc.
+  const dovrebberoEssere = Math.floor(n / 10);
+  if (giaEmessi >= dovrebberoEssere) return;
+
+  // 4) formato più usato
   const count = { piccola: 0, media: 0, grande: 0 };
-  coppe.forEach(c => {
-    if (count[c.formato] !== undefined) count[c.formato]++;
-  });
+  coppe.forEach(c => { if (count[c.formato] !== undefined) count[c.formato]++; });
 
   const tipo = ["piccola","media","grande"].reduce((a,b) =>
     count[b] > count[a] ? b : a
