@@ -453,7 +453,12 @@ function formattaDataBella(iso) {
 }
 
 function aggiornaFedelta() {
-    const confermate = coppe.filter(c => c.confermata).length;
+    const userEmail = localStorage.getItem("user_email");
+
+const confermate = coppe.filter(c =>
+    c.confermata === true &&
+    c.email === userEmail
+).length;
 
     const countEl = document.getElementById("fedelta-count");
     const barEl   = document.getElementById("fedelta-bar");
