@@ -233,9 +233,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnDis.style.display = "block";
   couponSection.style.display = "block";
 
-  await verificaECreaCoupon(email);
+await verificaECreaCoupon(email);
 await caricaCoupon(email);
 subscribeCouponRealtime(email);
+subscribeCoppeRealtime(email); // 👈 QUESTA È LA RIGA CHE MANCAVA
 });
 
 function aggiornaCouponUI(coupon) {
@@ -455,6 +456,11 @@ window.disiscriviti = async function () {
   const email = localStorage.getItem("user_email");
   if (!email) return alert("Errore");
 
+  const ok = confirm(
+    "Sei sicuro di voler disiscriverti?\n\nPerderai coupon e storico."
+  );
+  if (!ok) return;
+
   await supabase
     .from("utenti")
     .update({ disiscritto: true })
@@ -464,6 +470,29 @@ window.disiscriviti = async function () {
   localStorage.setItem("userLogged", "0");
   location.href = "index.html";
 };
+
+function subscribeCoppeRealtime(email) {
+  supabase
+    .channel("coppe-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "coppe"
+      },
+      payload => {
+        if (payload.new.email !== email) return;
+        if (!payload.new.confermata) return;
+
+        console.log("🍨 Coppa confermata realtime");
+
+        verificaECreaCoupon(email);
+        caricaCoupon(email);
+      }
+    )
+    .subscribe();
+}
 
 </script>
 
