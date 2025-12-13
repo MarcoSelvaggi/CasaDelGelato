@@ -178,9 +178,14 @@ function showIsland(step, nomeSelezionato) {
 // ---------------- FORMATO ----------------
 function showSizeScreen(){
   document.querySelector("header").style.display = "block";
+
+  // 🔥 RESET COMPLETO PER NUOVA COPPA
+  coppaSalvata = false;          // ← FONDAMENTALE
   step = "size";
+
   byId("step-size").style.display = "block";
   byId("step-container").style.display = "none";
+
   updateRiepilogo();
 }
 
@@ -638,6 +643,27 @@ function nextStep() {
   updateRiepilogo();
 }
 
+function nextStepFromMini() {
+  // 🔥 forza lo step corretto in base a dove sono
+  if (step === "gusti" && scelti.gusti.length === max.gusti) {
+    step = "gusti";
+  }
+  else if (step === "granelle") {
+    step = "granelle";
+  }
+  else if (step === "topping") {
+    step = "topping";
+  }
+  else if (step === "ingredienti") {
+    step = "ingredienti";
+  }
+  else if (step === "extra") {
+    step = "extra";
+  }
+
+  nextStep();
+}
+
 function prevStep(){
   if(step === "gusti"){ 
     showSizeScreen(); 
@@ -703,7 +729,9 @@ function updateRiepilogo(){
   if(step==="ingredienti") ready = scelti.ingredienti.length === max.ingredienti;
   if(step==="extra") ready = true;
 
-  const btnHtml = ready ? `<button class="quick-next-inside" onclick="nextStep()">Avanti ➜</button>` : "";
+  const btnHtml = ready
+  ? `<button class="quick-next-inside" onclick="nextStepFromMini()">Avanti ➜</button>`
+  : "";
 
   const fullHtml = `
     <div class="riepilogo-titolo">🍨 ${coppaSelezionata}</div>
@@ -1096,15 +1124,9 @@ function stabilizeMiniRiepilogo() {
   el.style.display = "inline-block";
   el.style.boxSizing = "border-box";
 
-  // di base: pill piccola ma leggibile
-  el.style.minWidth = "130px";
-  el.style.maxWidth = "240px";
-
-  // 🔥 per lo step GUSTI, quando è aperto, non farlo collassare
-  if (step === "gusti" && el.classList.contains("open")) {
-      el.style.minWidth = "180px";
-      el.style.maxWidth = "260px";
-  }
+  // ❌ NON forziamo più larghezze qui
+  el.style.minWidth = "";
+  el.style.maxWidth = "";
 }
 
 // 🔓 Se arrivo alla pagina con ?cart=1 apro subito il carrello
@@ -1378,4 +1400,13 @@ document.addEventListener("DOMContentLoaded", () => {
     step = "gusti";
     renderStepGusti();
     updateRiepilogo();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const el = document.getElementById("riepilogo-mini");
+  if (!el) return;
+
+  el.addEventListener("click", () => {
+    console.log("🟢 CLICK RICEVUTO SUL MINI RIEPILOGO");
+  });
 });

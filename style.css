@@ -747,6 +747,7 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 #riepilogo-mini.shake {
   animation: riepilogoShake 0.30s ease;
 }
+
 /* --- Animazione fluida apertura/chiusura mini riepilogo --- */
 #riepilogo-mini {
   overflow: hidden;
@@ -769,6 +770,8 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   opacity: .96;
   padding: 4px 6px;
 }
+
+
 
 /* Shake */
 #riepilogo-mini.shake {
@@ -1270,3 +1273,17 @@ body {
     border: none;
     cursor: pointer;
 }
+
+
+#step-container {
+  pointer-events: auto;
+}
+
+header,
+.nav-buttons,
+.ingredienti-lista {
+  pointer-events: auto;
+}
+
+
+

@@ -118,6 +118,32 @@ body {
   object-fit: contain;
 }
 
+/* ordine visivo */
+.box-palline {
+  z-index: 2;
+}
+
+.box-panna {
+  z-index: 3; /* 🔥 davanti alle palline */
+}
+
+.box-coppa {
+  z-index: 1;
+}
+
+.box-extra {
+  display: flex;
+  align-items: flex-end;   /* 🔥 fondo box */
+  justify-content: center;
+  padding-bottom: 6px;     /* micro respiro */
+}
+
+.img-extra {
+  max-width: 90%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 </style>
 </head>
 
@@ -158,19 +184,19 @@ Test Coppa Gelato – Box Guida (Formato PICCOLA)
 
   <!-- EXTRA -->
   <div class="box box-extra box-granella">
-    <img src="img/granella-nocciola.png" alt="Granella">
-    <div class="label">Granella</div>
-  </div>
+  <img src="img/granella-nocciola.png" class="img-extra">
+  <div class="label">Granella</div>
+</div>
 
-  <div class="box box-extra box-topping">
-    <img src="img/topping-bosco.png" alt="Topping">
-    <div class="label">Topping</div>
-  </div>
+<div class="box box-extra box-topping">
+  <img src="img/topping-bosco.png" class="img-extra">
+  <div class="label">Topping</div>
+</div>
 
-  <div class="box box-extra box-frutta">
-    <img src="img/fragola.png" alt="Frutta">
-    <div class="label">Frutta</div>
-  </div>
+ <div class="box box-extra box-frutta">
+  <img src="img/fragola.png" class="img-extra">
+  <div class="label">Frutta</div>
+</div>
 
 </div>
 
