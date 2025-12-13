@@ -265,6 +265,12 @@ function aggiornaCouponUI(coupon) {
     const d = new Date(coupon.used_at);
     usedBox.innerText = `Usato il ${d.toLocaleDateString()}`;
   }
+  // 🔒 CHIUDI E NASCONDI IL QR SE ESISTE
+const qrBox = document.getElementById(`qr-${coupon.codice}`);
+if (qrBox) {
+  qrBox.innerHTML = "";
+  qrBox.style.display = "none";
+}
 }
 
 let couponChannel = null;
@@ -396,8 +402,8 @@ div.innerHTML = `
 }
 
 window.toggleQR = function(codice) {
-  const box = document.getElementById(`qr-${codice}`);
-  if (!box) return;
+  const card = document.getElementById(`coupon-${codice}`);
+  if (!card || card.classList.contains("used")) return;
 
   // toggle
   if (box.style.display === "block") {
