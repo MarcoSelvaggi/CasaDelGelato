@@ -1,91 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>Test Coppa Gelato</title>
+<title>Test Coppa Gelato – Box Guida (Formato PICCOLA)</title>
 
 <style>
-#preview-area {
-    position: relative;
-    width: 650px;
-    height: 420px;
-    margin: 30px auto;
-    background: #fff;
+body {
+  margin: 0;
+  background: #f2f2f2;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-/* COPPA */
-.coppa-base {
-    position: absolute;
-    width: 260px;
-    left: 120px;
-    top: 190px;
-    z-index: 1;
+/* ================= BOX GRANDE ================= */
+#coppa-stage {
+  position: relative;
+  width: 650px;
+  height: 420px;
+  margin: 40px auto;
+  background: #fff;
+  border: 3px solid #000;
+  overflow: hidden;
 }
 
-/* PALLINE – sopra la coppa */
-.pallina {
-    position: absolute;
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    z-index: 3;
+/* ================= CONTROLLO GLOBALE ================= */
+/* 🔥 spostando SOLO questo si muove tutto */
+:root {
+  --base-left: 45px;   /* ancora più a sinistra */
 }
 
-.pallina1 {
-    top: 120px;
-    left: 135px;
+/* ================= BOX GENERICO ================= */
+.box {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px dashed rgba(0,0,0,0.45);
 }
 
-.pallina2 {
-    top: 120px;
-    left: 230px;
+/* ================= COPPA ================= */
+.box-coppa {
+  width: 260px;
+  height: 170px;
+  left: var(--base-left);
+  top: 210px;
 }
 
-/* ELEMENTI A DESTRA DELLA COPPA → ORIZZONTALI */
-.granella {
-    position: absolute;
-    width: 80px;
-    top: 240px;
-    left: 420px;   /* primo elemento */
-    z-index: 5;
+/* ================= CONTENITORE PALLINE ================= */
+.box-palline {
+  position: absolute;
+  width: 260px;
+  height: 140px;
+  left: var(--base-left);
+  top: 95px;          /* 🔼 alzate leggermente */
 }
 
-.topping {
-    position: absolute;
-    width: 70px;   /* più piccolo */
-    top: 230px;    /* stessa linea più o meno */
-    left: 520px;   /* secondo elemento */
-    z-index: 4;
+/* ================= PALLINE ================= */
+.box-pallina {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  position: absolute;
 }
 
-.frutta {
-    position: absolute;
-    width: 85px;   /* grande come la granella */
-    top: 235px;
-    left: 600px;   /* terzo elemento */
-    z-index: 6;
+.pallina-1 { left: 0; }
+.pallina-2 { right: 0; }
+
+/* ================= PANNA ================= */
+.box-panna {
+  width: 140px;
+  height: 140px;
+  left: calc(var(--base-left) + 130px - 70px);
+  top: 20px;
 }
+
+/* ================= EXTRA ================= */
+.box-extra {
+  width: 90px;
+  height: 130px;
+  top: 240px;
+}
+
+/* stessa distanza tra tutti */
+.box-granella { left: 345px; }
+.box-topping  { left: 445px; }
+.box-frutta   { left: 545px; }
+
+/* ================= LABEL ================= */
+.label {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+}
+
+/* ================= IMMAGINI NEI BOX ================= */
+.box img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* palline più morbide */
+.box-pallina img {
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* panna leggermente sopra */
+.box-panna img {
+  object-fit: contain;
+}
+
+/* extra */
+.box-extra img {
+  object-fit: contain;
+}
+
 </style>
 </head>
+
 <body>
 
-<h2 style="text-align:center">Test Coppa Gelato</h2>
+<h2 style="text-align:center;margin-top:20px;">
+Test Coppa Gelato – Box Guida (Formato PICCOLA)
+</h2>
 
-<div id="preview-area">  <!-- COPPA BASE -->
-  <img src="img/coppa-piccola.png" class="coppa-base" alt="Coppa piccola">
+<div id="coppa-stage">
 
-  <!-- PALLINE (gusti) -->
-  <img src="img/pallina-vaniglia.png" class="pallina pallina-left"  alt="Gusto 1">
-  <img src="img/pallina-fragola.png"  class="pallina pallina-right" alt="Gusto 2">
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png" alt="Panna">
+    <div class="label">Panna</div>
+  </div>
 
-  <!-- PANNA SEMPRE PRESENTE -->
-  <img src="img/panna.png" class="panna" alt="Panna">
+  <!-- PALLINE -->
+  <div class="box-palline">
 
-  <!-- ZONA DESTRA: GRANELLA, TOPPING, FRUTTA -->
-  <img src="img/granella-nocciola.png" class="granella" alt="Granella">
-  <img src="img/topping-bosco.png"    class="topping"  alt="Topping">
-  <img src="img/fragola.png"          class="frutta"   alt="Frutta">
-</div>
+    <div class="box box-pallina pallina-1">
+      <img src="img/pallina-vaniglia.png" alt="Pallina 1">
+      <div class="label">Pallina 1</div>
+    </div>
+
+    <div class="box box-pallina pallina-2">
+      <img src="img/pallina-fragola.png" alt="Pallina 2">
+      <div class="label">Pallina 2</div>
+    </div>
+
+  </div>
+
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-piccola.png" alt="Coppa">
+    <div class="label">Coppa</div>
+  </div>
+
+  <!-- EXTRA -->
+  <div class="box box-extra box-granella">
+    <img src="img/granella-nocciola.png" alt="Granella">
+    <div class="label">Granella</div>
+  </div>
+
+  <div class="box box-extra box-topping">
+    <img src="img/topping-bosco.png" alt="Topping">
+    <div class="label">Topping</div>
+  </div>
+
+  <div class="box box-extra box-frutta">
+    <img src="img/fragola.png" alt="Frutta">
+    <div class="label">Frutta</div>
+  </div>
 
 </div>
 
