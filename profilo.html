@@ -311,37 +311,39 @@ async function caricaCoupon(email) {
 }
 
 async function verificaECreaCoupon(email) {
-  // 1) quante coppe confermate ha
+
+  // 1️⃣ Coppe confermate
   const { data: coppe } = await supabase
     .from("coppe")
     .select("formato")
     .eq("email", email)
     .eq("confermata", true);
 
-  const n = coppe?.length || 0;
-  if (n < 10) return;
+  if (!coppe || coppe.length < 10) return;
 
-  // 2) quanti coupon ha già ricevuto IN TOTALE (anche usati)
-  const { count: couponCount } = await supabase
+  // 2️⃣ Coupon già esistenti
+  const { data: coupons } = await supabase
     .from("coupon")
-    .select("*", { count: "exact", head: true })
+    .select("id")
     .eq("email", email);
 
-  const giaEmessi = couponCount || 0;
+  const couponDovuti = Math.floor(coppe.length / 10);
+  const couponCreati = coupons ? coupons.length : 0;
 
-  // 3) nuovo coupon solo se ha raggiunto un nuovo scaglione
-  // es: 10 coppe => 1 coupon, 20 coppe => 2 coupon, ecc.
-  const dovrebberoEssere = Math.floor(n / 10);
-  if (giaEmessi >= dovrebberoEssere) return;
+  // 3️⃣ Se non devo crearne altri → stop
+  if (couponCreati >= couponDovuti) return;
 
-  // 4) formato più usato
+  // 4️⃣ Calcolo formato più usato
   const count = { piccola: 0, media: 0, grande: 0 };
-  coppe.forEach(c => { if (count[c.formato] !== undefined) count[c.formato]++; });
+  coppe.forEach(c => {
+    if (count[c.formato] !== undefined) count[c.formato]++;
+  });
 
-  const tipo = ["piccola","media","grande"].reduce((a,b) =>
+  const tipo = ["piccola", "media", "grande"].reduce((a, b) =>
     count[b] > count[a] ? b : a
   );
 
+  // 5️⃣ Creo UN SOLO coupon
   await supabase.from("coupon").insert({
     email,
     codice: "cp_" + crypto.randomUUID(),
