@@ -407,6 +407,9 @@ window.toggleQR = function(codice) {
   const card = document.getElementById(`coupon-${codice}`);
   if (!card || card.classList.contains("used")) return;
 
+  const box = document.getElementById(`qr-${codice}`);
+  if (!box) return;
+
   // toggle
   if (box.style.display === "block") {
     box.innerHTML = "";
@@ -431,6 +434,35 @@ window.toggleQR = function(codice) {
   note.style = "font-size:12px;color:#666;margin-top:6px";
   note.innerText = "Mostra questo QR al cameriere (valido una sola volta)";
   box.appendChild(note);
+};
+
+window.gestisciLoginLogout = function () {
+  const email = localStorage.getItem("user_email");
+
+  if (!email) {
+    location.href = "login.html";
+    return;
+  }
+
+  if (confirm(`Sei loggato come:\n${email}\n\nVuoi cambiare profilo?`)) {
+    localStorage.removeItem("user_email");
+    localStorage.setItem("userLogged", "0");
+    location.href = "login.html";
+  }
+};
+
+window.disiscriviti = async function () {
+  const email = localStorage.getItem("user_email");
+  if (!email) return alert("Errore");
+
+  await supabase
+    .from("utenti")
+    .update({ disiscritto: true })
+    .eq("email", email);
+
+  localStorage.removeItem("user_email");
+  localStorage.setItem("userLogged", "0");
+  location.href = "index.html";
 };
 
 </script>
