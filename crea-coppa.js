@@ -5,6 +5,9 @@ let titoloGustiVisibile = true;
 let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
 let step = "size"; // iniziamo sulla scelta formato
+let allergeniCliente = JSON.parse(
+  localStorage.getItem("allergeni_cliente") || "[]"
+);
 // === SISTEMA QUANTITÀ GUSTI ===
 let gustiQuantities = {};      // es: { VANIGLIA: 2, FRAGOLA: 1 }
 let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in modifica)
@@ -51,7 +54,8 @@ async function caricaDisponibilita() {
 // =================== AVVIO PAGINA ===================
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("🌐 Avvio pagina...");
-
+allergeniCliente = JSON.parse(localStorage.getItem("allergeni_cliente") || "[]");
+console.log("🧬 Allergeni cliente:", allergeniCliente);
     await caricaDisponibilita();
     attivaRealtimeDisponibilita();
 
@@ -103,6 +107,46 @@ const gustiList = [
   "CREMA ANDALUSA","CREMINO","CREMINO AL PISTACCHIO","AFTER EIGHT",
   "VARIEGATO FICHI NOCI MIELE"
 ]
+
+/* =======================
+   ALLERGENI GUSTI
+======================= */
+
+const ALLERGENI_GUSTI = {
+  "VANIGLIA": ["Latte", "Uova"],
+  "FIOR DI LATTE": ["Latte"],
+  "CIOCCOLATO": ["Latte"],
+  "NOCCIOLA": ["Latte", "Uova"],
+  "FRAGOLA": [],
+  "PISTACCHIO": ["Latte", "Frutta a guscio"],
+  "LIMONE": [],
+  "MELONE": [],
+  "KIWI": [],
+  "BANANA": ["Latte"],
+  "COCCO": ["Latte"],
+  "LAMPONE": [],
+  "MANGO": [],
+  "ANANAS": [],
+  "VARIEGATO AMARENA": ["Latte"],
+  "STRACCIATELLA": ["Latte"],
+  "YOGURT": ["Latte"],
+  "YOGURT FRAGOLINE": ["Latte"],
+  "CREME CARAMEL": ["Latte"],
+  "BACIO": ["Latte", "Glutine", "Frutta a guscio", "Uova"],
+  "CAFFÈ": ["Latte"],
+  "TIRAMISÙ": ["Latte", "Uova"],
+  "CROCCANTINO AL RUM": ["Latte", "Glutine"],
+  "AMARETTO": ["Latte"],
+  "MALAGA": ["Latte"],
+  "CHEESECAKE": ["Latte", "Glutine"],
+  "COOKIES": ["Latte", "Glutine"],
+  "CREMA ANDALUSA": ["Latte", "Uova"],
+  "CREMINO": ["Latte", "Uova", "Glutine"],
+  "CREMINO AL PISTACCHIO": ["Latte", "Uova", "Glutine"],
+  "AFTER EIGHT": ["Latte"],
+  "VARIEGATO FICHI NOCI MIELE": ["Latte", "Frutta a guscio"]
+};
+
 
 const granelleList = [
   "NOCCIOLA","CROCCANTE","PISTACCHIO","COCCO RAPE'","SCAGLIETTE AL CIOCCOLATO","SMARTIES","ZUCCHERINI COLORATI"
@@ -314,6 +358,9 @@ function renderStepGusti() {
     `;
 
     gustiList.forEach(nome => {
+      // 🚫 Controllo allergeni
+const allergeniGusto = ALLERGENI_GUSTI[nome] || [];
+const gustoVietato = allergeniGusto.some(a => allergeniCliente.includes(a));
       // 🚫 Controllo disponibilità
 const disponibile = DISPONIBILITA["Gusti"]?.[nome] !== false;
         const qty = gustiQuantities[nome] || 0;
@@ -325,11 +372,13 @@ const disponibile = DISPONIBILITA["Gusti"]?.[nome] !== false;
 if (!disponibile) cls += " gusto-disabled";
 if (isEditing) cls += " gusto-pending";
 else if (isConfirmed) cls += " gusto-confirmed";
+if (gustoVietato) cls += " gusto-allergene";
 
    
 
  html += `
-    <div class="${cls}" onclick="${disponibile ? `selectGusto('${nome}')` : ''}">
+    <div class="${cls}" 
+     ${disponibile && !gustoVietato ? `onclick="selectGusto('${nome}')"` : ''}>
         <span class="gusto-name">${escapeHtml(nome)}</span>
 
         ${showControls ? `

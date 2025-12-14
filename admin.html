@@ -159,6 +159,37 @@
 
 <body>
 
+<script>
+/* =========================
+   🔐 PROTEZIONE PAGINA ADMIN
+========================= */
+
+const ADMIN_PASSWORD = "115365"; // 🔴 CAMBIA QUI
+
+function chiediPasswordAdmin() {
+  const pwd = prompt("🔐 Inserisci la password admin");
+
+  if (pwd === null) {
+    // annullato → fuori
+    alert("Accesso annullato");
+    window.location.href = "index.html";
+    return;
+  }
+
+  if (pwd !== ADMIN_PASSWORD) {
+    alert("❌ Password errata");
+    window.location.href = "index.html";
+    return;
+  }
+
+  // ✅ password corretta
+  console.log("Accesso admin autorizzato");
+}
+
+// 🔥 CHIEDI PASSWORD APPENA CARICA LA PAGINA
+document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
+</script>
+
 <div id="top-fixed-bar">
     <a class="home-btn" href="index.html">
         <img src="tastohome.png" alt="home">
