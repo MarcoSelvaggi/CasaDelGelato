@@ -78,6 +78,9 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   position: relative;
   transition: var(--transition);
 }
+.menu-item.option {
+  white-space: nowrap;
+}
 
 .menu-item.option.selected,
 .select-item.selected {
