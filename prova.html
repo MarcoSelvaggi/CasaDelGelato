@@ -54,8 +54,8 @@ body {
 
 /* ================= PALLINE ================= */
 .box-pallina {
-  width: 140px;
-  height: 140px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   position: absolute;
 }
@@ -65,10 +65,10 @@ body {
 
 /* ================= PANNA ================= */
 .box-panna {
-  width: 140px;
-  height: 140px;
-  left: calc(var(--base-left) + 130px - 70px);
-  top: 20px;
+  width: 160px;   /* ⬅️ più grande */
+  height: 160px;
+  left: calc(var(--base-left) + 130px - 80px); /* ricalcolo centro */
+  top: 10px;      /* leggermente più in alto */
 }
 
 /* ================= EXTRA ================= */
@@ -118,17 +118,19 @@ body {
   object-fit: contain;
 }
 
-/* ordine visivo */
+/* PALLINE DIETRO */
 .box-palline {
+  z-index: 1;
+}
+
+/* COPPA DAVANTI ALLE PALLINE */
+.box-coppa {
   z-index: 2;
 }
 
+/* PANNA DAVANTI A TUTTO */
 .box-panna {
-  z-index: 3; /* 🔥 davanti alle palline */
-}
-
-.box-coppa {
-  z-index: 1;
+  z-index: 3;
 }
 
 .box-extra {
