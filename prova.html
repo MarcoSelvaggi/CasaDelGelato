@@ -49,7 +49,7 @@ body {
   width: 260px;
   height: 140px;
   left: var(--base-left);
-  top: 95px;          /* 🔼 alzate leggermente */
+  top: 110px;          /* 🔼 alzate leggermente */
 }
 
 /* ================= PALLINE ================= */
@@ -60,8 +60,15 @@ body {
   position: absolute;
 }
 
-.pallina-1 { left: 0; }
-.pallina-2 { right: 0; }
+.pallina-1 {
+  left: 0;
+  transform: translateX(20px);
+}
+
+.pallina-2 {
+  right: 0;
+  transform: translateX(-20px);
+}
 
 /* ================= PANNA ================= */
 .box-panna {
