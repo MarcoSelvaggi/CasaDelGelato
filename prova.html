@@ -144,21 +144,18 @@ body {
 /* ===== BOX EXTRA ===== */
 .box-extra{
   position: absolute;
+  display: flex;
+  align-items: flex-end;     /* 🔥 spinge SEMPRE in basso */
+  justify-content: center;
   overflow: hidden;
 }
 
 /* ===== IMMAGINI EXTRA ===== */
 .box-extra img{
-  position: absolute;
-  bottom: 0;                /* ✅ INCOLLATA AL BORDO BASSO */
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: auto;
   max-width: 100%;
-  height: auto;
   max-height: 100%;
-
+  height: auto;
+  width: auto;
   display: block;
 }
 
