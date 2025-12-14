@@ -144,18 +144,18 @@ body {
 /* ===== BOX EXTRA ===== */
 .box-extra{
   position: absolute;
-  display: flex;
-  align-items: flex-end;     /* 🔥 spinge SEMPRE in basso */
-  justify-content: center;
   overflow: hidden;
+  display: flex;
+  align-items: flex-end;   /* ancora in basso */
+  justify-content: center;
 }
 
 /* ===== IMMAGINI EXTRA ===== */
 .box-extra img{
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
+  height: 100%;            /* 🔥 RIEMPIE l’altezza del box */
   width: auto;
+  max-width: 100%;
+  object-fit: contain;
   display: block;
 }
 
