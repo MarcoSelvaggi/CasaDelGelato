@@ -140,30 +140,27 @@ body {
   z-index: 3;
 }
 
-.box-extra {
-  display: flex;
-  align-items: flex-end;   /* 👈 appoggia in basso */
-  justify-content: center; /* centrata orizzontalmente */
-}
 
-.img-extra{
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
+/* ===== BOX EXTRA ===== */
 .box-extra{
-  position: absolute; /* importante: il figlio absolute si ancora qui */
+  position: absolute;     /* riferimento per l'immagine */
+  overflow: hidden;
 }
 
+/* ===== IMMAGINI EXTRA ===== */
 .box-extra img{
   position: absolute;
+  bottom: 0;              /* 🔥 appoggia al bordo basso */
   left: 50%;
   transform: translateX(-50%);
-  bottom: 0;              /* ✅ appoggia al bordo basso */
-  width: 100%;
-  height: 100%;
+
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;           /* 🔥 fondamentale */
+  width: auto;
+
   object-fit: contain;
+  display: block;
 }
 
 </style>
