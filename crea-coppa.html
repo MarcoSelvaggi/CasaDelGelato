@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
   <p style="margin-top:2px; font-size:13px; color:#666; line-height:1.3;">
     ⚠️Per eventuali allergie o intolleranze consultare la lista 
     e avvisare il cameriere⚠️
-    
+
     (Selezionando gli allergeni i prodotti verranno già filtrati durante la creazione della coppa)
   </p>
 
@@ -102,20 +102,26 @@ document.addEventListener("DOMContentLoaded", function () {
   </div>
 
   <!-- SCELTA FORMATO (onclick usa funzioni globali di crea-coppa.js) -->
-  <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
-    <b>PICCOLA • €7,50</b><br>
+ <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
+  <div class="formato-titolo">MEDIA • €7,50</div>
+  <div class="formato-dettagli">
     2 gusti · 1 granella · 1 topping · 1 ingrediente
   </div>
+</div>
 
-  <div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
-    <b>MEDIA • €9,00</b><br>
-   3 gusti · 2 granelle · 2 topping · 1 ingrediente
+<div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
+  <div class="formato-titolo">MEDIA • €9,00</div>
+  <div class="formato-dettagli">
+    3 gusti · 2 granelle · 2 topping · 1 ingrediente
   </div>
+</div>
 
-  <div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
-    <b>GRANDE • €12,00</b><br>
-    4 gusti · 2 granelle · 2 topping · 2 ingredienti
+<div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
+  <div class="formato-titolo">MEDIA • €12,00</div>
+  <div class="formato-dettagli">
+    4 gusti · 2 granelle · 2 topping · 2 ingredient1
   </div>
+</div>
 </section>
 
 <h2 id="step-title" class="step-title" style="display:none; text-align:center; margin-top:10px;"></h2>
@@ -148,7 +154,8 @@ document.addEventListener("DOMContentLoaded", function () {
 <div id="popup-coppa">
   <div class="popup-content">
     <h2>🍨 Come funziona</h2>
-    <p>Seleziona prima il formato. Poi scegli gusti, granelle, topping ed ingredienti. Infine conferma e detta la tua coppa al cameriere! ✅</p>
+    <p>Seleziona prima il formato. Poi scegli gusti, granelle, topping ed ingredienti. Infine conferma e detta la tua coppa al cameriere! ✅ 
+      (Panna montata inclusa nel prezzo)</p>
     <button id="popup-ok">Ho capito</button>
   </div>
 </div>
