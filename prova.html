@@ -145,17 +145,20 @@ body {
 .box-extra{
   position: absolute;
   overflow: hidden;
-  display: flex;
-  align-items: flex-end;   /* ancora in basso */
-  justify-content: center;
 }
 
 /* ===== IMMAGINI EXTRA ===== */
 .box-extra img{
-  height: 100%;            /* 🔥 RIEMPIE l’altezza del box */
-  width: auto;
+  position: absolute;
+  bottom: 0;                 /* appoggia in basso */
+  left: 50%;                 /* centro orizzontale */
+  transform: translateX(-50%);
+
   max-width: 100%;
-  object-fit: contain;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+
   display: block;
 }
 
