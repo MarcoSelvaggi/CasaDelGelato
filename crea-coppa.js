@@ -152,10 +152,33 @@ const granelleList = [
   "NOCCIOLA","CROCCANTE","PISTACCHIO","COCCO RAPE'","SCAGLIETTE AL CIOCCOLATO","SMARTIES","ZUCCHERINI COLORATI"
 ];
 
+/* =======================
+   ALLERGENI → GRANELLE
+======================= */
+const ALLERGENI_GRANELLE = {
+  "NOCCIOLA": ["Frutta a guscio"],
+  "CROCCANTE": ["Frutta a guscio"],
+  "PISTACCHIO": ["Frutta a guscio"],
+  "COCCO RAPE'": [],
+  "SCAGLIETTE AL CIOCCOLATO": ["Latte", "Soia"],
+  "SMARTIES": ["Latte", "Glutine", "Soia"],
+  "ZUCCHERINI COLORATI": ["Soia"]
+};
+
 const toppingList = [
   "ANANAS","ARANCIA","FRAGOLA","FRUTTI DI BOSCO","KIWI","MELONE","MENTA","CARAMELLO","MALAGA","CIOCCOLATO","NOCCIOLA","PISTACCHIO",
-  "LIQUORE AMARETTO","LIQUORE AL CAFFE'","LIQUORE AL COCCO","SCIROPPO AMARENA","JOGURT NATURALE","VOV","CAFFÈ ESPRESSO","CAFFÈ DECA","ORZO","GINSENG","CAFFE' FREDDO","CIOCCOLATO FREDDO","DISARONNO","BAYLES","COINTREAU","GRAND MARNIER","JACK DANIEL'S","LIMONCELLO","RUM","STRAVECCHIO","VECCHIA ROMAGNA","VODKA"
+  "LIQUORE AMARETTO","LIQUORE AL CAFFE'","LIQUORE AL COCCO","SCIROPPO AMARENA","JOGURT NATURALE","VOV","CAFFÈ ESPRESSO","CAFFÈ DECAFFEINATO","ORZO","GINSENG","CAFFÈ FREDDO","CIOCCOLATO FREDDO","DISARONNO","BAYLES","COINTREAU","GRAND MARNIER","JACK DANIEL'S","LIMONCELLO","RUM","STRAVECCHIO","VECCHIA ROMAGNA","VODKA"
 ];
+
+/* =======================
+   ALLERGENI → TOPPING
+======================= */
+const ALLERGENI_TOPPING = {
+  "CIOCCOLATO": ["Latte", "Soia"],
+  "NOCCIOLA": ["Frutta a guscio", "Soia"],
+  "PISTACCHIO": ["Frutta a guscio", "Soia"],
+  "CIOCCOLATO FREDDO": ["Latte"]
+};
 
 const ingredientiList = [
   "AMARENE(4PZ)","MACEDONIA","ANGURIA","ANANAS","BANANA","FRAGOLE","KIWI","MELONE",
@@ -163,7 +186,32 @@ const ingredientiList = [
   "MIKADO","AFTER EIGHT","BOUNTY","KITKAT","DUPLO","CIOCCOLATINI"
 ];
 
+/* =======================
+   ALLERGENI → INGREDIENTI
+======================= */
+const ALLERGENI_INGREDIENTI = {
+  "AMARETTI": ["Frutta a guscio"],
+  "MANDORLE": ["Frutta a guscio"],
+  "NOCCIOLINE": ["Frutta a guscio"],
+  "NOCI": ["Frutta a guscio"],
+
+  "MIKADO": ["Latte", "Soia", "Glutine"],
+  "AFTER EIGHT": ["Latte", "Soia", "Glutine"],
+  "BOUNTY": ["Latte", "Soia", "Glutine"],
+  "KITKAT": ["Latte", "Soia", "Glutine"],
+  "DUPLO": ["Latte", "Soia", "Glutine"],
+  "CIOCCOLATINI": ["Latte", "Soia", "Glutine"]
+};
+
 const extraList = ["COCCO (3pz)","MIX KINDER","PANNA EXTRA"];
+
+/* =======================
+   ALLERGENI → EXTRA
+======================= */
+const ALLERGENI_EXTRA = {
+  "MIX KINDER": ["Latte", "Soia", "Glutine"],
+  "PANNA EXTRA": ["Latte"]
+};
 
 // ---------------- PREZZI ----------------
 const prezziBase = { PICCOLA: 7.50, MEDIA: 9.00, GRANDE: 12.00 };
@@ -372,7 +420,7 @@ const disponibile = DISPONIBILITA["Gusti"]?.[nome] !== false;
 if (!disponibile) cls += " gusto-disabled";
 if (isEditing) cls += " gusto-pending";
 else if (isConfirmed) cls += " gusto-confirmed";
-if (gustoVietato) cls += " gusto-allergene";
+if (gustoVietato) cls += " item-allergene";
 
    
 
@@ -544,7 +592,27 @@ function render() {
       ${
         lista.map(it => {
           const nome = it.split(" (+€")[0].trim();
+// 🚫 CONTROLLO ALLERGENI
+let allergeneVietato = false;
 
+if (step === "granelle") {
+  const a = ALLERGENI_GRANELLE[nome] || [];
+  allergeneVietato = a.some(x => allergeniCliente.includes(x));
+}
+
+if (step === "topping") {
+  const a = ALLERGENI_TOPPING[nome] || [];
+  allergeneVietato = a.some(x => allergeniCliente.includes(x));
+}
+
+if (step === "ingredienti") {
+  const a = ALLERGENI_INGREDIENTI[nome] || [];
+  allergeneVietato = a.some(x => allergeniCliente.includes(x));
+}
+if (step === "extra") {
+  const a = ALLERGENI_EXTRA[nome] || [];
+  allergeneVietato = a.some(x => allergeniCliente.includes(x));
+}
           // 🔥 Mappa step → categoria DB
           const categoria =
               step === "granelle"     ? "Granelle" :
@@ -554,13 +622,16 @@ function render() {
                                         "Gusti";
 
           // 🔥 Controllo disponibilità
-          const disponibile   = DISPONIBILITA[categoria]?.[nome] !== false;
-          const sel           = scelti[step].includes(nome) ? "selected" : "";
-          const disabledClass = disponibile ? "" : "item-disabled";
+         const disponibile   = DISPONIBILITA[categoria]?.[nome] !== false;
+         const sel           = scelti[step].includes(nome) ? "selected" : "";
+         const disabledClass = !disponibile ? "item-disabled" : "";
+         const allergeneClass = allergeneVietato ? "item-allergene" : "";
 
           return `
-            <div class="item ${sel} ${disabledClass}"
-                 ${disponibile ? `onclick="toggle('${step}','${escForOnclick(nome)}',this)"` : ""}>
+     <div class="item ${sel} ${disabledClass} ${allergeneClass}"
+     ${disponibile && !allergeneVietato
+       ? `onclick="toggle('${step}','${escForOnclick(nome)}',this)"`
+       : ""}>
               ${it}
             </div>
           `;

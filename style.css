@@ -1019,14 +1019,14 @@ body.step-size #riepilogo-mini {
     filter: grayscale(100%);
     pointer-events: none;
 }
-/* 🚫 GUSTO BLOCCATO PER ALLERGIA */
-.gusto-allergene {
+/* 🚫 ELEMENTO BLOCCATO PER ALLERGIA (TUTTI) */
+.item-allergene,
+.gusto-item.item-allergene {
   opacity: 0.35;
   border: 2px solid #007aff !important;
   background: #eef5ff;
   pointer-events: none;
 }
-
 /* ============================
    🛒 OVERLAY CARRELLO (VERSIONE FINALE)
    ============================ */
