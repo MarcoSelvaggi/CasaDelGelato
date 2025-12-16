@@ -94,19 +94,20 @@ body {
 .box-topping  { left: calc(var(--base-left) + 400px); }
 .box-frutta   { left: calc(var(--base-left) + 500px); }
 
-/* ================= IMMAGINI NEI BOX ================= */
-.box img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-/* ================= IMMAGINI NEI BOX (FIX DEFINITIVO) ================= */
 
-/* Tutti i box NON extra (coppa, panna, palline) */
+/* ================= FIX IMMAGINI BOX (DAL CSS VECCHIO) ================= */
+
+/* Tutti i box usano il box come maschera */
+.box {
+  position: absolute;
+  overflow: hidden; /* 🔥 QUESTO MANCAVA */
+}
+
+/* Tutte le immagini nei box NON extra */
 .box:not(.box-extra) img {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
