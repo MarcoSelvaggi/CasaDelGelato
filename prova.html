@@ -101,6 +101,28 @@ body {
   object-fit: contain;
   display: block;
 }
+/* ================= IMMAGINI NEI BOX (FIX DEFINITIVO) ================= */
+
+/* Tutti i box NON extra (coppa, panna, palline) */
+.box:not(.box-extra) img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Palline */
+.box-pallina img {
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Panna */
+.box-panna img {
+  object-fit: contain;
+}
 
 /* ================= LABEL ================= */
 .label {
