@@ -78,13 +78,6 @@ body {
   top: 10px;      /* leggermente più in alto */
 }
 
-/* ================= EXTRA ================= */
-.box-extra {
-  width: 90px;
-  height: 130px;
-  top: 240px;
-}
-
 /* stessa distanza tra tutti */
 .box-granella { left: 345px; }
 .box-topping  { left: 445px; }
@@ -100,7 +93,8 @@ body {
 }
 
 /* ================= IMMAGINI NEI BOX ================= */
-.box img {
+/* IMMAGINI GENERICHE (COPPA, PANNA, PALLINE) */
+.box:not(.box-extra) img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -120,11 +114,6 @@ body {
   object-fit: contain;
 }
 
-/* extra */
-.box-extra img {
-  object-fit: contain;
-}
-
 /* PALLINE DIETRO */
 .box-palline {
   z-index: 1;
@@ -140,12 +129,23 @@ body {
   z-index: 3;
 }
 
-
-/* ================= EXTRA ================= */
+/* ================= EXTRA – FIX PNG TRASPARENTI ================= */
 .box-extra {
+  position: absolute;
   width: 90px;
   height: 130px;
   top: 240px;
+
+  display: flex;
+  align-items: flex-end;   /* 🔥 appoggia in basso */
+  justify-content: center;
+}
+
+.box-extra img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 /* stessa distanza tra tutti */
@@ -161,9 +161,6 @@ body {
   transform: translateX(-50%);
   font-size: 11px;
 }
-</style>
-</head>
-
 </style>
 </head>
 
