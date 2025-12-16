@@ -32,8 +32,14 @@ body {
   position: absolute;
   box-sizing: border-box;
   border: 2px dashed rgba(0,0,0,0.45);
+  overflow: visibile;
 }
-
+/* SOLO i box con immagini devono tagliare */
+.box-coppa,
+.box-panna,
+.box-pallina {
+  overflow: hidden;
+}
 /* ================= COPPA ================= */
 .box-coppa {
   width: 260px;
@@ -102,12 +108,6 @@ body {
 
 
 /* ================= FIX IMMAGINI BOX (DAL CSS VECCHIO) ================= */
-
-/* Tutti i box usano il box come maschera */
-.box {
-  position: absolute;
-  overflow: hidden; /* 🔥 QUESTO MANCAVA */
-}
 
 /* Tutte le immagini nei box NON extra */
 .box:not(.box-extra) img {
