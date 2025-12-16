@@ -14,8 +14,8 @@ body {
 /* ================= BOX GRANDE ================= */
 #coppa-stage {
   position: relative;
-  width: 650px;
-  height: 420px;
+  width: 860px;
+  height: 500px;
   margin: 40px auto;
   background: #fff;
   border: 3px solid #000;
@@ -23,12 +23,11 @@ body {
 }
 
 /* ================= CONTROLLO GLOBALE ================= */
-/* 🔥 spostando SOLO questo si muove tutto */
 :root {
-  --base-left: 45px;   /* ancora più a sinistra */
+  --base-left: 170px;
 }
 
-/* ================= BOX GENERICO ================= */
+/* ================= BOX ================= */
 .box {
   position: absolute;
   box-sizing: border-box;
@@ -43,16 +42,16 @@ body {
   top: 210px;
 }
 
-/* ================= CONTENITORE PALLINE ================= */
+/* ================= PALLINE ================= */
 .box-palline {
   position: absolute;
   width: 260px;
   height: 140px;
   left: var(--base-left);
-  top: 110px;          /* 🔼 alzate leggermente */
+  top: 110px;
+  z-index: 1;
 }
 
-/* ================= PALLINE ================= */
 .box-pallina {
   width: 120px;
   height: 120px;
@@ -60,84 +59,32 @@ body {
   position: absolute;
 }
 
-.pallina-1 {
-  left: 0;
-  transform: translateX(20px);
-}
+.pallina-1 { left: 0; transform: translateX(20px); }
+.pallina-2 { right: 0; transform: translateX(-20px); }
 
-.pallina-2 {
-  right: 0;
-  transform: translateX(-20px);
+.box-pallina img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 /* ================= PANNA ================= */
 .box-panna {
-  width: 160px;   /* ⬅️ più grande */
+  width: 160px;
   height: 160px;
-  left: calc(var(--base-left) + 130px - 80px); /* ricalcolo centro */
-  top: 10px;      /* leggermente più in alto */
-}
-
-/* stessa distanza tra tutti */
-.box-granella { left: 345px; }
-.box-topping  { left: 445px; }
-.box-frutta   { left: 545px; }
-
-/* ================= LABEL ================= */
-.label {
-  position: absolute;
-  bottom: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 11px;
-}
-
-/* ================= IMMAGINI NEI BOX ================= */
-/* IMMAGINI GENERICHE (COPPA, PANNA, PALLINE) */
-.box:not(.box-extra) img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-}
-
-/* palline più morbide */
-.box-pallina img {
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-/* panna leggermente sopra */
-.box-panna img {
-  object-fit: contain;
-}
-
-/* PALLINE DIETRO */
-.box-palline {
-  z-index: 1;
-}
-
-/* COPPA DAVANTI ALLE PALLINE */
-.box-coppa {
-  z-index: 2;
-}
-
-/* PANNA DAVANTI A TUTTO */
-.box-panna {
+  left: calc(var(--base-left) + 130px - 80px);
+  top: 10px;
   z-index: 3;
 }
 
-/* ================= EXTRA – FIX PNG TRASPARENTI ================= */
+/* ================= EXTRA ================= */
 .box-extra {
-  position: absolute;
   width: 90px;
   height: 130px;
   top: 240px;
-
   display: flex;
-  align-items: flex-end;   /* 🔥 appoggia in basso */
+  align-items: flex-end;
   justify-content: center;
 }
 
@@ -145,13 +92,11 @@ body {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  display: block;
 }
 
-/* stessa distanza tra tutti */
-.box-granella { left: 345px; }
-.box-topping  { left: 445px; }
-.box-frutta   { left: 545px; }
+.box-granella { left: calc(var(--base-left) + 300px); }
+.box-topping  { left: calc(var(--base-left) + 400px); }
+.box-frutta   { left: calc(var(--base-left) + 500px); }
 
 /* ================= LABEL ================= */
 .label {
@@ -162,26 +107,101 @@ body {
   font-size: 11px;
 }
 
-/* ================= FRECCE DESCRITTIVE ================= */
+/* ================= FRECCE ================= */
 .arrow {
   position: absolute;
   pointer-events: none;
-  font-size: 13px;
-  color: #111;
+  z-index: 2;
 }
 
-/* linea curva */
 .arrow svg {
   overflow: visible;
 }
 
-/* testo */
-.arrow span {
-  display: block;
-  margin-bottom: 4px;
-  font-weight: 500;
+.arrow path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3;
+  stroke-linecap: round;
 }
 
+/* ================= TESTO FRECCE ================= */
+.arrow-text {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #000;
+}
+
+/* posizionamento TESTO – calibrato sulla tua freccia */
+.arrow-text.left {
+  left: 36px;
+  top: 20px;
+}
+
+.arrow-text.right {
+  right: 36px;
+  top: 20px;
+}
+
+.arrow-text.top {
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.arrow-text.bottom {
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+/* ================= TESTO FRECCIA ================= */
+.arrow {
+  position: absolute;
+}
+
+.arrow-text {
+  position: absolute;
+  left: -35px;     /* ← molto vicino all'inizio della coda */
+  top: 45px;     /* ↓ sotto la curva, punto cerchiato */
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.arrow-text.right {
+  left: auto;        /* disattiva la sinistra */
+  right: -35px;      /* agganciato alla coda (specchio) */
+  top: -20px;         /* stessa altezza della sinistra */
+}
+.arrow-text.bottom {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 55px;        /* sotto la curva */
+}
+.granella-text {
+  margin-left: -40px; /* oppure il valore che avevi trovato perfetto */
+}
+.frutta-text {
+  margin-left: 30px; /* oppure il valore che avevi trovato perfetto */
+}
+.arrow {
+  position: absolute;
+}
+
+.arrow-text.top {
+  left: 50%;
+  transform: translateX(-50%);
+  top: -50px;
+}
+.topping-text {
+  margin-left: 20px;   /* ⬅️ questo ORA funziona */
+}
+.topping-text {
+  top: -75px;   /* ⬅️ questo ORA funziona */
+}
 </style>
 </head>
 
@@ -193,90 +213,111 @@ Test Coppa Gelato – Box Guida (Formato PICCOLA)
 
 <div id="coppa-stage">
 
-  <!-- ================= FRECCE DESCRIZIONE ================= -->
-
-<!-- GUSTI -->
-<div class="arrow" style="top:40px; left:220px;">
-  <span>Gusti</span>
-  <svg width="120" height="80">
-    <path d="M10,10 C80,10 80,70 30,90" 
-          stroke="#000" fill="none" stroke-width="2"/>
-    <polygon points="26,86 36,88 30,96" fill="#000"/>
-  </svg>
-</div>
-
-<!-- GRANELLA -->
-<div class="arrow" style="top:260px; left:300px;">
-  <span>Granella</span>
-  <svg width="120" height="60">
-    <path d="M10,10 C80,10 80,40 40,50"
-          stroke="#000" fill="none" stroke-width="2"/>
-    <polygon points="36,46 46,48 40,56" fill="#000"/>
-  </svg>
-</div>
-
-<!-- TOPPING -->
-<div class="arrow" style="top:240px; left:420px;">
-  <span>Topping</span>
-  <svg width="120" height="60">
-    <path d="M10,10 C80,10 80,40 40,50"
-          stroke="#000" fill="none" stroke-width="2"/>
-    <polygon points="36,46 46,48 40,56" fill="#000"/>
-  </svg>
-</div>
-
-<!-- FRUTTA -->
-<div class="arrow" style="top:260px; left:520px;">
-  <span>Frutta</span>
-  <svg width="120" height="60">
-    <path d="M10,10 C80,10 80,40 40,50"
-          stroke="#000" fill="none" stroke-width="2"/>
-    <polygon points="36,46 46,48 40,56" fill="#000"/>
-  </svg>
-</div>
-
   <!-- PANNA -->
   <div class="box box-panna">
-    <img src="img/panna.png" alt="Panna">
+    <img src="img/panna.png">
     <div class="label">Panna</div>
   </div>
 
   <!-- PALLINE -->
   <div class="box-palline">
 
+    <!-- Pallina sinistra -->
     <div class="box box-pallina pallina-1">
-      <img src="img/pallina-vaniglia.png" alt="Pallina 1">
-      <div class="label">Pallina 1</div>
+      <img src="img/pallina-vaniglia.png">
+
+<div class="arrow" style="left:-38px; top:50%; transform:translate(-30px, -50%);">
+
+  <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30">
+    <path d="M30 15 C16 14, -6 18, -12 38"
+          fill="none"
+          stroke="#000"
+          stroke-width="1.3"
+          stroke-linecap="round" />
+
+    <path d="M38 15 L30 11 M38 15 L30 19"
+          fill="none"
+          stroke="#000"
+          stroke-width="1.3"
+          stroke-linecap="round"
+          stroke-linejoin="round" />
+  </svg>
+
+  <!-- TESTO ALLA CODA -->
+  <div class="arrow-text">Gusto</div>
+
+</div>
     </div>
 
+    <!-- Pallina destra -->
     <div class="box box-pallina pallina-2">
-      <img src="img/pallina-fragola.png" alt="Pallina 2">
-      <div class="label">Pallina 2</div>
+      <img src="img/pallina-fragola.png">
+
+      <div class="arrow" style="right:-62px; top:50%; transform:translateY(-50%);">
+        <div class="arrow-text right">Gusto</div>
+
+        <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(180deg) translateY(-14px); transform-origin: center;">
+          <path d="M30 15 C16 14, -6 18, -12 38" />
+          <path d="M38 15 L30 11 M38 15 L30 19" />
+        </svg>
+      </div>
     </div>
 
   </div>
 
   <!-- COPPA -->
   <div class="box box-coppa">
-    <img src="img/coppa-piccola.png" alt="Coppa">
+    <img src="img/coppa-piccola.png">
     <div class="label">Coppa</div>
   </div>
 
-  <!-- EXTRA -->
+  <!-- GRANELLA -->
   <div class="box box-extra box-granella">
-  <img src="img/granella-nocciola.png" class="img-extra">
-  <div class="label">Granella</div>
-</div>
+    <img src="img/granella-nocciola.png">
 
-<div class="box box-extra box-topping">
-  <img src="img/topping-bosco.png" class="img-extra">
-  <div class="label">Topping</div>
-</div>
+    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text">Granella</div>
 
- <div class="box box-extra box-frutta">
-  <img src="img/fragola.png" class="img-extra">
-  <div class="label">Frutta</div>
+      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg) scaleY(-1); transform-origin:center;">
+        <path d="M30 15 C16 14, -6 18, -12 38" />
+        <path d="M38 15 L30 11 M38 15 L30 19" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- TOPPING -->
+  <div class="box box-extra box-topping">
+    <img src="img/topping-bosco.png">
+
+<div class="arrow" style="top:-58px; left:50%; transform:translateX(-50%);">
+
+  <div class="arrow-text top topping-text">Topping</div>
+
+  <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+       style="transform: rotate(90deg) scaleY(-1); transform-origin: center;">
+    <path d="M30 15 C16 14, -6 18, -12 38" />
+    <path d="M38 15 L30 11 M38 15 L30 19" />
+  </svg>
+
 </div>
+  </div>
+
+  <!-- FRUTTA -->
+  <div class="box box-extra box-frutta">
+    <img src="img/fragola.png">
+
+    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom frutta-text">Frutta</div>
+
+      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg); transform-origin:center;">
+        <path d="M30 15 C16 14, -6 18, -12 38" />
+        <path d="M38 15 L30 11 M38 15 L30 19" />
+      </svg>
+    </div>
+  </div>
 
 </div>
 
