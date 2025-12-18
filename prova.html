@@ -34,10 +34,14 @@ body {
   border: 2px dashed rgba(0,0,0,0.45);
   overflow: visible;
 }
-/* SOLO i box con immagini devono tagliare */
+/* coppa e panna devono tagliare */
 .box-coppa,
-.box-panna,
-.box-pallina {
+.box-panna {
+  overflow: hidden;
+}
+
+/* SOLO l'immagine della pallina deve essere tagliata */
+.box-pallina img {
   overflow: hidden;
 }
 /* ================= COPPA ================= */
