@@ -64,7 +64,6 @@
 
 <body>
 
-
 <h1>📷 Scanner QR Coppe</h1>
 <p>Inquadra il QR del cliente per confermare automaticamente la coppa</p>
 
@@ -80,39 +79,33 @@
 import { supabase } from "./supabase.js";
 
 // Funzione che verrà chiamata quando lo scanner legge un QR
-window.confermaCoppaDaQR = async function(qrToken) {
-    console.log("📥 QR letto:", qrToken);
+window.confermaCoppaDaQR = async function(qrValue) {
+    console.log("📥 QR letto:", qrValue);
 
-    // 1️⃣ Prendo la coppa dal DB
+    // 1️⃣ Cerca la coppa con quel qr_token
     const { data, error } = await supabase
         .from("coppe")
         .select("*")
-        .eq("qr_token", qrToken)
+        .eq("qr_token", qrValue)
         .limit(1);
 
-    if (error || !data || data.length === 0) {
-        alert("❌ Coppa non trovata");
+    if (error) {
+        alert("Errore nella lettura del QR");
+        console.error(error);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        alert("❌ Nessuna coppa trovata con questo QR");
         return;
     }
 
     const coppa = data[0];
-    const confermate = coppa.confermate || 0;
 
-    // 2️⃣ Se già confermata → chiedo
-    if (confermate >= 1) {
-        const ok = confirm(
-            `⚠️ Questa coppa è già stata confermata.\n\n` +
-            `Ne sono state ordinate più di una uguale?\n\n` +
-            `Confermate finora: ${confermate}`
-        );
-
-        if (!ok) return;
-    }
-
-    // 3️⃣ Incremento contatore
+    // 2️⃣ Aggiorna la coppa → confermata = true
     const { error: updErr } = await supabase
         .from("coppe")
-        .update({ confermate: confermate + 1 })
+        .update({ confermata: true })
         .eq("id", coppa.id);
 
     if (updErr) {
@@ -121,8 +114,10 @@ window.confermaCoppaDaQR = async function(qrToken) {
         return;
     }
 
-    // 4️⃣ Feedback
-    alert(`✅ Coppa confermata!\nTotale confermate: ${confermate + 1}`);
+    // 3️⃣ Conferma riuscita
+    alert(`✅ Coppa confermata!\n(${coppa.nome})`);
+
+    // 4️⃣ Effetto vibrazione (se disponibile)
     if (navigator.vibrate) navigator.vibrate(150);
 };
 </script>
@@ -131,102 +126,68 @@ window.confermaCoppaDaQR = async function(qrToken) {
 import { supabase } from "./supabase.js";
 
 function mostra(msg, ok = false) {
-  const box = document.getElementById("risultato");
-  box.style.display = "block";
-  box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
+    const box = document.getElementById("risultato");
+    box.style.display = "block";
+    box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
 }
 
-async function confermaCoppa(qrToken) {
-  const { data, error } = await supabase
-    .from("coppe")
-    .select("*")
-    .eq("qr_token", qrToken)
-    .limit(1);
+async function confermaCoppa( qrToken ) {
 
-  if (error || !data || !data.length) {
-    mostra("❌ QR NON valido!");
-    return;
-  }
+    // 1️⃣ CERCO la coppa nel DB
+    const { data, error } = await supabase
+        .from("coppe")
+        .select("*")
+        .eq("qr_token", qrToken)
+        .limit(1);
 
-  const coppa = data[0];
+    if (error || !data || !data.length) {
+        mostra("❌ QR NON valido!");
+        return;
+    }
 
-  if (coppa.confermata) {
-    mostra("⚠️ Coppa già confermata!", true);
-    return;
-  }
+    const coppa = data[0];
 
-  await supabase
-    .from("coppe")
-    .update({ confermata: true })
-    .eq("id", coppa.id);
+    // 2️⃣ Se è già confermata → messaggio
+    if (coppa.confermata) {
+        mostra("⚠️ Coppa già confermata!", true);
+        return;
+    }
 
-  if (navigator.vibrate) navigator.vibrate(150);
+    // 3️⃣ CONFERMO la coppa
+    await supabase
+        .from("coppe")
+        .update({ confermata: true })
+        .eq("id", coppa.id);
 
-  mostra(`✅ Coppa confermata<br><b>${coppa.nome}</b>`, true);
+    mostra(`✅ Coppa confermata!
+    <br><br>
+    <b>${coppa.nome}</b><br>
+    (${coppa.formato})`, true);
 }
 
-async function confermaCoupon(codice) {
-
-  const { data, error } = await supabase
-    .from("coupon")
-    .select("*")
-    .eq("codice", codice)
-    .single();
-
-  if (error || !data) {
-    mostra("❌ Coupon NON valido!");
-    return;
-  }
-
-  if (data.redento) {
-    mostra("⚠️ Coupon già usato");
-    return;
-  }
-
-  await supabase
-    .from("coupon")
-    .update({
-  redento: true,
-  used_at: new Date().toISOString()
-})
-    .eq("codice", codice);
-
-  if (navigator.vibrate) navigator.vibrate(200);
-
-  mostra(`🎟️ Coupon riscattato<br><b>${data.titolo}</b>`, true);
-}
-
-
-// 🚀 Avvio scanner
+// Avvio scanner
 function startScanner() {
-  const html5QrCode = new Html5Qrcode("reader");
+    const html5QrCode = new Html5Qrcode("reader");
 
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    async qrCodeMessage => {
+    html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        qrCodeMessage => {
+            console.log("QR:", qrCodeMessage);
 
-      console.log("QR letto:", qrCodeMessage);
+            // 🔥 Appena leggo il QR → confermo coppa
+            confermaCoppa(qrCodeMessage);
 
-      // 🎟️ COUPON
-      if (qrCodeMessage.includes("coupon=")) {
-        const url = new URL(qrCodeMessage);
-        const codice = url.searchParams.get("coupon");
-
-        await confermaCoupon(codice);
-      } 
-      // 🍨 COPPA
-      else {
-        await confermaCoppaDaQr(qrCodeMessage);
-      }
-
-      // stop e riavvia dopo 1.5s
-      html5QrCode.stop().then(() => {
-        setTimeout(() => startScanner(), 1500);
-      });
-    },
-    () => {}
-  );
+            // stop scanner dopo la lettura
+            html5QrCode.stop().then(() => {
+    // ⏳ 1 secondo per dare tempo al messaggio di comparire
+    setTimeout(() => startScanner(), 1200);
+});
+        },
+        errorMessage => {
+            // errori lettura, NON stampare nulla
+        }
+    );
 }
 
 startScanner();
