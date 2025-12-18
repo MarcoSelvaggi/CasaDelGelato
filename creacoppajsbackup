@@ -974,21 +974,20 @@ async function mostraRiepilogo(){
       window.__lastQrToken = qrToken;
 
   // ✅ 4) Oggetto coppa da salvare (ORA CON NOME + qr_token)
-const coppa = {
-  nome: coppaNome,
-  email: email || null,
-  guest_id: guest_id,
-  data: new Date().toISOString(),
-  formato: coppaSelezionata,
-  gusti: scelti.gusti,
-  granelle: scelti.granelle,
-  topping: scelti.topping,
-  ingredienti: scelti.ingredienti,
-  extra: scelti.extra,
-  prezzo: totale,
-  qr_token: qrToken,
-  confermate: 0
-};
+  const coppa = {
+      nome: coppaNome,
+      email: email || null,
+      guest_id: guest_id,
+      data: new Date().toISOString(),
+      formato: coppaSelezionata,
+      gusti: scelti.gusti,
+      granelle: scelti.granelle,
+      topping: scelti.topping,
+      ingredienti: scelti.ingredienti,
+      extra: scelti.extra,
+      prezzo: totale,
+      qr_token: qrToken   // 🔥 NUOVO CAMPO
+  };
 
   // ✅ 5) Salva su Supabase
   try {
@@ -1099,59 +1098,35 @@ if (window.QRCode) {
   updateCarrelloBadge();
 }
 
-function firmaCoppa(c) {
-    const normalize = arr =>
-        (arr || []).slice().sort().join("|");
-
-    return [
-        c.formato,
-        normalize(c.gusti),
-        normalize(c.granelle),
-        normalize(c.topping),
-        normalize(c.ingredienti),
-        normalize(c.extra)
-    ].join("::");
-}
-
 window.aggiungiAlCarrello = function () {
 
-    let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-    const ultima = cronologia[0];
-    if (!ultima) {
-        alert("Errore: impossibile aggiungere la coppa!");
-        return;
-    }
+    // recupero la coppa appena salvata in locale
+    let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    const ultima = cronologia[0];  // la coppa creata ora
 
-    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+    if (!ultima) {
+        alert("Errore: impossibile aggiungere la coppa!");
+        return;
+    }
 
-    const nuovaCoppa = {
-        formato: ultima.formato,
-        gusti: [...ultima.gusti],
-        granelle: [...ultima.granelle],
-        topping: [...ultima.topping],
-        ingredienti: [...ultima.ingredienti],
-        extra: [...ultima.extra],
-        quantita: 1
-    };
+    const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
 
-    const firmaNuova = firmaCoppa(nuovaCoppa);
+    const nuovaCoppa = {
+        id: crypto.randomUUID(),
+        formato: ultima.formato,
+        gusti: [...ultima.gusti],
+        granelle: [...ultima.granelle],
+        topping: [...ultima.topping],
+        ingredienti: [...ultima.ingredienti],
+        extra: [...ultima.extra],
+        quantita: 1,
+    };
 
-    // 🔥 CERCA COPPA IDENTICA
-    const esistente = carrello.find(c => firmaCoppa(c) === firmaNuova);
+    carrello.push(nuovaCoppa);
+    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
 
-    if (esistente) {
-        // 👉 stessa coppa → aumenta quantità
-        esistente.quantita += 1;
-    } else {
-        // 👉 coppa nuova → aggiungi
-        nuovaCoppa.id = crypto.randomUUID();
-        carrello.push(nuovaCoppa);
-    }
-
-    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
-
-    alert("🛒 Coppa aggiunta al carrello!");
-    updateBadgeNav();
+    alert("🛒 Coppa aggiunta al carrello!");
+    updateBadgeNav();
 };
 
 function getCarrelloCount() {

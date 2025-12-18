@@ -1310,3 +1310,20 @@ header,
   white-space: nowrap;   /* 🔥 MAI a capo */
 }
 
+.coppa-visual {
+  background: #fff;
+  padding: 14px;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  min-width: 220px;
+  text-align: center;
+}
+
+.coppa-visual .pallina {
+  background: #f2f2f2;
+  border-radius: 999px;
+  padding: 8px 14px;
+  margin: 6px auto;
+  font-weight: 600;
+  width: fit-content;
+}
