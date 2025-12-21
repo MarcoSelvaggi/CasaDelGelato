@@ -526,11 +526,18 @@ function coppaMatchSearch(c) {
 
 function getStats(email){
     const list = COPPE.filter(c => (c.email || "Anonimo") === email);
+
     const tot = list.length;
-    const conf = list.filter(c=>c.confermata).length;
-    const elim = list.filter(c=>c.eliminata).length;
+
+    // 🔥 SOMMA DELLE CONFERME REALI
+    const conf = list.reduce((sum, c) => {
+        return sum + (Number(c.confermate) || 0);
+    }, 0);
+
+    const elim = list.filter(c => c.eliminata).length;
     const coupon = Math.floor(conf / 10);
-    return {tot, conf, elim, coupon, list};
+
+    return { tot, conf, elim, coupon, list };
 }
 
 async function syncCouponUtente(email) {
