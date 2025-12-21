@@ -200,9 +200,16 @@
 }
 .undo-btn,
 .confirm-btn{
-  padding:4px 10px;
-  font-size:14px;
-  border-radius:8px;
+  padding:3px 8px;
+  font-size:13px;
+  border-radius:7px;
+}
+
+.qty-btn{
+  width:20px;
+  height:20px;
+  font-size:13px;
+  line-height:20px;
 }
 
 
@@ -435,6 +442,14 @@ window.qtyPlus = function(id){
 window.applyAnnulla = async function(id){
   const c = COPPE.find(x => x.id === id);
   if (!c) return;
+
+window.handleAnnullaClick = function(id, multi) {
+  if (multi) {
+    openAnnullaUI(id);
+  } else {
+    applyAnnulla(id);
+  }
+};
 
   const st = getAnnullaState(id);
   const max = Math.max(0, Number(c.confermate || 0));
@@ -1068,9 +1083,9 @@ if (filtro) {
     arr = arr.filter(c => coppaMatchSearch(c));
 }
 
-    if (window.filtroConfermate[email]) {
-        arr = arr.filter(c => c.confermata);
-    }
+   if (window.filtroConfermate[email]) {
+    arr = arr.filter(c => Number(c.confermate) > 0);
+}
     if (window.filtroEliminate[email]) {
         arr = arr.filter(c => c.eliminata);
     }
@@ -1218,15 +1233,15 @@ ${
   ? (() => {
       const st = annullaUI[c.id] || { open:false, qty:1 };
       const multi = Number(c.confermate) > 1;
-      const disabledClass = (!st.open ? "disabled" : "");
+      const disabledClass = (multi && !st.open) ? "disabled" : "";
       const max = Number(c.confermate) || 1;
 
       return `
         <div class="annulla-wrap">
-          <button class="undo-btn"
-            onclick="${multi ? `openAnnullaUI(${c.id})` : `applyAnnulla(${c.id})`}; event.stopPropagation();">
-            Annulla conferma
-          </button>
+       <button class="undo-btn"
+  onclick="handleAnnullaClick(${c.id}, ${multi}); event.stopPropagation();">
+  Annulla conferma
+</button>
 
           <div class="qty-box ${multi ? disabledClass : "disabled"}"
                title="${multi ? "" : "Disponibile solo se confermata più volte"}">
