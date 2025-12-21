@@ -146,16 +146,32 @@ if (confermate >= 1) {
         // ===== SALVA NELLA LISTA GIORNALIERA =====
 const lista = loadLista();
 
-lista.unshift({
-  id: coppa.id,
-  nome: coppa.nome,
-  formato: coppa.formato,
-  tavolo: coppa.tavolo,
-  confermate: confermate + 1,
-  scanned_at: new Date().toISOString(),
-  data_creazione: coppa.data,
-  cliente: cliente || null
-});
+// 🔍 cerco se la coppa è già in lista
+const esistente = lista.find(x => x.id === coppa.id);
+
+if (esistente) {
+  // ✅ aggiorno solo i dati
+  esistente.confermate = confermate + 1;
+  esistente.scanned_at = new Date().toISOString();
+} else {
+  // ➕ nuova coppa
+  lista.unshift({
+    id: coppa.id,
+    nome: coppa.nome,
+    formato: coppa.formato,
+    tavolo: coppa.tavolo,
+    confermate: confermate + 1,
+    scanned_at: new Date().toISOString(),
+    data_creazione: coppa.data,
+    cliente: cliente || null
+  });
+}
+
+// massimo 100 elementi
+if (lista.length > 100) lista.length = 100;
+
+saveLista(lista);
+renderLista();
 
 // tieni massimo 100 voci (opzionale)
 if (lista.length > 100) lista.length = 100;
