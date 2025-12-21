@@ -105,7 +105,7 @@ window.confermaCoppaDaQR = async function(qrValue) {
     // 2️⃣ Aggiorna la coppa → confermata = true
     const { error: updErr } = await supabase
         .from("coppe")
-        .update({ confermata: true })
+        .update({ confermate: confermate + 1 })
         .eq("id", coppa.id);
 
     if (updErr) {
@@ -147,16 +147,22 @@ async function confermaCoppa( qrToken ) {
 
     const coppa = data[0];
 
-    // 2️⃣ Se è già confermata → messaggio
-    if (coppa.confermata) {
-        mostra("⚠️ Coppa già confermata!", true);
-        return;
-    }
+const confermate = coppa.confermate || 0;
+
+if (confermate >= 1) {
+    const ok = confirm(
+        `⚠️ Questa coppa è già stata confermata.\n\n` +
+        `Ne sono state ordinate più uguali?\n\n` +
+        `Confermate finora: ${confermate}`
+    );
+
+    if (!ok) return;
+}
 
     // 3️⃣ CONFERMO la coppa
     await supabase
         .from("coppe")
-        .update({ confermata: true })
+        .update({ confermate: confermate + 1 })
         .eq("id", coppa.id);
 
     mostra(`✅ Coppa confermata!
