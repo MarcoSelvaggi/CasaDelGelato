@@ -708,19 +708,19 @@ function toggleFilters(email){
     box.style.display = sezioniAperte[email] ? "block" : "none";
 }
 
-async function toggleConferma(id){
-    const c = COPPE.find(x => x.id === id);
-    if (!c) return;
+window.toggleConferma = async function (id) {
+   const c = COPPE.find(x => x.id === id);
+   if (!c) return;
 
-    const nuovoValore = (Number(c.confermate) || 0) + 1;
+   const nuovoValore = (Number(c.confermate) || 0) + 1;
 
-    await supabase
-      .from("coppe")
-      .update({ confermate: nuovoValore })
-      .eq("id", id);
+   await supabase
+     .from("coppe")
+     .update({ confermate: nuovoValore })
+     .eq("id", id);
 
-    await load();
-}
+   await load();
+};
 
 async function annullaConfermaCoppa(id) {
 
