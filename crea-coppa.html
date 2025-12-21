@@ -343,24 +343,22 @@ function scegliZona(zona) {
     const btn = document.createElement("button");
     btn.textContent = codice;
     btn.className = "tavolo-btn"; // ← lo useremo dopo
-    btn.onclick = () => scegliTavolo(codice);
+    btn.onclick = () => scegliTavolo(codice, btn);
 
     container.appendChild(btn);
   }
 }
 
-function scegliTavolo(codice) {
+function scegliTavolo(codice, btn) {
   tavoloSelezionato = codice;
 
   document
     .querySelectorAll("#numeri-tavolo button")
     .forEach(b => b.classList.remove("active"));
 
-  event.target.classList.add("active");
-
-  const btn = document.getElementById("btn-conferma-tavolo");
-  btn.style.display = "block";
   btn.classList.add("active");
+
+  document.getElementById("btn-conferma-tavolo").style.display = "block";
 }
 function confermaTavolo() {
   if (!tavoloSelezionato) {

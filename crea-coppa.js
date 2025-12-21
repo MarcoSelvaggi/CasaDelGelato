@@ -13,7 +13,7 @@ let gustiQuantities = {};      // es: { VANIGLIA: 2, FRAGOLA: 1 }
 let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in modifica)
 let collapseTimer = null
 let coppaSalvata = false;
-let tavoloSelezionato = null;
+
 
 // =======================
 // DISPONIBILITÀ INGREDIENTI
@@ -988,8 +988,8 @@ const coppa = {
   extra: scelti.extra,
   prezzo: totale,
   qr_token: qrToken,
-  confermate: 0,
-  tavolo: tavoloSelezionato
+  tavolo: tavoloSelezionato,   // ✅ QUI
+  confermate: 0
 };
 
   // ✅ 5) Salva su Supabase
