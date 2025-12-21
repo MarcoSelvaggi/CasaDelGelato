@@ -591,9 +591,54 @@ async function toggleConferma(id, current){
     await load(); // ricarica TUTTO ma non chiude nulla
 }
 
+async function annullaConfermaCoppa(id) {
+
+    const coppa = COPPE.find(c => c.id === id);
+    if (!coppa) return;
+
+    const max = Number(coppa.confermate) || 0;
+
+    if (max <= 0) {
+        alert("Questa coppa non ha conferme da annullare.");
+        return;
+    }
+
+    let daAnnullare = 1;
+
+    if (max > 1) {
+        const input = prompt(
+            `Questa coppa è stata confermata ${max} volte.\n` +
+            `Quante conferme vuoi annullare? (1 – ${max})`,
+            "1"
+        );
+
+        if (input === null) return;
+
+        daAnnullare = parseInt(input, 10);
+
+        if (isNaN(daAnnullare) || daAnnullare < 1 || daAnnullare > max) {
+            alert("Numero non valido.");
+            return;
+        }
+    }
+
+    const nuoveConfermate = max - daAnnullare;
+
+    await supabase
+        .from("coppe")
+        .update({
+            confermate: nuoveConfermate,
+            confermata: nuoveConfermate > 0
+        })
+        .eq("id", id);
+
+    await load(); // refresh senza perdere stato
+}
+
 // 👉 espongo oggetti e funzioni usati negli onclick HTML
 window.toggleFilters = toggleFilters;
 window.toggleConferma = toggleConferma;
+window.annullaConfermaCoppa = annullaConfermaCoppa;
 window.renderCoppe = renderCoppe;
 window.filtroConfermate = filtroConfermate;
 window.filtroEliminate = filtroEliminate;
@@ -1060,8 +1105,8 @@ arr.forEach(c => {
                     ${
                         c.confermata
                         ? `<button class="undo-btn"
-                             onclick="toggleConferma(${c.id}, true); event.stopPropagation();">
-                             Annulla conferma
+                             onclick="annullaConfermaCoppa(${c.id}); event.stopPropagation();">
+                             Annulla conferma
                            </button>`
                         : `<button class="confirm-btn"
                              onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
