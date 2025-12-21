@@ -212,6 +212,9 @@
   line-height:20px;
 }
 
+.coppa-box * {
+  pointer-events: auto;
+}
 
 </style>
 </head>
@@ -1173,12 +1176,15 @@ arr.forEach(c => {
 
     box.innerHTML += `
         <div id="coppa-${c.id}" class="${coppaCls}">
-            <div style="display:flex; justify-content:space-between; align-items:center;"
-                 onclick="toggleCoppaCollapse(${c.id}); event.stopPropagation();">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+    <b>${highlight(c.nome || "Coppa senza nome")}</b>
 
-                <b>${highlight(c.nome || "Coppa senza nome")}</b>
-                <span style="font-size:20px; cursor:pointer;">${icon}</span>
-            </div>
+    <span
+        style="font-size:20px; cursor:pointer;"
+        onclick="toggleCoppaCollapse(${c.id}); event.stopPropagation();">
+        ${icon}
+    </span>
+</div>
 
             ${c.confermate > 0 ? `
     <div style="
