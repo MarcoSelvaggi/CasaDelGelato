@@ -78,6 +78,8 @@
 
 <script type="module">
 import { supabase } from "./supabase.js";
+let scanLock = false;
+let html5QrCode = null;
 
 function mostra(msg, ok = false) {
     const box = document.getElementById("risultato");
