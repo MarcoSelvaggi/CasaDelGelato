@@ -70,7 +70,7 @@
 <div id="reader"></div>
 
 <div id="risultato" style="display:none;"></div>
-
+<div id="lista-scan" style="margin-top:16px;"></div>
 <a href="admin.html">
     <button>Torna all’Admin</button>
 </a>
@@ -188,6 +188,27 @@ if (confermate >= 1) {
         .update({ confermate: confermate + 1 })
         .eq("id", coppa.id);
 
+        
+        // ===== SALVA NELLA LISTA GIORNALIERA =====
+const lista = loadLista();
+
+lista.unshift({
+  id: coppa.id,
+  nome: coppa.nome,
+  formato: coppa.formato,
+  tavolo: coppa.tavolo,
+  confermate: confermate + 1,
+  scanned_at: new Date().toISOString(),
+  data_creazione: coppa.data,
+  cliente: cliente || null
+});
+
+// tieni massimo 100 voci (opzionale)
+if (lista.length > 100) lista.length = 100;
+
+saveLista(lista);
+renderLista();
+
 mostra(`
   ✅ Coppa confermata!<br><br>
 
@@ -211,6 +232,100 @@ mostra(`
   }
 `, true);
 }
+
+// ======= LISTA SCAN (persistente fino alle 02:00) =======
+const LS_KEY_LISTA = "adminScan_lista_v1";
+const LS_KEY_RESET = "adminScan_resetAt_v1";
+
+function getNextResetAt2AM() {
+  const now = new Date();
+  const reset = new Date(now);
+  reset.setHours(2, 0, 0, 0); // 02:00
+
+  // se sono già passate le 02:00 di oggi -> reset domani alle 02:00
+  if (now.getTime() >= reset.getTime()) {
+    reset.setDate(reset.getDate() + 1);
+  }
+  return reset.getTime();
+}
+
+function ensureResetSchedule() {
+  const now = Date.now();
+  const resetAt = Number(localStorage.getItem(LS_KEY_RESET)) || 0;
+
+  // se non esiste, o è scaduto -> svuota lista e riprogramma
+  if (!resetAt || now >= resetAt) {
+    localStorage.setItem(LS_KEY_LISTA, JSON.stringify([]));
+    localStorage.setItem(LS_KEY_RESET, String(getNextResetAt2AM()));
+  }
+}
+
+function loadLista() {
+  ensureResetSchedule();
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY_LISTA) || "[]") || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLista(arr) {
+  localStorage.setItem(LS_KEY_LISTA, JSON.stringify(arr));
+}
+
+function formatOra(d) {
+  const dt = new Date(d);
+  return dt.toLocaleString("it-IT", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+}
+
+function renderLista() {
+  const box = document.getElementById("lista-scan");
+  if (!box) return;
+
+  const arr = loadLista();
+  if (!arr.length) {
+    box.innerHTML = `<div style="opacity:.65; font-size:14px;">Nessuna coppa scannerizzata oggi.</div>`;
+    return;
+  }
+
+  box.innerHTML = `
+    <div style="text-align:left; max-width:520px; margin:0 auto;">
+      <h3 style="margin:0 0 10px; font-size:16px;">📌 Coppe scannerizzate (oggi)</h3>
+      ${arr.map(x => `
+        <div style="
+          background:#fff;
+          border-radius:12px;
+          padding:12px 14px;
+          margin-bottom:10px;
+          box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        ">
+          <div style="display:flex; justify-content:space-between; gap:10px;">
+            <b>${x.nome || "Coppa"}</b>
+            <span style="opacity:.7; font-size:13px;">${formatOra(x.scanned_at)}</span>
+          </div>
+          <div style="margin-top:6px; font-size:14px; line-height:1.35;">
+            <div><b>Formato:</b> ${x.formato || "-"}</div>
+            <div><b>Tavolo:</b> ${x.tavolo || "-"}</div>
+            <div><b>Confermate:</b> ${x.confermate || 0}</div>
+          </div>
+          ${x.cliente ? `
+            <div style="margin-top:8px; font-size:13px; opacity:.9;">
+              <div><b>Cliente:</b> ${x.cliente.nome || "-"} ${x.cliente.cognome || ""}</div>
+              <div><b>Email:</b> ${x.cliente.email || "-"}</div>
+              <div><b>Creata:</b> ${x.data_creazione ? formatOra(x.data_creazione) : "-"}</div>
+            </div>
+          ` : ""}
+        </div>
+      `).join("")}
+      <div style="opacity:.6; font-size:12px; margin-top:6px;">
+        Reset automatico alle 02:00.
+      </div>
+    </div>
+  `;
+}
+
+// chiamala all’avvio pagina
+renderLista();
 
 // Avvio scanner
 function startScanner() {
