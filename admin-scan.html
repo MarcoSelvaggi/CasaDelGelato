@@ -77,6 +77,8 @@
 
 <script type="module">
 import { supabase } from "./supabase.js";
+let scanLock = false;
+let html5QrCode = null;
 
 // Funzione che verrà chiamata quando lo scanner legge un QR
 window.confermaCoppaDaQR = async function(qrValue) {
@@ -212,25 +214,36 @@ mostra(`
 
 // Avvio scanner
 function startScanner() {
-    const html5QrCode = new Html5Qrcode("reader");
+
+    if (!html5QrCode) {
+        html5QrCode = new Html5Qrcode("reader");
+    }
 
     html5QrCode.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        qrCodeMessage => {
+        async qrCodeMessage => {
+
+            // 🔒 blocco scansioni multiple
+            if (scanLock) return;
+            scanLock = true;
+
             console.log("QR:", qrCodeMessage);
 
-            // 🔥 Appena leggo il QR → confermo coppa
-            confermaCoppa(qrCodeMessage);
+            // 🔥 conferma coppa
+            await confermaCoppa(qrCodeMessage);
 
-            // stop scanner dopo la lettura
-            html5QrCode.stop().then(() => {
-    // ⏳ 1 secondo per dare tempo al messaggio di comparire
-    setTimeout(() => startScanner(), 1200);
-});
+            // ⏸️ fermo lo scanner
+            await html5QrCode.stop();
+
+            // 🔓 sblocco + riavvio stabile
+            setTimeout(() => {
+                scanLock = false;
+                startScanner();
+            }, 1200);
         },
-        errorMessage => {
-            // errori lettura, NON stampare nulla
+        () => {
+            // errori lettura → ignorati
         }
     );
 }
