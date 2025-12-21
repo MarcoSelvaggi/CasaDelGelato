@@ -165,10 +165,11 @@ if (confermate >= 1) {
         .update({ confermate: confermate + 1 })
         .eq("id", coppa.id);
 
-    mostra(`✅ Coppa confermata!
-    <br><br>
-    <b>${coppa.nome}</b><br>
-    (${coppa.formato})`, true);
+   mostra(`✅ Coppa confermata!
+<br><br>
+<b>${coppa.nome}</b><br>
+(${coppa.formato})<br><br>
+🪑 <b>Tavolo:</b> ${coppa.tavolo || "—"}`, true);
 }
 
 // Avvio scanner
