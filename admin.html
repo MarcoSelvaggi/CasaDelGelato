@@ -1029,10 +1029,10 @@ arr.forEach(c => {
 
     const collapsed = coppeCollapsed[c.id] === true;
 
-    const coppaCls =
-        c.eliminata ? "coppa-box coppa-eliminata" :
-        c.confermata ? "coppa-box coppa-confermata" :
-        "coppa-box";
+   const coppaCls =
+  c.eliminata ? "coppa-box coppa-eliminata" :
+  (Number(c.confermate) || 0) > 0 ? "coppa-box coppa-confermata" :
+  "coppa-box";
 
     const icon = collapsed ? "👁️‍🗨️" : "✖️";
 
@@ -1102,17 +1102,17 @@ arr.forEach(c => {
 
                     <b>Prezzo:</b> ${highlight("€" + Number(c.prezzo).toFixed(2))}<br><br>
 
-                    ${
-                        c.confermata
-                        ? `<button class="undo-btn"
-                             onclick="annullaConfermaCoppa(${c.id}); event.stopPropagation();">
-                             Annulla conferma
-                           </button>`
-                        : `<button class="confirm-btn"
-                             onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
-                             Conferma
-                           </button>`
-                    }
+${
+  (Number(c.confermate) || 0) > 0
+  ? `<button class="undo-btn"
+       onclick="annullaConfermaCoppa(${c.id}); event.stopPropagation();">
+       Annulla conferma
+     </button>`
+  : `<button class="confirm-btn"
+       onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
+       Conferma
+     </button>`
+}
                 </div>
             `}
         </div>
