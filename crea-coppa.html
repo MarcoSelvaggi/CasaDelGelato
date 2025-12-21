@@ -70,7 +70,29 @@ document.addEventListener("DOMContentLoaded", function () {
   <h1>Crea la tua Coppa Gelato</h1>
 </header>
 
-<section id="step-size" style="text-align:center;">
+<!-- 🪑 SELEZIONE TAVOLO -->
+<section id="step-tavolo" style="text-align:center; padding:20px;">
+
+  <h2>Seleziona il tavolo</h2>
+
+<div class="tavolo-zona">
+  <button id="btn-dentro" onclick="scegliZona('D')">Dentro</button>
+  <button id="btn-fuori" onclick="scegliZona('F')">Fuori</button>
+</div>
+
+<div id="numeri-tavolo" class="tavolo-grid"></div>
+<!-- Bottone conferma tavolo -->
+<button
+  id="btn-conferma-tavolo"
+  onclick="confermaTavolo()"
+  class="tavolo-zona-btn conferma-btn"
+  style="display:none; margin-top:20px;">
+  Conferma tavolo
+</button>
+
+</section>
+
+<section id="step-size" style="text-align:center; display:none;">
   <h2>Scegli il Formato</h2>
   <p style="margin-top:6px; font-size:15px; color:#444; font-weight:500;">
     Panna inclusa
@@ -299,5 +321,59 @@ if (guest_id) {
   `;
 </script>
 
+<script>
+let tavoloSelezionato = null;
+let zonaSelezionata = null;
+
+function scegliZona(zona) {
+  zonaSelezionata = zona;
+
+  const container = document.getElementById("numeri-tavolo");
+  container.innerHTML = "";
+
+  // ✅ QUESTA RIGA VA QUI
+  container.className = "tavolo-grid";
+
+  const max = zona === "D" ? 16 : 23;
+
+  for (let i = 1; i <= max; i++) {
+    const num = String(i).padStart(2, "0");
+    const codice = num + zona;
+
+    const btn = document.createElement("button");
+    btn.textContent = codice;
+    btn.className = "tavolo-btn"; // ← lo useremo dopo
+    btn.onclick = () => scegliTavolo(codice);
+
+    container.appendChild(btn);
+  }
+}
+
+function scegliTavolo(codice) {
+  tavoloSelezionato = codice;
+
+  document
+    .querySelectorAll("#numeri-tavolo button")
+    .forEach(b => b.classList.remove("active"));
+
+  event.target.classList.add("active");
+
+  const btn = document.getElementById("btn-conferma-tavolo");
+  btn.style.display = "block";
+  btn.classList.add("active");
+}
+function confermaTavolo() {
+  if (!tavoloSelezionato) {
+    alert("Seleziona un tavolo");
+    return;
+  }
+
+  // nascondi step tavolo
+  document.getElementById("step-tavolo").style.display = "none";
+
+  // mostra step formato
+  document.getElementById("step-size").style.display = "block";
+}
+</script>
 </body>
 </html>

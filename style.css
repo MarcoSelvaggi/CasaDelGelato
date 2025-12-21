@@ -1327,3 +1327,112 @@ header,
   font-weight: 600;
   width: fit-content;
 }
+
+/* ===== SELEZIONE TAVOLO ===== */
+
+.tavolo-zona {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.tavolo-zona button {
+  width: auto;
+  min-width: 120px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+  background: #f5f5f7;
+  color: #111;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.tavolo-zona button.active {
+  background: #007aff;
+  color: white;
+  border-color: #007aff;
+}
+
+/* =========================
+   SELEZIONE TAVOLO
+========================= */
+
+.tavolo-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  max-width: 420px;
+  margin: 20px auto 0;
+}
+
+.tavolo-btn {
+  padding: 12px 0;
+  border-radius: 12px;
+  border: 1px solid #d0d0d0;
+  background: #f9f9f9;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;              /* ✅ TESTO SCURO */
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tavolo-btn:hover {
+  background: #efefef;
+}
+
+.tavolo-btn.active {
+  background: #007aff;
+  color: white;
+  border-color: #007aff;
+}
+
+/* zona dentro / fuori */
+.tavolo-zona {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.tavolo-zona-btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1px solid #d0d0d0;
+  background: #f5f5f7;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tavolo-zona-btn.active {
+  background: #007aff;
+  color: white;
+  border-color: #007aff;
+}
+
+/* bottone conferma */
+.conferma-btn {
+  min-width: 180px;
+}
+/* bottone conferma tavolo – stile minimale */
+.conferma-btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1px solid #d0d0d0;
+  background: #f5f5f7;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  width: auto;          /* ⬅️ fondamentale */
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* quando attivo (opzionale, se vuoi evidenziarlo) */
+.conferma-btn:hover {
+  background: #ececec;
+}
