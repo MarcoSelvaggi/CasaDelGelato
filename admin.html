@@ -1009,6 +1009,21 @@ arr.forEach(c => {
                 <span style="font-size:20px; cursor:pointer;">${icon}</span>
             </div>
 
+            ${c.confermate > 0 ? `
+    <div style="
+        margin-top:6px;
+        display:inline-block;
+        background:#34c759;
+        color:white;
+        padding:4px 10px;
+        border-radius:8px;
+        font-size:13px;
+        font-weight:700;
+    ">
+        ✔ Confermata${c.confermate > 1 ? ` x${c.confermate}` : ""}
+    </div>
+` : ""}
+
             ${collapsed ? "" : `
                 <div style="margin-top:8px;">
                     <b>Data creazione:</b> ${highlight(formatDate(c.data))}<br>
