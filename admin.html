@@ -446,14 +446,6 @@ window.applyAnnulla = async function(id){
   const c = COPPE.find(x => x.id === id);
   if (!c) return;
 
-window.handleAnnullaClick = function(id, multi) {
-  if (multi) {
-    openAnnullaUI(id);
-  } else {
-    applyAnnulla(id);
-  }
-};
-
   const st = getAnnullaState(id);
   const max = Math.max(0, Number(c.confermate || 0));
   const qty = Math.min(max, Math.max(1, Number(st.qty || 1)));
@@ -472,6 +464,13 @@ window.handleAnnullaClick = function(id, multi) {
   await load(); // mantiene le sezioni aperte come già fai
 };
 
+window.handleAnnullaClick = function(id, multi) {
+  if (multi) {
+    openAnnullaUI(id);
+  } else {
+    applyAnnulla(id);
+  }
+};
 
 function showPopupSaved() {
     const p = document.getElementById("popup-saved");
@@ -709,15 +708,18 @@ function toggleFilters(email){
     box.style.display = sezioniAperte[email] ? "block" : "none";
 }
 
-async function toggleConferma(id, current){
-    await supabase.from("coppe").update({
-        confermata: !current
-    }).eq("id", id);
+async function toggleConferma(id){
+    const c = COPPE.find(x => x.id === id);
+    if (!c) return;
 
-    const coppa = COPPE.find(c => c.id === id);
-    if (coppa) coppa.confermata = !current;
+    const nuovoValore = (Number(c.confermate) || 0) + 1;
 
-    await load(); // ricarica TUTTO ma non chiude nulla
+    await supabase
+      .from("coppe")
+      .update({ confermate: nuovoValore })
+      .eq("id", id);
+
+    await load();
 }
 
 async function annullaConfermaCoppa(id) {
@@ -1266,9 +1268,9 @@ ${
       `;
     })()
   : `<button class="confirm-btn"
-        onclick="toggleConferma(${c.id}, false); event.stopPropagation();">
-        Conferma
-     </button>`
+  onclick="toggleConferma(${c.id}); event.stopPropagation();">
+  Conferma
+</button>`
 }
                 </div>
             `}
