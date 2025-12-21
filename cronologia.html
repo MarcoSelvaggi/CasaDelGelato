@@ -468,7 +468,9 @@ function formattaDataBella(iso) {
 
 function aggiornaFedelta() {
   // conta SOLO coppe dell’utente già filtrate (coppe array) e NON eliminate
-  const confermateTot = coppe.filter(c => c && c.confermata === true && !c.eliminata).length;
+  const confermateTot = coppe
+  .filter(c => c && !c.eliminata)
+  .reduce((tot, c) => tot + (c.confermate || 0), 0);
 
   // quante volte ho completato 10
   const couponSbloccati = Math.floor(confermateTot / 10);
