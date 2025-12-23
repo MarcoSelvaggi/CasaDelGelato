@@ -727,57 +727,47 @@ window.toggleConferma = async function (id) {
    await load();
 };
 
-async function annullaConfermaCoppa(id) {
+window.annullaConfermaCoppa = async function (id) {
+    const coppa = COPPE.find(c => c.id === id);
+    if (!coppa) {
+        console.warn("Coppa non trovata", id);
+        return;
+    }
 
-    const coppa = COPPE.find(c => c.id === id);
-    if (!coppa) return;
+    const max = Number(coppa.confermate) || 0;
 
-    const max = Number(coppa.confermate) || 0;
+    if (max <= 0) {
+        alert("Questa coppa non ha conferme da annullare.");
+        return;
+    }
 
-    if (max <= 0) {
-        alert("Questa coppa non ha conferme da annullare.");
-        return;
-    }
+    let daAnnullare = 1;
 
-    let daAnnullare = 1;
+    if (max > 1) {
+        const input = prompt(
+            `Questa coppa è stata confermata ${max} volte.\nQuante vuoi annullare? (1-${max})`,
+            "1"
+        );
 
-    if (max > 1) {
-        const input = prompt(
-            `Questa coppa è stata confermata ${max} volte.\n` +
-            `Quante conferme vuoi annullare? (1 – ${max})`,
-            "1"
-        );
+        if (input === null) return;
 
-        if (input === null) return;
+        daAnnullare = parseInt(input, 10);
+        if (isNaN(daAnnullare) || daAnnullare < 1 || daAnnullare > max) {
+            alert("Numero non valido.");
+            return;
+        }
+    }
 
-        daAnnullare = parseInt(input, 10);
+    const nuoveConfermate = max - daAnnullare;
 
-        if (isNaN(daAnnullare) || daAnnullare < 1 || daAnnullare > max) {
-            alert("Numero non valido.");
-            return;
-        }
-    }
+    await supabase
+        .from("coppe")
+        .update({ confermate: nuoveConfermate })
+        .eq("id", id);
 
-    const nuoveConfermate = max - daAnnullare;
+    await load();
+};
 
-    await supabase
-        .from("coppe")
-        .update({
-            confermate: nuoveConfermate,
-            confermata: nuoveConfermate > 0
-        })
-        .eq("id", id);
-
-    await load(); // refresh senza perdere stato
-}
-
-// 👉 espongo oggetti e funzioni usati negli onclick HTML
-window.toggleFilters = toggleFilters;
-window.toggleConferma = toggleConferma;
-window.annullaConfermaCoppa = annullaConfermaCoppa;
-window.renderCoppe = renderCoppe;
-window.filtroConfermate = filtroConfermate;
-window.filtroEliminate = filtroEliminate;
 
 window.apriSezioneCoupon = async function(email) {
 
