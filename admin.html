@@ -216,6 +216,25 @@
   pointer-events: auto;
 }
 
+/* 🚑 FIX TOTALE CLICK ADMIN */
+* {
+  pointer-events: auto;
+}
+
+.admin-overlay,
+.overlay,
+.fixed,
+.fullscreen,
+.screen,
+.layer {
+  pointer-events: none !important;
+}
+
+button {
+  position: relative;
+  z-index: 999999;
+}
+
 </style>
 </head>
 
