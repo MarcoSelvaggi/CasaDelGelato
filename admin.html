@@ -698,7 +698,7 @@ async function syncCouponUtente(email) {
     }
 }
 
-function toggleFilters(email){
+ window.toggleFilters = function(email){
     sezioniAperte[email] = !sezioniAperte[email];
 
     const box = document.getElementById("c-" + email);
@@ -1071,7 +1071,7 @@ out.innerHTML += `
     UTENTI.forEach(u => renderCoppe(u.email));
 }
 
-async function renderCoppe(email){
+window.renderCoppe = async function(email){
     const box = document.getElementById("c-" + email);
     if (!box) return;
 
