@@ -1075,7 +1075,7 @@ out.innerHTML += `
     UTENTI.forEach(u => renderCoppe(u.email));
 }
 
-async function renderCoppe(email){
+window.renderCoppe = async function(email){
     const box = document.getElementById("c-" + email);
     if (!box) return;
 
