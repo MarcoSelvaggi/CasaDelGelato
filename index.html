@@ -308,6 +308,30 @@ document.addEventListener("DOMContentLoaded", () => {
 import { supabase } from "./supabase.js";
 
 let waitInterval = null;
+let collapseTimeout = null;
+
+function expandWaitBar() {
+  const full = document.getElementById("wait-full");
+  const compact = document.getElementById("wait-compact");
+
+  if (!full || !compact) return;
+
+  full.style.display = "inline";
+  compact.style.display = "none";
+
+  clearTimeout(collapseTimeout);
+  collapseTimeout = setTimeout(collapseWaitBar, 5000);
+}
+
+function collapseWaitBar() {
+  const full = document.getElementById("wait-full");
+  const compact = document.getElementById("wait-compact");
+
+  if (!full || !compact) return;
+
+  full.style.display = "none";
+  compact.style.display = "inline";
+}
 
 async function loadWaitTime() {
   const { data, error } = await supabase
