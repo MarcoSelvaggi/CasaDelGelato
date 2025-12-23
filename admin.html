@@ -461,36 +461,37 @@ window.qtyPlus = function(id){
   renderCoppe(email);
 };
 
-window.applyAnnulla = async function(id){
-  const c = COPPE.find(x => x.id === id);
-  if (!c) return;
+window.applyAnnulla = async function(id) {
+  console.log("APPLY ANNULLA CHIAMATA PER", id);
 
-  const st = getAnnullaState(id);
-  const max = Math.max(0, Number(c.confermate || 0));
-  const qty = Math.min(max, Math.max(1, Number(st.qty || 1)));
+  const c = COPPE.find(x => x.id === id);
+  if (!c) return;
 
-  const nuovoValore = Math.max(0, max - qty);
+  const st = getAnnullaState(id);
+  const max = Math.max(0, Number(c.confermate || 0));
+  const qty = Math.min(max, Math.max(1, Number(st.qty || 1)));
 
-  await supabase
-    .from("coppe")
-    .update({ confermate: nuovoValore })
-    .eq("id", id);
+  const nuovoValore = Math.max(0, max - qty);
 
-  // richiudi UI annullo e ricarica dati
-  st.open = false;
-  st.qty = 1;
+  await supabase
+    .from("coppe")
+    .update({ confermate: nuovoValore })
+    .eq("id", id);
 
-  await load(); // mantiene le sezioni aperte come già fai
+  // reset stato UI annulla
+  st.open = false;
+  st.qty = 1;
+
+  await load(); // ricarica admin mantenendo sezioni
 };
 
-window.handleAnnullaClick = function(id, multi) {
+window.handleAnnullaClick = async function(id, multi) {
   if (multi) {
     openAnnullaUI(id);
   } else {
-    applyAnnulla(id);
+    await applyAnnulla(id);
   }
 };
-
 function showPopupSaved() {
     const p = document.getElementById("popup-saved");
     p.style.display = "block";
