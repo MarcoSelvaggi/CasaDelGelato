@@ -492,6 +492,7 @@ window.handleAnnullaClick = async function(id, multi) {
   } else {
     await applyAnnulla(id);
   }
+  return false;
 };
 
 function showPopupSaved() {
@@ -746,6 +747,7 @@ window.toggleConferma = async function (id) {
      .eq("id", id);
 
    await load();
+return false;
 };
 
 window.annullaConfermaCoppa = async function (id) {
@@ -1264,7 +1266,7 @@ ${
       const max = Number(c.confermate) || 1;
 
       return `
-        <div class="annulla-wrap" onclick="event.stopPropagation()">
+        <div class="annulla-wrap">
        <button class="undo-btn"
   onclick="handleAnnullaClick(${c.id}, ${multi});">
   Annulla conferma
