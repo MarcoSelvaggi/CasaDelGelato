@@ -698,15 +698,14 @@ async function syncCouponUtente(email) {
     }
 }
 
-function toggleFilters(email){
-    // inverti stato "aperto/chiuso" in memoria
+window.toggleFilters = function(email){
     sezioniAperte[email] = !sezioniAperte[email];
 
     const box = document.getElementById("c-" + email);
     if (!box) return;
 
     box.style.display = sezioniAperte[email] ? "block" : "none";
-}
+};
 
 window.toggleConferma = async function (id) {
    const c = COPPE.find(x => x.id === id);
@@ -1239,7 +1238,7 @@ arr.forEach(c => {
 ${
   (Number(c.confermate) > 0)
   ? (() => {
-      const st = annullaUI[c.id] || { open:false, qty:1 };
+      const st = getAnnullaState(c.id);
       const multi = Number(c.confermate) > 1;
       const disabledClass = (multi && !st.open) ? "disabled" : "";
       const max = Number(c.confermate) || 1;
