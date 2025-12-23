@@ -461,32 +461,39 @@ window.qtyPlus = function(id){
 window.applyAnnulla = async function(id) {
   console.log("APPLY ANNULLA → ID", id);
 
-  // 1️⃣ Prendo la coppa DAL DB (non da JS)
+  const st = getAnnullaState(id);
+
+  // 1️⃣ Leggo coppa dal DB
   const { data, error } = await supabase
     .from("coppe")
-    .select("confermate")
+    .select("confermate, email")
     .eq("id", id)
     .single();
 
   if (error || !data) {
-    console.warn("Coppa non trovata nel DB", id);
+    console.warn("Coppa non trovata", id);
     return;
   }
 
-  const max = Math.max(0, Number(data.confermate || 0));
+  const max = Number(data.confermate) || 0;
   if (max === 0) return;
 
-  // 2️⃣ decremento di 1 (caso simple)
-  const nuovoValore = max - 1;
+  // 2️⃣ USO qty selezionata
+  const qty = Math.min(max, Math.max(1, Number(st.qty || 1)));
+  const nuovoValore = max - qty;
 
-  // 3️⃣ update
+  // 3️⃣ Update DB
   await supabase
     .from("coppe")
     .update({ confermate: nuovoValore })
     .eq("id", id);
 
-  // 4️⃣ ricarico admin
-  await load();
+  // 4️⃣ Reset stato UI
+  st.open = false;
+  st.qty = 1;
+
+  // 5️⃣ Ricarico solo l’utente giusto
+  renderCoppe(data.email || "Anonimo");
 };
 
 window.handleAnnullaClick = function(id, multi) {
