@@ -732,7 +732,6 @@ async function syncCouponUtente(email) {
 }
 
 window.toggleConferma = async function (id) {
-     alert("CLICK CONFERMA " + id);
    const c = COPPE.find(x => x.id === id);
    if (!c) return;
 
@@ -1264,7 +1263,7 @@ ${
       return `
         <div class="annulla-wrap">
        <button class="undo-btn"
-  onclick="handleAnnullaClick(${c.id}, ${multi}); event.stopPropagation();">
+  onclick="handleAnnullaClick(${c.id}, ${multi});">
   Annulla conferma
 </button>
 
