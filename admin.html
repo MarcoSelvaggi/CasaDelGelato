@@ -212,12 +212,6 @@
   line-height:20px;
 }
 
-/* ===== FIX CLICK ANNULLA / CONFERMA ===== */
-
-/* il wrapper NON intercetta click */
-.annulla-wrap {
-  pointer-events: none;
-}
 
 /* SOLO gli elementi interattivi sono cliccabili */
 .annulla-wrap button,
@@ -495,13 +489,20 @@ window.applyAnnulla = async function(id) {
   await load();
 };
 
-window.handleAnnullaClick = async function(id, multi) {
-  console.log("CLICK ANNULLA", id, multi);
+window.handleAnnullaClick = function(id, multi) {
+  console.log("HANDLE ANNULLA", id, multi);
 
   if (multi) {
-    window.openAnnullaUI(id);
+    const st = getAnnullaState(id);
+    st.open = true;
+    st.qty = 1;
+
+    const c = COPPE.find(x => Number(x.id) === Number(id));
+    if (!c) return;
+
+    renderCoppe(c.email || "Anonimo");
   } else {
-    await window.applyAnnulla(id);
+    applyAnnulla(id);
   }
 };
 
@@ -1278,7 +1279,7 @@ ${
       return `
         <div class="annulla-wrap">
 <button class="undo-btn"
-  onclick="handleAnnullaClick(${c.id}, false)">
+  onclick="handleAnnullaClick(${c.id}, ${multi})">
   Annulla conferma
 </button>
 
