@@ -430,16 +430,20 @@ function getAnnullaState(id){
   return annullaUI[id];
 }
 
-window.openAnnullaUI = function(id){
-  const st = getAnnullaState(id);
-  st.open = true;
-  st.qty = 1;
+function openAnnullaUI(id) {
+  const st = getAnnullaState(id);
+  st.open = true;
+  st.qty = 1;
 
-  const c = COPPE.find(x => x.id === id);
-  if (!c) return;
-  const email = c.email || "Anonimo";
-  renderCoppe(email);
-};
+  const c = COPPE.find(x => Number(x.id) === Number(id));
+  if (!c) {
+    console.warn("Coppa non trovata in openAnnullaUI", id);
+    return;
+  }
+
+  const email = c.email || "Anonimo";
+  renderCoppe(email);
+}
 
 window.qtyMinus = function(id){
   const st = getAnnullaState(id);
