@@ -464,35 +464,14 @@ window.qtyPlus = function(id){
   renderCoppe(email);
 };
 
-window.applyAnnulla = async function(id) {
-  console.log("APPLY ANNULLA CHIAMATA PER", id);
-
-  const c = COPPE.find(x => Number(x.id) === Number(id));
-  if (!c) return;
-
-  const st = getAnnullaState(id);
-  const max = Math.max(0, Number(c.confermate || 0));
-  const qty = Math.min(max, Math.max(1, Number(st.qty || 1)));
-
-  const nuovoValore = Math.max(0, max - qty);
-
-  await supabase
-    .from("coppe")
-    .update({ confermate: nuovoValore })
-    .eq("id", id);
-
-  console.log("ANNULLA OK → ricarico pagina");
-
-  location.reload(); // ✅ FORZA UI ALLINEATA
+window.handleAnnullaClick = function(id, multi) {
+  console.log("HANDLE ANNULLA", id, multi);
+  applyAnnulla(id);
 };
 
-window.handleAnnullaClick = async function(id, multi) {
-  if (multi) {
-    openAnnullaUI(id);
-  } else {
-    await applyAnnulla(id);
-  }
-  return false;
+window.handleAnnullaClick = function(id, multi) {
+  console.log("HANDLE ANNULLA", id, multi);
+  applyAnnulla(id);
 };
 
 function showPopupSaved() {
@@ -1369,9 +1348,7 @@ document.addEventListener("click", () => {
     if (menu) menu.style.display = "none";
 });
 
-window.handleAnnullaClick = function(id, multi) {
-  alert("HANDLE ANNULLA OK → ID: " + id + " MULTI: " + multi);
-};
+
 
 </script>
 
