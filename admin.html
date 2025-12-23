@@ -1050,7 +1050,9 @@ if (!matchUtente && !contieneNelleCoppe) return;
         const cardCls = u.disiscritto ? "utente-card utente-disiscritto" : "utente-card";
 
 out.innerHTML += `
-    <div class="${cardCls}" data-email="${email}">
+    <div class="${cardCls}"
+     data-email="${email}"
+     onclick="toggleFilters('${email}')">
         <b>${highlight(email)}</b>
 
         <div class="counter-row">
@@ -1073,20 +1075,6 @@ out.innerHTML += `
     UTENTI.forEach(u => renderCoppe(u.email));
 }
 
-document.addEventListener("click", (e) => {
-  const card = e.target.closest(".utente-card");
-  if (!card) return;
-
-  if (
-  e.target.closest("button") ||
-  e.target.closest(".badge") ||
-  e.target.closest(".coppa-box") ||
-  e.target.closest(".annulla-wrap")
-) return;
-
-  const email = card.dataset.email;
-  if (email) toggleFilters(email);
-});
 
 window.renderCoppe = async function(email){
     const box = document.getElementById("c-" + email);
