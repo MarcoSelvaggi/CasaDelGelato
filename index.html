@@ -383,10 +383,10 @@ function tick() {
 
   bar.style.display = "flex";
 
-  // ⏱️ OGNI NUOVO MINUTO → RIAPRE
-  if (sec === 59) {
-    expandWaitBar();
-  }
+// ⏱️ quando inizia un nuovo minuto → riapre la barra
+if (sec === 59) {
+  expandWaitBar();
+}
 }
   tick(); // ⏱️ avvio immediato
   waitInterval = setInterval(tick, 1000);
