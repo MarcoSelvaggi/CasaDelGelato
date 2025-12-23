@@ -1344,6 +1344,42 @@ document.addEventListener("click", () => {
     if (menu) menu.style.display = "none";
 });
 
+// ==============================
+// ESPONGO LE FUNZIONI AL DOM
+// ==============================
+
+window.toggleFilters = toggleFilters;
+window.renderCoppe = renderCoppe;
+
+window.toggleConferma = async function(id) {
+    const c = COPPE.find(x => x.id === id);
+    if (!c) return;
+
+    const nuovoValore = (Number(c.confermate) || 0) + 1;
+
+    await supabase
+        .from("coppe")
+        .update({ confermate: nuovoValore })
+        .eq("id", id);
+
+    await load();
+};
+
+window.annullaConfermaCoppa = async function(id) {
+    const coppa = COPPE.find(c => c.id === id);
+    if (!coppa) return;
+
+    const max = Number(coppa.confermate) || 0;
+    if (max <= 0) return;
+
+    await supabase
+        .from("coppe")
+        .update({ confermate: max - 1 })
+        .eq("id", id);
+
+    await load();
+};
+
 </script>
 
 </body>
