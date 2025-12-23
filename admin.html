@@ -392,8 +392,6 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 }
 </style>
 
-<div id="admin-list"></div>
-
 <script type="module">
 import { supabase } from "./supabase.js";
 
@@ -1052,7 +1050,7 @@ if (!matchUtente && !contieneNelleCoppe) return;
         const cardCls = u.disiscritto ? "utente-card utente-disiscritto" : "utente-card";
 
 out.innerHTML += `
-    <div class="${cardCls}" onclick="toggleFilters('${email}')">
+    <div class="${cardCls}" data-email="${email}">
         <b>${highlight(email)}</b>
 
         <div class="counter-row">
@@ -1074,6 +1072,21 @@ out.innerHTML += `
 
     UTENTI.forEach(u => renderCoppe(u.email));
 }
+
+document.addEventListener("click", (e) => {
+  const card = e.target.closest(".utente-card");
+  if (!card) return;
+
+  if (
+  e.target.closest("button") ||
+  e.target.closest(".badge") ||
+  e.target.closest(".coppa-box") ||
+  e.target.closest(".annulla-wrap")
+) return;
+
+  const email = card.dataset.email;
+  if (email) toggleFilters(email);
+});
 
 window.renderCoppe = async function(email){
     const box = document.getElementById("c-" + email);
