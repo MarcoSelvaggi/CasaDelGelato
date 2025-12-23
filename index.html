@@ -147,6 +147,28 @@ body {
   z-index:9999;
   box-shadow:0 4px 14px rgba(0,0,0,0.25);
 }
+
+/* ⏱️ WAIT BAR – versione più discreta */
+#wait-bar {
+  font-size: 13px;          /* prima era 15 */
+  padding: 8px 14px;        /* più compatta */
+  border-radius: 12px;
+}
+
+/* testo "Attesa stimata" */
+#wait-full {
+  font-size: 12.5px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* numeri minuti:secondi */
+#wait-time,
+#wait-mmss {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
   </style>
   <link rel="stylesheet" href="bottom-nav.css">
 </head>
@@ -429,10 +451,10 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 ">
   <span id="wait-full">
-  ⏱️ Attesa stimata: <span id="wait-time">0</span>
+  Attesa stimata: <span id="wait-time">0</span>
 </span>
 <span id="wait-compact" style="display:none">
-  ⏱️ <span id="wait-mmss">0:00</span>
+  <span id="wait-mmss">0:00</span>
 </span>
 </div>
 
