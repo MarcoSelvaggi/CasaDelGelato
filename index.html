@@ -339,6 +339,23 @@ async function loadWaitTime() {
   }
 }
 
+// 🔴 REALTIME WAIT TIME
+supabase
+  .channel("wait-time-live")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "wait_time"
+    },
+    payload => {
+      console.log("🔁 wait_time aggiornato realtime:", payload);
+      loadWaitTime();
+    }
+  )
+  .subscribe();
+
 document.addEventListener("DOMContentLoaded", loadWaitTime);
 </script>
 
