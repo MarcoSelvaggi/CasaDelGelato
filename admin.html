@@ -289,6 +289,20 @@ button {
   overflow: hidden;
 }
 
+button {
+  padding:8px 14px;
+  border-radius:10px;
+  border:none;
+  background:#007aff;
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+}
+
+button:hover {
+  opacity:0.9;
+}
+
 </style>
 </head>
 
@@ -335,6 +349,21 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 <div id="spacer"></div>
 
 <h1>📊 Pannello Admin</h1>
+
+<!-- ⏳ TEMPO DI ATTESA -->
+<div style="text-align:center; margin:20px 0;">
+  <h3>⏳ Tempo di attesa clienti</h3>
+
+  <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+    <button onclick="setWaitTime(5)">5 min</button>
+    <button onclick="setWaitTime(10)">10 min</button>
+    <button onclick="setWaitTime(15)">15 min</button>
+    <button onclick="setWaitTime(20)">20 min</button>
+    <button onclick="disableWaitTime()" style="background:#ff3b30;">
+      OFF
+    </button>
+  </div>
+</div>
 
 <a href="admin-scan.html">
    <button style="
@@ -1449,7 +1478,31 @@ document.addEventListener("click", () => {
     if (menu) menu.style.display = "none";
 });
 
+window.setWaitTime = async function(minutes) {
+  await supabase
+    .from("wait_time")
+    .update({
+      minutes: minutes,
+      active: true,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", 1);
 
+  alert(`⏳ Tempo di attesa impostato a ${minutes} minuti`);
+};
+
+window.disableWaitTime = async function() {
+  await supabase
+    .from("wait_time")
+    .update({
+      active: false,
+      minutes: 0,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", 1);
+
+  alert("⛔ Tempo di attesa disattivato");
+};
 
 </script>
 
