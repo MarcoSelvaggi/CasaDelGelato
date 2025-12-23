@@ -228,6 +228,63 @@ button {
   z-index: 999999;
 }
 
+/* 📱 Mobile: testo coppa più compatto */
+@media (max-width: 480px) {
+  .coppa-box {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .coppa-box b {
+    font-size: 13.5px;
+  }
+}
+/* 📱 Mobile: controlli annulla ultra-compact */
+@media (max-width: 480px) {
+
+  .annulla-wrap {
+    gap: 6px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .undo-btn {
+    font-size: 12px;
+    padding: 4px 7px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .qty-box {
+    padding: 2px 6px;
+    gap: 4px;
+    border-radius: 6px;
+  }
+
+  .qty-btn {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    line-height: 18px;
+    border-radius: 5px;
+  }
+
+  .qty-num {
+    min-width: 14px;
+    font-size: 12px;
+  }
+
+  .confirm-btn {
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+}
+.coppa-box {
+  overflow: hidden;
+}
+
 </style>
 </head>
 
