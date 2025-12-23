@@ -6,119 +6,154 @@
 <title>Admin - Casa del Gelato</title>
 
 <style>
-/* ====== STILI ORIGINALI (NON TOCCATI) ====== */
+/* ====== STILI ORIGINALI (INTOCCATI) ====== */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f6f6f7;
-    margin: 0;
-    padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f6f6f7;
+  margin: 0;
+  padding: 0;
 }
 
 #top-fixed-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 55px;
-    background: white;
-    border-bottom: 1px solid #ddd;
-    z-index: 999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 55px;
+  background: white;
+  border-bottom: 1px solid #ddd;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .home-btn {
-    position: absolute;
-    left: 12px;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #444;
-    font-size: 16px;
-    gap: 6px;
+  position: absolute;
+  left: 12px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #444;
+  font-size: 16px;
+  gap: 6px;
 }
 
 .home-btn img { width: 28px; height: 28px; }
 #spacer { height: 70px; }
+
 h1 { text-align: center; margin-top: 10px; }
 
 #search-admin {
-    display:block;
-    margin: 10px auto 5px;
-    width: 90%;
-    max-width: 600px;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 12px;
-    border: 1px solid #ccc;
+  display:block;
+  margin: 10px auto 5px;
+  width: 90%;
+  max-width: 600px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
 }
 
 #admin-list {
-    padding: 20px;
-    max-width: 900px;
-    margin: 0 auto;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .utente-card {
-    background: white;
-    border-radius: 14px;
-    padding: 15px 18px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    cursor: pointer;
-    border-left: 8px solid #007aff;
+  background: white;
+  border-radius: 14px;
+  padding: 15px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  cursor: pointer;
+  border-left: 8px solid #007aff;
 }
 
 .utente-disiscritto {
-    border-left-color: #ff3b30 !important;
-    background: #ffecec !important;
+  border-left-color: #ff3b30 !important;
+  background: #ffecec !important;
 }
 
+.counter-row {
+  margin-top: 6px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.badge-blue { background: #e4f0ff; color: #0052cc; }
+.badge-green { background: #e8ffe8; color: #008a00; }
+.badge-red  { background: #ffe5e5; color: #b20000; }
+.badge-coupon { background: #fff5cc; color: #a67c00; cursor:pointer; }
+
 .coppe-container {
-    display:none;
-    margin-top: 10px;
-    padding: 15px;
-    background: #ffffff;
-    border-radius: 14px;
-    border: 1px solid #ddd;
+  display:none;
+  margin-top: 10px;
+  padding: 15px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #ddd;
+}
+
+.coppa-box {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: #fafafa;
+  border-left: 6px solid #007aff;
+}
+
+.coppa-confermata {
+  border-left-color: #00b341;
+  background:#e7ffe9;
+}
+
+.confirm-btn {
+  padding: 6px 12px;
+  background: #00c851;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.undo-btn {
+  padding: 6px 12px;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
 }
 </style>
 </head>
 
 <body>
 
-<script>
-/* ===== PROTEZIONE ADMIN ===== */
-const ADMIN_PASSWORD = "115365";
-document.addEventListener("DOMContentLoaded", () => {
-  const pwd = prompt("🔐 Inserisci password admin");
-  if (pwd !== ADMIN_PASSWORD) {
-    alert("Accesso negato");
-    location.href = "index.html";
-  }
-});
-</script>
-
 <div id="top-fixed-bar">
   <a class="home-btn" href="index.html">
-    <img src="tastohome.png"><span>Home</span>
+    <img src="tastohome.png">
+    <span>Home</span>
   </a>
 </div>
 
 <div id="spacer"></div>
 <h1>📊 Pannello Admin</h1>
 
-<div style="text-align:center;margin:20px">
-  <button onclick="apriDashboard()">Dashboard</button>
-  <button onclick="apriDisponibilita()">Disponibilità ingredienti</button>
-</div>
+<input id="search-admin" placeholder="Cerca utenti o coppe">
 
-<div id="sezione-dashboard">
-  <div id="admin-list"></div>
-</div>
-
-<div id="sezione-disponibilita" style="display:none;padding:20px"></div>
+<div id="admin-list"></div>
 
 <script type="module">
 import { supabase } from "./supabase.js";
@@ -130,75 +165,87 @@ let sezioniAperte = {};
 async function load() {
   const u = await supabase.from("utenti").select("*");
   const c = await supabase.from("coppe").select("*");
+
   UTENTI = u.data || [];
   COPPE = c.data || [];
   render();
 }
-load();
 
-/* ===== RENDER UTENTI ===== */
-function render() {
+function getStats(email){
+  const list = COPPE.filter(c => (c.email || "Anonimo") === email);
+  const conf = list.reduce((s,c)=>s+(c.confermate||0),0);
+  return { list, conf };
+}
+
+window.toggleUtente = function(email){
+  sezioniAperte[email] = !sezioniAperte[email];
+  renderCoppe(email);
+};
+
+window.confermaCoppa = async function(id){
+  const c = COPPE.find(x=>x.id===id);
+  await supabase.from("coppe")
+    .update({ confermate: (c.confermate||0)+1 })
+    .eq("id", id);
+  load();
+};
+
+window.annullaCoppa = async function(id){
+  const c = COPPE.find(x=>x.id===id);
+  if ((c.confermate||0) <= 0) return;
+  await supabase.from("coppe")
+    .update({ confermate: c.confermate-1 })
+    .eq("id", id);
+  load();
+};
+
+function render(){
   const out = document.getElementById("admin-list");
   out.innerHTML = "";
 
-  UTENTI.forEach(u => {
-    const email = u.email;
+  UTENTI.forEach(u=>{
+    const email = u.email || "Anonimo";
+    const stats = getStats(email);
+
     out.innerHTML += `
-      <div class="utente-card"
-           onclick="toggleUtente('${email}')">
+      <div class="utente-card" onclick="toggleUtente('${email}')">
         <b>${email}</b>
+        <div class="counter-row">
+          <span class="badge badge-green">Confermate: ${stats.conf}</span>
+        </div>
       </div>
       <div id="c-${email}" class="coppe-container"></div>
     `;
   });
 }
 
-/* ===== TOGGLE CARD ===== */
-window.toggleUtente = function(email) {
-  const box = document.getElementById("c-" + email);
+function renderCoppe(email){
+  const box = document.getElementById("c-"+email);
   if (!box) return;
 
-  const open = !sezioniAperte[email];
-  sezioniAperte[email] = open;
-  box.style.display = open ? "block" : "none";
+  if (!sezioniAperte[email]) {
+    box.style.display = "none";
+    box.innerHTML = "";
+    return;
+  }
 
-  if (open) renderCoppe(email);
-};
+  box.style.display = "block";
+  const stats = getStats(email);
 
-/* ===== RENDER COPPE ===== */
-window.renderCoppe = function(email) {
-  const box = document.getElementById("c-" + email);
-  const coppe = COPPE.filter(c => c.email === email);
-
-  box.innerHTML = coppe.map(c => `
-    <div style="padding:10px;margin:8px 0;background:#f2f2f2;border-radius:10px">
-      <b>${c.nome || "Coppa"}</b><br>
-      Confermate: ${c.confermate || 0}
-      <br>
-      <button onclick="conferma(${c.id});event.stopPropagation()">Conferma</button>
+  box.innerHTML = stats.list.map(c=>`
+    <div class="coppa-box ${c.confermate>0?'coppa-confermata':''}">
+      <b>${c.nome}</b><br>
+      Confermate: ${c.confermate||0}<br>
+      ${
+        c.confermate>0
+        ? `<button class="undo-btn" onclick="annullaCoppa(${c.id})">Annulla</button>`
+        : `<button class="confirm-btn" onclick="confermaCoppa(${c.id})">Conferma</button>`
+      }
     </div>
   `).join("");
-};
+}
 
-/* ===== CONFERMA ===== */
-window.conferma = async function(id) {
-  const c = COPPE.find(x => x.id === id);
-  await supabase.from("coppe")
-    .update({ confermate: (c.confermate || 0) + 1 })
-    .eq("id", id);
-  load();
-};
-
-/* ===== TABS ===== */
-window.apriDashboard = function() {
-  document.getElementById("sezione-dashboard").style.display = "block";
-  document.getElementById("sezione-disponibilita").style.display = "none";
-};
-
-window.apriDisponibilita = function() {
-  document.getElementById("sezione-dashboard").style.display = "none";
-  document.getElementById("sezione-disponibilita").style.display = "block";
-};
+load();
 </script>
 
 </body>
