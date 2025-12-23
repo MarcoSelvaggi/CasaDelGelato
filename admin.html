@@ -212,22 +212,21 @@
   line-height:20px;
 }
 
-.coppa-box * {
-  pointer-events: auto;
+/* ===== FIX CLICK ANNULLA / CONFERMA ===== */
+
+/* il wrapper NON intercetta click */
+.annulla-wrap {
+  pointer-events: none;
 }
 
-/* 🚑 FIX TOTALE CLICK ADMIN */
-* {
+/* SOLO gli elementi interattivi sono cliccabili */
+.annulla-wrap button,
+.annulla-wrap .undo-btn,
+.annulla-wrap .confirm-btn,
+.annulla-wrap .qty-btn {
   pointer-events: auto;
-}
-
-.admin-overlay,
-.overlay,
-.fixed,
-.fullscreen,
-.screen,
-.layer {
-  pointer-events: none !important;
+  position: relative;
+  z-index: 5;
 }
 
 button {
