@@ -305,8 +305,61 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 <script type="module">
-  import { supabase } from "./supabase.js";
+import { supabase } from "./supabase.js";
+
+async function loadWaitTime() {
+  console.log("⏱️ loadWaitTime chiamata");
+
+  const { data, error } = await supabase
+    .from("wait_time")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) {
+    console.error("❌ Errore wait_time", error);
+    return;
+  }
+
+  console.log("✅ wait_time:", data);
+
+  const bar = document.getElementById("wait-bar");
+  const txt = document.getElementById("wait-time");
+
+  if (!bar || !txt) {
+    console.error("❌ wait-bar non trovato");
+    return;
+  }
+
+  if (data.active && data.minutes > 0) {
+    txt.textContent = data.minutes;
+    bar.style.display = "flex";
+  } else {
+    bar.style.display = "none";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadWaitTime);
 </script>
+
+<!-- ⏱️ WAIT TIME BAR -->
+<div id="wait-bar" style="
+  position: fixed;
+  bottom: 90px; /* sopra la bottom nav */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+">
+  ⏱️ Attesa stimata: <span id="wait-time">0</span> min
+</div>
 
 <!-- 🔥 BOTTOM NAV BAR FISSA -->
 <div id="bottom-nav">
@@ -330,11 +383,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <span>Lavora Con Noi</span>
     </a>
 </div>
-
 </div>
 
-<div style="position:fixed; bottom:150px; left:20px; background:red; color:white; z-index:99999;">
-  TEST VISIVO
-</div>
+
 </body>
 </html>
