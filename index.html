@@ -337,26 +337,34 @@ async function loadWaitTime() {
   const startTime = new Date(data.updated_at).getTime();
   const totalSeconds = data.minutes * 60;
 
-  function tick() {
-    const now = Date.now();
-    const elapsed = Math.floor((now - startTime) / 1000);
-    const remaining = totalSeconds - elapsed;
+function tick() {
+  const now = Date.now();
+  const elapsed = Math.floor((now - startTime) / 1000);
+  const remaining = totalSeconds - elapsed;
 
-    if (remaining <= 0) {
-      bar.style.display = "none";
-      clearInterval(waitInterval);
-      waitInterval = null;
-      return;
-    }
-
-    const min = Math.floor(remaining / 60);
-    const sec = remaining % 60;
-
-    txt.textContent = `${min}:${sec.toString().padStart(2, "0")}`;
-    bar.style.display = "flex";
+  if (remaining <= 0) {
+    bar.style.display = "none";
+    clearInterval(waitInterval);
+    waitInterval = null;
+    return;
   }
 
-  tick(); // subito
+  const min = Math.floor(remaining / 60);
+  const sec = remaining % 60;
+  const timeStr = `${min}:${sec.toString().padStart(2, "0")}`;
+
+  // 🔢 aggiorna entrambi i testi
+  txt.textContent = timeStr;
+  document.getElementById("wait-mmss").textContent = timeStr;
+
+  bar.style.display = "flex";
+
+  // ⏱️ OGNI NUOVO MINUTO → RIAPRE
+  if (sec === 59) {
+    expandWaitBar();
+  }
+}
+  tick(); // ⏱️ avvio immediato
   waitInterval = setInterval(tick, 1000);
 }
 
@@ -396,7 +404,12 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   z-index: 9999;
   box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 ">
-  ⏱️ Attesa stimata: <span id="wait-time">0</span> min
+  <span id="wait-full">
+  ⏱️ Attesa stimata: <span id="wait-time">0</span>
+</span>
+<span id="wait-compact" style="display:none">
+  ⏱️ <span id="wait-mmss">0:00</span>
+</span>
 </div>
 
 <!-- 🔥 BOTTOM NAV BAR FISSA -->
