@@ -434,6 +434,7 @@ window.openAnnullaUI = function(id) {
   st.open = true;
   st.qty = 1;
 
+  const c = COPPE.find(x => Number(x.id) === Number(id));
   if (!c) {
     console.warn("Coppa non trovata in openAnnullaUI", id);
     return;
@@ -492,6 +493,16 @@ window.applyAnnulla = async function(id) {
 
   // 4️⃣ ricarico admin
   await load();
+};
+
+window.handleAnnullaClick = async function(id, multi) {
+  console.log("CLICK ANNULLA", id, multi);
+
+  if (multi) {
+    window.openAnnullaUI(id);
+  } else {
+    await window.applyAnnulla(id);
+  }
 };
 
 function showPopupSaved() {
@@ -1266,7 +1277,8 @@ ${
 
       return `
         <div class="annulla-wrap">
-<button class="undo-btn" onclick="handleAnnullaClick(77, false)">
+<button class="undo-btn"
+  onclick="handleAnnullaClick(${c.id}, false)">
   Annulla conferma
 </button>
 
