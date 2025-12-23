@@ -464,11 +464,9 @@ window.qtyPlus = function(id){
   renderCoppe(email);
 };
 
-window.handleAnnullaClick = function(id, multi) {
-  console.log("HANDLE ANNULLA", id, multi);
-  applyAnnulla(id);
+window.applyAnnulla = function(id) {
+  alert("APPLY ANNULLA OK → ID: " + id);
 };
-
 window.handleAnnullaClick = function(id, multi) {
   console.log("HANDLE ANNULLA", id, multi);
   applyAnnulla(id);
