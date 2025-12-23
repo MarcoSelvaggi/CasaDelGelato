@@ -473,16 +473,21 @@ window.applyAnnulla = async function(id) {
 
   const nuovoValore = Math.max(0, max - qty);
 
+  // 🔥 aggiorno DB
   await supabase
     .from("coppe")
     .update({ confermate: nuovoValore })
     .eq("id", id);
 
-  // reset stato UI annulla
+  // 🔥 AGGIORNO SUBITO LA CACHE LOCALE
+  c.confermate = nuovoValore;
+  if (nuovoValore === 0) c.confermata = false;
+
+  // reset UI annulla
   st.open = false;
   st.qty = 1;
 
-  await load(); // ricarica admin mantenendo sezioni
+  await load(); // ora la UI cambia davvero
 };
 
 window.handleAnnullaClick = async function(id, multi) {
@@ -492,6 +497,7 @@ window.handleAnnullaClick = async function(id, multi) {
     await applyAnnulla(id);
   }
 };
+
 function showPopupSaved() {
     const p = document.getElementById("popup-saved");
     p.style.display = "block";
