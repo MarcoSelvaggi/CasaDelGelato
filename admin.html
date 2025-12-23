@@ -1264,7 +1264,7 @@ ${
       const max = Number(c.confermate) || 1;
 
       return `
-        <div class="annulla-wrap">
+        <div class="annulla-wrap" onclick="event.stopPropagation()">
        <button class="undo-btn"
   onclick="handleAnnullaClick(${c.id}, ${multi});">
   Annulla conferma
