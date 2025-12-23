@@ -1267,7 +1267,7 @@ ${
 
       return `
         <div class="annulla-wrap">
-<button class="undo-btn" onclick="alert('CLICK OK');">
+<button class="undo-btn" onclick="handleAnnullaClick(77, false)">
   Annulla conferma
 </button>
 
@@ -1369,6 +1369,9 @@ document.addEventListener("click", () => {
     if (menu) menu.style.display = "none";
 });
 
+window.handleAnnullaClick = function(id, multi) {
+  alert("HANDLE ANNULLA OK → ID: " + id + " MULTI: " + multi);
+};
 
 </script>
 
