@@ -1276,17 +1276,17 @@ ${
           </div>
 
           ${multi && st.open ? `
-            <button class="confirm-btn"
-              onclick="applyAnnulla(${c.id}); event.stopPropagation();">
-              OK (${st.qty || 1}/${max})
-            </button>
+           <button class="confirm-btn"
+  onclick="applyAnnulla(${c.id})">
+  OK (${st.qty || 1}/${max})
+</button>
           ` : ``}
         </div>
       `;
     })()
   : `<button class="confirm-btn"
-  onclick="toggleConferma(${c.id}); event.stopPropagation();">
-  Conferma
+  onclick="toggleConferma(${c.id})">
+  Conferma
 </button>`
 }
                 </div>
