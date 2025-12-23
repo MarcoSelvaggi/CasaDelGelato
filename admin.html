@@ -703,6 +703,9 @@ window.toggleFilters = function(email){
     if (!box) return;
 
     box.style.display = sezioniAperte[email] ? "block" : "none";
+
+    // ✅ AGGIUNGI QUESTA RIGA
+    if (sezioniAperte[email]) renderCoppe(email);
 };
 
 window.toggleConferma = async function (id) {
