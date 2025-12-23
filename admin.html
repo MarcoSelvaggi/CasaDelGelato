@@ -430,7 +430,7 @@ function getAnnullaState(id){
   return annullaUI[id];
 }
 
-function openAnnullaUI(id) {
+window.openAnnullaUI = function(id) {
   const st = getAnnullaState(id);
   st.open = true;
   st.qty = 1;
@@ -443,7 +443,7 @@ function openAnnullaUI(id) {
 
   const email = c.email || "Anonimo";
   renderCoppe(email);
-}
+};
 
 window.qtyMinus = function(id){
   const st = getAnnullaState(id);
