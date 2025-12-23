@@ -464,8 +464,11 @@ window.qtyPlus = function(id){
 window.applyAnnulla = async function(id) {
   console.log("APPLY ANNULLA CHIAMATA PER", id);
 
-  const c = COPPE.find(x => x.id === id);
-  if (!c) return;
+  const c = COPPE.find(x => Number(x.id) === Number(id));
+  if (!c) {
+    console.warn("COPPA NON TROVATA", id);
+    return;
+  }
 
   const st = getAnnullaState(id);
   const max = Math.max(0, Number(c.confermate || 0));
@@ -473,21 +476,19 @@ window.applyAnnulla = async function(id) {
 
   const nuovoValore = Math.max(0, max - qty);
 
-  // 🔥 aggiorno DB
   await supabase
     .from("coppe")
     .update({ confermate: nuovoValore })
     .eq("id", id);
 
-  // 🔥 AGGIORNO SUBITO LA CACHE LOCALE
+  // aggiorno cache locale
   c.confermate = nuovoValore;
   if (nuovoValore === 0) c.confermata = false;
 
-  // reset UI annulla
   st.open = false;
   st.qty = 1;
 
-  await load(); // ora la UI cambia davvero
+  await load();
 };
 
 window.handleAnnullaClick = async function(id, multi) {
