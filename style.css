@@ -1453,3 +1453,25 @@ button.conferma-btn {
 button.conferma-btn:hover {
   background: #ececec;
 }
+
+/* ⏱️ WAIT BAR – ultra compatta */
+#wait-bar {
+  font-size: 12px;        /* ↓ ancora */
+  padding: 6px 12px;
+  border-radius: 11px;
+}
+
+/* testo "Attesa stimata" */
+#wait-full {
+  font-size: 11.5px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+/* minuti / countdown */
+#wait-time,
+#wait-mmss {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}

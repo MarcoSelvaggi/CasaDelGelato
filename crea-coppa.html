@@ -373,5 +373,136 @@ function confermaTavolo() {
   document.getElementById("step-size").style.display = "block";
 }
 </script>
+<script type="module">
+import { supabase } from "./supabase.js";
+
+let waitInterval = null;
+let collapseTimeout = null;
+
+function expandWaitBar() {
+  const full = document.getElementById("wait-full");
+  const compact = document.getElementById("wait-compact");
+
+  if (!full || !compact) return;
+
+  full.style.display = "inline";
+  compact.style.display = "none";
+
+  clearTimeout(collapseTimeout);
+  collapseTimeout = setTimeout(collapseWaitBar, 5000);
+}
+
+function collapseWaitBar() {
+  const full = document.getElementById("wait-full");
+  const compact = document.getElementById("wait-compact");
+
+  if (!full || !compact) return;
+
+  full.style.display = "none";
+  compact.style.display = "inline";
+}
+
+async function loadWaitTime() {
+  const { data, error } = await supabase
+    .from("wait_time")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) return;
+
+  const bar = document.getElementById("wait-bar");
+  const txt = document.getElementById("wait-time");
+
+  if (!bar || !txt) return;
+
+  // stop eventuale timer precedente
+  if (waitInterval) {
+    clearInterval(waitInterval);
+    waitInterval = null;
+  }
+
+  if (!data.active || data.minutes <= 0) {
+    bar.style.display = "none";
+    return;
+  }
+
+  const startTime = new Date(data.updated_at).getTime();
+  const totalSeconds = data.minutes * 60;
+
+function tick() {
+  const now = Date.now();
+  const elapsed = Math.floor((now - startTime) / 1000);
+  const remaining = totalSeconds - elapsed;
+
+  if (remaining <= 0) {
+    bar.style.display = "none";
+    clearInterval(waitInterval);
+    waitInterval = null;
+    return;
+  }
+
+  const min = Math.floor(remaining / 60);
+  const sec = remaining % 60;
+  const timeStr = `${min}:${sec.toString().padStart(2, "0")}`;
+
+  // 🔢 aggiorna entrambi i testi
+  txt.textContent = timeStr;
+  document.getElementById("wait-mmss").textContent = timeStr;
+
+  bar.style.display = "flex";
+
+// ⏱️ quando inizia un nuovo minuto → riapre la barra
+if (sec === 59) {
+  expandWaitBar();
+}
+}
+  tick(); // ⏱️ avvio immediato
+  waitInterval = setInterval(tick, 1000);
+}
+
+// 🔴 REALTIME WAIT TIME
+supabase
+  .channel("wait-time-live")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "wait_time"
+    },
+    payload => {
+      console.log("🔁 wait_time aggiornato realtime:", payload);
+      loadWaitTime();
+    }
+  )
+  .subscribe();
+
+document.addEventListener("DOMContentLoaded", loadWaitTime);
+</script>
+
+<!-- ⏱️ WAIT TIME BAR -->
+<div id="wait-bar" style="
+  position: fixed;
+  bottom: 90px;
+  left: 12px;
+  transform: none;
+  background: #111;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+">
+  <span id="wait-full">
+  Attesa stimata: <span id="wait-time">0</span>
+</span>
+<span id="wait-compact" style="display:none">
+  <span id="wait-mmss">0:00</span>
+</span>
+</div>
 </body>
 </html>
