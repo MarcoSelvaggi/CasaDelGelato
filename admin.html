@@ -464,9 +464,35 @@ window.qtyPlus = function(id){
   renderCoppe(email);
 };
 
-window.applyAnnulla = function(id) {
-  alert("APPLY ANNULLA OK → ID: " + id);
+window.applyAnnulla = async function(id) {
+  console.log("APPLY ANNULLA REALE → ID:", id);
+
+  // trova la coppa
+  const c = COPPE.find(x => Number(x.id) === Number(id));
+  if (!c) {
+    console.warn("Coppa non trovata", id);
+    return;
+  }
+
+  const attuali = Number(c.confermate || 0);
+  const nuovoValore = Math.max(0, attuali - 1);
+
+  // aggiorna DB
+  const { error } = await supabase
+    .from("coppe")
+    .update({ confermate: nuovoValore })
+    .eq("id", id);
+
+  if (error) {
+    alert("Errore annullamento");
+    console.error(error);
+    return;
+  }
+
+  // ricarica admin
+  await load();
 };
+
 window.handleAnnullaClick = function(id, multi) {
   console.log("HANDLE ANNULLA", id, multi);
   applyAnnulla(id);
