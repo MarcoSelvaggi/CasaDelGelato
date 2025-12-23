@@ -1475,3 +1475,14 @@ button.conferma-btn:hover {
   font-weight: 600;
   letter-spacing: 0.2px;
 }
+/* 🔒 Font uniforme per la WAIT BAR */
+#wait-bar {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+
+  font-size: 12px; /* lascia ESATTAMENTE il tuo valore */
+  line-height: 1.2;
+
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
