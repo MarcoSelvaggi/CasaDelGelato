@@ -1798,15 +1798,11 @@ body {
 }
 
 /* 🍨 UNA SOLA PALLINA → centrata sulla COPPA */
-.box-palline.single {
-  left: auto !important;
+/* quando è single, centra la pallina dentro il contenitore */
+.box-palline.single .pallina-1{
+  left: 50% !important;
+  transform: translateX(-50%) !important;
 }
-
-.box-palline.single .pallina-1 {
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.box-palline.single .pallina-2 {
-  display: none;
+.box-palline.single .pallina-2{
+  display:none !important;
 }
