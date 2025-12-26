@@ -1093,44 +1093,102 @@ stage.innerHTML = `
   <!-- PANNA -->
   <div class="box box-panna">
     <img src="img/panna.png">
+    <div class="label">Panna</div>
   </div>
 
-  <!-- FRECCIA GUSTI -->
-<div class="arrow" style="left: 160px; top: 90px;">
-  <svg width="120" height="80">
-    <path d="M10 60 Q60 10 110 60"></path>
-  </svg>
-  <div class="arrow-text top">Gusti</div>
+<!-- PALLINE -->
+<div class="box-palline">
+
+  <!-- Pallina sinistra -->
+  <div class="box box-pallina pallina-1">
+    <img src="img/pallina-vaniglia.png">
+
+    <!-- Freccia gusto sinistra -->
+    <div class="arrow" style="left:-38px; top:50%; transform:translate(-30px, -50%);">
+      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30">
+        <path d="M30 15 C16 14, -6 18, -12 38"
+              fill="none"
+              stroke="#000"
+              stroke-width="1.3"
+              stroke-linecap="round" />
+        <path d="M38 15 L30 11 M38 15 L30 19"
+              fill="none"
+              stroke="#000"
+              stroke-width="1.3"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+      </svg>
+      <div class="arrow-text">Gusto</div>
+    </div>
+  </div>
+
+  <!-- Pallina destra -->
+  <div class="box box-pallina pallina-2">
+    <img src="img/pallina-fragola.png">
+
+    <!-- Freccia gusto destra -->
+    <div class="arrow" style="right:-62px; top:50%; transform:translateY(-50%);">
+      <div class="arrow-text right">Gusto</div>
+      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(180deg) translateY(-14px); transform-origin: center;">
+        <path d="M30 15 C16 14, -6 18, -12 38" />
+        <path d="M38 15 L30 11 M38 15 L30 19" />
+      </svg>
+    </div>
+  </div>
+
 </div>
-
-  <!-- PALLINE -->
-  <div class="box-palline">
-    <div class="box box-pallina pallina-1">
-      <img src="img/pallina-vaniglia.png">
-    </div>
-    <div class="box box-pallina pallina-2">
-      <img src="img/pallina-fragola.png">
-    </div>
-  </div>
-
   <!-- COPPA -->
   <div class="box box-coppa">
     <img src="img/coppa-piccola.png">
+    <div class="label">Coppa</div>
   </div>
 
   <!-- GRANELLA -->
   <div class="box box-extra box-granella">
     <img src="img/granella-nocciola.png">
+
+    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text">Granella</div>
+
+      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg) scaleY(-1); transform-origin:center;">
+        <path d="M30 15 C16 14, -6 18, -12 38" />
+        <path d="M38 15 L30 11 M38 15 L30 19" />
+      </svg>
+    </div>
   </div>
 
   <!-- TOPPING -->
   <div class="box box-extra box-topping">
     <img src="img/topping-bosco.png">
+
+<div class="arrow" style="top:-58px; left:50%; transform:translateX(-50%);">
+
+  <div class="arrow-text top topping-text">Topping</div>
+
+  <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+       style="transform: rotate(90deg) scaleY(-1); transform-origin: center;">
+    <path d="M30 15 C16 14, -6 18, -12 38" />
+    <path d="M38 15 L30 11 M38 15 L30 19" />
+  </svg>
+
+</div>
   </div>
 
   <!-- FRUTTA -->
   <div class="box box-extra box-frutta">
     <img src="img/fragola.png">
+
+    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom frutta-text">Frutta</div>
+
+      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg); transform-origin:center;">
+        <path d="M30 15 C16 14, -6 18, -12 38" />
+        <path d="M38 15 L30 11 M38 15 L30 19" />
+      </svg>
+    </div>
   </div>
 
 `;
