@@ -30,6 +30,9 @@ const MAP_GUSTI_IMG = {
   "VANIGLIA": "img/pallina-vaniglia.png",
   "FRAGOLA": "img/pallina-fragola.png"
 };
+const MAP_GRANELLE_IMG = {
+  "NOCCIOLA": "img/granella-nocciola.png"
+};
 
 function aggiornaPallineRiepilogo() {
   const gusti = scelti.gusti || [];
@@ -57,6 +60,24 @@ function aggiornaPallineRiepilogo() {
   } else {
     rightImg.style.display = "none";
     rightTxt.textContent = "";
+  }
+}
+
+function aggiornaGranellaRiepilogo() {
+  const img = document.getElementById("granella-img");
+  const txt = document.getElementById("granella-text");
+
+  if (!img || !txt) return;
+
+  const granella = scelti.granelle?.[0]; // prima granella scelta
+
+  if (granella && MAP_GRANELLE_IMG[granella]) {
+    img.src = MAP_GRANELLE_IMG[granella];
+    img.style.display = "block";
+    txt.textContent = granella;
+  } else {
+    img.style.display = "none";
+    txt.textContent = "";
   }
 }
 
@@ -1174,23 +1195,56 @@ if (stage) {
   </div>
 
   <!-- GRANELLA -->
-  <div class="box box-extra box-granella">
-    <img src="img/granella-nocciola.png">
+<div class="box box-extra box-granella">
+  <img id="granella-img" src="img/granella-nocciola.png">
+
+  <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom granella-text" id="granella-text">
+      Granella
+    </div>
+
+    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+         style="transform:rotate(-90deg) scaleY(-1); transform-origin:center;">
+      <path d="M30 15 C16 14, -6 18, -12 38" />
+      <path d="M38 15 L30 11 M38 15 L30 19" />
+    </svg>
   </div>
+</div>
 
   <!-- TOPPING -->
-  <div class="box box-extra box-topping">
-    <img src="img/topping-bosco.png">
+ <div class="box box-extra box-topping">
+  <img id="topping-img" src="" style="display:none">
+
+  <div class="arrow" style="top:-58px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text top topping-text" id="topping-text"></div>
+
+    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(90deg) scaleY(-1); transform-origin: center;">
+      <path d="M30 15 C16 14, -6 18, -12 38" />
+      <path d="M38 15 L30 11 M38 15 L30 19" />
+    </svg>
   </div>
+</div>
 
   <!-- FRUTTA -->
-  <div class="box box-extra box-frutta">
-    <img src="img/fragola.png">
+ <div class="box box-extra box-frutta">
+  <img id="frutta-img" src="" style="display:none">
+
+  <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom frutta-text" id="frutta-text"></div>
+
+    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+         style="transform:rotate(-90deg); transform-origin:center;">
+      <path d="M30 15 C16 14, -6 18, -12 38" />
+      <path d="M38 15 L30 11 M38 15 L30 19" />
+    </svg>
   </div>
+</div>
 
   `;
 }
 aggiornaPallineRiepilogo();
+aggiornaGranellaRiepilogo();
 
 // === QR CODE ===
 if (window.QRCode) {
