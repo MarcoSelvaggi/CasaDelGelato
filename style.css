@@ -1753,17 +1753,17 @@ body {
   top: -75px;   /* ⬅️ questo ORA funziona */
 }
 
-/* 🍨 UNA SOLA PALLINA → centrata */
+/* 🍨 UNA SOLA PALLINA → centrata sopra la COPPA */
 .box-palline.single {
-  left: 50% !important;
-  transform: translateX(-50%);
+  left: calc(var(--base-left) + 130px) !important; /* centro coppa */
+  transform: translateX(-50%) !important;
 }
 
 .box-palline.single .pallina-1 {
-  left: 50%;
-  transform: translateX(-50%);
+  left: 50% !important;
+  transform: translateX(-50%) !important;
 }
 
 .box-palline.single .pallina-2 {
-  display: none;
+  display: none !important;
 }
