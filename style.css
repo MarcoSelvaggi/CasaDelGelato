@@ -1797,17 +1797,16 @@ body {
   margin-top: 4px;
 }
 
-/* 🍨 UNA SOLA PALLINA → centrata sopra la COPPA */
+/* 🍨 UNA SOLA PALLINA → centrata sulla COPPA */
 .box-palline.single {
-  left: calc(var(--base-left) + 130px) !important; /* centro coppa */
-  transform: translateX(-50%) !important;
+  left: auto !important;
 }
 
 .box-palline.single .pallina-1 {
-  left: 50% !important;
-  transform: translateX(-50%) !important;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .box-palline.single .pallina-2 {
-  display: none !important;
+  display: none;
 }
