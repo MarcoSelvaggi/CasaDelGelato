@@ -43,35 +43,38 @@ const MAP_FRUTTA_IMG = {
 function aggiornaPallineRiepilogo() {
   const gusti = scelti.gusti || [];
 
-  const leftImg   = document.getElementById("gusto-left-img");
-  const rightImg  = document.getElementById("gusto-right-img");
-  const leftTxt   = document.getElementById("gusto-left-text");
-  const rightTxt  = document.getElementById("gusto-right-text");
-  const leftArrow = document.getElementById("gusto-left-arrow");
-  const rightArrow= document.getElementById("gusto-right-arrow");
+  const boxPalline = document.querySelector(".box-palline");
 
-  // ===== SINISTRA =====
+  const leftImg  = document.getElementById("gusto-left-img");
+  const rightImg = document.getElementById("gusto-right-img");
+  const leftTxt  = document.getElementById("gusto-left-text");
+  const rightTxt = document.getElementById("gusto-right-text");
+
+  // 🍨 CASO: UN SOLO GUSTO → centra
+  if (gusti.length === 1) {
+    boxPalline.classList.add("single");
+  } else {
+    boxPalline.classList.remove("single");
+  }
+
+  // PALLINA SINISTRA
   if (gusti[0] && MAP_GUSTI_IMG[gusti[0]]) {
     leftImg.src = MAP_GUSTI_IMG[gusti[0]];
     leftImg.style.display = "block";
     leftTxt.textContent = gusti[0];
-    leftArrow.style.display = "block";
   } else {
     leftImg.style.display = "none";
     leftTxt.textContent = "";
-    leftArrow.style.display = "none";
   }
 
-  // ===== DESTRA =====
+  // PALLINA DESTRA
   if (gusti[1] && MAP_GUSTI_IMG[gusti[1]]) {
     rightImg.src = MAP_GUSTI_IMG[gusti[1]];
     rightImg.style.display = "block";
     rightTxt.textContent = gusti[1];
-    rightArrow.style.display = "block";
   } else {
     rightImg.style.display = "none";
     rightTxt.textContent = "";
-    rightArrow.style.display = "none";
   }
 }
 

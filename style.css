@@ -1752,3 +1752,18 @@ body {
 .topping-text {
   top: -75px;   /* ⬅️ questo ORA funziona */
 }
+
+/* 🍨 UNA SOLA PALLINA → centrata */
+.box-palline.single {
+  left: 50% !important;
+  transform: translateX(-50%);
+}
+
+.box-palline.single .pallina-1 {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.box-palline.single .pallina-2 {
+  display: none;
+}
