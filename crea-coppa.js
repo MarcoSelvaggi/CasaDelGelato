@@ -43,29 +43,35 @@ const MAP_FRUTTA_IMG = {
 function aggiornaPallineRiepilogo() {
   const gusti = scelti.gusti || [];
 
-  const leftImg  = document.getElementById("gusto-left-img");
-  const rightImg = document.getElementById("gusto-right-img");
-  const leftTxt  = document.getElementById("gusto-left-text");
-  const rightTxt = document.getElementById("gusto-right-text");
+  const leftImg   = document.getElementById("gusto-left-img");
+  const rightImg  = document.getElementById("gusto-right-img");
+  const leftTxt   = document.getElementById("gusto-left-text");
+  const rightTxt  = document.getElementById("gusto-right-text");
+  const leftArrow = document.getElementById("gusto-left-arrow");
+  const rightArrow= document.getElementById("gusto-right-arrow");
 
-  // PALLINA SINISTRA
+  // ===== SINISTRA =====
   if (gusti[0] && MAP_GUSTI_IMG[gusti[0]]) {
     leftImg.src = MAP_GUSTI_IMG[gusti[0]];
     leftImg.style.display = "block";
     leftTxt.textContent = gusti[0];
+    leftArrow.style.display = "block";
   } else {
     leftImg.style.display = "none";
     leftTxt.textContent = "";
+    leftArrow.style.display = "none";
   }
 
-  // PALLINA DESTRA
+  // ===== DESTRA =====
   if (gusti[1] && MAP_GUSTI_IMG[gusti[1]]) {
     rightImg.src = MAP_GUSTI_IMG[gusti[1]];
     rightImg.style.display = "block";
     rightTxt.textContent = gusti[1];
+    rightArrow.style.display = "block";
   } else {
     rightImg.style.display = "none";
     rightTxt.textContent = "";
+    rightArrow.style.display = "none";
   }
 }
 
@@ -91,10 +97,11 @@ function aggiornaGranellaRiepilogo() {
 }
 
 function aggiornaToppingRiepilogo() {
-  const img = document.getElementById("topping-img");
-  const txt = document.getElementById("topping-text");
+  const img   = document.getElementById("topping-img");
+  const txt   = document.getElementById("topping-text");
+  const arrow = document.getElementById("topping-arrow");
 
-  if (!img || !txt) return;
+  if (!img || !txt || !arrow) return;
 
   const topping = scelti.topping?.[0]; // primo topping scelto
 
@@ -102,27 +109,32 @@ function aggiornaToppingRiepilogo() {
     img.src = MAP_TOPPING_IMG[topping];
     img.style.display = "block";
     txt.textContent = topping;
+    arrow.style.display = "block";
   } else {
     img.style.display = "none";
     txt.textContent = "";
+    arrow.style.display = "none";
   }
 }
 
-function aggiornaFruttaRiepilogo() {
-  const img = document.getElementById("frutta-img");
-  const txt = document.getElementById("frutta-text");
+function aggiornaIngredientiRiepilogo() {
+  const img   = document.getElementById("frutta-img");
+  const txt   = document.getElementById("frutta-text");
+  const arrow = document.getElementById("frutta-arrow");
 
-  if (!img || !txt) return;
+  if (!img || !txt || !arrow) return;
 
-  const frutta = scelti.ingredienti?.[0]; // primo ingrediente scelto
+  const ingrediente = scelti.ingredienti?.[0]; // primo ingrediente scelto
 
-  if (frutta && MAP_FRUTTA_IMG[frutta]) {
-    img.src = MAP_FRUTTA_IMG[frutta];
+  if (ingrediente && MAP_INGREDIENTI_IMG[ingrediente]) {
+    img.src = MAP_INGREDIENTI_IMG[ingrediente];
     img.style.display = "block";
-    txt.textContent = frutta;
+    txt.textContent = ingrediente;
+    arrow.style.display = "block";
   } else {
     img.style.display = "none";
     txt.textContent = "";
+    arrow.style.display = "none";
   }
 }
 
@@ -1205,7 +1217,9 @@ if (stage) {
      <img id="gusto-left-img" src="img/pallina-vaniglia.png">
 
       <!-- Freccia gusto sinistra -->
-      <div class="arrow" style="left:-38px; top:50%; transform:translate(-30px, -50%);">
+      <div class="arrow"
+     id="gusto-left-arrow"
+     style="left:-38px; top:50%; transform:translate(-30px, -50%);">
         <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30">
           <path d="M30 15 C16 14, -6 18, -12 38"
                 fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" />
@@ -1221,7 +1235,9 @@ if (stage) {
       <img id="gusto-right-img" src="img/pallina-fragola.png">
 
       <!-- Freccia gusto destra -->
-      <div class="arrow" style="right:-62px; top:50%; transform:translateY(-50%);">
+      <div class="arrow"
+     id="gusto-right-arrow"
+     style="right:-62px; top:50%; transform:translateY(-50%);">
         <div class="arrow-text right" id="gusto-right-text">Gusto</div>
         <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
              style="transform: rotate(180deg) translateY(-14px); transform-origin: center;">
@@ -1258,11 +1274,16 @@ if (stage) {
 </div>
 
   <!-- TOPPING -->
- <div class="box box-extra box-topping">
-  <img id="topping-img" src="" style="display:none">
+<div class="box box-extra box-topping">
+  <img id="topping-img" src="img/topping-bosco.png">
 
-  <div class="arrow" style="top:-58px; left:50%; transform:translateX(-50%);">
-    <div class="arrow-text top topping-text" id="topping-text"></div>
+  <div class="arrow"
+       id="topping-arrow"
+       style="top:-58px; left:50%; transform:translateX(-50%);">
+
+    <div class="arrow-text top topping-text" id="topping-text">
+      Topping
+    </div>
 
     <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
          style="transform: rotate(90deg) scaleY(-1); transform-origin: center;">
@@ -1273,11 +1294,16 @@ if (stage) {
 </div>
 
   <!-- FRUTTA -->
- <div class="box box-extra box-frutta">
-  <img id="frutta-img" src="" style="display:none">
+<div class="box box-extra box-frutta">
+  <img id="frutta-img" src="img/fragola.png">
 
-  <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
-    <div class="arrow-text bottom frutta-text" id="frutta-text"></div>
+  <div class="arrow"
+       id="frutta-arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+
+    <div class="arrow-text bottom frutta-text" id="frutta-text">
+      Frutta
+    </div>
 
     <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
          style="transform:rotate(-90deg); transform-origin:center;">
@@ -1286,7 +1312,6 @@ if (stage) {
     </svg>
   </div>
 </div>
-
   `;
 }
 aggiornaPallineRiepilogo();
