@@ -142,31 +142,29 @@ function aggiornaIngredientiRiepilogo() {
 }
 
 function aggiornaExtraRiepilogo() {
+  const extras = scelti.extra || [];
   const slots = document.querySelectorAll("#extra-stage .extra-slot");
 
-  if (!slots.length) return;
-
-  // pulizia slot
+  // reset totale
   slots.forEach(slot => {
     slot.querySelector(".extra-text").textContent = "";
-    slot.querySelector(".extra-img").innerHTML = "";
+    slot.style.display = "none";
   });
 
-  const extras = scelti.extra || [];
-  const count = extras.length;
+  if (extras.length === 0) return;
 
-  if (count === 0) return;
-
-  // 1 extra → slot centrale (index 1)
-  if (count === 1) {
+  // 🔹 1 extra → slot centrale
+  if (extras.length === 1) {
     const slot = slots[1];
+    slot.style.display = "flex";
     slot.querySelector(".extra-text").textContent = extras[0];
     return;
   }
 
-  // 2 o 3 extra → da sinistra
+  // 🔹 2 o 3 extra → da sinistra
   extras.slice(0, 3).forEach((extra, i) => {
     const slot = slots[i];
+    slot.style.display = "flex";
     slot.querySelector(".extra-text").textContent = extra;
   });
 }
