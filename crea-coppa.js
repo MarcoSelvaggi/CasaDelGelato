@@ -1361,7 +1361,7 @@ if (stage) {
 
 </div>
   `;
-  document.getElementById("extra-2").textContent = "EXTRA TEST";
+  document.querySelector('[data-slot="1"] .extra-text').textContent = "MIX KINDER";
 }
 aggiornaPallineRiepilogo();
 aggiornaGranellaRiepilogo();

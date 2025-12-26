@@ -1767,25 +1767,34 @@ body {
   background: rgba(255,0,0,0.05);
 }
 
-/* SLOT */
 .extra-slot {
   flex: 1;
-  border: 2px solid blue; /* DEBUG */
-  position: relative;
+  height: 100%;
+  border: 2px dashed rgba(0,0,0,0.35);
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 6px;
+  box-sizing: border-box;
 }
 
-/* TESTO EXTRA – DEBUG ESTREMO */
-.extra-text {
-  position: absolute;
-  inset: 0;               /* occupa TUTTO lo slot */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* area immagine */
+.extra-img {
+  flex: 1;
+  width: 100%;
+}
 
-  font-size: 14px;
-  font-weight: 700;
-  color: red;             /* IMPOSSIBILE NON VEDERLO */
-  background: rgba(255,255,0,0.3);
+/* area testo */
+.extra-text {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  color: #000;
+  margin-top: 4px;
 }
 
 /* 🍨 UNA SOLA PALLINA → centrata sopra la COPPA */
