@@ -1315,6 +1315,25 @@ if (stage) {
     </svg>
   </div>
 </div>
+<!-- ================= EXTRA STAGE ================= -->
+<div id="extra-stage">
+
+  <div class="extra-slot" data-slot="0">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
+
+  <div class="extra-slot" data-slot="1">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
+
+  <div class="extra-slot" data-slot="2">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
+
+</div>
   `;
 }
 aggiornaPallineRiepilogo();
