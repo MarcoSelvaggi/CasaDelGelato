@@ -1095,6 +1095,14 @@ stage.innerHTML = `
     <img src="img/panna.png">
   </div>
 
+  <!-- FRECCIA GUSTI -->
+<div class="arrow" style="left: 160px; top: 90px;">
+  <svg width="120" height="80">
+    <path d="M10 60 Q60 10 110 60"></path>
+  </svg>
+  <div class="arrow-text top">Gusti</div>
+</div>
+
   <!-- PALLINE -->
   <div class="box-palline">
     <div class="box box-pallina pallina-1">
