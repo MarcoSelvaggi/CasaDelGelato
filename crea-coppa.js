@@ -1061,6 +1061,15 @@ area.innerHTML = `
     <div id="qr-code" data-token="${qrToken}"></div>
 </div>
 
+<!-- 🍨 COPPA GRAFICA -->
+<div id="coppa-wrapper" style="
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+">
+  <div id="coppa-stage"></div>
+</div>
+
 <button class="next-btn" style="margin-top:15px;" onclick="aggiungiAlCarrello()">
     🛒 Aggiungi al carrello
 </button>
@@ -1076,6 +1085,15 @@ area.innerHTML = `
   <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
 </div>
 `;
+const stage = document.getElementById("coppa-stage");
+
+if (stage) {
+  stage.innerHTML = `
+    <div class="box box-coppa">
+      <img src="img/coppa-piccola.png">
+    </div>
+  `;
+}
 
 // === QR CODE ===
 if (window.QRCode) {

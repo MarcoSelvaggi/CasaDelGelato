@@ -1504,3 +1504,37 @@ body {
 #wait-bar span {
   font-size: inherit !important;
 }
+
+/* ================= BOX GRANDE ================= */
+#coppa-stage {
+  position: relative;
+  width: 860px;
+  height: 500px;
+  margin: 40px auto;
+  background: #fff;
+  border: 3px solid #000;
+  overflow: visible;
+}
+
+/* ================= CONTROLLO GLOBALE ================= */
+:root {
+  --base-left: 170px;
+}
+
+/* ================= BOX ================= */
+.box {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px dashed rgba(0,0,0,0.45);
+  overflow: visible;
+}
+/* coppa e panna devono tagliare */
+.box-coppa,
+.box-panna {
+  overflow: hidden;
+}
+
+/* SOLO l'immagine della pallina deve essere tagliata */
+.box-pallina img {
+  overflow: hidden;
+}
