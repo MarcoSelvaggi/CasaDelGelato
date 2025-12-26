@@ -1505,6 +1505,12 @@ body {
   font-size: inherit !important;
 }
 
+body {
+  margin: 0;
+  background: #f2f2f2;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
 /* ================= BOX GRANDE ================= */
 #coppa-stage {
   position: relative;
@@ -1537,4 +1543,212 @@ body {
 /* SOLO l'immagine della pallina deve essere tagliata */
 .box-pallina img {
   overflow: hidden;
+}
+/* ================= COPPA ================= */
+.box-coppa {
+  width: 260px;
+  height: 170px;
+  left: var(--base-left);
+  top: 210px;
+}
+
+/* ================= PALLINE ================= */
+.box-palline {
+  position: absolute;
+  width: 260px;
+  height: 140px;
+  left: var(--base-left);
+  top: 110px;
+  z-index: 1;
+}
+
+.box-pallina {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.pallina-1 { left: 0; transform: translateX(20px); }
+.pallina-2 { right: 0; transform: translateX(-20px); }
+
+.box-pallina img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* ================= PANNA ================= */
+.box-panna {
+  width: 160px;
+  height: 160px;
+  left: calc(var(--base-left) + 130px - 80px);
+  top: 10px;
+  z-index: 3;
+}
+
+/* ================= EXTRA ================= */
+.box-extra{
+  position:absolute;
+  width:90px;
+  height:130px;
+  top:240px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+.box-extra img{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+
+.box-granella { left: calc(var(--base-left) + 300px); }
+.box-topping  { left: calc(var(--base-left) + 400px); }
+.box-frutta   { left: calc(var(--base-left) + 500px); }
+
+
+/* ================= FIX IMMAGINI BOX (DAL CSS VECCHIO) ================= */
+
+/* Tutte le immagini nei box NON extra */
+.box:not(.box-extra) img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Palline */
+.box-pallina img {
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Panna */
+.box-panna img {
+  object-fit: contain;
+}
+
+/* ================= LIVELLI VISIVI ================= */
+.box-palline {
+  z-index: 1;
+}
+
+.box-coppa {
+  z-index: 2;
+}
+
+.box-panna {
+  z-index: 3;
+}
+
+/* ================= LABEL ================= */
+.label {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+}
+
+/* ================= FRECCE ================= */
+.arrow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.arrow svg {
+  overflow: visible;
+}
+
+.arrow path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+/* ================= TESTO FRECCE ================= */
+.arrow-text {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #000;
+}
+
+/* posizionamento TESTO – calibrato sulla tua freccia */
+.arrow-text.left {
+  left: 36px;
+  top: 20px;
+}
+
+.arrow-text.right {
+  right: 36px;
+  top: 20px;
+}
+
+.arrow-text.top {
+  top: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.arrow-text.bottom {
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+
+/* ================= TESTO FRECCIA ================= */
+.arrow {
+  position: absolute;
+}
+
+.arrow-text {
+  position: absolute;
+  left: -35px;     /* ← molto vicino all'inizio della coda */
+  top: 45px;     /* ↓ sotto la curva, punto cerchiato */
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.arrow-text.right {
+  left: auto;        /* disattiva la sinistra */
+  right: -35px;      /* agganciato alla coda (specchio) */
+  top: -20px;         /* stessa altezza della sinistra */
+}
+.arrow-text.bottom {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 55px;        /* sotto la curva */
+}
+.granella-text {
+  margin-left: -40px; /* oppure il valore che avevi trovato perfetto */
+}
+.frutta-text {
+  margin-left: 30px; /* oppure il valore che avevi trovato perfetto */
+}
+.arrow {
+  position: absolute;
+}
+
+.arrow-text.top {
+  left: 50%;
+  transform: translateX(-50%);
+  top: -50px;
+}
+.topping-text {
+  margin-left: 20px;   /* ⬅️ questo ORA funziona */
+}
+.topping-text {
+  top: -75px;   /* ⬅️ questo ORA funziona */
 }

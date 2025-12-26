@@ -1088,13 +1088,45 @@ area.innerHTML = `
 const stage = document.getElementById("coppa-stage");
 
 if (stage) {
-  stage.innerHTML = `
-    <div class="box box-coppa">
-      <img src="img/coppa-piccola.png">
-    </div>
-  `;
-}
+stage.innerHTML = `
 
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png">
+  </div>
+
+  <!-- PALLINE -->
+  <div class="box-palline">
+    <div class="box box-pallina pallina-1">
+      <img src="img/pallina-vaniglia.png">
+    </div>
+    <div class="box box-pallina pallina-2">
+      <img src="img/pallina-fragola.png">
+    </div>
+  </div>
+
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-piccola.png">
+  </div>
+
+  <!-- GRANELLA -->
+  <div class="box box-extra box-granella">
+    <img src="img/granella-nocciola.png">
+  </div>
+
+  <!-- TOPPING -->
+  <div class="box box-extra box-topping">
+    <img src="img/topping-bosco.png">
+  </div>
+
+  <!-- FRUTTA -->
+  <div class="box box-extra box-frutta">
+    <img src="img/fragola.png">
+  </div>
+
+`;
+}
 // === QR CODE ===
 if (window.QRCode) {
     const qrContainer = document.getElementById("qr-code");
