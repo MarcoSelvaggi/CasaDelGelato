@@ -37,7 +37,7 @@ const MAP_TOPPING_IMG = {
   "FRUTTI DI BOSCO": "img/topping-bosco.png"
 };
 const MAP_FRUTTA_IMG = {
-  "FRAGOLA": "img/fragola.png"
+  "FRAGOLE": "img/fragola.png"
 };
 
 function aggiornaPallineRiepilogo() {
