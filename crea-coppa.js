@@ -142,29 +142,33 @@ function aggiornaIngredientiRiepilogo() {
 }
 
 function aggiornaExtraRiepilogo() {
-  const extra = scelti.extra || [];
+  const slots = document.querySelectorAll("#extra-stage .extra-slot");
 
-  const slot1 = document.getElementById("extra-1");
-  const slot2 = document.getElementById("extra-2");
-  const slot3 = document.getElementById("extra-3");
+  if (!slots.length) return;
 
-  if (!slot1 || !slot2 || !slot3) return;
+  // pulizia slot
+  slots.forEach(slot => {
+    slot.querySelector(".extra-text").textContent = "";
+    slot.querySelector(".extra-img").innerHTML = "";
+  });
 
-  // reset
-  slot1.textContent = "";
-  slot2.textContent = "";
-  slot3.textContent = "";
+  const extras = scelti.extra || [];
+  const count = extras.length;
 
-  // 🎯 1 SOLO EXTRA → SLOT CENTRALE
-  if (extra.length === 1) {
-    slot2.textContent = extra[0];
+  if (count === 0) return;
+
+  // 1 extra → slot centrale (index 1)
+  if (count === 1) {
+    const slot = slots[1];
+    slot.querySelector(".extra-text").textContent = extras[0];
     return;
   }
 
-  // 🎯 2 o 3 EXTRA → DA SINISTRA
-  if (extra.length >= 2) slot1.textContent = extra[0];
-  if (extra.length >= 2) slot2.textContent = extra[1];
-  if (extra.length >= 3) slot3.textContent = extra[2];
+  // 2 o 3 extra → da sinistra
+  extras.slice(0, 3).forEach((extra, i) => {
+    const slot = slots[i];
+    slot.querySelector(".extra-text").textContent = extra;
+  });
 }
 
 // Carica la tabella "disponibilita" da Supabase
@@ -1361,7 +1365,6 @@ if (stage) {
 
 </div>
   `;
-  document.querySelector('[data-slot="1"] .extra-text').textContent = "MIX KINDER";
 }
 aggiornaPallineRiepilogo();
 aggiornaGranellaRiepilogo();
