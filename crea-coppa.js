@@ -141,6 +141,32 @@ function aggiornaIngredientiRiepilogo() {
   }
 }
 
+function aggiornaExtraRiepilogo() {
+  const extra = scelti.extra || [];
+
+  const slot1 = document.getElementById("extra-1");
+  const slot2 = document.getElementById("extra-2");
+  const slot3 = document.getElementById("extra-3");
+
+  if (!slot1 || !slot2 || !slot3) return;
+
+  // reset
+  slot1.textContent = "";
+  slot2.textContent = "";
+  slot3.textContent = "";
+
+  // 🎯 1 SOLO EXTRA → SLOT CENTRALE
+  if (extra.length === 1) {
+    slot2.textContent = extra[0];
+    return;
+  }
+
+  // 🎯 2 o 3 EXTRA → DA SINISTRA
+  if (extra.length >= 2) slot1.textContent = extra[0];
+  if (extra.length >= 2) slot2.textContent = extra[1];
+  if (extra.length >= 3) slot3.textContent = extra[2];
+}
+
 // Carica la tabella "disponibilita" da Supabase
 async function caricaDisponibilita() {
     try {
@@ -1340,6 +1366,7 @@ aggiornaPallineRiepilogo();
 aggiornaGranellaRiepilogo();
 aggiornaToppingRiepilogo();
 aggiornaFruttaRiepilogo();
+aggiornaExtraRiepilogo();
 
 // === QR CODE ===
 if (window.QRCode) {
