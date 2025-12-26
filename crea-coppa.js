@@ -70,10 +70,11 @@ function aggiornaPallineRiepilogo() {
 }
 
 function aggiornaGranellaRiepilogo() {
-  const img = document.getElementById("granella-img");
-  const txt = document.getElementById("granella-text");
+  const img   = document.getElementById("granella-img");
+  const txt   = document.getElementById("granella-text");
+  const arrow = document.getElementById("granella-arrow");
 
-  if (!img || !txt) return;
+  if (!img || !txt || !arrow) return;
 
   const granella = scelti.granelle?.[0]; // prima granella scelta
 
@@ -81,9 +82,11 @@ function aggiornaGranellaRiepilogo() {
     img.src = MAP_GRANELLE_IMG[granella];
     img.style.display = "block";
     txt.textContent = granella;
+    arrow.style.display = "block";   // ✅ MOSTRA
   } else {
     img.style.display = "none";
     txt.textContent = "";
+    arrow.style.display = "none";    // ❌ NASCONDE
   }
 }
 
@@ -1240,7 +1243,8 @@ if (stage) {
 <div class="box box-extra box-granella">
   <img id="granella-img" src="img/granella-nocciola.png">
 
-  <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+  <div class="arrow" id="granella-arrow"
+     style="bottom:-52px; left:50%; transform:translateX(-50%);">
     <div class="arrow-text bottom granella-text" id="granella-text">
       Granella
     </div>
