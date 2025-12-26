@@ -1361,6 +1361,7 @@ if (stage) {
 
 </div>
   `;
+  document.getElementById("extra-2").textContent = "EXTRA TEST";
 }
 aggiornaPallineRiepilogo();
 aggiornaGranellaRiepilogo();
