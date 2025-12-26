@@ -1456,7 +1456,7 @@ button.conferma-btn:hover {
 
 /* ⏱️ WAIT BAR – ultra compatta */
 #wait-bar {
-  font-size: 12px;        /* ↓ ancora */
+  font-size: 12px;
   padding: 6px 12px;
   border-radius: 11px;
 }
@@ -1479,17 +1479,20 @@ button.conferma-btn:hover {
 /* 🔒 FIX FONT WAIT BAR – identico ovunque */
 #wait-bar,
 #wait-bar * {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-               "SF Pro Display", system-ui, sans-serif !important;
+  font-family: -apple-system, BlinkMacSystemFont,
+               "SF Pro Text", "SF Pro Display",
+               system-ui, sans-serif !important;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
-/* 🔒 FIX BASE FONT CONTEXT – uguale su TUTTE le pagine */
+
+/* 🔒 BASE FONT COERENTE SU TUTTE LE PAGINE */
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  font-size: 16px; /* base coerente, NON cambia i tuoi px */
+  font-size: 16px;
 }
+
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 16px;
