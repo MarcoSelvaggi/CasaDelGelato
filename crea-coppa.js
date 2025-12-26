@@ -33,6 +33,12 @@ const MAP_GUSTI_IMG = {
 const MAP_GRANELLE_IMG = {
   "NOCCIOLA": "img/granella-nocciola.png"
 };
+const MAP_TOPPING_IMG = {
+  "FRUTTI DI BOSCO": "img/topping-bosco.png"
+};
+const MAP_FRUTTA_IMG = {
+  "FRAGOLA": "img/fragola.png"
+};
 
 function aggiornaPallineRiepilogo() {
   const gusti = scelti.gusti || [];
@@ -75,6 +81,42 @@ function aggiornaGranellaRiepilogo() {
     img.src = MAP_GRANELLE_IMG[granella];
     img.style.display = "block";
     txt.textContent = granella;
+  } else {
+    img.style.display = "none";
+    txt.textContent = "";
+  }
+}
+
+function aggiornaToppingRiepilogo() {
+  const img = document.getElementById("topping-img");
+  const txt = document.getElementById("topping-text");
+
+  if (!img || !txt) return;
+
+  const topping = scelti.topping?.[0]; // primo topping scelto
+
+  if (topping && MAP_TOPPING_IMG[topping]) {
+    img.src = MAP_TOPPING_IMG[topping];
+    img.style.display = "block";
+    txt.textContent = topping;
+  } else {
+    img.style.display = "none";
+    txt.textContent = "";
+  }
+}
+
+function aggiornaFruttaRiepilogo() {
+  const img = document.getElementById("frutta-img");
+  const txt = document.getElementById("frutta-text");
+
+  if (!img || !txt) return;
+
+  const frutta = scelti.ingredienti?.[0]; // primo ingrediente scelto
+
+  if (frutta && MAP_FRUTTA_IMG[frutta]) {
+    img.src = MAP_FRUTTA_IMG[frutta];
+    img.style.display = "block";
+    txt.textContent = frutta;
   } else {
     img.style.display = "none";
     txt.textContent = "";
@@ -1245,6 +1287,8 @@ if (stage) {
 }
 aggiornaPallineRiepilogo();
 aggiornaGranellaRiepilogo();
+aggiornaToppingRiepilogo();
+aggiornaFruttaRiepilogo();
 
 // === QR CODE ===
 if (window.QRCode) {
