@@ -25,6 +25,41 @@ let coppaSalvata = false;
 // DISPONIBILITA["Granelle"]["NOCCIOLA"] = true / false
 let DISPONIBILITA = {};
 
+// 🔗 MAPPA GUSTI → IMMAGINI (PROVVISORIA)
+const MAP_GUSTI_IMG = {
+  "VANIGLIA": "img/pallina-vaniglia.png",
+  "FRAGOLA": "img/pallina-fragola.png"
+};
+
+function aggiornaPallineRiepilogo() {
+  const gusti = scelti.gusti || [];
+
+  const leftImg  = document.getElementById("gusto-left-img");
+  const rightImg = document.getElementById("gusto-right-img");
+  const leftTxt  = document.getElementById("gusto-left-text");
+  const rightTxt = document.getElementById("gusto-right-text");
+
+  // PALLINA SINISTRA
+  if (gusti[0] && MAP_GUSTI_IMG[gusti[0]]) {
+    leftImg.src = MAP_GUSTI_IMG[gusti[0]];
+    leftImg.style.display = "block";
+    leftTxt.textContent = gusti[0];
+  } else {
+    leftImg.style.display = "none";
+    leftTxt.textContent = "";
+  }
+
+  // PALLINA DESTRA
+  if (gusti[1] && MAP_GUSTI_IMG[gusti[1]]) {
+    rightImg.src = MAP_GUSTI_IMG[gusti[1]];
+    rightImg.style.display = "block";
+    rightTxt.textContent = gusti[1];
+  } else {
+    rightImg.style.display = "none";
+    rightTxt.textContent = "";
+  }
+}
+
 // Carica la tabella "disponibilita" da Supabase
 async function caricaDisponibilita() {
     try {
@@ -1088,7 +1123,7 @@ area.innerHTML = `
 const stage = document.getElementById("coppa-stage");
 
 if (stage) {
-stage.innerHTML = `
+  stage.innerHTML = `
 
   <!-- PANNA -->
   <div class="box box-panna">
@@ -1096,48 +1131,42 @@ stage.innerHTML = `
     <div class="label">Panna</div>
   </div>
 
-<!-- PALLINE -->
-<div class="box-palline">
+  <!-- PALLINE -->
+  <div class="box-palline">
 
-  <!-- Pallina sinistra -->
-  <div class="box box-pallina pallina-1">
-    <img src="img/pallina-vaniglia.png">
+    <!-- Pallina sinistra -->
+    <div class="box box-pallina pallina-1">
+     <img id="gusto-left-img" src="img/pallina-vaniglia.png">
 
-    <!-- Freccia gusto sinistra -->
-    <div class="arrow" style="left:-38px; top:50%; transform:translate(-30px, -50%);">
-      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30">
-        <path d="M30 15 C16 14, -6 18, -12 38"
-              fill="none"
-              stroke="#000"
-              stroke-width="1.3"
-              stroke-linecap="round" />
-        <path d="M38 15 L30 11 M38 15 L30 19"
-              fill="none"
-              stroke="#000"
-              stroke-width="1.3"
-              stroke-linecap="round"
-              stroke-linejoin="round" />
-      </svg>
-      <div class="arrow-text">Gusto</div>
+      <!-- Freccia gusto sinistra -->
+      <div class="arrow" style="left:-38px; top:50%; transform:translate(-30px, -50%);">
+        <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30">
+          <path d="M30 15 C16 14, -6 18, -12 38"
+                fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" />
+          <path d="M38 15 L30 11 M38 15 L30 19"
+                fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+       <div class="arrow-text" id="gusto-left-text">Gusto</div>
+      </div>
     </div>
+
+    <!-- Pallina destra -->
+    <div class="box box-pallina pallina-2">
+      <img id="gusto-right-img" src="img/pallina-fragola.png">
+
+      <!-- Freccia gusto destra -->
+      <div class="arrow" style="right:-62px; top:50%; transform:translateY(-50%);">
+        <div class="arrow-text right" id="gusto-right-text">Gusto</div>
+        <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(180deg) translateY(-14px); transform-origin: center;">
+          <path d="M30 15 C16 14, -6 18, -12 38" />
+          <path d="M38 15 L30 11 M38 15 L30 19" />
+        </svg>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Pallina destra -->
-  <div class="box box-pallina pallina-2">
-    <img src="img/pallina-fragola.png">
-
-    <!-- Freccia gusto destra -->
-    <div class="arrow" style="right:-62px; top:50%; transform:translateY(-50%);">
-      <div class="arrow-text right">Gusto</div>
-      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-           style="transform: rotate(180deg) translateY(-14px); transform-origin: center;">
-        <path d="M30 15 C16 14, -6 18, -12 38" />
-        <path d="M38 15 L30 11 M38 15 L30 19" />
-      </svg>
-    </div>
-  </div>
-
-</div>
   <!-- COPPA -->
   <div class="box box-coppa">
     <img src="img/coppa-piccola.png">
@@ -1147,52 +1176,22 @@ stage.innerHTML = `
   <!-- GRANELLA -->
   <div class="box box-extra box-granella">
     <img src="img/granella-nocciola.png">
-
-    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
-      <div class="arrow-text bottom granella-text">Granella</div>
-
-      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-           style="transform:rotate(-90deg) scaleY(-1); transform-origin:center;">
-        <path d="M30 15 C16 14, -6 18, -12 38" />
-        <path d="M38 15 L30 11 M38 15 L30 19" />
-      </svg>
-    </div>
   </div>
 
   <!-- TOPPING -->
   <div class="box box-extra box-topping">
     <img src="img/topping-bosco.png">
-
-<div class="arrow" style="top:-58px; left:50%; transform:translateX(-50%);">
-
-  <div class="arrow-text top topping-text">Topping</div>
-
-  <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-       style="transform: rotate(90deg) scaleY(-1); transform-origin: center;">
-    <path d="M30 15 C16 14, -6 18, -12 38" />
-    <path d="M38 15 L30 11 M38 15 L30 19" />
-  </svg>
-
-</div>
   </div>
 
   <!-- FRUTTA -->
   <div class="box box-extra box-frutta">
     <img src="img/fragola.png">
-
-    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
-      <div class="arrow-text bottom frutta-text">Frutta</div>
-
-      <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-           style="transform:rotate(-90deg); transform-origin:center;">
-        <path d="M30 15 C16 14, -6 18, -12 38" />
-        <path d="M38 15 L30 11 M38 15 L30 19" />
-      </svg>
-    </div>
   </div>
 
-`;
+  `;
 }
+aggiornaPallineRiepilogo();
+
 // === QR CODE ===
 if (window.QRCode) {
     const qrContainer = document.getElementById("qr-code");
