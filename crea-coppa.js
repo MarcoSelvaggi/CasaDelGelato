@@ -130,66 +130,57 @@ function aggiornaGustiRiepilogoPerFormato() {
 }
 
 function aggiornaGranellaRiepilogo() {
-  const img   = document.getElementById("granella-img");
-  const txt   = document.getElementById("granella-text");
-  const arrow = document.getElementById("granella-arrow");
+  const granelle = scelti.granelle || [];
 
-  if (!img || !txt || !arrow) return;
+  const imgs  = document.querySelectorAll('[id^="granella-"][id$="-img"]');
+  const texts = document.querySelectorAll('[id^="granella-"][id$="-text"]');
 
-  const granella = scelti.granelle?.[0]; // prima granella scelta
-
-  if (granella && MAP_GRANELLE_IMG[granella]) {
-    img.src = MAP_GRANELLE_IMG[granella];
-    img.style.display = "block";
-    txt.textContent = granella;
-    arrow.style.display = "block";   // ✅ MOSTRA
-  } else {
-    img.style.display = "none";
-    txt.textContent = "";
-    arrow.style.display = "none";    // ❌ NASCONDE
-  }
+  imgs.forEach((img, i) => {
+    if (granelle[i] && MAP_GRANELLE_IMG[granelle[i]]) {
+      img.src = MAP_GRANELLE_IMG[granelle[i]];
+      img.style.display = "block";
+      if (texts[i]) texts[i].textContent = granelle[i];
+    } else {
+      img.style.display = "none";
+      if (texts[i]) texts[i].textContent = "";
+    }
+  });
 }
 
 function aggiornaToppingRiepilogo() {
-  const img   = document.getElementById("topping-img");
-  const txt   = document.getElementById("topping-text");
-  const arrow = document.getElementById("topping-arrow");
+  const topping = scelti.topping || [];
 
-  if (!img || !txt || !arrow) return;
+  const imgs  = document.querySelectorAll('[id^="topping-"][id$="-img"]');
+  const texts = document.querySelectorAll('[id^="topping-"][id$="-text"]');
 
-  const topping = scelti.topping?.[0]; // primo topping scelto
-
-  if (topping && MAP_TOPPING_IMG[topping]) {
-    img.src = MAP_TOPPING_IMG[topping];
-    img.style.display = "block";
-    txt.textContent = topping;
-    arrow.style.display = "block";
-  } else {
-    img.style.display = "none";
-    txt.textContent = "";
-    arrow.style.display = "none";
-  }
+  imgs.forEach((img, i) => {
+    if (topping[i] && MAP_TOPPING_IMG[topping[i]]) {
+      img.src = MAP_TOPPING_IMG[topping[i]];
+      img.style.display = "block";
+      if (texts[i]) texts[i].textContent = topping[i];
+    } else {
+      img.style.display = "none";
+      if (texts[i]) texts[i].textContent = "";
+    }
+  });
 }
 
 function aggiornaIngredientiRiepilogo() {
-  const img   = document.getElementById("frutta-img");
-  const txt   = document.getElementById("frutta-text");
-  const arrow = document.getElementById("frutta-arrow");
+  const ingredienti = scelti.ingredienti || [];
 
-  if (!img || !txt || !arrow) return;
+  const imgs  = document.querySelectorAll('[id^="frutta-"][id$="-img"]');
+  const texts = document.querySelectorAll('[id^="frutta-"][id$="-text"]');
 
-  const ingrediente = scelti.ingredienti?.[0]; // primo ingrediente scelto
-
-  if (ingrediente && MAP_INGREDIENTI_IMG[ingrediente]) {
-    img.src = MAP_INGREDIENTI_IMG[ingrediente];
-    img.style.display = "block";
-    txt.textContent = ingrediente;
-    arrow.style.display = "block";
-  } else {
-    img.style.display = "none";
-    txt.textContent = "";
-    arrow.style.display = "none";
-  }
+  imgs.forEach((img, i) => {
+    if (ingredienti[i] && MAP_INGREDIENTI_IMG[ingredienti[i]]) {
+      img.src = MAP_INGREDIENTI_IMG[ingredienti[i]];
+      img.style.display = "block";
+      if (texts[i]) texts[i].textContent = ingredienti[i];
+    } else {
+      img.style.display = "none";
+      if (texts[i]) texts[i].textContent = "";
+    }
+  });
 }
 
 function aggiornaExtraRiepilogo() {
