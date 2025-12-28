@@ -78,6 +78,57 @@ function aggiornaPallineRiepilogo() {
   }
 }
 
+function aggiornaGustiRiepilogoPerFormato() {
+  const gusti = scelti.gusti || [];
+
+  // immagini
+  const imgTop    = document.getElementById("gusto-top-img");
+  const imgLeft   = document.getElementById("gusto-left-img");
+  const imgRight  = document.getElementById("gusto-right-img");
+  const imgBottom = document.getElementById("gusto-bottom-img");
+
+  // testi
+  const txtTop    = document.getElementById("gusto-top-text");
+  const txtLeft   = document.getElementById("gusto-left-text");
+  const txtRight  = document.getElementById("gusto-right-text");
+  const txtBottom = document.getElementById("gusto-bottom-text");
+
+  // reset totale (sicurezza)
+  [imgTop, imgLeft, imgRight, imgBottom].forEach(img => {
+    if (img) img.style.display = "none";
+  });
+  [txtTop, txtLeft, txtRight, txtBottom].forEach(txt => {
+    if (txt) txt.textContent = "";
+  });
+
+  // helper
+  function set(img, txt, gusto) {
+    if (!img || !MAP_GUSTI_IMG[gusto]) return;
+    img.src = MAP_GUSTI_IMG[gusto];
+    img.style.display = "block";
+    if (txt) txt.textContent = gusto;
+  }
+
+  // ================= FORMATO =================
+  if (coppaSelezionata === "PICCOLA") {
+    if (gusti[0]) set(imgLeft, txtLeft, gusti[0]);
+    if (gusti[1]) set(imgRight, txtRight, gusti[1]);
+  }
+
+  else if (coppaSelezionata === "MEDIA") {
+    if (gusti[0]) set(imgTop,  txtTop,  gusti[0]);
+    if (gusti[1]) set(imgLeft, txtLeft, gusti[1]);
+    if (gusti[2]) set(imgRight,txtRight,gusti[2]);
+  }
+
+  else if (coppaSelezionata === "GRANDE") {
+    if (gusti[0]) set(imgTop,    txtTop,    gusti[0]);
+    if (gusti[1]) set(imgLeft,   txtLeft,   gusti[1]);
+    if (gusti[2]) set(imgBottom, txtBottom, gusti[2]);
+    if (gusti[3]) set(imgRight,  txtRight,  gusti[3]);
+  }
+}
+
 function aggiornaGranellaRiepilogo() {
   const img   = document.getElementById("granella-img");
   const txt   = document.getElementById("granella-text");
@@ -167,6 +218,31 @@ function aggiornaExtraRiepilogo() {
     slot.style.display = "flex";
     slot.querySelector(".extra-text").textContent = extra;
   });
+}
+
+function aggiornaExtraRiepilogoGenerico({ tipo, selezioni, mapImg, max }) {
+
+  for (let i = 1; i <= max; i++) {
+
+    const img   = document.getElementById(`${tipo}-${i}-img`);
+    const txt   = document.getElementById(`${tipo}-${i}-text`);
+    const arrow = document.getElementById(`${tipo}-${i}-arrow`);
+
+    if (!img || !txt || !arrow) continue;
+
+    const valore = selezioni[i - 1];
+
+    if (valore && mapImg[valore]) {
+      img.src = mapImg[valore];
+      img.style.display = "block";
+      txt.textContent = valore;
+      arrow.style.display = "block";
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+      arrow.style.display = "none";
+    }
+  }
 }
 
 // Carica la tabella "disponibilita" da Supabase
@@ -1232,12 +1308,42 @@ area.innerHTML = `
 const stage = document.getElementById("coppa-stage");
 
 if (stage) {
-  stage.innerHTML = getCoppaPiccolaHTML();
+
+  if (coppaSelezionata === "PICCOLA") {
+    stage.innerHTML = getCoppaPiccolaHTML();
+
+  } else if (coppaSelezionata === "MEDIA") {
+    stage.innerHTML = getCoppaMediaHTML();
+
+  } else if (coppaSelezionata === "GRANDE") {
+    stage.innerHTML = getCoppaGrandeHTML();
+
+  } else {
+    // fallback di sicurezza
+    stage.innerHTML = getCoppaPiccolaHTML();
+  }
 }
-aggiornaPallineRiepilogo();
-aggiornaGranellaRiepilogo();
-aggiornaToppingRiepilogo();
-aggiornaIngredientiRiepilogo();
+aggiornaGustiRiepilogoPerFormato();
+aggiornaExtraRiepilogoGenerico({
+  tipo: "granella",
+  selezioni: scelti.granelle,
+  mapImg: MAP_GRANELLE_IMG,
+  max: max.granelle
+});
+
+aggiornaExtraRiepilogoGenerico({
+  tipo: "topping",
+  selezioni: scelti.topping,
+  mapImg: MAP_TOPPING_IMG,
+  max: max.topping
+});
+
+aggiornaExtraRiepilogoGenerico({
+  tipo: "frutta",
+  selezioni: scelti.ingredienti,
+  mapImg: MAP_INGREDIENTI_IMG,
+  max: max.ingredienti
+});
 aggiornaExtraRiepilogo();
 
 // === QR CODE ===
@@ -1564,6 +1670,272 @@ function getCoppaPiccolaHTML() {
       <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
       <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
     </div>
+  `;
+}
+
+function getCoppaMediaHTML() {
+  return `
+<div class="media-coppa">
+
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png">
+  </div>
+
+  <!-- PALLINE -->
+  <div class="box-palline">
+
+    <!-- PALLINA IN ALTO -->
+    <div class="box box-pallina pallina-top">
+      <div class="arrow"
+           style="left:-60px; top:55%; transform:translateY(-50%);">
+        <div class="arrow-text top gusto-top-text" id="gusto-top-text">Gusto</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: scaleY(-1);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-top-img">
+    </div>
+
+    <!-- PALLINA SINISTRA -->
+    <div class="box box-pallina pallina-left">
+      <div class="arrow"
+           style="left:-38px; top:40%; transform:translate(-30px, -50%);">
+        <svg width="50" height="30" viewBox="0 0 50 30">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+        <div class="arrow-text left" id="gusto-left-text">Gusto</div>
+      </div>
+      <img id="gusto-left-img">
+    </div>
+
+    <!-- PALLINA DESTRA -->
+    <div class="box box-pallina pallina-right">
+      <div class="arrow"
+           style="right:-62px; top:30%; transform:translateY(-50%);">
+        <div class="arrow-text right" id="gusto-right-text">Gusto</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(180deg) translateY(-14px);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-right-img">
+    </div>
+
+  </div>
+
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-media.png">
+  </div>
+
+</div>
+
+<div class="media-extras">
+
+  <!-- GRANELLA 1 -->
+  <div class="box box-extra granella-1">
+    <img id="granella-img">
+    <div class="arrow" id="granella-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text" id="granella-text">Granella</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg) scaleY(-1);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TOPPING -->
+  <div class="box box-extra topping-1">
+    <img id="topping-img">
+    <div class="arrow" id="topping-arrow"
+         style="top:-58px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text top topping-text" id="topping-text">Topping</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- FRUTTA -->
+  <div class="box box-extra box-frutta">
+    <img id="frutta-img">
+    <div class="arrow" id="frutta-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom frutta-text" id="frutta-text">Frutta</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXTRA STAGE -->
+<div class="media-extras-top">
+  <div id="extra-stage">
+
+    <div class="extra-slot" data-slot="0">
+      <div class="extra-img"></div>
+      <div class="extra-text"></div>
+    </div>
+
+    <div class="extra-slot" data-slot="1">
+      <div class="extra-img"></div>
+      <div class="extra-text"></div>
+    </div>
+
+    <div class="extra-slot" data-slot="2">
+      <div class="extra-img"></div>
+      <div class="extra-text"></div>
+    </div>
+
+  </div>
+</div>
+`;
+}
+
+function getCoppaGrandeHTML() {
+  return `
+  <div class="grande-wrapper">
+
+    <!-- PANNA -->
+    <div class="box box-panna">
+      <img src="img/panna.png">
+    </div>
+
+    <!-- PALLINE -->
+    <div class="box-palline">
+
+      <!-- TOP -->
+      <div class="box box-pallina pallina-top">
+        <img id="gusto-top-img" src="">
+        <div class="arrow" style="left:-60px; top:55%; transform:translateY(-50%);">
+          <div class="arrow-text top gusto-text gusto-top-text" id="gusto-top-text">Gusto</div>
+          <svg width="50" height="30" viewBox="0 0 50 30" style="transform:scaleY(-1);">
+            <path d="M30 15 C16 14, -6 18, -12 38"/>
+            <path d="M38 15 L30 11 M38 15 L30 19"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- LEFT -->
+      <div class="box box-pallina pallina-left">
+        <img id="gusto-left-img" src="">
+        <div class="arrow" style="left:-38px; top:40%; transform:translate(-30px,-50%);">
+          <svg width="50" height="30" viewBox="0 0 50 30">
+            <path d="M30 15 C16 14, -6 18, -12 38"/>
+            <path d="M38 15 L30 11 M38 15 L30 19"/>
+          </svg>
+          <div class="arrow-text left gusto-text gusto-left-text" id="gusto-left-text">Gusto</div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="box box-pallina pallina-right">
+        <img id="gusto-right-img" src="">
+        <div class="arrow" style="right:-62px; top:30%; transform:translateY(-50%);">
+          <div class="arrow-text right gusto-text gusto-right-text" id="gusto-right-text">Gusto</div>
+          <svg width="50" height="30" viewBox="0 0 50 30"
+               style="transform:rotate(180deg) translateY(-14px);">
+            <path d="M30 15 C16 14, -6 18, -12 38"/>
+            <path d="M38 15 L30 11 M38 15 L30 19"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- BOTTOM -->
+      <div class="box box-pallina pallina-bottom">
+        <img id="gusto-bottom-img" src="">
+        <div class="arrow" style="top:115%; left:50%; transform:translateX(-50%);">
+          <div class="arrow-text bottom gusto-text gusto-bottom-text" id="gusto-bottom-text">Gusto</div>
+          <svg width="50" height="30" viewBox="0 0 50 30"
+               style="transform:rotate(-90deg);">
+            <path d="M30 15 C16 14, -6 18, -12 38"/>
+            <path d="M38 15 L30 11 M38 15 L30 19"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- COPPA -->
+    <div class="box box-coppa">
+      <img src="img/coppa-grande.png">
+    </div>
+
+    <!-- GRANELLE -->
+    <div class="box box-extra granella-1">
+      <img id="granella-img">
+      <div class="arrow" id="granella-arrow"
+           style="bottom:-52px; left:50%; transform:translateX(-50%);">
+        <div class="arrow-text bottom granella-text granella-1-text" id="granella-text">Granella</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform:rotate(-90deg) scaleY(-1);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="box box-extra granella-2">
+      <img>
+    </div>
+
+    <!-- TOPPING -->
+    <div class="box box-extra topping-1">
+      <img id="topping-img">
+      <div class="arrow" id="topping-arrow"
+           style="top:-58px; left:50%; transform:translateX(-50%);">
+        <div class="arrow-text top topping-text topping-1-text" id="topping-text">Topping</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform:rotate(90deg);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="box box-extra topping-2">
+      <img>
+    </div>
+
+    <!-- FRUTTA -->
+    <div class="box box-extra frutta-1">
+      <img id="frutta-img">
+      <div class="arrow" id="frutta-arrow"
+           style="bottom:-52px; left:50%; transform:translateX(-50%);">
+        <div class="arrow-text bottom frutta-text frutta-1-text" id="frutta-text">Frutta</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform:rotate(-90deg);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="box box-extra frutta-2">
+      <img>
+    </div>
+
+    <!-- EXTRA STAGE -->
+    <div id="extra-stage">
+      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+    </div>
+
+  </div>
   `;
 }
 
