@@ -36,7 +36,7 @@ const MAP_GRANELLE_IMG = {
 const MAP_TOPPING_IMG = {
   "FRUTTI DI BOSCO": "img/topping-bosco.png"
 };
-const MAP_FRUTTA_IMG = {
+const MAP_INGREDIENTI_IMG = {
   "FRAGOLE": "img/fragola.png"
 };
 
@@ -1367,7 +1367,7 @@ if (stage) {
 aggiornaPallineRiepilogo();
 aggiornaGranellaRiepilogo();
 aggiornaToppingRiepilogo();
-aggiornaFruttaRiepilogo();
+aggiornaIngredientiRiepilogo();
 aggiornaExtraRiepilogo();
 
 // === QR CODE ===
