@@ -1232,137 +1232,7 @@ area.innerHTML = `
 const stage = document.getElementById("coppa-stage");
 
 if (stage) {
-  stage.innerHTML = `
-
-  <!-- PANNA -->
-  <div class="box box-panna">
-    <img src="img/panna.png">
-    <div class="label">Panna</div>
-  </div>
-
-  <!-- PALLINE -->
-  <div class="box-palline">
-
-    <!-- Pallina sinistra -->
-    <div class="box box-pallina pallina-1">
-     <img id="gusto-left-img" src="img/pallina-vaniglia.png">
-
-      <!-- Freccia gusto sinistra -->
-      <div class="arrow"
-     id="gusto-left-arrow"
-     style="left:-38px; top:50%; transform:translate(-30px, -50%);">
-        <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30">
-          <path d="M30 15 C16 14, -6 18, -12 38"
-                fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" />
-          <path d="M38 15 L30 11 M38 15 L30 19"
-                fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-       <div class="arrow-text" id="gusto-left-text">Gusto</div>
-      </div>
-    </div>
-
-    <!-- Pallina destra -->
-    <div class="box box-pallina pallina-2">
-      <img id="gusto-right-img" src="img/pallina-fragola.png">
-
-      <!-- Freccia gusto destra -->
-      <div class="arrow"
-     id="gusto-right-arrow"
-     style="right:-62px; top:50%; transform:translateY(-50%);">
-        <div class="arrow-text right" id="gusto-right-text">Gusto</div>
-        <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-             style="transform: rotate(180deg) translateY(-14px); transform-origin: center;">
-          <path d="M30 15 C16 14, -6 18, -12 38" />
-          <path d="M38 15 L30 11 M38 15 L30 19" />
-        </svg>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- COPPA -->
-  <div class="box box-coppa">
-    <img src="img/coppa-piccola.png">
-    <div class="label">Coppa</div>
-  </div>
-
-  <!-- GRANELLA -->
-<div class="box box-extra box-granella">
-  <img id="granella-img" src="img/granella-nocciola.png">
-
-  <div class="arrow" id="granella-arrow"
-     style="bottom:-52px; left:50%; transform:translateX(-50%);">
-    <div class="arrow-text bottom granella-text" id="granella-text">
-      Granella
-    </div>
-
-    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-         style="transform:rotate(-90deg) scaleY(-1); transform-origin:center;">
-      <path d="M30 15 C16 14, -6 18, -12 38" />
-      <path d="M38 15 L30 11 M38 15 L30 19" />
-    </svg>
-  </div>
-</div>
-
-  <!-- TOPPING -->
-<div class="box box-extra box-topping">
-  <img id="topping-img" src="img/topping-bosco.png">
-
-  <div class="arrow"
-       id="topping-arrow"
-       style="top:-58px; left:50%; transform:translateX(-50%);">
-
-    <div class="arrow-text top topping-text" id="topping-text">
-      Topping
-    </div>
-
-    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-         style="transform: rotate(90deg) scaleY(-1); transform-origin: center;">
-      <path d="M30 15 C16 14, -6 18, -12 38" />
-      <path d="M38 15 L30 11 M38 15 L30 19" />
-    </svg>
-  </div>
-</div>
-
-  <!-- FRUTTA -->
-<div class="box box-extra box-frutta">
-  <img id="frutta-img" src="img/fragola.png">
-
-  <div class="arrow"
-       id="frutta-arrow"
-       style="bottom:-52px; left:50%; transform:translateX(-50%);">
-
-    <div class="arrow-text bottom frutta-text" id="frutta-text">
-      Frutta
-    </div>
-
-    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-         style="transform:rotate(-90deg); transform-origin:center;">
-      <path d="M30 15 C16 14, -6 18, -12 38" />
-      <path d="M38 15 L30 11 M38 15 L30 19" />
-    </svg>
-  </div>
-</div>
-<!-- ================= EXTRA STAGE ================= -->
-<div id="extra-stage">
-
-  <div class="extra-slot" data-slot="0">
-    <div class="extra-img"></div>
-    <div class="extra-text"></div>
-  </div>
-
-  <div class="extra-slot" data-slot="1">
-    <div class="extra-img"></div>
-    <div class="extra-text"></div>
-  </div>
-
-  <div class="extra-slot" data-slot="2">
-    <div class="extra-img"></div>
-    <div class="extra-text"></div>
-  </div>
-
-</div>
-  `;
+  stage.innerHTML = getCoppaPiccolaHTML();
 }
 aggiornaPallineRiepilogo();
 aggiornaGranellaRiepilogo();
@@ -1596,6 +1466,106 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
+
+function getCoppaPiccolaHTML() {
+  return `
+    <!-- PANNA -->
+    <div class="box box-panna">
+      <img src="img/panna.png">
+      <div class="label">Panna</div>
+    </div>
+
+    <!-- PALLINE -->
+    <div class="box-palline">
+
+      <!-- Pallina sinistra -->
+      <div class="box box-pallina pallina-1">
+        <img id="gusto-left-img" src="img/pallina-vaniglia.png">
+
+        <div class="arrow"
+          id="gusto-left-arrow"
+          style="left:-38px; top:50%; transform:translate(-30px, -50%);">
+          <svg width="50" height="30" viewBox="0 0 50 30">
+            <path d="M30 15 C16 14, -6 18, -12 38"/>
+            <path d="M38 15 L30 11 M38 15 L30 19"/>
+          </svg>
+          <div class="arrow-text" id="gusto-left-text">Gusto</div>
+        </div>
+      </div>
+
+      <!-- Pallina destra -->
+      <div class="box box-pallina pallina-2">
+        <img id="gusto-right-img" src="img/pallina-fragola.png">
+
+        <div class="arrow"
+          id="gusto-right-arrow"
+          style="right:-62px; top:50%; transform:translateY(-50%);">
+          <div class="arrow-text right" id="gusto-right-text">Gusto</div>
+          <svg width="50" height="30" viewBox="0 0 50 30"
+            style="transform: rotate(180deg) translateY(-14px);">
+            <path d="M30 15 C16 14, -6 18, -12 38"/>
+            <path d="M38 15 L30 11 M38 15 L30 19"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- COPPA -->
+    <div class="box box-coppa">
+      <img src="img/coppa-piccola.png">
+      <div class="label">Coppa</div>
+    </div>
+
+    <!-- GRANELLA -->
+    <div class="box box-extra box-granella">
+      <img id="granella-img">
+      <div class="arrow" id="granella-arrow"
+        style="bottom:-52px; left:50%; transform:translateX(-50%);">
+        <div class="arrow-text bottom granella-text" id="granella-text">Granella</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+          style="transform:rotate(-90deg) scaleY(-1);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- TOPPING -->
+    <div class="box box-extra box-topping">
+      <img id="topping-img">
+      <div class="arrow" id="topping-arrow"
+        style="top:-58px; left:50%; transform:translateX(-50%);">
+        <div class="arrow-text top topping-text" id="topping-text">Topping</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+          style="transform: rotate(90deg) scaleY(-1);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- FRUTTA -->
+    <div class="box box-extra box-frutta">
+      <img id="frutta-img">
+      <div class="arrow" id="frutta-arrow"
+        style="bottom:-52px; left:50%; transform:translateX(-50%);">
+        <div class="arrow-text bottom frutta-text" id="frutta-text">Frutta</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+          style="transform:rotate(-90deg);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- EXTRA STAGE -->
+    <div id="extra-stage">
+      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+    </div>
+  `;
+}
 
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
