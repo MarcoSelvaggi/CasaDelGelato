@@ -1687,11 +1687,9 @@ function getCoppaMediaHTML() {
 
     <!-- PALLINA IN ALTO -->
     <div class="box box-pallina pallina-top">
-      <div class="arrow"
-           style="left:-60px; top:55%; transform:translateY(-50%);">
+      <div class="arrow" style="left:-60px; top:55%; transform:translateY(-50%);">
         <div class="arrow-text top gusto-top-text" id="gusto-top-text">Gusto</div>
-        <svg width="50" height="30" viewBox="0 0 50 30"
-             style="transform: scaleY(-1);">
+        <svg width="50" height="30" viewBox="0 0 50 30" style="transform:scaleY(-1);">
           <path d="M30 15 C16 14, -6 18, -12 38"/>
           <path d="M38 15 L30 11 M38 15 L30 19"/>
         </svg>
@@ -1701,8 +1699,7 @@ function getCoppaMediaHTML() {
 
     <!-- PALLINA SINISTRA -->
     <div class="box box-pallina pallina-left">
-      <div class="arrow"
-           style="left:-38px; top:40%; transform:translate(-30px, -50%);">
+      <div class="arrow" style="left:-38px; top:40%; transform:translate(-30px,-50%);">
         <svg width="50" height="30" viewBox="0 0 50 30">
           <path d="M30 15 C16 14, -6 18, -12 38"/>
           <path d="M38 15 L30 11 M38 15 L30 19"/>
@@ -1714,11 +1711,10 @@ function getCoppaMediaHTML() {
 
     <!-- PALLINA DESTRA -->
     <div class="box box-pallina pallina-right">
-      <div class="arrow"
-           style="right:-62px; top:30%; transform:translateY(-50%);">
+      <div class="arrow" style="right:-62px; top:30%; transform:translateY(-50%);">
         <div class="arrow-text right" id="gusto-right-text">Gusto</div>
         <svg width="50" height="30" viewBox="0 0 50 30"
-             style="transform: rotate(180deg) translateY(-14px);">
+             style="transform:rotate(180deg) translateY(-14px);">
           <path d="M30 15 C16 14, -6 18, -12 38"/>
           <path d="M38 15 L30 11 M38 15 L30 19"/>
         </svg>
@@ -1739,26 +1735,50 @@ function getCoppaMediaHTML() {
 
   <!-- GRANELLA 1 -->
   <div class="box box-extra granella-1">
-    <img id="granella-img">
-    <div class="arrow" id="granella-arrow"
+    <img id="granella-1-img">
+    <div class="arrow" id="granella-1-arrow"
          style="bottom:-52px; left:50%; transform:translateX(-50%);">
-      <div class="arrow-text bottom granella-text" id="granella-text">Granella</div>
-      <svg width="50" height="30" viewBox="0 0 50 30"
-           style="transform:rotate(-90deg) scaleY(-1);">
+      <div class="arrow-text bottom granella-text granella-1-text" id="granella-1-text">Granella</div>
+      <svg width="50" height="30" viewBox="0 0 50 30" style="transform:rotate(-90deg) scaleY(-1);">
         <path d="M30 15 C16 14, -6 18, -12 38"/>
         <path d="M38 15 L30 11 M38 15 L30 19"/>
       </svg>
     </div>
   </div>
 
-  <!-- TOPPING -->
+  <!-- GRANELLA 2 -->
+  <div class="box box-extra granella-2">
+    <img id="granella-2-img">
+    <div class="arrow" id="granella-2-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text granella-2-text" id="granella-2-text">Granella</div>
+      <svg width="50" height="30" viewBox="0 0 50 30" style="transform:rotate(-90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TOPPING 1 -->
   <div class="box box-extra topping-1">
-    <img id="topping-img">
-    <div class="arrow" id="topping-arrow"
+    <img id="topping-1-img">
+    <div class="arrow" id="topping-1-arrow"
          style="top:-58px; left:50%; transform:translateX(-50%);">
-      <div class="arrow-text top topping-text" id="topping-text">Topping</div>
-      <svg width="50" height="30" viewBox="0 0 50 30"
-           style="transform: rotate(90deg);">
+      <div class="arrow-text top topping-text topping-1-text" id="topping-1-text">Topping</div>
+      <svg width="50" height="30" viewBox="0 0 50 30" style="transform:rotate(90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TOPPING 2 -->
+  <div class="box box-extra topping-2">
+    <img id="topping-2-img">
+    <div class="arrow" id="topping-2-arrow"
+         style="top:-58px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text top topping-text topping-2-text" id="topping-2-text">Topping</div>
+      <svg width="50" height="30" viewBox="0 0 50 30" style="transform:rotate(90deg) scaleY(-1);">
         <path d="M30 15 C16 14, -6 18, -12 38"/>
         <path d="M38 15 L30 11 M38 15 L30 19"/>
       </svg>
@@ -1771,8 +1791,7 @@ function getCoppaMediaHTML() {
     <div class="arrow" id="frutta-arrow"
          style="bottom:-52px; left:50%; transform:translateX(-50%);">
       <div class="arrow-text bottom frutta-text" id="frutta-text">Frutta</div>
-      <svg width="50" height="30" viewBox="0 0 50 30"
-           style="transform:rotate(-90deg);">
+      <svg width="50" height="30" viewBox="0 0 50 30" style="transform:rotate(-90deg);">
         <path d="M30 15 C16 14, -6 18, -12 38"/>
         <path d="M38 15 L30 11 M38 15 L30 19"/>
       </svg>
@@ -1784,22 +1803,9 @@ function getCoppaMediaHTML() {
 <!-- EXTRA STAGE -->
 <div class="media-extras-top">
   <div id="extra-stage">
-
-    <div class="extra-slot" data-slot="0">
-      <div class="extra-img"></div>
-      <div class="extra-text"></div>
-    </div>
-
-    <div class="extra-slot" data-slot="1">
-      <div class="extra-img"></div>
-      <div class="extra-text"></div>
-    </div>
-
-    <div class="extra-slot" data-slot="2">
-      <div class="extra-img"></div>
-      <div class="extra-text"></div>
-    </div>
-
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
   </div>
 </div>
 `;
