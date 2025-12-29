@@ -188,6 +188,33 @@ function aggiornaGranellaRiepilogoMedia() {
   });
 }
 
+function aggiornaGranellaRiepilogoGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  const granelle = scelti.granelle || [];
+
+  const map = [
+    { img: "granella-1-img", txt: "granella-1-text" },
+    { img: "granella-2-img", txt: "granella-2-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+
+    if (!img || !txt) return;
+
+    if (granelle[i] && MAP_GRANELLE_IMG[granelle[i]]) {
+      img.src = MAP_GRANELLE_IMG[granelle[i]];
+      img.style.display = "block";
+      txt.textContent = granelle[i];
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+    }
+  });
+}
+
 function aggiornaToppingRiepilogo() {
   const img   = document.getElementById("topping-img");
   const txt   = document.getElementById("topping-text");
@@ -237,6 +264,33 @@ function aggiornaToppingRiepilogoMedia() {
       img.style.display = "none";
       txt.textContent = "";
       arrow.style.display = "none";
+    }
+  });
+}
+
+function aggiornaToppingRiepilogoGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  const topping = scelti.topping || [];
+
+  const map = [
+    { img: "topping-1-img", txt: "topping-1-text" },
+    { img: "topping-2-img", txt: "topping-2-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+
+    if (!img || !txt) return;
+
+    if (topping[i] && MAP_TOPPING_IMG[topping[i]]) {
+      img.src = MAP_TOPPING_IMG[topping[i]];
+      img.style.display = "block";
+      txt.textContent = topping[i];
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
     }
   });
 }
@@ -1825,8 +1879,10 @@ aggiornaPallineRiepilogoMedia();
 aggiornaPallineRiepilogoGrande();
 aggiornaGranellaRiepilogo();
 aggiornaGranellaRiepilogoMedia();
+aggiornaGranellaRiepilogoGrande();
 aggiornaToppingRiepilogo();
 aggiornaToppingRiepilogoMedia();
+aggiornaToppingRiepilogoGrande();
 aggiornaIngredientiRiepilogo();
 aggiornaIngredientiRiepilogoMedia();
 aggiornaIngredientiRiepilogoGrande();
