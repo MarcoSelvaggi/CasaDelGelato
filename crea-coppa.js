@@ -1406,6 +1406,9 @@ area.innerHTML = `
 `;
 const stage = document.getElementById("coppa-stage");
 
+// reset classi
+stage.className = "";
+
 if (stage) {
   stage.innerHTML = `
 
@@ -1540,6 +1543,7 @@ if (stage) {
   `;
 }
 else if (coppaSelezionata === "MEDIA") {
+  stage.classList.add("coppa-media");
   renderCoppaMedia(stage);
 }
 aggiornaPallineRiepilogo();
