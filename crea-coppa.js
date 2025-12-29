@@ -41,55 +41,15 @@ const MAP_INGREDIENTI_IMG = {
 };
 
 function aggiornaCoppaGrafica() {
-  // gusti (dipende dal formato)
-  aggiornaGustiRiepilogoPerFormato();
 
-  // granelle
-  aggiornaExtraRiepilogoGenerico({
-    tipo: "granella",
-    selezioni: scelti.granelle,
-    mapImg: MAP_GRANELLE_IMG,
-    max: max.granelle
-  });
-
-  // topping
-  aggiornaExtraRiepilogoGenerico({
-    tipo: "topping",
-    selezioni: scelti.topping,
-    mapImg: MAP_TOPPING_IMG,
-    max: max.topping
-  });
-
-  // ingredienti / frutta
-  aggiornaExtraRiepilogoGenerico({
-    tipo: "frutta",
-    selezioni: scelti.ingredienti,
-    mapImg: MAP_INGREDIENTI_IMG,
-    max: max.ingredienti
-  });
-
-  // extra
-  aggiornaExtraRiepilogo();
-}
-
-function aggiornaPallineRiepilogo() {
+  /* ================= GUSTI ================= */
   const gusti = scelti.gusti || [];
-
-  const boxPalline = document.querySelector(".box-palline");
 
   const leftImg  = document.getElementById("gusto-left-img");
   const rightImg = document.getElementById("gusto-right-img");
   const leftTxt  = document.getElementById("gusto-left-text");
   const rightTxt = document.getElementById("gusto-right-text");
 
-  // 🍨 CASO: UN SOLO GUSTO → centra
-  if (gusti.length === 1) {
-    boxPalline.classList.add("single");
-  } else {
-    boxPalline.classList.remove("single");
-  }
-
-  // PALLINA SINISTRA
   if (gusti[0] && MAP_GUSTI_IMG[gusti[0]]) {
     leftImg.src = MAP_GUSTI_IMG[gusti[0]];
     leftImg.style.display = "block";
@@ -99,7 +59,6 @@ function aggiornaPallineRiepilogo() {
     leftTxt.textContent = "";
   }
 
-  // PALLINA DESTRA
   if (gusti[1] && MAP_GUSTI_IMG[gusti[1]]) {
     rightImg.src = MAP_GUSTI_IMG[gusti[1]];
     rightImg.style.display = "block";
@@ -108,7 +67,53 @@ function aggiornaPallineRiepilogo() {
     rightImg.style.display = "none";
     rightTxt.textContent = "";
   }
+
+  /* ================= GRANELLA ================= */
+  const granella = scelti.granelle[0];
+  const granImg  = document.getElementById("granella-img");
+  const granTxt  = document.getElementById("granella-text");
+
+  if (granella && MAP_GRANELLE_IMG[granella]) {
+    granImg.src = MAP_GRANELLE_IMG[granella];
+    granImg.style.display = "block";
+    granTxt.textContent = granella;
+  } else {
+    granImg.style.display = "none";
+    granTxt.textContent = "";
+  }
+
+  /* ================= TOPPING ================= */
+  const topping = scelti.topping[0];
+  const topImg  = document.getElementById("topping-img");
+  const topTxt  = document.getElementById("topping-text");
+
+  if (topping && MAP_TOPPING_IMG[topping]) {
+    topImg.src = MAP_TOPPING_IMG[topping];
+    topImg.style.display = "block";
+    topTxt.textContent = topping;
+  } else {
+    topImg.style.display = "none";
+    topTxt.textContent = "";
+  }
+
+  /* ================= INGREDIENTI ================= */
+  const frutta = scelti.ingredienti[0];
+  const fruImg = document.getElementById("frutta-img");
+  const fruTxt = document.getElementById("frutta-text");
+
+  if (frutta && MAP_INGREDIENTI_IMG[frutta]) {
+    fruImg.src = MAP_INGREDIENTI_IMG[frutta];
+    fruImg.style.display = "block";
+    fruTxt.textContent = frutta;
+  } else {
+    fruImg.style.display = "none";
+    fruTxt.textContent = "";
+  }
+
+  /* ================= EXTRA ================= */
+  aggiornaExtraRiepilogo();
 }
+
 
 function aggiornaGustiRiepilogoPerFormato() {
   const gusti = scelti.gusti || [];
@@ -161,59 +166,6 @@ function aggiornaGustiRiepilogoPerFormato() {
   }
 }
 
-function aggiornaGranellaRiepilogo() {
-  const granelle = scelti.granelle || [];
-
-  const imgs  = document.querySelectorAll('[id^="granella-"][id$="-img"]');
-  const texts = document.querySelectorAll('[id^="granella-"][id$="-text"]');
-
-  imgs.forEach((img, i) => {
-    if (granelle[i] && MAP_GRANELLE_IMG[granelle[i]]) {
-      img.src = MAP_GRANELLE_IMG[granelle[i]];
-      img.style.display = "block";
-      if (texts[i]) texts[i].textContent = granelle[i];
-    } else {
-      img.style.display = "none";
-      if (texts[i]) texts[i].textContent = "";
-    }
-  });
-}
-
-function aggiornaToppingRiepilogo() {
-  const topping = scelti.topping || [];
-
-  const imgs  = document.querySelectorAll('[id^="topping-"][id$="-img"]');
-  const texts = document.querySelectorAll('[id^="topping-"][id$="-text"]');
-
-  imgs.forEach((img, i) => {
-    if (topping[i] && MAP_TOPPING_IMG[topping[i]]) {
-      img.src = MAP_TOPPING_IMG[topping[i]];
-      img.style.display = "block";
-      if (texts[i]) texts[i].textContent = topping[i];
-    } else {
-      img.style.display = "none";
-      if (texts[i]) texts[i].textContent = "";
-    }
-  });
-}
-
-function aggiornaIngredientiRiepilogo() {
-  const ingredienti = scelti.ingredienti || [];
-
-  const imgs  = document.querySelectorAll('[id^="frutta-"][id$="-img"]');
-  const texts = document.querySelectorAll('[id^="frutta-"][id$="-text"]');
-
-  imgs.forEach((img, i) => {
-    if (ingredienti[i] && MAP_INGREDIENTI_IMG[ingredienti[i]]) {
-      img.src = MAP_INGREDIENTI_IMG[ingredienti[i]];
-      img.style.display = "block";
-      if (texts[i]) texts[i].textContent = ingredienti[i];
-    } else {
-      img.style.display = "none";
-      if (texts[i]) texts[i].textContent = "";
-    }
-  });
-}
 
 function aggiornaExtraRiepilogo() {
   const extras = scelti.extra || [];
@@ -1349,28 +1301,7 @@ if (stage) {
     stage.innerHTML = getCoppaPiccolaHTML();
   }
 }
-aggiornaGustiRiepilogoPerFormato();
-aggiornaExtraRiepilogoGenerico({
-  tipo: "granella",
-  selezioni: scelti.granelle,
-  mapImg: MAP_GRANELLE_IMG,
-  max: max.granelle
-});
-
-aggiornaExtraRiepilogoGenerico({
-  tipo: "topping",
-  selezioni: scelti.topping,
-  mapImg: MAP_TOPPING_IMG,
-  max: max.topping
-});
-
-aggiornaExtraRiepilogoGenerico({
-  tipo: "frutta",
-  selezioni: scelti.ingredienti,
-  mapImg: MAP_INGREDIENTI_IMG,
-  max: max.ingredienti
-});
-aggiornaExtraRiepilogo();
+aggiornaCoppaGrafica();
 
 // === QR CODE ===
 if (window.QRCode) {
@@ -1601,101 +1532,76 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function getCoppaPiccolaHTML() {
   return `
-    <!-- PANNA -->
-    <div class="box box-panna">
-      <img src="img/panna.png">
-      <div class="label">Panna</div>
-    </div>
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png">
+  </div>
 
-    <!-- PALLINE -->
-    <div class="box-palline">
+  <!-- PALLINE -->
+  <div class="box-palline">
 
-      <!-- Pallina sinistra -->
-      <div class="box box-pallina pallina-1">
-        <img id="gusto-left-img" src="img/pallina-vaniglia.png">
-
-        <div class="arrow"
-          id="gusto-left-arrow"
-          style="left:-38px; top:50%; transform:translate(-30px, -50%);">
-          <svg width="50" height="30" viewBox="0 0 50 30">
-            <path d="M30 15 C16 14, -6 18, -12 38"/>
-            <path d="M38 15 L30 11 M38 15 L30 19"/>
-          </svg>
-          <div class="arrow-text" id="gusto-left-text">Gusto</div>
-        </div>
-      </div>
-
-      <!-- Pallina destra -->
-      <div class="box box-pallina pallina-2">
-        <img id="gusto-right-img" src="img/pallina-fragola.png">
-
-        <div class="arrow"
-          id="gusto-right-arrow"
-          style="right:-62px; top:50%; transform:translateY(-50%);">
-          <div class="arrow-text right" id="gusto-right-text">Gusto</div>
-          <svg width="50" height="30" viewBox="0 0 50 30"
-            style="transform: rotate(180deg) translateY(-14px);">
-            <path d="M30 15 C16 14, -6 18, -12 38"/>
-            <path d="M38 15 L30 11 M38 15 L30 19"/>
-          </svg>
-        </div>
+    <!-- GUSTO 0 -->
+    <div class="box box-pallina pallina-left">
+      <img data-gusto-img="0">
+      <div class="arrow">
+        <div class="arrow-text" data-gusto-text="0">Gusto</div>
       </div>
     </div>
 
-    <!-- COPPA -->
-    <div class="box box-coppa">
-      <img src="img/coppa-piccola.png">
-      <div class="label">Coppa</div>
-    </div>
-
-    <!-- GRANELLA -->
-    <div class="box box-extra box-granella">
-      <img id="granella-img">
-      <div class="arrow" id="granella-arrow"
-        style="bottom:-52px; left:50%; transform:translateX(-50%);">
-        <div class="arrow-text bottom granella-text" id="granella-text">Granella</div>
-        <svg width="50" height="30" viewBox="0 0 50 30"
-          style="transform:rotate(-90deg) scaleY(-1);">
-          <path d="M30 15 C16 14, -6 18, -12 38"/>
-          <path d="M38 15 L30 11 M38 15 L30 19"/>
-        </svg>
+    <!-- GUSTO 1 -->
+    <div class="box box-pallina pallina-right">
+      <img data-gusto-img="1">
+      <div class="arrow">
+        <div class="arrow-text right" data-gusto-text="1">Gusto</div>
       </div>
     </div>
 
-    <!-- TOPPING -->
-    <div class="box box-extra box-topping">
-      <img id="topping-img">
-      <div class="arrow" id="topping-arrow"
-        style="top:-58px; left:50%; transform:translateX(-50%);">
-        <div class="arrow-text top topping-text" id="topping-text">Topping</div>
-        <svg width="50" height="30" viewBox="0 0 50 30"
-          style="transform: rotate(90deg) scaleY(-1);">
-          <path d="M30 15 C16 14, -6 18, -12 38"/>
-          <path d="M38 15 L30 11 M38 15 L30 19"/>
-        </svg>
-      </div>
-    </div>
+  </div>
 
-    <!-- FRUTTA -->
-    <div class="box box-extra box-frutta">
-      <img id="frutta-img">
-      <div class="arrow" id="frutta-arrow"
-        style="bottom:-52px; left:50%; transform:translateX(-50%);">
-        <div class="arrow-text bottom frutta-text" id="frutta-text">Frutta</div>
-        <svg width="50" height="30" viewBox="0 0 50 30"
-          style="transform:rotate(-90deg);">
-          <path d="M30 15 C16 14, -6 18, -12 38"/>
-          <path d="M38 15 L30 11 M38 15 L30 19"/>
-        </svg>
-      </div>
-    </div>
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-piccola.png">
+  </div>
 
-    <!-- EXTRA STAGE -->
-    <div id="extra-stage">
-      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
-      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
-      <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+  <!-- GRANELLA -->
+  <div class="box box-extra box-granella">
+    <img data-granella-img="0">
+    <div class="arrow">
+      <div class="arrow-text bottom" data-granella-text="0">Granella</div>
     </div>
+  </div>
+
+  <!-- TOPPING -->
+  <div class="box box-extra box-topping">
+    <img data-topping-img="0">
+    <div class="arrow">
+      <div class="arrow-text top" data-topping-text="0">Topping</div>
+    </div>
+  </div>
+
+  <!-- INGREDIENTE -->
+  <div class="box box-extra box-frutta">
+    <img data-ingrediente-img="0">
+    <div class="arrow">
+      <div class="arrow-text bottom" data-ingrediente-text="0">Ingrediente</div>
+    </div>
+  </div>
+
+  <!-- EXTRA -->
+  <div id="extra-stage">
+    <div class="extra-slot" data-extra="0">
+      <div class="extra-img"></div>
+      <div class="extra-text"></div>
+    </div>
+    <div class="extra-slot" data-extra="1">
+      <div class="extra-img"></div>
+      <div class="extra-text"></div>
+    </div>
+    <div class="extra-slot" data-extra="2">
+      <div class="extra-img"></div>
+      <div class="extra-text"></div>
+    </div>
+  </div>
   `;
 }
 
