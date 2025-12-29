@@ -1836,195 +1836,21 @@ body {
   border: 2px dashed rgba(0,0,0,0.4);
 }
 
-/* ================= COPPA – MEDIA ================= */
-.media-coppa .box-coppa {
-  width: 280px;
-  height: 190px;
-  left: var(--base-left);
-  top: 230px;
-  overflow: hidden;
-  z-index: 3;
-}
 
-.media-coppa .box-coppa img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
 
-/* ================= PANNA – MEDIA ================= */
-.media-coppa .box-panna {
-  width: 170px;
-  height: 170px;
-  left: calc(var(--base-left) + 140px - 85px);
-  top: 60px;
-  z-index: 3;
-  transform: scale(0.85);
-  transform-origin: center;
-}
 
-.media-coppa .box-panna img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-/* ================= PALLINE – MEDIA ================= */
-.media-coppa .box-palline {
-  position: absolute;
-  width: 280px;
-  height: 200px;
-  left: var(--base-left);
-  top: 90px;
-  z-index: 1;
-}
-
-.media-coppa .box-pallina {
-  width: 135px;
-  height: 135px;
-  border-radius: 50%;
-  position: absolute;
-  transform: scaleY(0.9);
-}
-
-.media-coppa .box-pallina img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-/* sopra */
-.media-coppa .pallina-top {
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%) scaleY(0.9);
-}
-
-/* sotto */
-.media-coppa .pallina-left {
-  left: 20px;
-  bottom: -20px;
-}
-
-.media-coppa .pallina-right {
-  right: 20px;
-  bottom: -20px;
-}
-
-/* ================= EXTRA VERTICALI – MEDIA ================= */
-.media-extras .box-extra {
-  position: absolute;
-  width: 90px;
-  height: 130px;
-  top: 350px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.media-extras .box-extra img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-
-/* ================= SPAZIATURA EXTRA – MEDIA ================= */
-
-/* GRANELLA */
-.media-extras .granella-1 { left: calc(var(--base-left) + 340px); }
-.media-extras .granella-2 { left: calc(var(--base-left) + 440px); }
-
-/* TOPPING */
-.media-extras .topping-1  { left: calc(var(--base-left) + 560px); }
-.media-extras .topping-2  { left: calc(var(--base-left) + 660px); }
-
-/* FRUTTA */
-.media-extras .box-frutta { left: calc(var(--base-left) + 780px); }
-
-/* ================= EXTRA STAGE – MEDIA ================= */
-.media-extras-top #extra-stage {
-  position: absolute;
-  top: 10px;
-  left: calc(var(--base-left) + 330px);
-  width: 280px;
-  height: 70px;
-  border: 2px dashed rgba(0,0,0,0.45);
-  border-radius: 12px;
-  background: transparent;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-}
-
-.media-extras-top #extra-stage .extra-slot {
-  flex: 1;
-  height: 100%;
-  border: 2px dashed rgba(0,0,0,0.35);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px;
-}
-
-.media-extras-top #extra-stage .extra-img {
-  flex: 1;
-  width: 100%;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.media-extras-top #extra-stage .extra-text {
-  width: 100%;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 600;
-  margin-top: 4px;
-  white-space: nowrap;
-}
-
-/* ================= SCALE MEDIA ================= */
-.media-extras {
-  transform: scale(0.85);
-  transform-origin: top left;
-}
-
-.media-coppa {
-  transform: scale(0.85);
-  transform-origin: top left;
-}
-
-/* abbassamento coppa */
-.media-coppa .box-palline {
-  top: 140px;
-}
-
-.media-coppa .box-coppa {
-  top: 300px;
-}
-
-.media-extras-top {
-  transform: scale(1.1);
-  transform-origin: top left;
-}
-
-/* ================= FORMATO GRANDE ================= */
+/* ================= FORMATO MEDIA ================= */
 body {
   margin: 0;
   background: #f2f2f2;
   font-family: system-ui, -apple-system, sans-serif;
 }
+
 /* ================= STAGE ================= */
 #coppa-stage {
   position: relative;
-  width: 980px;
-  height: 600px;
+  width: 860px;
+  height: 520px;
   margin: 40px auto;
   background: #fff;
   border: 3px solid #000;
@@ -2032,7 +1858,7 @@ body {
 
 /* riferimento orizzontale */
 :root {
-  --base-left: 130px;
+  --base-left: 110px;
 }
 
 /* ================= BOX BASE ================= */
@@ -2042,138 +1868,143 @@ body {
   border: 2px dashed rgba(0,0,0,0.4);
 }
 
-/* ================= COPPA – GRANDE ================= */
-.grande-wrapper .box-coppa {
-  width: 320px;
-  height: 210px;
-  left: var(--base-left);
-  top: 300px;
-  overflow: hidden;
-  z-index: 3;
-}
-
-.grande-wrapper .box-coppa img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-/* ================= PANNA – GRANDE ================= */
-.grande-wrapper .box-panna {
-  width: 190px;
+/* ================= COPPA ================= */
+.box-coppa {
+  width: 280px;
   height: 190px;
-  left: calc(var(--base-left) + 160px - 95px);
-  top: 30px;
-  z-index: 3;
-  transform: scale(0.7);
-  transform-origin: center;
+  left: var(--base-left);
+  top: 230px;
+  overflow: hidden;
+
+  position: absolute; /* ⬅️ se non c’è già */
+  z-index: 3;         /* ⬅️ QUESTA È LA CHIAVE */
 }
 
-.grande-wrapper .box-panna img {
+.box-coppa img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* ================= PALLINE – GRANDE ================= */
-.grande-wrapper .box-palline {
+/* ================= PANNA ================= */
+.box-panna {
+  width: 170px;
+  height: 170px;
+  left: calc(var(--base-left) + 140px - 85px);
+  top: 60px;
+  z-index: 3;
+}
+.box-panna {
+  transform: scale(0.85);      /* ⬅️ rimpicciolisce la panna */
+  transform-origin: center;    /* resta centrata */
+}
+
+.box-panna img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ================= PALLINE ================= */
+.box-palline {
   position: absolute;
-  width: 340px;
-  height: 260px;
-  left: calc(var(--base-left) - 10px);
-  top: 120px;
+  width: 280px;
+  height: 200px;
+  left: var(--base-left);
+  top: 90px;
   z-index: 1;
 }
 
-.grande-wrapper .box-pallina {
-  width: 130px;
-  height: 130px;
+.box-pallina {
+  width: 135px;
+  height: 135px;
   border-radius: 50%;
   position: absolute;
-  transform: scaleY(0.85);
+  transform: scaleY(0.9); /* ⬅️ schiaccia leggermente */
 }
 
-.grande-wrapper .box-pallina img {
+
+.box-pallina img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
 }
 
-/* disposizione 4 palline */
-.grande-wrapper .pallina-top {
+/* sopra */
+.pallina-top {
   left: 50%;
-  top: 10px;
-  transform: translateX(-50%) scaleY(0.85);
-}
-
-.grande-wrapper .pallina-left {
-  left: 50%;
-  top: 90px;
-  transform: translateX(-120%) scaleY(0.9);
-}
-
-.grande-wrapper .pallina-bottom {
-  left: 50%;
-  top: 90px;
+  top: 0;
   transform: translateX(-50%) scaleY(0.9);
 }
 
-.grande-wrapper .pallina-right {
-  left: 50%;
-  top: 90px;
-  transform: translateX(20%) scaleY(0.9);
+/* sotto */
+.pallina-left {
+  left: 20px;
+  bottom: -20px;
 }
 
-/* ================= EXTRA VERTICALI – GRANDE ================= */
-.grande-wrapper .box-extra {
+.pallina-right {
+  right: 20px;
+  bottom: -20px;
+}
+
+/* ================= EXTRA VERTICALI ================= */
+.box-extra {
   position: absolute;
-  width: 100px;
-  height: 140px;
-  top: 380px;
+  width: 90px;
+  height: 130px;
+  top: 350px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
 
-.grande-wrapper .box-extra img {
+.box-extra img {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
 }
 
-/* posizioni */
-.grande-wrapper .granella-1 { left: calc(var(--base-left) + 380px); }
-.grande-wrapper .granella-2 { left: calc(var(--base-left) + 490px); }
+/* ================= FORMATO MEDIA – SPAZIATURA BOX ================= */
 
-.grande-wrapper .topping-1  { left: calc(var(--base-left) + 610px); }
-.grande-wrapper .topping-2  { left: calc(var(--base-left) + 720px); }
+/* GRANELLA */
+.granella-1 { left: calc(var(--base-left) + 340px); }
+.granella-2 { left: calc(var(--base-left) + 440px); }
 
-.grande-wrapper .frutta-1   { left: calc(var(--base-left) + 840px); }
-.grande-wrapper .frutta-2   { left: calc(var(--base-left) + 950px); }
+/* TOPPING */
+.topping-1  { left: calc(var(--base-left) + 560px); }
+.topping-2  { left: calc(var(--base-left) + 660px); }
 
-/* ================= EXTRA STAGE – GRANDE ================= */
-.grande-wrapper #extra-stage {
+/* FRUTTA */
+.box-frutta { left: calc(var(--base-left) + 780px); }
+
+/* ================= EXTRA STAGE (IDENTICO A PICCOLA) ================= */
+#extra-stage {
   position: absolute;
-  top: 20px;
-  left: calc(var(--base-left) + 420px);
-  width: 320px;
-  height: 80px;
+  top: 10px;
+  left: calc(var(--base-left) + 450px);
+  width: 280px;
+  height: 70px;
+
   border: 2px dashed rgba(0,0,0,0.45);
-  border-radius: 14px;
+  border-radius: 12px;
   background: transparent;
+
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: 10px;
 }
 
-.grande-wrapper .extra-slot {
+/* singolo slot */
+#extra-stage .extra-slot {
   flex: 1;
   height: 100%;
   border: 2px dashed rgba(0,0,0,0.35);
   border-radius: 10px;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2181,20 +2012,175 @@ body {
   padding: 6px;
 }
 
-.grande-wrapper .extra-img {
+#extra-stage .extra-img {
   flex: 1;
   width: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.grande-wrapper .extra-text {
-  font-size: 12px;
-  font-weight: 600;
+#extra-stage .extra-text {
+  width: 100%;
   text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 4px;
+  white-space: nowrap;
+}
+/* ================= RIDUZIONE BLOCCO EXTRA – FORMATO MEDIA ================= */
+
+.media-extras {
+  transform: scale(0.85);           /* 🔽 rimpicciolisce tutto */
+  transform-origin: top left;      /* ancora in alto a sinistra */
+}
+/* ================= RIDUZIONE BLOCCO COPPA – FORMATO MEDIA ================= */
+
+.media-coppa {
+  transform: scale(0.85);
+  transform-origin: top left;
+}
+/* Abbassa coppa + palline nel formato MEDIA */
+.media-coppa .box-palline {
+  top: 140px; /* prima era 90px */
 }
 
-/* ================= SCALE GRANDE ================= */
-.grande-wrapper {
-  position: relative;
-  transform: scale(0.8) translateY(40px);
-  transform-origin: top left;
+.media-coppa .box-coppa {
+  top: 300px; /* prima era 230px */
+}
+/* ================= EXTRA TOP – FORMATO MEDIA ================= */
+.media-extras-top {
+  transform: scale(1.1);          /* ⬅️ ingrandisce leggermente */
+  transform-origin: top left;     /* ancora corretta */
+}
+/* ================= FRECCE ================= */
+.arrow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.arrow svg {
+  overflow: visible;
+}
+
+.arrow path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+/* ================= TESTO FRECCE ================= */
+.arrow-text {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #000;
+}
+
+/* gusto sinistra */
+.arrow-text.left {
+  left: -35px;
+  top: 40px;
+}
+
+/* gusto destra */
+.arrow-text.right {
+  right: 36px;
+  top: 20px;
+}
+
+/* gusto in alto – SOLO QUESTA */
+.arrow-text.top.gusto-top-text {
+  left: -30%;
+  top: -35px;
+  transform: translateX(-50%);
+}
+
+/* frecce sotto (granella, frutta ecc) */
+.arrow-text.bottom {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 55px;
+}
+
+
+/* ================= TESTO FRECCIA ================= */
+.arrow {
+  position: absolute;
+}
+
+.arrow-text.right {
+  left: auto;        /* disattiva la sinistra */
+  right: -35px;      /* agganciato alla coda (specchio) */
+  top: -20px;         /* stessa altezza della sinistra */
+}
+.arrow-text.bottom {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 55px;        /* sotto la curva */
+}
+/* stile comune, NON sposta */
+.granella-text {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* spostamenti separati */
+.granella-1-text {
+  margin-left: -40px;
+}
+
+.granella-2-text {
+  margin-left: 40px;
+}
+.frutta-text {
+  margin-left: 30px; /* oppure il valore che avevi trovato perfetto */
+}
+.arrow {
+  position: absolute;
+}
+
+.arrow-text.top {
+  left: 50%;
+  transform: translateX(-50%);
+  top: -50px;
+}
+.topping-text {
+  top: -75px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* Topping sinistro */
+.topping-1-text {
+  margin-left: -25px;   /* regola solo questo */
+}
+
+/* Topping destro */
+.topping-2-text {
+  margin-left: 30px;    /* regola solo questo */
+}
+/* ================= EXTRA STAGE ================= */
+#extra-stage {
+  position: absolute;
+
+  /* ⬆️ più in alto */
+  top: 10px;
+
+  /* ⬅️ leggermente più vicino alla coppa */
+  left: calc(var(--base-left) + 330px);
+
+  /* 📐 più piccolo */
+  width: 280px;
+  height: 70px;
+
+  border: 2px dashed rgba(0,0,0,0.45);
+  border-radius: 12px;
+
+  background: transparent;
 }

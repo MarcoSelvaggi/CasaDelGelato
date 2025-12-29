@@ -78,6 +78,34 @@ function aggiornaPallineRiepilogo() {
   }
 }
 
+function aggiornaPallineRiepilogoMedia() {
+  if (coppaSelezionata !== "MEDIA") return;
+
+  const gusti = scelti.gusti || [];
+
+  const map = [
+    { img: "gusto-top-img",   txt: "gusto-top-text" },
+    { img: "gusto-left-img",  txt: "gusto-left-text" },
+    { img: "gusto-right-img", txt: "gusto-right-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+
+    if (!img || !txt) return;
+
+    if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
+      img.src = MAP_GUSTI_IMG[gusti[i]];
+      img.style.display = "block";
+      txt.textContent = gusti[i];
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+    }
+  });
+}
+
 function aggiornaGranellaRiepilogo() {
   const img   = document.getElementById("granella-img");
   const txt   = document.getElementById("granella-text");
@@ -1074,6 +1102,153 @@ function formatGustiQuantities() {
         .join(", ");
 }
 
+function renderCoppaMedia(stage) {
+  stage.innerHTML = `
+
+<div class="media-coppa">
+
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png">
+  </div>
+
+  <!-- PALLINE -->
+  <div class="box-palline">
+
+    <!-- PALLINA IN ALTO -->
+    <div class="box box-pallina pallina-top">
+      <div class="arrow"
+           style="left:-60px; top:55%; transform:translateY(-50%);">
+        <div class="arrow-text top gusto-top-text" id="gusto-top-text"></div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: scaleY(-1);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-top-img">
+    </div>
+
+    <!-- PALLINA SINISTRA -->
+    <div class="box box-pallina pallina-left">
+      <div class="arrow"
+           style="left:-38px; top:40%; transform:translate(-30px, -50%);">
+        <svg width="50" height="30" viewBox="0 0 50 30">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+        <div class="arrow-text left" id="gusto-left-text"></div>
+      </div>
+      <img id="gusto-left-img">
+    </div>
+
+    <!-- PALLINA DESTRA -->
+    <div class="box box-pallina pallina-right">
+      <div class="arrow"
+           style="right:-62px; top:30%; transform:translateY(-50%);">
+        <div class="arrow-text right" id="gusto-right-text"></div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(180deg) translateY(-14px);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-right-img">
+    </div>
+
+  </div>
+
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-media.png">
+  </div>
+
+</div>
+
+<div class="media-extras">
+
+  <!-- GRANELLA 1 -->
+  <div class="box box-extra granella-1">
+    <img id="granella-1-img">
+    <div class="arrow" id="granella-1-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text" id="granella-1-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg) scaleY(-1);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- GRANELLA 2 -->
+  <div class="box box-extra granella-2">
+    <img id="granella-2-img">
+    <div class="arrow" id="granella-2-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text" id="granella-2-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TOPPING 1 -->
+  <div class="box box-extra topping-1">
+    <img id="topping-1-img">
+    <div class="arrow" id="topping-1-arrow"
+         style="top:-58px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text top topping-text" id="topping-1-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TOPPING 2 -->
+  <div class="box box-extra topping-2">
+    <img id="topping-2-img">
+    <div class="arrow" id="topping-2-arrow"
+         style="top:-58px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text top topping-text" id="topping-2-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(90deg) scaleY(-1);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- FRUTTA -->
+  <div class="box box-extra box-frutta">
+    <img id="frutta-1-img">
+    <div class="arrow" id="frutta-1-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom frutta-text" id="frutta-1-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXTRA STAGE -->
+<div id="extra-stage">
+  <div class="extra-slot"><div class="extra-text"></div></div>
+  <div class="extra-slot"><div class="extra-text"></div></div>
+  <div class="extra-slot"><div class="extra-text"></div></div>
+</div>
+
+  `;
+}
+
 async function mostraRiepilogo(){
 
   if (coppaSalvata) {
@@ -1364,7 +1539,11 @@ if (stage) {
 </div>
   `;
 }
+else if (coppaSelezionata === "MEDIA") {
+  renderCoppaMedia(stage);
+}
 aggiornaPallineRiepilogo();
+aggiornaPallineRiepilogoMedia();
 aggiornaGranellaRiepilogo();
 aggiornaToppingRiepilogo();
 aggiornaIngredientiRiepilogo();
