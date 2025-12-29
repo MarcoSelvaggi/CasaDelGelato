@@ -106,6 +106,35 @@ function aggiornaPallineRiepilogoMedia() {
   });
 }
 
+function aggiornaPallineRiepilogoGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  const gusti = scelti.gusti || [];
+
+  const map = [
+    { img: "gusto-top-img",    txt: "gusto-top-text" },
+    { img: "gusto-left-img",   txt: "gusto-left-text" },
+    { img: "gusto-right-img",  txt: "gusto-right-text" },
+    { img: "gusto-bottom-img", txt: "gusto-bottom-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+
+    if (!img || !txt) return;
+
+    if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
+      img.src = MAP_GUSTI_IMG[gusti[i]];
+      img.style.display = "block";
+      txt.textContent = gusti[i];
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+    }
+  });
+}
+
 function aggiornaGranellaRiepilogo() {
   const img   = document.getElementById("granella-img");
   const txt   = document.getElementById("granella-text");
@@ -254,6 +283,33 @@ function aggiornaIngredientiRiepilogoMedia() {
     txt.textContent = "";
     arrow.style.display = "none";
   }
+}
+
+function aggiornaIngredientiRiepilogoGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  const ingredienti = scelti.ingredienti || [];
+
+  const map = [
+    { img: "frutta-1-img", txt: "frutta-1-text" },
+    { img: "frutta-2-img", txt: "frutta-2-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+
+    if (!img || !txt) return;
+
+    if (ingredienti[i] && MAP_INGREDIENTI_IMG[ingredienti[i]]) {
+      img.src = MAP_INGREDIENTI_IMG[ingredienti[i]];
+      img.style.display = "block";
+      txt.textContent = ingredienti[i];
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+    }
+  });
 }
 
 function aggiornaExtraRiepilogo() {
@@ -1189,6 +1245,155 @@ function formatGustiQuantities() {
         .join(", ");
 }
 
+function renderCoppaGrande(stage) {
+  stage.innerHTML = `
+
+<div class="grande-wrapper"> 
+
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png">
+  </div>
+
+  <!-- PALLINE -->
+  <div class="box-palline">
+    <div class="box box-pallina pallina-top">
+      <div class="arrow" style="left:-60px; top:55%; transform:translateY(-50%);">
+        <div class="arrow-text top gusto-text gusto-top-text">Gusto</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: scaleY(-1);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img src="img/pallina-vaniglia.png">
+    </div>
+
+    <div class="box box-pallina pallina-left">
+      <div class="arrow" style="left:-38px; top:40%; transform:translate(-30px, -50%);">
+        <svg width="50" height="30" viewBox="0 0 50 30">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+        <div class="arrow-text left gusto-text gusto-left-text">Gusto</div>
+      </div>
+      <img src="img/pallina-fragola.png">
+    </div>
+
+    <div class="box box-pallina pallina-right">
+      <div class="arrow" style="right:-62px; top:30%; transform:translateY(-50%);">
+        <div class="arrow-text right gusto-text gusto-right-text">Gusto</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(180deg) translateY(-14px);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img src="img/pallina-cioccolato.png">
+    </div>
+
+    <div class="box box-pallina pallina-bottom">
+      <div class="arrow" style="top:115%; left:50%; transform:translateX(-50%);">
+        <div class="arrow-text bottom gusto-text gusto-bottom-text">Gusto</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(-90deg);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img src="img/pallina-pistacchio.png">
+    </div>
+  </div>
+
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-grande.png">
+  </div>
+
+  <!-- EXTRAS -->
+  <div class="box box-extra granella-1">
+    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text granella-1-text">Granella</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(-90deg) scaleY(-1);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+    <img src="img/granella-nocciola.png">
+  </div>
+
+  <div class="box box-extra granella-2">
+    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text granella-2-text">Granella</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(-90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+    <img src="img/granella-nocciola.png">
+  </div>
+
+  <div class="box box-extra topping-1">
+    <div class="arrow" style="top:-58px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text top topping-text topping-1-text">Topping</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+    <img src="img/topping-bosco.png">
+  </div>
+
+  <div class="box box-extra topping-2">
+    <div class="arrow" style="top:-58px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text top topping-text topping-2-text">Topping</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(90deg) scaleY(-1);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+    <img src="img/topping-bosco.png">
+  </div>
+
+  <div class="box box-extra frutta-1">
+    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom frutta-text frutta-1-text">Frutta</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg) scaleY(-1);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+    <img src="img/fragola.png">
+  </div>
+
+  <div class="box box-extra frutta-2">
+    <div class="arrow" style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom frutta-text frutta-2-text">Frutta</div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+    <img src="img/fragola.png">
+  </div>
+
+  <!-- EXTRA STAGE -->
+  <div id="extra-stage">
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text">Extra</div></div>
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text">Extra</div></div>
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text">Extra</div></div>
+  </div>
+
+</div>
+  `;
+}
+
 function renderCoppaMedia(stage) {
   stage.innerHTML = `
 
@@ -1495,7 +1700,7 @@ const stage = document.getElementById("coppa-stage");
 if (!stage) return;
 
 // reset classi
-document.body.classList.remove("coppa-media");
+document.body.classList.remove("coppa-media", "coppa-grande");
 
 // QUI decidi il formato
 if (coppaSelezionata === "PICCOLA") {
@@ -1638,14 +1843,20 @@ else if (coppaSelezionata === "MEDIA") {
   document.body.classList.add("coppa-media");
   renderCoppaMedia(stage);
 }
+else if (coppaSelezionata === "GRANDE") {
+  document.body.classList.add("coppa-grande");
+  renderCoppaGrande(stage);
+}
 aggiornaPallineRiepilogo();
 aggiornaPallineRiepilogoMedia();
+aggiornaPallineRiepilogoGrande();
 aggiornaGranellaRiepilogo();
 aggiornaGranellaRiepilogoMedia();
 aggiornaToppingRiepilogo();
 aggiornaToppingRiepilogoMedia();
 aggiornaIngredientiRiepilogo();
 aggiornaIngredientiRiepilogoMedia();
+aggiornaIngredientiRiepilogoGrande();
 aggiornaExtraRiepilogo();
 
 // === QR CODE ===

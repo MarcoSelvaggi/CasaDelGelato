@@ -2154,3 +2154,359 @@ body {
 
   background: transparent;
 }
+
+
+
+
+/* ================= FORMATO GRANDE ================= */
+body {
+  margin: 0;
+  background: #f2f2f2;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* ================= STAGE ================= */
+.coppa-grande #coppa-stage {
+  position: relative;
+  width: 980px;
+  height: 600px;
+  margin: 40px auto;
+  background: #fff;
+  border: 3px solid #000;
+}
+
+/* riferimento orizzontale */
+:root {
+  --base-left: 130px;
+}
+
+/* ================= BOX BASE ================= */
+.coppa-grande .box {
+  position: absolute;
+  box-sizing: border-box;
+  border: 2px dashed rgba(0,0,0,0.4);
+}
+
+/* ================= COPPA ================= */
+.coppa-grande .box-coppa {
+  width: 320px;
+  height: 210px;
+  left: var(--base-left);
+  top: 300px;
+  overflow: hidden;
+  z-index: 3;
+}
+
+.coppa-grande .box-coppa img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ================= PANNA ================= */
+.coppa-grande .box-panna {
+  width: 190px;
+  height: 190px;
+  left: calc(var(--base-left) + 160px - 95px);
+  top: 30px;
+  z-index: 3;
+
+  transform: scale(0.7);        /* ⬅️ rimpicciolisce */
+  transform-origin: center;      /* ⬅️ resta centrata */
+}
+
+.coppa-grande .box-panna img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ================= PALLINE ================= */
+.coppa-grande .box-palline {
+  position: absolute;
+  width: 340px;
+  height: 260px;
+  left: calc(var(--base-left) - 10px);
+  top: 120px;
+  z-index: 1;
+}
+
+.coppa-grande .box-pallina {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  position: absolute;
+  transform: scaleY(0.85);
+}
+
+.coppa-grande .box-pallina img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* disposizione 4 palline */
+/* pallina in alto */
+.coppa-grande .pallina-top {
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%) scaleY(0.85);
+}
+
+/* palline inferiori – ALLINEATE ALLA COPPA */
+.coppa-grande .pallina-left {
+  left: 50%;
+  top: 90px;
+  transform: translateX(-120%) scaleY(0.9);
+}
+
+.coppa-grande .pallina-bottom {
+  left: 50%;
+  top: 90px;
+  transform: translateX(-50%) scaleY(0.9);
+}
+
+.coppa-grande .pallina-right {
+  left: 50%;
+  top: 90px;
+  transform: translateX(20%) scaleY(0.9);
+}
+
+
+/* ================= EXTRA VERTICALI ================= */
+.coppa-grande .box-extra {
+  position: absolute;
+  width: 100px;
+  height: 140px;
+  top: 380px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.coppa-grande .box-extra img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* GRANDE – posizioni */
+.coppa-grande .granella-1 { left: calc(var(--base-left) + 380px); }
+.coppa-grande .granella-2 { left: calc(var(--base-left) + 490px); }
+
+.coppa-grande .topping-1  { left: calc(var(--base-left) + 610px); }
+.coppa-grande .topping-2  { left: calc(var(--base-left) + 720px); }
+
+.coppa-grande .frutta-1   { left: calc(var(--base-left) + 840px); }
+.coppa-grande .frutta-2   { left: calc(var(--base-left) + 950px); }
+
+/* ================= EXTRA STAGE ================= */
+.coppa-grande #extra-stage {
+  position: absolute;
+  top: 20px;
+  left: calc(var(--base-left) + 420px);
+  width: 320px;
+  height: 80px;
+
+  border: 2px dashed rgba(0,0,0,0.45);
+  border-radius: 14px;
+  background: transparent;
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.coppa-grande .extra-slot {
+  flex: 1;
+  height: 100%;
+  border: 2px dashed rgba(0,0,0,0.35);
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px;
+}
+
+.coppa-grande .extra-img {
+  flex: 1;
+  width: 100%;
+}
+
+.coppa-grande .extra-text {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+/* ================= FORMATO GRANDE – SCALE GLOBALE ================= */
+.coppa-grande .grande-wrapper {
+  position: relative;
+
+  transform: scale(0.8) translateY(40px);          /* ⬅️ rimpicciolisce tutto */
+  transform-origin: top left;      /* ancora in alto a sinistra */
+}
+/* ================= FRECCE ================= */
+.coppa-grande .arrow {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.coppa-grande .arrow svg {
+  overflow: visible;
+}
+
+.coppa-grande .arrow path {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+/* ================= TESTO FRECCE ================= */
+.coppa-grande .arrow-text {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #000;
+}
+
+/* gusto sinistra */
+.coppa-grande .arrow-text.left {
+  left: -35px;
+  top: 40px;
+}
+
+/* gusto destra */
+.coppa-grande .arrow-text.right {
+  right: 36px;
+  top: 20px;
+}
+
+/* gusto in alto */
+.coppa-grande .arrow-text.top.gusto-top-text {
+  left: -30%;
+  top: -35px;
+  transform: translateX(-50%);
+}
+
+/* frecce sotto (granella, frutta ecc) */
+.coppa-grande .arrow-text.bottom {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 55px;
+}
+/* ================= REGOLAZIONE TESTO GUSTI (PALLINE) ================= */
+
+/* stile comune (NON sposta) */
+.coppa-grande .gusto-text {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ================= GUSTI ================= */
+
+/* sinistra */
+.coppa-grande .gusto-left-text {
+  margin-left: -10px;
+  margin-top: 4px;   /* ⬇️ abbassa leggermente */
+}
+
+/* destra */
+.coppa-grande .gusto-right-text {
+  margin-left: 10px;
+  margin-top: 0px;   /* ⬇️ abbassa leggermente */
+}
+
+/* sopra */
+.coppa-grande .gusto-top-text {
+  margin-left: -5px;
+  margin-top: 2px;   /* ⬇️ pochissimo */
+}
+
+/* sotto */
+.coppa-grande .gusto-bottom-text {
+  margin-left: 25px; /* ➜ verso destra */
+  margin-top: 6px;   /* ⬇️ più distante */
+}
+
+/* ================= TESTO FRECCIA ================= */
+.coppa-grande .arrow {
+  position: absolute;
+}
+
+.coppa-grande .arrow-text.right {
+  left: auto;
+  right: -35px;
+  top: -20px;
+}
+
+.coppa-grande .arrow-text.bottom {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 55px;
+}
+
+/* ================= GRANELLA ================= */
+.coppa-grande .granella-text {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.coppa-grande .granella-1-text {
+  margin-left: -40px;
+}
+
+.coppa-grande .granella-2-text {
+  margin-left: 40px;
+}
+
+/* ================= FRUTTA ================= */
+/* ===== FRUTTA (IDENTICO A TOPPING) ===== */
+
+/* base frutta – SOLO stile */
+.coppa-grande .frutta-text {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* frutta sinistra */
+.coppa-grande .frutta-1-text {
+  margin-left: -25px;
+}
+
+/* frutta destra */
+.coppa-grande .frutta-2-text {
+  margin-left: 30px;
+}
+
+/* ================= TOPPING ================= */
+.coppa-grande .arrow-text.top {
+  left: 50%;
+  transform: translateX(-50%);
+  top: -50px;
+}
+
+.coppa-grande .topping-text {
+  top: -75px;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.coppa-grande .topping-1-text {
+  margin-left: -25px;
+}
+
+.coppa-grande .topping-2-text {
+  margin-left: 30px;
+}
