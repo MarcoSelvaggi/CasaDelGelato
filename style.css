@@ -2510,3 +2510,6 @@ body {
 .coppa-grande .topping-2-text {
   margin-left: 30px;
 }
+.coppa-grande {
+  isolation: isolate;
+}
