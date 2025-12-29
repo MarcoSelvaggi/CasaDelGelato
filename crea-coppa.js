@@ -1405,11 +1405,14 @@ area.innerHTML = `
 </div>
 `;
 const stage = document.getElementById("coppa-stage");
+if (!stage) return;
 
 // reset classi
-stage.className = "";
+document.body.classList.remove("coppa-media");
 
-if (stage) {
+// QUI decidi il formato
+if (coppaSelezionata === "PICCOLA") {
+
   stage.innerHTML = `
 
   <!-- PANNA -->
@@ -1542,8 +1545,10 @@ if (stage) {
 </div>
   `;
 }
+
 else if (coppaSelezionata === "MEDIA") {
-  stage.classList.add("coppa-media");
+
+  document.body.classList.add("coppa-media");
   renderCoppaMedia(stage);
 }
 aggiornaPallineRiepilogo();
