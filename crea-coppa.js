@@ -40,6 +40,38 @@ const MAP_INGREDIENTI_IMG = {
   "FRAGOLE": "img/fragola.png"
 };
 
+function aggiornaCoppaGrafica() {
+  // gusti (dipende dal formato)
+  aggiornaGustiRiepilogoPerFormato();
+
+  // granelle
+  aggiornaExtraRiepilogoGenerico({
+    tipo: "granella",
+    selezioni: scelti.granelle,
+    mapImg: MAP_GRANELLE_IMG,
+    max: max.granelle
+  });
+
+  // topping
+  aggiornaExtraRiepilogoGenerico({
+    tipo: "topping",
+    selezioni: scelti.topping,
+    mapImg: MAP_TOPPING_IMG,
+    max: max.topping
+  });
+
+  // ingredienti / frutta
+  aggiornaExtraRiepilogoGenerico({
+    tipo: "frutta",
+    selezioni: scelti.ingredienti,
+    mapImg: MAP_INGREDIENTI_IMG,
+    max: max.ingredienti
+  });
+
+  // extra
+  aggiornaExtraRiepilogo();
+}
+
 function aggiornaPallineRiepilogo() {
   const gusti = scelti.gusti || [];
 
@@ -577,6 +609,7 @@ hideStepTitle();
 
     renderStepGusti();
     updateRiepilogo();
+    aggiornaCoppaGrafica();
 }
 
 
@@ -749,6 +782,7 @@ function changeGustoQty(nome, delta) {
 
     // Aggiorna mini riepilogo
     updateRiepilogo();
+    aggiornaCoppaGrafica();
 
     // 👉 Se raggiungo il massimo → apri mini riepilogo
     if (totaleDopo === maxTot) {
@@ -923,6 +957,7 @@ hideStepTitle();
     render();
     updateRiepilogo();
     stabilizeMiniRiepilogo();
+    aggiornaCoppaGrafica();
 
     const currentCount = scelti[step].length;
     const maxCount = max[step];
