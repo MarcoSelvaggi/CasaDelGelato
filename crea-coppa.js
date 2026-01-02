@@ -133,31 +133,31 @@ function aggiornaPallineRiepilogoGrande() {
 
   const gusti = scelti.gusti || [];
 
+  // 🔥 ORDINE: SINISTRA → CENTRO (BOTTOM) → DESTRA → ALTO
   const map = [
-    { img: "gusto-top-img",    txt: "gusto-top-text" },
     { img: "gusto-left-img",   txt: "gusto-left-text" },
+    { img: "gusto-bottom-img", txt: "gusto-bottom-text" },
     { img: "gusto-right-img",  txt: "gusto-right-text" },
-    { img: "gusto-bottom-img", txt: "gusto-bottom-text" }
+    { img: "gusto-top-img",    txt: "gusto-top-text" }
   ];
 
   map.forEach((slot, i) => {
     const img = document.getElementById(slot.img);
     const txt = document.getElementById(slot.txt);
-    const arrow = txt?.closest(".arrow");
+    if (!img || !txt) return;
 
-    if (!img || !txt || !arrow) return;
+    const box = img.closest(".box-pallina");
+    const arrow = box ? box.querySelector(".arrow") : null;
 
-    const nome = gusti[i];
-
-    if (nome && MAP_GUSTI_IMG[nome]) {
-      img.src = MAP_GUSTI_IMG[nome];
+    if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
+      img.src = MAP_GUSTI_IMG[gusti[i]];
       img.style.display = "block";
-      txt.textContent = nome;
-      arrow.style.display = "block";   // ✅ mostra freccia
+      txt.textContent = gusti[i];
+      if (arrow) arrow.style.display = "block";
     } else {
       img.style.display = "none";
       txt.textContent = "";
-      arrow.style.display = "none";    // ❌ nasconde freccia
+      if (arrow) arrow.style.display = "none";
     }
   });
 }
