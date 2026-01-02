@@ -2559,24 +2559,33 @@ body {
 }
 /* =========================
    GRANDE – 2 GUSTI
-   sinistra + destra più staccate
+   palline sinistra + destra centrate e più vicine
 ========================= */
 
+.grande-wrapper.double-gusto .box-palline {
+  position: relative;
+}
+
+/* pallina sinistra */
 .grande-wrapper.double-gusto .pallina-left {
-  left: 44%;
+  left: 50%;
+  transform: translateX(-60px); /* ⬅️ avvicina al centro */
 }
 
+/* pallina destra */
 .grande-wrapper.double-gusto .pallina-right {
-  left: 56%;
+  left: 50%;
+  right: auto;
+  transform: translateX(60px); /* ➡️ avvicina al centro */
 }
 
-/* nasconde sicurezza */
+/* nascondiamo le altre palline per sicurezza */
 .grande-wrapper.double-gusto .pallina-bottom,
 .grande-wrapper.double-gusto .pallina-top {
   display: none;
 }
 
-/* abbassa un po' la panna */
+/* abbassiamo leggermente la panna */
 .grande-wrapper.double-gusto .box-panna {
   transform: translateY(18px);
 }
