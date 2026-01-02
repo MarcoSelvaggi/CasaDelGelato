@@ -83,32 +83,29 @@ function aggiornaPallineRiepilogoMedia() {
 
   const gusti = scelti.gusti || [];
 
-  // ordine: sinistra → destra → alto
   const map = [
-    { img: "gusto-left-img",  txt: "gusto-left-text",  arrow: "gusto-left-arrow" },
-    { img: "gusto-right-img", txt: "gusto-right-text", arrow: "gusto-right-arrow" },
-    { img: "gusto-top-img",   txt: "gusto-top-text",   arrow: "gusto-top-arrow" }
+    { img: "gusto-top-img",   txt: "gusto-top-text" },
+    { img: "gusto-left-img",  txt: "gusto-left-text" },
+    { img: "gusto-right-img", txt: "gusto-right-text" }
   ];
 
   map.forEach((slot, i) => {
-    const img   = document.getElementById(slot.img);
-    const txt   = document.getElementById(slot.txt);
-    const arrow = document.getElementById(slot.arrow);
-
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
     if (!img || !txt) return;
 
-    // 🔴 DEFAULT: tutto spento
-    img.style.display = "none";
-    txt.textContent = "";
-    if (arrow) arrow.style.display = "none";
+    const box = img.closest(".box-pallina");
+    const arrow = box ? box.querySelector(".arrow") : null;
 
-    // 🟢 Accendo SOLO se esiste il gusto
-    const nome = gusti[i];
-    if (nome && MAP_GUSTI_IMG[nome]) {
-      img.src = MAP_GUSTI_IMG[nome];
+    if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
+      img.src = MAP_GUSTI_IMG[gusti[i]];
       img.style.display = "block";
-      txt.textContent = nome;
+      txt.textContent = gusti[i];
       if (arrow) arrow.style.display = "block";
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+      if (arrow) arrow.style.display = "none";
     }
   });
 }
