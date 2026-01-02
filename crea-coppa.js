@@ -36,7 +36,19 @@ const MAP_GUSTI_IMG = {
   "LIMONE": "img/limone.png",
   "MELONE": "img/melone.png",
   "KIWI": "img/kiwi.png",
-  "BANANA": "img/banana.png"
+  "BANANA": "img/banana.png",
+  "COCCO": "img/cocco.png",
+  "LAMPONE": "img/lampone.png",
+  "MANGO": "img/mango.png",
+  "ANANAS": "img/ananas.png",
+  "VARIEGATO AMARENA": "img/amarena.png",
+  "STRACCIATELLA": "img/stracciatella.png",
+  "YOGURT": "img/yogurt.png",
+  "YOGURT FRAGOLINE": "img/yogurtfragoline.png",
+  "CREME CARAMEL": "img/caramel.png",
+  "BACIO": "img/bacio.png",
+  "CAFFÈ": "img/caffe.png",
+  "TIRAMISÙ": "img/tiramisu.png"
 };
 const MAP_GRANELLE_IMG = {
   "NOCCIOLA": "img/granella-nocciola.png"
