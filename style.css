@@ -1568,11 +1568,6 @@ body {
   border-radius: 50%;
   position: absolute;
 }
-/* ✅ REGOLA UNICA PALLINE (PICCOLA) */
-.box-pallina{
-  overflow: hidden;
-  border-radius: 50%;
-}
 
 .box-pallina img{
   width: 100%;
