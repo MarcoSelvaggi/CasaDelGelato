@@ -1633,7 +1633,11 @@ body {
   object-fit: contain;
   pointer-events: none;
 }
-
+/* ⬇️ FORZA l'immagine della coppa dietro alle palline */
+.box-coppa img {
+  position: relative;   /* ← fondamentale */
+  z-index: 1;
+}
 /* Palline */
 .box-pallina img {
   object-fit: cover;
