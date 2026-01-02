@@ -2174,6 +2174,13 @@ body {
 .media-coppa.single-gusto .box-panna {
   transform: translateY(14px);
 }
+/* =========================
+   MEDIA – 2 GUSTI
+   panna più bassa per coprire un po' le palline
+========================= */
+.coppa-media.double-gusto .box-panna {
+  transform: translateY(8px);
+}
 
 
 
