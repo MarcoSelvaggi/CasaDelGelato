@@ -145,63 +145,63 @@ function aggiornaPallineRiepilogo() {
 function aggiornaExtraCompattiMedia() {
   if (coppaSelezionata !== "MEDIA") return;
 
+  // SLOT VISIVI DA SINISTRA A DESTRA
   const slots = [
     {
       img: document.getElementById("granella-1-img"),
       txt: document.getElementById("granella-1-text"),
-      arrow: document.getElementById("granella-1-arrow")
+      arrow: document.getElementById("granella-1-arrow"),
     },
     {
       img: document.getElementById("topping-1-img"),
       txt: document.getElementById("topping-1-text"),
-      arrow: document.getElementById("topping-1-arrow")
+      arrow: document.getElementById("topping-1-arrow"),
     },
     {
       img: document.getElementById("frutta-1-img"),
       txt: document.getElementById("frutta-1-text"),
-      arrow: document.getElementById("frutta-1-arrow")
+      arrow: document.getElementById("frutta-1-arrow"),
     }
   ];
 
-  // reset totale
+  // 🔄 RESET TOTALE (IMMAGINI + FRECCE)
   slots.forEach(s => {
-    if (s.img) s.img.style.display = "none";
-    if (s.txt) s.txt.textContent = "";
-    if (s.arrow) s.arrow.style.display = "none";
+    if (!s.img || !s.txt || !s.arrow) return;
+    s.img.style.display = "none";
+    s.txt.textContent = "";
+    s.arrow.style.display = "none";
   });
 
-  const compatti = [];
+  // 📦 COSTRUISCO LISTA COMPATTA IN ORDINE LOGICO
+  const items = [];
 
-  if (scelti.granelle?.[0] && MAP_GRANELLE_IMG[scelti.granelle[0]]) {
-    compatti.push({
-      nome: scelti.granelle[0],
-      img: MAP_GRANELLE_IMG[scelti.granelle[0]]
-    });
-  }
+  scelti.granelle.forEach(n => {
+    if (MAP_GRANELLE_IMG[n]) {
+      items.push({ img: MAP_GRANELLE_IMG[n], txt: n });
+    }
+  });
 
-  if (scelti.topping?.[0] && MAP_TOPPING_IMG[scelti.topping[0]]) {
-    compatti.push({
-      nome: scelti.topping[0],
-      img: MAP_TOPPING_IMG[scelti.topping[0]]
-    });
-  }
+  scelti.topping.forEach(n => {
+    if (MAP_TOPPING_IMG[n]) {
+      items.push({ img: MAP_TOPPING_IMG[n], txt: n });
+    }
+  });
 
-  if (scelti.ingredienti?.[0] && MAP_INGREDIENTI_IMG[scelti.ingredienti[0]]) {
-    compatti.push({
-      nome: scelti.ingredienti[0],
-      img: MAP_INGREDIENTI_IMG[scelti.ingredienti[0]]
-    });
-  }
+  scelti.ingredienti.forEach(n => {
+    if (MAP_INGREDIENTI_IMG[n]) {
+      items.push({ img: MAP_INGREDIENTI_IMG[n], txt: n });
+    }
+  });
 
-  // riempimento compatto (niente buchi)
-  compatti.forEach((item, i) => {
-    const s = slots[i];
-    if (!s) return;
+  // 🧠 RIEMPI GLI SLOT DA SINISTRA (SENZA BUCHI)
+  items.forEach((item, i) => {
+    const slot = slots[i];
+    if (!slot) return;
 
-    s.img.src = item.img;
-    s.img.style.display = "block";
-    s.txt.textContent = item.nome;
-    s.arrow.style.display = "block";
+    slot.img.src = item.img;
+    slot.img.style.display = "block";
+    slot.txt.textContent = item.txt;
+    slot.arrow.style.display = "block";
   });
 }
 
