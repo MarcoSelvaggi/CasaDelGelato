@@ -2563,7 +2563,7 @@ body {
 
 /* GRANDE – 2 GUSTI: centra sotto la panna */
 .grande-wrapper.double-gusto .box-palline {
-  transform: translateX(-50px); /* ← sposta a sinistra */
+  transform: translateX(-65px); /* ← sposta a sinistra */
 }
 
 /* pallina sinistra */
