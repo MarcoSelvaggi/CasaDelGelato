@@ -160,7 +160,7 @@ function aggiornaPallineRiepilogoGrande() {
   const wrapper = document.querySelector(".grande-wrapper");
   if (!wrapper) return;
 
-  wrapper.classList.remove("single-gusto", "double-gusto");
+  wrapper.classList.remove("single-gusto", "double-gusto", "triple-gusto");
 
   // =========================
   // 🔥 1 GUSTO → SOLO BASSO
@@ -211,6 +211,13 @@ function aggiornaPallineRiepilogoGrande() {
     }
 
     return;
+  }
+
+  // =========================
+  // 🔥 3 GUSTI → ORDINE NORMALE + PANNA PIÙ BASSA
+  // =========================
+  if (gusti.length === 3) {
+    wrapper.classList.add("triple-gusto");
   }
 
   // =========================
