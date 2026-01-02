@@ -83,7 +83,7 @@ function aggiornaPallineRiepilogoMedia() {
 
   const gusti = scelti.gusti || [];
 
-  // ORDINE RIEMPIMENTO: sinistra, destra, top
+  // ordine: sinistra → destra → alto
   const map = [
     { img: "gusto-left-img",  txt: "gusto-left-text",  arrow: "gusto-left-arrow" },
     { img: "gusto-right-img", txt: "gusto-right-text", arrow: "gusto-right-arrow" },
@@ -97,27 +97,20 @@ function aggiornaPallineRiepilogoMedia() {
 
     if (!img || !txt) return;
 
-    const nome = gusti[i];
+    // 🔴 DEFAULT: tutto spento
+    img.style.display = "none";
+    txt.textContent = "";
+    if (arrow) arrow.style.display = "none";
 
+    // 🟢 Accendo SOLO se esiste il gusto
+    const nome = gusti[i];
     if (nome && MAP_GUSTI_IMG[nome]) {
       img.src = MAP_GUSTI_IMG[nome];
       img.style.display = "block";
       txt.textContent = nome;
-
-      // se esiste anche la freccia, mostrala
       if (arrow) arrow.style.display = "block";
-    } else {
-      img.style.display = "none";
-      txt.textContent = "";
-
-      // se esiste anche la freccia, nascondila
-      if (arrow) arrow.style.display = "none";
     }
   });
-
-  // 🔥 IMPORTANTISSIMO: non usare più la classe single in media
-  const boxPalline = document.querySelector(".coppa-media .box-palline");
-  if (boxPalline) boxPalline.classList.remove("single");
 }
 
 function aggiornaPallineRiepilogoGrande() {
