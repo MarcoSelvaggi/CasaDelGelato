@@ -1624,7 +1624,7 @@ body {
 /* ================= FIX IMMAGINI BOX (DAL CSS VECCHIO) ================= */
 
 /* Tutte le immagini nei box NON extra */
-.box:not(.box-extra):not(.box-pallina) img {
+.box:not(.box-extra):not(.box-pallina):not(.box-coppa):not(.box-panna) img {
   position: absolute;
   top: 0;
   left: 0;
@@ -1633,11 +1633,22 @@ body {
   object-fit: contain;
   pointer-events: none;
 }
-/* ⬇️ FORZA l'immagine della coppa dietro alle palline */
-.box-coppa img {
-  position: relative;   /* ← fondamentale */
-  z-index: 1;
+.box-coppa img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
+
+.box-panna img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 /* Palline */
 .box-pallina img {
   object-fit: cover;
