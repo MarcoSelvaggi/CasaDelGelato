@@ -2164,10 +2164,12 @@ else if (coppaSelezionata === "GRANDE") {
   renderCoppaGrande(stage);
 }
 if (coppaSelezionata === "PICCOLA") {
+aggiornaPallineRiepilogo();
 aggiornaExtraCompattiPiccola();
 }
 
 if (coppaSelezionata === "MEDIA") {
+aggiornaPallineRiepilogoMedia();
 aggiornaExtraCompattiMedia();
 }
 
