@@ -2616,3 +2616,26 @@ body {
   border-radius: 50%;
   display: block;
 }
+/* ====== GUSTI: regola unica finale (vince su tutto) ====== */
+.box-pallina {
+  overflow: hidden !important;
+  border-radius: 50% !important;
+}
+
+.box-pallina img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 50% !important;
+
+  object-fit: cover !important;
+  object-position: center !important;
+
+  display: block !important;
+}
+/* NON schiacciare il contenitore pallina */
+.coppa-media .box-pallina,
+.coppa-grande .box-pallina {
+  transform: none !important;
+}

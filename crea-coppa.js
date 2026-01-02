@@ -28,7 +28,15 @@ let DISPONIBILITA = {};
 // 🔗 MAPPA GUSTI → IMMAGINI (PROVVISORIA)
 const MAP_GUSTI_IMG = {
   "VANIGLIA": "img/vaniglia.png",
-  "FRAGOLA": "img/gelato-fragola.png"
+  "FRAGOLA": "img/gelato-fragola.png",
+  "CIOCCOLATO": "img/cioccolato.png",
+  "FIOR DI LATTE": "img/fiordilatte.png",
+  "NOCCIOLA": "img/nocciola.png",
+  "PISTACCHIO": "img/pistacchio.png",
+  "LIMONE": "img/limone.png",
+  "MELONE": "img/melone.png",
+  "KIWI": "img/kiwi.png",
+  "BANANA": "img/banana.png"
 };
 const MAP_GRANELLE_IMG = {
   "NOCCIOLA": "img/granella-nocciola.png"
