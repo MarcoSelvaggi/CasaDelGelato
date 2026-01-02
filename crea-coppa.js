@@ -133,7 +133,7 @@ function aggiornaPallineRiepilogoGrande() {
 
   const gusti = scelti.gusti || [];
 
-  // 🔥 ORDINE NORMALE: SINISTRA → CENTRO → DESTRA → ALTO
+  // 🔥 ORDINE: SINISTRA → BASSO → DESTRA → ALTO
   const map = [
     { img: "gusto-left-img",   txt: "gusto-left-text" },
     { img: "gusto-bottom-img", txt: "gusto-bottom-text" },
@@ -141,6 +141,9 @@ function aggiornaPallineRiepilogoGrande() {
     { img: "gusto-top-img",    txt: "gusto-top-text" }
   ];
 
+  // =========================
+  // RENDER BASE
+  // =========================
   map.forEach((slot, i) => {
     const img = document.getElementById(slot.img);
     const txt = document.getElementById(slot.txt);
@@ -162,18 +165,20 @@ function aggiornaPallineRiepilogoGrande() {
   });
 
   // =========================
-  // 🔥 CASO 1 SOLO GUSTO
+  // CLASSI LAYOUT
   // =========================
   const wrapper = document.querySelector(".grande-wrapper");
   if (!wrapper) return;
 
-  wrapper.classList.remove("single-gusto");
+  wrapper.classList.remove("single-gusto", "double-gusto");
 
+  // =========================
+  // 🔥 1 GUSTO → SOLO BASSO
+  // =========================
   if (gusti.length === 1) {
     wrapper.classList.add("single-gusto");
 
-    // forza il gusto SOLO al centro (bottom)
-    map.forEach((slot, i) => {
+    map.forEach((slot) => {
       const img = document.getElementById(slot.img);
       const txt = document.getElementById(slot.txt);
       const box = img ? img.closest(".box-pallina") : null;
@@ -192,6 +197,13 @@ function aggiornaPallineRiepilogoGrande() {
         if (arrow) arrow.style.display = "none";
       }
     });
+  }
+
+  // =========================
+  // 🔥 2 GUSTI
+  // =========================
+  else if (gusti.length === 2) {
+    wrapper.classList.add("double-gusto");
   }
 }
 

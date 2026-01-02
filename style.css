@@ -2557,3 +2557,28 @@ body {
 .grande-wrapper.single-gusto .pallina-top {
   display: none;
 }
+/* =========================
+   GRANDE – 2 GUSTI
+   palline centrate + panna più bassa
+========================= */
+
+.grande-wrapper.double-gusto .pallina-left {
+  left: 45%;
+  transform: translateX(-50%);
+}
+
+.grande-wrapper.double-gusto .pallina-bottom {
+  left: 55%;
+  transform: translateX(-50%);
+}
+
+/* nasconde sicurezza */
+.grande-wrapper.double-gusto .pallina-right,
+.grande-wrapper.double-gusto .pallina-top {
+  display: none;
+}
+
+/* abbassa la panna */
+.grande-wrapper.double-gusto .box-panna {
+  transform: translateY(22px);
+}
