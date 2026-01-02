@@ -145,63 +145,46 @@ function aggiornaPallineRiepilogo() {
 function aggiornaExtraCompattiMedia() {
   if (coppaSelezionata !== "MEDIA") return;
 
-  // SLOT VISIVI DA SINISTRA A DESTRA
+  // SLOT VISIVI REALI (da sinistra a destra)
   const slots = [
-    {
-      img: document.getElementById("granella-1-img"),
-      txt: document.getElementById("granella-1-text"),
-      arrow: document.getElementById("granella-1-arrow"),
-    },
-    {
-      img: document.getElementById("topping-1-img"),
-      txt: document.getElementById("topping-1-text"),
-      arrow: document.getElementById("topping-1-arrow"),
-    },
-    {
-      img: document.getElementById("frutta-1-img"),
-      txt: document.getElementById("frutta-1-text"),
-      arrow: document.getElementById("frutta-1-arrow"),
-    }
+    { img: byId("granella-1-img"), txt: byId("granella-1-text"), arrow: byId("granella-1-arrow") },
+    { img: byId("granella-2-img"), txt: byId("granella-2-text"), arrow: byId("granella-2-arrow") },
+    { img: byId("topping-1-img"),  txt: byId("topping-1-text"),  arrow: byId("topping-1-arrow") },
+    { img: byId("topping-2-img"),  txt: byId("topping-2-text"),  arrow: byId("topping-2-arrow") },
+    { img: byId("frutta-1-img"),   txt: byId("frutta-1-text"),   arrow: byId("frutta-1-arrow") },
   ];
 
-  // 🔄 RESET TOTALE (IMMAGINI + FRECCE)
+  // ✅ RESET TOTALE (anche se qualche pezzo mancasse)
   slots.forEach(s => {
-    if (!s.img || !s.txt || !s.arrow) return;
-    s.img.style.display = "none";
-    s.txt.textContent = "";
-    s.arrow.style.display = "none";
+    if (s.img)   s.img.style.display = "none";
+    if (s.txt)   s.txt.textContent = "";
+    if (s.arrow) s.arrow.style.display = "none";
   });
 
-  // 📦 COSTRUISCO LISTA COMPATTA IN ORDINE LOGICO
+  // ✅ LISTA COMPATTA IN ORDINE LOGICO
   const items = [];
 
-  scelti.granelle.forEach(n => {
-    if (MAP_GRANELLE_IMG[n]) {
-      items.push({ img: MAP_GRANELLE_IMG[n], txt: n });
-    }
+  (scelti.granelle || []).forEach(n => {
+    if (MAP_GRANELLE_IMG[n]) items.push({ img: MAP_GRANELLE_IMG[n], txt: n });
   });
 
-  scelti.topping.forEach(n => {
-    if (MAP_TOPPING_IMG[n]) {
-      items.push({ img: MAP_TOPPING_IMG[n], txt: n });
-    }
+  (scelti.topping || []).forEach(n => {
+    if (MAP_TOPPING_IMG[n]) items.push({ img: MAP_TOPPING_IMG[n], txt: n });
   });
 
-  scelti.ingredienti.forEach(n => {
-    if (MAP_INGREDIENTI_IMG[n]) {
-      items.push({ img: MAP_INGREDIENTI_IMG[n], txt: n });
-    }
+  (scelti.ingredienti || []).forEach(n => {
+    if (MAP_INGREDIENTI_IMG[n]) items.push({ img: MAP_INGREDIENTI_IMG[n], txt: n });
   });
 
-  // 🧠 RIEMPI GLI SLOT DA SINISTRA (SENZA BUCHI)
+  // ✅ RIEMPI DA SINISTRA (SENZA BUCHI)
   items.forEach((item, i) => {
-    const slot = slots[i];
-    if (!slot) return;
+    const s = slots[i];
+    if (!s || !s.img || !s.txt || !s.arrow) return;
 
-    slot.img.src = item.img;
-    slot.img.style.display = "block";
-    slot.txt.textContent = item.txt;
-    slot.arrow.style.display = "block";
+    s.img.src = item.img;
+    s.img.style.display = "block";
+    s.txt.textContent = item.txt;
+    s.arrow.style.display = "block";
   });
 }
 
