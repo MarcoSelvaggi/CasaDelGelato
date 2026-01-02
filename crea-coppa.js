@@ -142,6 +142,69 @@ function aggiornaPallineRiepilogo() {
   }
 }
 
+function aggiornaExtraCompattiMedia() {
+  if (coppaSelezionata !== "MEDIA") return;
+
+  const slots = [
+    {
+      img: document.getElementById("granella-1-img"),
+      txt: document.getElementById("granella-1-text"),
+      arrow: document.getElementById("granella-1-arrow")
+    },
+    {
+      img: document.getElementById("topping-1-img"),
+      txt: document.getElementById("topping-1-text"),
+      arrow: document.getElementById("topping-1-arrow")
+    },
+    {
+      img: document.getElementById("frutta-1-img"),
+      txt: document.getElementById("frutta-1-text"),
+      arrow: document.getElementById("frutta-1-arrow")
+    }
+  ];
+
+  // reset totale
+  slots.forEach(s => {
+    if (s.img) s.img.style.display = "none";
+    if (s.txt) s.txt.textContent = "";
+    if (s.arrow) s.arrow.style.display = "none";
+  });
+
+  const compatti = [];
+
+  if (scelti.granelle?.[0] && MAP_GRANELLE_IMG[scelti.granelle[0]]) {
+    compatti.push({
+      nome: scelti.granelle[0],
+      img: MAP_GRANELLE_IMG[scelti.granelle[0]]
+    });
+  }
+
+  if (scelti.topping?.[0] && MAP_TOPPING_IMG[scelti.topping[0]]) {
+    compatti.push({
+      nome: scelti.topping[0],
+      img: MAP_TOPPING_IMG[scelti.topping[0]]
+    });
+  }
+
+  if (scelti.ingredienti?.[0] && MAP_INGREDIENTI_IMG[scelti.ingredienti[0]]) {
+    compatti.push({
+      nome: scelti.ingredienti[0],
+      img: MAP_INGREDIENTI_IMG[scelti.ingredienti[0]]
+    });
+  }
+
+  // riempimento compatto (niente buchi)
+  compatti.forEach((item, i) => {
+    const s = slots[i];
+    if (!s) return;
+
+    s.img.src = item.img;
+    s.img.style.display = "block";
+    s.txt.textContent = item.nome;
+    s.arrow.style.display = "block";
+  });
+}
+
 function aggiornaPallineRiepilogoMedia() {
   if (coppaSelezionata !== "MEDIA") return;
 
@@ -2105,10 +2168,7 @@ aggiornaExtraCompattiPiccola();
 }
 
 if (coppaSelezionata === "MEDIA") {
-  aggiornaPallineRiepilogoMedia();
-  aggiornaGranellaRiepilogoMedia();
-  aggiornaToppingRiepilogoMedia();
-  aggiornaIngredientiRiepilogoMedia();
+aggiornaExtraCompattiMedia();
 }
 
 if (coppaSelezionata === "GRANDE") {
