@@ -40,6 +40,70 @@ const MAP_INGREDIENTI_IMG = {
   "FRAGOLE": "img/fragola.png"
 };
 
+function aggiornaExtraCompattiPiccola() {
+  if (coppaSelezionata !== "PICCOLA") return;
+
+  const slots = [
+    {
+      img: document.getElementById("granella-img"),
+      txt: document.getElementById("granella-text"),
+      arrow: document.getElementById("granella-arrow")
+    },
+    {
+      img: document.getElementById("topping-img"),
+      txt: document.getElementById("topping-text"),
+      arrow: document.getElementById("topping-arrow")
+    },
+    {
+      img: document.getElementById("frutta-img"),
+      txt: document.getElementById("frutta-text"),
+      arrow: document.getElementById("frutta-arrow")
+    }
+  ];
+
+  // reset totale
+  slots.forEach(s => {
+    if (s.img) s.img.style.display = "none";
+    if (s.txt) s.txt.textContent = "";
+    if (s.arrow) s.arrow.style.display = "none";
+  });
+
+  // lista compatta in ordine
+  const compatti = [];
+
+  if (scelti.granelle?.[0] && MAP_GRANELLE_IMG[scelti.granelle[0]]) {
+    compatti.push({
+      nome: scelti.granelle[0],
+      img: MAP_GRANELLE_IMG[scelti.granelle[0]]
+    });
+  }
+
+  if (scelti.topping?.[0] && MAP_TOPPING_IMG[scelti.topping[0]]) {
+    compatti.push({
+      nome: scelti.topping[0],
+      img: MAP_TOPPING_IMG[scelti.topping[0]]
+    });
+  }
+
+  if (scelti.ingredienti?.[0] && MAP_INGREDIENTI_IMG[scelti.ingredienti[0]]) {
+    compatti.push({
+      nome: scelti.ingredienti[0],
+      img: MAP_INGREDIENTI_IMG[scelti.ingredienti[0]]
+    });
+  }
+
+  // riempi da sinistra → niente buchi
+  compatti.forEach((item, i) => {
+    const s = slots[i];
+    if (!s) return;
+
+    s.img.src = item.img;
+    s.img.style.display = "block";
+    s.txt.textContent = item.nome;
+    s.arrow.style.display = "block";
+  });
+}
+
 function aggiornaPallineRiepilogo() {
   const gusti = scelti.gusti || [];
 
@@ -2037,10 +2101,7 @@ else if (coppaSelezionata === "GRANDE") {
   renderCoppaGrande(stage);
 }
 if (coppaSelezionata === "PICCOLA") {
-  aggiornaPallineRiepilogo();
-  aggiornaGranellaRiepilogo();
-  aggiornaToppingRiepilogo();
-  aggiornaIngredientiRiepilogo();
+aggiornaExtraCompattiPiccola();
 }
 
 if (coppaSelezionata === "MEDIA") {
