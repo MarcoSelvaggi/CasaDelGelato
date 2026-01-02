@@ -27,8 +27,8 @@ let DISPONIBILITA = {};
 
 // 🔗 MAPPA GUSTI → IMMAGINI (PROVVISORIA)
 const MAP_GUSTI_IMG = {
-  "VANIGLIA": "img/pallina-vaniglia.png",
-  "FRAGOLA": "img/pallina-fragola.png"
+  "VANIGLIA": "img/vaniglia.png",
+  "FRAGOLA": "img/gelato-fragola.png"
 };
 const MAP_GRANELLE_IMG = {
   "NOCCIOLA": "img/granella-nocciola.png"
