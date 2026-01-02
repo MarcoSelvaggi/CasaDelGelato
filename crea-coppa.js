@@ -1366,49 +1366,91 @@ function renderCoppaGrande(stage) {
   </div>
 
   <!-- GRANELLE -->
-  <div class="box box-extra granella-1">
-    <img id="granella-1-img" src="img/granella-nocciola.png">
-    <div class="arrow">
-      <div class="arrow-text bottom granella-text" id="granella-1-text">Granella</div>
-    </div>
-  </div>
+<div class="box box-extra granella-1">
+  <img id="granella-1-img" src="img/granella-nocciola.png">
 
-  <div class="box box-extra granella-2">
-    <img id="granella-2-img" src="img/granella-nocciola.png">
-    <div class="arrow">
-      <div class="arrow-text bottom granella-text" id="granella-2-text">Granella</div>
-    </div>
+  <div class="arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom granella-text" id="granella-1-text">Granella</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(-90deg) scaleY(-1);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
   </div>
+</div>
+
+<div class="box box-extra granella-2">
+  <img id="granella-2-img" src="img/granella-nocciola.png">
+
+  <div class="arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom granella-text" id="granella-2-text">Granella</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(-90deg);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
 
   <!-- TOPPING -->
-  <div class="box box-extra topping-1">
-    <img id="topping-1-img" src="img/topping-bosco.png">
-    <div class="arrow">
-      <div class="arrow-text top topping-text" id="topping-1-text">Topping</div>
-    </div>
-  </div>
+<div class="box box-extra topping-1">
+  <img id="topping-1-img" src="img/topping-bosco.png">
 
-  <div class="box box-extra topping-2">
-    <img id="topping-2-img" src="img/topping-bosco.png">
-    <div class="arrow">
-      <div class="arrow-text top topping-text" id="topping-2-text">Topping</div>
-    </div>
+  <div class="arrow"
+       style="top:-58px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text top topping-text" id="topping-1-text">Topping</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(90deg);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
   </div>
+</div>
+
+<div class="box box-extra topping-2">
+  <img id="topping-2-img" src="img/topping-bosco.png">
+
+  <div class="arrow"
+       style="top:-58px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text top topping-text" id="topping-2-text">Topping</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(90deg) scaleY(-1);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
 
   <!-- FRUTTA -->
-  <div class="box box-extra frutta-1">
-    <img id="frutta-1-img" src="img/fragola.png">
-    <div class="arrow">
-      <div class="arrow-text bottom frutta-text" id="frutta-1-text">Frutta</div>
-    </div>
-  </div>
+<div class="box box-extra frutta-1">
+  <img id="frutta-1-img" src="img/fragola.png">
 
-  <div class="box box-extra frutta-2">
-    <img id="frutta-2-img" src="img/fragola.png">
-    <div class="arrow">
-      <div class="arrow-text bottom frutta-text" id="frutta-2-text">Frutta</div>
-    </div>
+  <div class="arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom frutta-text" id="frutta-1-text">Frutta</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(-90deg) scaleY(-1);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
   </div>
+</div>
+
+<div class="box box-extra frutta-2">
+  <img id="frutta-2-img" src="img/fragola.png">
+
+  <div class="arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom frutta-text" id="frutta-2-text">Frutta</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(-90deg);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
 
   <!-- EXTRA STAGE -->
   <div id="extra-stage">
