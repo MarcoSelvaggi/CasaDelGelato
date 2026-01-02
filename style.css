@@ -1560,7 +1560,6 @@ body {
   height: 140px;
   left: var(--base-left);
   top: 110px;
-  z-index: 3;
 }
 
 .box-pallina {
@@ -1579,8 +1578,17 @@ body {
   display: block;
 }
 
-.pallina-1 { left: 0; transform: translateX(20px); }
-.pallina-2 { right: 0; transform: translateX(-20px); }
+.pallina-1 { 
+  left: 0; 
+  transform: translateX(20px); 
+  z-index: 4;   /* 👈 DAVANTI alla panna */
+}
+
+.pallina-2 { 
+  right: 0; 
+  transform: translateX(-20px); 
+  z-index: 2;   /* 👈 DIETRO la panna */
+}
 
 .box-pallina img {
   width: 100%;
@@ -1595,7 +1603,7 @@ body {
   height: 160px;
   left: calc(var(--base-left) + 130px - 80px);
   top: 10px;
-  z-index: 4;
+  z-index: 3;
 }
 
 /* ================= EXTRA ================= */
