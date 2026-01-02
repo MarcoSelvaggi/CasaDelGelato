@@ -109,14 +109,23 @@ function aggiornaPallineRiepilogoMedia() {
       if (arrow) arrow.style.display = "none";
     }
   });
-  const wrapper = document.querySelector(".media-coppa");
-if (!wrapper) return;
 
-if (scelti.gusti.length === 1) {
-  wrapper.classList.add("single-gusto");
-} else {
-  wrapper.classList.remove("single-gusto");
-}
+  // ===== GESTIONE PANNA =====
+  const wrapper = document.querySelector(".media-coppa");
+  if (!wrapper) return;
+
+  // reset
+  wrapper.classList.remove("single-gusto", "double-gusto");
+
+  // 1 gusto → pallina centrata + panna più alta
+  if (scelti.gusti.length === 1) {
+    wrapper.classList.add("single-gusto");
+  }
+
+  // 2 gusti → panna che scende un po'
+  else if (scelti.gusti.length === 2) {
+    wrapper.classList.add("double-gusto");
+  }
 }
 
 function aggiornaPallineRiepilogoGrande() {
