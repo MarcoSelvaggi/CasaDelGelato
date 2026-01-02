@@ -2107,7 +2107,7 @@ if (coppaSelezionata === "PICCOLA") {
 
   <!-- COPPA -->
   <div class="box box-coppa">
-    <img src="img/coppa-piccola.png">
+    <img src="img/coppa-base.png">
     <div class="label">Coppa</div>
   </div>
 
