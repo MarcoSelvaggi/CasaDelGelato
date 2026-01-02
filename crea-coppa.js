@@ -238,6 +238,59 @@ function aggiornaPallineRiepilogoMedia() {
   }
 }
 
+function aggiornaExtraCompattiGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  // SLOT VISIVI REALI (da sinistra a destra)
+  const slots = [
+    { img: byId("granella-1-img"), txt: byId("granella-1-text"), arrow: byId("granella-1-text") },
+    { img: byId("granella-2-img"), txt: byId("granella-2-text"), arrow: byId("granella-2-text") },
+    { img: byId("topping-1-img"),  txt: byId("topping-1-text"),  arrow: byId("topping-1-text") },
+    { img: byId("topping-2-img"),  txt: byId("topping-2-text"),  arrow: byId("topping-2-text") },
+    { img: byId("frutta-1-img"),   txt: byId("frutta-1-text"),   arrow: byId("frutta-1-text") },
+    { img: byId("frutta-2-img"),   txt: byId("frutta-2-text"),   arrow: byId("frutta-2-text") },
+  ];
+
+  // 🔄 RESET TOTALE
+  slots.forEach(s => {
+    if (s.img)   s.img.style.display = "none";
+    if (s.txt)   s.txt.textContent = "";
+    if (s.arrow) s.arrow.style.display = "none";
+  });
+
+  // 📦 LISTA COMPATTA IN ORDINE LOGICO
+  const items = [];
+
+  (scelti.granelle || []).forEach(n => {
+    if (MAP_GRANELLE_IMG[n]) {
+      items.push({ img: MAP_GRANELLE_IMG[n], txt: n });
+    }
+  });
+
+  (scelti.topping || []).forEach(n => {
+    if (MAP_TOPPING_IMG[n]) {
+      items.push({ img: MAP_TOPPING_IMG[n], txt: n });
+    }
+  });
+
+  (scelti.ingredienti || []).forEach(n => {
+    if (MAP_INGREDIENTI_IMG[n]) {
+      items.push({ img: MAP_INGREDIENTI_IMG[n], txt: n });
+    }
+  });
+
+  // 🧠 RIEMPI DA SINISTRA → ZERO BUCHI
+  items.forEach((item, i) => {
+    const s = slots[i];
+    if (!s || !s.img || !s.txt || !s.arrow) return;
+
+    s.img.src = item.img;
+    s.img.style.display = "block";
+    s.txt.textContent = item.txt;
+    s.arrow.style.display = "block";
+  });
+}
+
 function aggiornaPallineRiepilogoGrande() {
   if (coppaSelezionata !== "GRANDE") return;
 
@@ -2158,9 +2211,7 @@ aggiornaExtraCompattiMedia();
 
 if (coppaSelezionata === "GRANDE") {
   aggiornaPallineRiepilogoGrande();
-  aggiornaGranellaRiepilogoGrande();
-  aggiornaToppingRiepilogoGrande();
-  aggiornaIngredientiRiepilogoGrande();
+  aggiornaExtraCompattiGrande(); // ✅ UNICA
 }
 
 aggiornaExtraRiepilogo();
