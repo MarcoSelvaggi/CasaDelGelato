@@ -2559,26 +2559,24 @@ body {
 }
 /* =========================
    GRANDE – 2 GUSTI
-   palline centrate + panna più bassa
+   sinistra + destra più staccate
 ========================= */
 
 .grande-wrapper.double-gusto .pallina-left {
-  left: 45%;
-  transform: translateX(-50%);
+  left: 44%;
 }
 
-.grande-wrapper.double-gusto .pallina-bottom {
-  left: 55%;
-  transform: translateX(-50%);
+.grande-wrapper.double-gusto .pallina-right {
+  left: 56%;
 }
 
 /* nasconde sicurezza */
-.grande-wrapper.double-gusto .pallina-right,
+.grande-wrapper.double-gusto .pallina-bottom,
 .grande-wrapper.double-gusto .pallina-top {
   display: none;
 }
 
-/* abbassa la panna */
+/* abbassa un po' la panna */
 .grande-wrapper.double-gusto .box-panna {
-  transform: translateY(22px);
+  transform: translateY(18px);
 }

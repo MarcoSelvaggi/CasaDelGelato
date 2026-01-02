@@ -133,7 +133,7 @@ function aggiornaPallineRiepilogoGrande() {
 
   const gusti = scelti.gusti || [];
 
-  // 🔥 ORDINE: SINISTRA → BASSO → DESTRA → ALTO
+  // 🔥 ORDINE BASE: SINISTRA → BASSO → DESTRA → ALTO
   const map = [
     { img: "gusto-left-img",   txt: "gusto-left-text" },
     { img: "gusto-bottom-img", txt: "gusto-bottom-text" },
@@ -142,7 +142,79 @@ function aggiornaPallineRiepilogoGrande() {
   ];
 
   // =========================
-  // RENDER BASE
+  // RESET / RENDER BASE
+  // =========================
+  map.forEach((slot) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+    if (!img || !txt) return;
+
+    const box = img.closest(".box-pallina");
+    const arrow = box ? box.querySelector(".arrow") : null;
+
+    img.style.display = "none";
+    txt.textContent = "";
+    if (arrow) arrow.style.display = "none";
+  });
+
+  const wrapper = document.querySelector(".grande-wrapper");
+  if (!wrapper) return;
+
+  wrapper.classList.remove("single-gusto", "double-gusto");
+
+  // =========================
+  // 🔥 1 GUSTO → SOLO BASSO
+  // =========================
+  if (gusti.length === 1) {
+    wrapper.classList.add("single-gusto");
+
+    const img = document.getElementById("gusto-bottom-img");
+    const txt = document.getElementById("gusto-bottom-text");
+    const arrow = img?.closest(".box-pallina")?.querySelector(".arrow");
+
+    if (img && txt) {
+      img.src = MAP_GUSTI_IMG[gusti[0]];
+      img.style.display = "block";
+      txt.textContent = gusti[0];
+      if (arrow) arrow.style.display = "block";
+    }
+
+    return;
+  }
+
+  // =========================
+  // 🔥 2 GUSTI → SINISTRA + DESTRA
+  // =========================
+  if (gusti.length === 2) {
+    wrapper.classList.add("double-gusto");
+
+    const leftImg  = document.getElementById("gusto-left-img");
+    const leftTxt  = document.getElementById("gusto-left-text");
+    const rightImg = document.getElementById("gusto-right-img");
+    const rightTxt = document.getElementById("gusto-right-text");
+
+    const leftArrow  = leftImg?.closest(".box-pallina")?.querySelector(".arrow");
+    const rightArrow = rightImg?.closest(".box-pallina")?.querySelector(".arrow");
+
+    if (leftImg && leftTxt) {
+      leftImg.src = MAP_GUSTI_IMG[gusti[0]];
+      leftImg.style.display = "block";
+      leftTxt.textContent = gusti[0];
+      if (leftArrow) leftArrow.style.display = "block";
+    }
+
+    if (rightImg && rightTxt) {
+      rightImg.src = MAP_GUSTI_IMG[gusti[1]];
+      rightImg.style.display = "block";
+      rightTxt.textContent = gusti[1];
+      if (rightArrow) rightArrow.style.display = "block";
+    }
+
+    return;
+  }
+
+  // =========================
+  // 🔥 3–4 GUSTI → ORDINE NORMALE
   // =========================
   map.forEach((slot, i) => {
     const img = document.getElementById(slot.img);
@@ -157,54 +229,8 @@ function aggiornaPallineRiepilogoGrande() {
       img.style.display = "block";
       txt.textContent = gusti[i];
       if (arrow) arrow.style.display = "block";
-    } else {
-      img.style.display = "none";
-      txt.textContent = "";
-      if (arrow) arrow.style.display = "none";
     }
   });
-
-  // =========================
-  // CLASSI LAYOUT
-  // =========================
-  const wrapper = document.querySelector(".grande-wrapper");
-  if (!wrapper) return;
-
-  wrapper.classList.remove("single-gusto", "double-gusto");
-
-  // =========================
-  // 🔥 1 GUSTO → SOLO BASSO
-  // =========================
-  if (gusti.length === 1) {
-    wrapper.classList.add("single-gusto");
-
-    map.forEach((slot) => {
-      const img = document.getElementById(slot.img);
-      const txt = document.getElementById(slot.txt);
-      const box = img ? img.closest(".box-pallina") : null;
-      const arrow = box ? box.querySelector(".arrow") : null;
-
-      if (!img || !txt) return;
-
-      if (slot.img === "gusto-bottom-img") {
-        img.src = MAP_GUSTI_IMG[gusti[0]];
-        img.style.display = "block";
-        txt.textContent = gusti[0];
-        if (arrow) arrow.style.display = "block";
-      } else {
-        img.style.display = "none";
-        txt.textContent = "";
-        if (arrow) arrow.style.display = "none";
-      }
-    });
-  }
-
-  // =========================
-  // 🔥 2 GUSTI
-  // =========================
-  else if (gusti.length === 2) {
-    wrapper.classList.add("double-gusto");
-  }
 }
 
 function aggiornaGranellaRiepilogo() {
