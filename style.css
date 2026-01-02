@@ -2559,7 +2559,6 @@ body {
 }
 /* =========================
    GRANDE – 2 GUSTI
-   palline sinistra + destra centrate e più vicine
 ========================= */
 
 .grande-wrapper.double-gusto .box-palline {
@@ -2569,27 +2568,23 @@ body {
 /* pallina sinistra */
 .grande-wrapper.double-gusto .pallina-left {
   left: 50%;
-  transform: translateX(-60px); /* ⬅️ avvicina al centro */
+  transform: translateX(-60px);
 }
 
 /* pallina destra */
 .grande-wrapper.double-gusto .pallina-right {
   left: 50%;
   right: auto;
-  transform: translateX(60px); /* ➡️ avvicina al centro */
+  transform: translateX(60px);
 }
 
-/* nascondiamo le altre palline per sicurezza */
+/* nascondiamo le altre palline */
 .grande-wrapper.double-gusto .pallina-bottom,
 .grande-wrapper.double-gusto .pallina-top {
   display: none;
 }
 
-/* abbassiamo leggermente la panna */
+/* abbassiamo la panna */
 .grande-wrapper.double-gusto .box-panna {
   transform: translateY(18px);
-}
-/* ✅ GRANDE – 2 GUSTI: centra il gruppo delle 2 palline */
-.grande-wrapper.double-gusto .box-palline{
-  transform: translateX(22px);  /* aumenta/diminuisci per centrare */
 }
