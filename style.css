@@ -1547,7 +1547,7 @@ body {
 /* ================= COPPA ================= */
 .box-coppa {
   width: 260px;
-  height: 250px;
+  height: 270px;
   left: var(--base-left);
   top: 210px;
 }
