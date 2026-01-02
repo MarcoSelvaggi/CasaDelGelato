@@ -1874,18 +1874,27 @@ else if (coppaSelezionata === "GRANDE") {
   document.body.classList.add("coppa-grande");
   renderCoppaGrande(stage);
 }
-aggiornaPallineRiepilogo();
-aggiornaPallineRiepilogoMedia();
-aggiornaPallineRiepilogoGrande();
-aggiornaGranellaRiepilogo();
-aggiornaGranellaRiepilogoMedia();
-aggiornaGranellaRiepilogoGrande();
-aggiornaToppingRiepilogo();
-aggiornaToppingRiepilogoMedia();
-aggiornaToppingRiepilogoGrande();
-aggiornaIngredientiRiepilogo();
-aggiornaIngredientiRiepilogoMedia();
-aggiornaIngredientiRiepilogoGrande();
+if (coppaSelezionata === "PICCOLA") {
+  aggiornaPallineRiepilogo();
+  aggiornaGranellaRiepilogo();
+  aggiornaToppingRiepilogo();
+  aggiornaIngredientiRiepilogo();
+}
+
+if (coppaSelezionata === "MEDIA") {
+  aggiornaPallineRiepilogoMedia();
+  aggiornaGranellaRiepilogoMedia();
+  aggiornaToppingRiepilogoMedia();
+  aggiornaIngredientiRiepilogoMedia();
+}
+
+if (coppaSelezionata === "GRANDE") {
+  aggiornaPallineRiepilogoGrande();
+  aggiornaGranellaRiepilogoGrande();
+  aggiornaToppingRiepilogoGrande();
+  aggiornaIngredientiRiepilogoGrande();
+}
+
 aggiornaExtraRiepilogo();
 
 // === QR CODE ===
