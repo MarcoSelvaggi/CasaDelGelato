@@ -93,15 +93,20 @@ function aggiornaPallineRiepilogoMedia() {
     const img = document.getElementById(slot.img);
     const txt = document.getElementById(slot.txt);
 
-    if (!img || !txt) return;
+    // 🔑 freccia = parent .box-pallina → .arrow
+    const arrow = img?.closest(".box-pallina")?.querySelector(".arrow");
+
+    if (!img || !txt || !arrow) return;
 
     if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
       img.src = MAP_GUSTI_IMG[gusti[i]];
       img.style.display = "block";
       txt.textContent = gusti[i];
+      arrow.style.display = "block";   // ✅ MOSTRA
     } else {
       img.style.display = "none";
       txt.textContent = "";
+      arrow.style.display = "none";    // ❌ NASCONDE
     }
   });
 }
@@ -121,16 +126,21 @@ function aggiornaPallineRiepilogoGrande() {
   map.forEach((slot, i) => {
     const img = document.getElementById(slot.img);
     const txt = document.getElementById(slot.txt);
+    const arrow = txt?.closest(".arrow");
 
-    if (!img || !txt) return;
+    if (!img || !txt || !arrow) return;
 
-    if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
-      img.src = MAP_GUSTI_IMG[gusti[i]];
+    const nome = gusti[i];
+
+    if (nome && MAP_GUSTI_IMG[nome]) {
+      img.src = MAP_GUSTI_IMG[nome];
       img.style.display = "block";
-      txt.textContent = gusti[i];
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅ mostra freccia
     } else {
       img.style.display = "none";
       txt.textContent = "";
+      arrow.style.display = "none";    // ❌ nasconde freccia
     }
   });
 }
@@ -179,11 +189,11 @@ function aggiornaGranellaRiepilogoMedia() {
       img.src = MAP_GRANELLE_IMG[nome];
       img.style.display = "block";
       txt.textContent = nome;
-      arrow.style.display = "block";
+      arrow.style.display = "block";   // ✅
     } else {
       img.style.display = "none";
       txt.textContent = "";
-      arrow.style.display = "none";
+      arrow.style.display = "none";    // ❌
     }
   });
 }
@@ -194,23 +204,28 @@ function aggiornaGranellaRiepilogoGrande() {
   const granelle = scelti.granelle || [];
 
   const map = [
-    { img: "granella-1-img", txt: "granella-1-text" },
-    { img: "granella-2-img", txt: "granella-2-text" }
+    { img: "granella-1-img", txt: "granella-1-text", arrow: "granella-1-text" },
+    { img: "granella-2-img", txt: "granella-2-text", arrow: "granella-2-text" }
   ];
 
   map.forEach((slot, i) => {
     const img = document.getElementById(slot.img);
     const txt = document.getElementById(slot.txt);
+    const arrow = txt?.closest(".arrow");
 
-    if (!img || !txt) return;
+    if (!img || !txt || !arrow) return;
 
-    if (granelle[i] && MAP_GRANELLE_IMG[granelle[i]]) {
-      img.src = MAP_GRANELLE_IMG[granelle[i]];
+    const nome = granelle[i];
+
+    if (nome && MAP_GRANELLE_IMG[nome]) {
+      img.src = MAP_GRANELLE_IMG[nome];
       img.style.display = "block";
-      txt.textContent = granelle[i];
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅
     } else {
       img.style.display = "none";
       txt.textContent = "";
+      arrow.style.display = "none";    // ❌
     }
   });
 }
@@ -259,11 +274,11 @@ function aggiornaToppingRiepilogoMedia() {
       img.src = MAP_TOPPING_IMG[nome];
       img.style.display = "block";
       txt.textContent = nome;
-      arrow.style.display = "block";
+      arrow.style.display = "block";   // ✅
     } else {
       img.style.display = "none";
       txt.textContent = "";
-      arrow.style.display = "none";
+      arrow.style.display = "none";    // ❌
     }
   });
 }
@@ -274,23 +289,28 @@ function aggiornaToppingRiepilogoGrande() {
   const topping = scelti.topping || [];
 
   const map = [
-    { img: "topping-1-img", txt: "topping-1-text" },
-    { img: "topping-2-img", txt: "topping-2-text" }
+    { img: "topping-1-img", txt: "topping-1-text", arrow: "topping-1-text" },
+    { img: "topping-2-img", txt: "topping-2-text", arrow: "topping-2-text" }
   ];
 
   map.forEach((slot, i) => {
     const img = document.getElementById(slot.img);
     const txt = document.getElementById(slot.txt);
+    const arrow = txt?.closest(".arrow");
 
-    if (!img || !txt) return;
+    if (!img || !txt || !arrow) return;
 
-    if (topping[i] && MAP_TOPPING_IMG[topping[i]]) {
-      img.src = MAP_TOPPING_IMG[topping[i]];
+    const nome = topping[i];
+
+    if (nome && MAP_TOPPING_IMG[nome]) {
+      img.src = MAP_TOPPING_IMG[nome];
       img.style.display = "block";
-      txt.textContent = topping[i];
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅
     } else {
       img.style.display = "none";
       txt.textContent = "";
+      arrow.style.display = "none";    // ❌
     }
   });
 }
@@ -331,11 +351,11 @@ function aggiornaIngredientiRiepilogoMedia() {
     img.src = MAP_INGREDIENTI_IMG[ingrediente];
     img.style.display = "block";
     txt.textContent = ingrediente;
-    arrow.style.display = "block";
+    arrow.style.display = "block";   // ✅
   } else {
     img.style.display = "none";
     txt.textContent = "";
-    arrow.style.display = "none";
+    arrow.style.display = "none";    // ❌
   }
 }
 
@@ -345,23 +365,28 @@ function aggiornaIngredientiRiepilogoGrande() {
   const ingredienti = scelti.ingredienti || [];
 
   const map = [
-    { img: "frutta-1-img", txt: "frutta-1-text" },
-    { img: "frutta-2-img", txt: "frutta-2-text" }
+    { img: "frutta-1-img", txt: "frutta-1-text", arrow: "frutta-1-text" },
+    { img: "frutta-2-img", txt: "frutta-2-text", arrow: "frutta-2-text" }
   ];
 
   map.forEach((slot, i) => {
     const img = document.getElementById(slot.img);
     const txt = document.getElementById(slot.txt);
+    const arrow = txt?.closest(".arrow");
 
-    if (!img || !txt) return;
+    if (!img || !txt || !arrow) return;
 
-    if (ingredienti[i] && MAP_INGREDIENTI_IMG[ingredienti[i]]) {
-      img.src = MAP_INGREDIENTI_IMG[ingredienti[i]];
+    const nome = ingredienti[i];
+
+    if (nome && MAP_INGREDIENTI_IMG[nome]) {
+      img.src = MAP_INGREDIENTI_IMG[nome];
       img.style.display = "block";
-      txt.textContent = ingredienti[i];
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅
     } else {
       img.style.display = "none";
       txt.textContent = "";
+      arrow.style.display = "none";    // ❌
     }
   });
 }
