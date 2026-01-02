@@ -2561,8 +2561,9 @@ body {
    GRANDE – 2 GUSTI
 ========================= */
 
+/* GRANDE – 2 GUSTI: centra sotto la panna */
 .grande-wrapper.double-gusto .box-palline {
-  position: relative;
+  transform: translateX(-22px); /* ← sposta a sinistra */
 }
 
 /* pallina sinistra */
