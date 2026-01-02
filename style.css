@@ -1675,7 +1675,7 @@ body {
 .arrow {
   position: absolute;
   pointer-events: none;
-  z-index: 2;
+  z-index: 10;
 }
 
 .arrow svg {
