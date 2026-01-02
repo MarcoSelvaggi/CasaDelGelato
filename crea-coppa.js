@@ -242,14 +242,14 @@ function aggiornaExtraCompattiGrande() {
   if (coppaSelezionata !== "GRANDE") return;
 
   // SLOT VISIVI REALI (da sinistra a destra)
-  const slots = [
-    { img: byId("granella-1-img"), txt: byId("granella-1-text"), arrow: byId("granella-1-text") },
-    { img: byId("granella-2-img"), txt: byId("granella-2-text"), arrow: byId("granella-2-text") },
-    { img: byId("topping-1-img"),  txt: byId("topping-1-text"),  arrow: byId("topping-1-text") },
-    { img: byId("topping-2-img"),  txt: byId("topping-2-text"),  arrow: byId("topping-2-text") },
-    { img: byId("frutta-1-img"),   txt: byId("frutta-1-text"),   arrow: byId("frutta-1-text") },
-    { img: byId("frutta-2-img"),   txt: byId("frutta-2-text"),   arrow: byId("frutta-2-text") },
-  ];
+const slots = [
+  { img: byId("granella-1-img"), txt: byId("granella-1-text"), arrow: byId("granella-1-text")?.closest(".arrow") },
+  { img: byId("granella-2-img"), txt: byId("granella-2-text"), arrow: byId("granella-2-text")?.closest(".arrow") },
+  { img: byId("topping-1-img"),  txt: byId("topping-1-text"),  arrow: byId("topping-1-text")?.closest(".arrow") },
+  { img: byId("topping-2-img"),  txt: byId("topping-2-text"),  arrow: byId("topping-2-text")?.closest(".arrow") },
+  { img: byId("frutta-1-img"),   txt: byId("frutta-1-text"),   arrow: byId("frutta-1-text")?.closest(".arrow") },
+  { img: byId("frutta-2-img"),   txt: byId("frutta-2-text"),   arrow: byId("frutta-2-text")?.closest(".arrow") },
+];
 
   // 🔄 RESET TOTALE
   slots.forEach(s => {
