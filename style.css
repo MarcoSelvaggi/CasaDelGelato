@@ -2599,11 +2599,20 @@ body {
 /* =========================
    PALLINE GUSTO – STANDARD DEFINITIVO
 ========================= */
+.box-pallina {
+  overflow: hidden;           /* 🔒 sicurezza */
+}
+
 .box-pallina img {
-  position: relative;
+  position: absolute;
+  inset: 0;
+
   width: 100%;
   height: 100%;
-  object-fit: cover;   /* 🔥 tutte uguali */
+
+  object-fit: cover;          /* 🔥 tutte uguali */
+  object-position: center;    /* sempre centrate */
+
   border-radius: 50%;
   display: block;
 }
