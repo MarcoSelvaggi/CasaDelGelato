@@ -1614,7 +1614,7 @@ body {
 /* ================= FIX IMMAGINI BOX (DAL CSS VECCHIO) ================= */
 
 /* Tutte le immagini nei box NON extra */
-.box:not(.box-extra) img {
+.box:not(.box-extra):not(.box-pallina) img {
   position: absolute;
   top: 0;
   left: 0;
@@ -2594,4 +2594,16 @@ body {
 ========================= */
 .grande-wrapper.triple-gusto .box-panna {
   transform: translateY(30px); /* micro tuning ok 12–18px */
+}
+
+/* =========================
+   PALLINE GUSTO – STANDARD DEFINITIVO
+========================= */
+.box-pallina img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* 🔥 tutte uguali */
+  border-radius: 50%;
+  display: block;
 }
