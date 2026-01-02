@@ -2163,6 +2163,9 @@ body {
   left: 50%;
   transform: translate(-50%, -12px);
 }
+.media-coppa.single-gusto .box-panna {
+  transform: translateY(8px);
+}
 
 /* nasconde le altre palline (sicurezza) */
 .media-coppa.single-gusto .pallina-right,
