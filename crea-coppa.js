@@ -82,6 +82,16 @@ function aggiornaPallineRiepilogoMedia() {
   if (coppaSelezionata !== "MEDIA") return;
 
   const gusti = scelti.gusti || [];
+  const boxPalline = document.querySelector(".box-palline");
+
+  if (!boxPalline) return;
+
+  // ✅ 1 SOLO GUSTO → CENTRA
+  if (gusti.length === 1) {
+    boxPalline.classList.add("single");
+  } else {
+    boxPalline.classList.remove("single");
+  }
 
   const map = [
     { img: "gusto-top-img",   txt: "gusto-top-text" },
@@ -92,21 +102,21 @@ function aggiornaPallineRiepilogoMedia() {
   map.forEach((slot, i) => {
     const img = document.getElementById(slot.img);
     const txt = document.getElementById(slot.txt);
-
-    // 🔑 freccia = parent .box-pallina → .arrow
-    const arrow = img?.closest(".box-pallina")?.querySelector(".arrow");
+    const arrow = txt?.closest(".arrow");
 
     if (!img || !txt || !arrow) return;
 
-    if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
-      img.src = MAP_GUSTI_IMG[gusti[i]];
+    const nome = gusti[i];
+
+    if (nome && MAP_GUSTI_IMG[nome]) {
+      img.src = MAP_GUSTI_IMG[nome];
       img.style.display = "block";
-      txt.textContent = gusti[i];
-      arrow.style.display = "block";   // ✅ MOSTRA
+      txt.textContent = nome;
+      arrow.style.display = "block";
     } else {
       img.style.display = "none";
       txt.textContent = "";
-      arrow.style.display = "none";    // ❌ NASCONDE
+      arrow.style.display = "none";
     }
   });
 }
