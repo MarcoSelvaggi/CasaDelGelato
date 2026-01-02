@@ -83,10 +83,11 @@ function aggiornaPallineRiepilogoMedia() {
 
   const gusti = scelti.gusti || [];
 
+  // 🔥 ORDINE CORRETTO: SINISTRA → DESTRA → ALTO
   const map = [
-    { img: "gusto-top-img",   txt: "gusto-top-text" },
     { img: "gusto-left-img",  txt: "gusto-left-text" },
-    { img: "gusto-right-img", txt: "gusto-right-text" }
+    { img: "gusto-right-img", txt: "gusto-right-text" },
+    { img: "gusto-top-img",   txt: "gusto-top-text" }
   ];
 
   map.forEach((slot, i) => {
