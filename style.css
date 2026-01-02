@@ -2593,5 +2593,5 @@ body {
    GRANDE – 3 GUSTI
 ========================= */
 .grande-wrapper.triple-gusto .box-panna {
-  transform: translateY(20px); /* micro tuning ok 12–18px */
+  transform: translateY(30px); /* micro tuning ok 12–18px */
 }

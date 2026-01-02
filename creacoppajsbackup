@@ -14,6 +14,7 @@ let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in m
 let collapseTimer = null
 let coppaSalvata = false;
 
+
 // =======================
 // DISPONIBILITÀ INGREDIENTI
 // =======================
@@ -23,6 +24,658 @@ let coppaSalvata = false;
 // DISPONIBILITA["Gusti"]["VANIGLIA"] = true / false
 // DISPONIBILITA["Granelle"]["NOCCIOLA"] = true / false
 let DISPONIBILITA = {};
+
+// 🔗 MAPPA GUSTI → IMMAGINI (PROVVISORIA)
+const MAP_GUSTI_IMG = {
+  "VANIGLIA": "img/pallina-vaniglia.png",
+  "FRAGOLA": "img/pallina-fragola.png"
+};
+const MAP_GRANELLE_IMG = {
+  "NOCCIOLA": "img/granella-nocciola.png"
+};
+const MAP_TOPPING_IMG = {
+  "FRUTTI DI BOSCO": "img/topping-bosco.png"
+};
+const MAP_INGREDIENTI_IMG = {
+  "FRAGOLE": "img/fragola.png"
+};
+
+function aggiornaExtraCompattiPiccola() {
+  if (coppaSelezionata !== "PICCOLA") return;
+
+  const slots = [
+    {
+      img: document.getElementById("granella-img"),
+      txt: document.getElementById("granella-text"),
+      arrow: document.getElementById("granella-arrow")
+    },
+    {
+      img: document.getElementById("topping-img"),
+      txt: document.getElementById("topping-text"),
+      arrow: document.getElementById("topping-arrow")
+    },
+    {
+      img: document.getElementById("frutta-img"),
+      txt: document.getElementById("frutta-text"),
+      arrow: document.getElementById("frutta-arrow")
+    }
+  ];
+
+  // reset totale
+  slots.forEach(s => {
+    if (s.img) s.img.style.display = "none";
+    if (s.txt) s.txt.textContent = "";
+    if (s.arrow) s.arrow.style.display = "none";
+  });
+
+  // lista compatta in ordine
+  const compatti = [];
+
+  if (scelti.granelle?.[0] && MAP_GRANELLE_IMG[scelti.granelle[0]]) {
+    compatti.push({
+      nome: scelti.granelle[0],
+      img: MAP_GRANELLE_IMG[scelti.granelle[0]]
+    });
+  }
+
+  if (scelti.topping?.[0] && MAP_TOPPING_IMG[scelti.topping[0]]) {
+    compatti.push({
+      nome: scelti.topping[0],
+      img: MAP_TOPPING_IMG[scelti.topping[0]]
+    });
+  }
+
+  if (scelti.ingredienti?.[0] && MAP_INGREDIENTI_IMG[scelti.ingredienti[0]]) {
+    compatti.push({
+      nome: scelti.ingredienti[0],
+      img: MAP_INGREDIENTI_IMG[scelti.ingredienti[0]]
+    });
+  }
+
+  // riempi da sinistra → niente buchi
+  compatti.forEach((item, i) => {
+    const s = slots[i];
+    if (!s) return;
+
+    s.img.src = item.img;
+    s.img.style.display = "block";
+    s.txt.textContent = item.nome;
+    s.arrow.style.display = "block";
+  });
+}
+
+function aggiornaPallineRiepilogo() {
+  const gusti = scelti.gusti || [];
+
+  const boxPalline = document.querySelector(".box-palline");
+
+  const leftImg  = document.getElementById("gusto-left-img");
+  const rightImg = document.getElementById("gusto-right-img");
+  const leftTxt  = document.getElementById("gusto-left-text");
+  const rightTxt = document.getElementById("gusto-right-text");
+
+  // 🍨 CASO: UN SOLO GUSTO → centra
+  if (gusti.length === 1) {
+    boxPalline.classList.add("single");
+  } else {
+    boxPalline.classList.remove("single");
+  }
+
+  // PALLINA SINISTRA
+  if (gusti[0] && MAP_GUSTI_IMG[gusti[0]]) {
+    leftImg.src = MAP_GUSTI_IMG[gusti[0]];
+    leftImg.style.display = "block";
+    leftTxt.textContent = gusti[0];
+  } else {
+    leftImg.style.display = "none";
+    leftTxt.textContent = "";
+  }
+
+  // PALLINA DESTRA
+  if (gusti[1] && MAP_GUSTI_IMG[gusti[1]]) {
+    rightImg.src = MAP_GUSTI_IMG[gusti[1]];
+    rightImg.style.display = "block";
+    rightTxt.textContent = gusti[1];
+  } else {
+    rightImg.style.display = "none";
+    rightTxt.textContent = "";
+  }
+}
+
+function aggiornaExtraCompattiMedia() {
+  if (coppaSelezionata !== "MEDIA") return;
+
+  // SLOT VISIVI REALI (da sinistra a destra)
+  const slots = [
+    { img: byId("granella-1-img"), txt: byId("granella-1-text"), arrow: byId("granella-1-arrow") },
+    { img: byId("granella-2-img"), txt: byId("granella-2-text"), arrow: byId("granella-2-arrow") },
+    { img: byId("topping-1-img"),  txt: byId("topping-1-text"),  arrow: byId("topping-1-arrow") },
+    { img: byId("topping-2-img"),  txt: byId("topping-2-text"),  arrow: byId("topping-2-arrow") },
+    { img: byId("frutta-1-img"),   txt: byId("frutta-1-text"),   arrow: byId("frutta-1-arrow") },
+  ];
+
+  // ✅ RESET TOTALE (anche se qualche pezzo mancasse)
+  slots.forEach(s => {
+    if (s.img)   s.img.style.display = "none";
+    if (s.txt)   s.txt.textContent = "";
+    if (s.arrow) s.arrow.style.display = "none";
+  });
+
+  // ✅ LISTA COMPATTA IN ORDINE LOGICO
+  const items = [];
+
+  (scelti.granelle || []).forEach(n => {
+    if (MAP_GRANELLE_IMG[n]) items.push({ img: MAP_GRANELLE_IMG[n], txt: n });
+  });
+
+  (scelti.topping || []).forEach(n => {
+    if (MAP_TOPPING_IMG[n]) items.push({ img: MAP_TOPPING_IMG[n], txt: n });
+  });
+
+  (scelti.ingredienti || []).forEach(n => {
+    if (MAP_INGREDIENTI_IMG[n]) items.push({ img: MAP_INGREDIENTI_IMG[n], txt: n });
+  });
+
+  // ✅ RIEMPI DA SINISTRA (SENZA BUCHI)
+  items.forEach((item, i) => {
+    const s = slots[i];
+    if (!s || !s.img || !s.txt || !s.arrow) return;
+
+    s.img.src = item.img;
+    s.img.style.display = "block";
+    s.txt.textContent = item.txt;
+    s.arrow.style.display = "block";
+  });
+}
+
+function aggiornaPallineRiepilogoMedia() {
+  if (coppaSelezionata !== "MEDIA") return;
+
+  const gusti = scelti.gusti || [];
+
+  // 🔥 ORDINE CORRETTO: SINISTRA → DESTRA → ALTO
+  const map = [
+    { img: "gusto-left-img",  txt: "gusto-left-text" },
+    { img: "gusto-right-img", txt: "gusto-right-text" },
+    { img: "gusto-top-img",   txt: "gusto-top-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+    if (!img || !txt) return;
+
+    const box = img.closest(".box-pallina");
+    const arrow = box ? box.querySelector(".arrow") : null;
+
+    if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
+      img.src = MAP_GUSTI_IMG[gusti[i]];
+      img.style.display = "block";
+      txt.textContent = gusti[i];
+      if (arrow) arrow.style.display = "block";
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+      if (arrow) arrow.style.display = "none";
+    }
+  });
+
+  // ===== GESTIONE PANNA =====
+  const wrapper = document.querySelector(".media-coppa");
+  if (!wrapper) return;
+
+  // reset
+  wrapper.classList.remove("single-gusto", "double-gusto");
+
+  // 1 gusto → pallina centrata + panna più alta
+  if (scelti.gusti.length === 1) {
+    wrapper.classList.add("single-gusto");
+  }
+
+  // 2 gusti → panna che scende un po'
+  else if (scelti.gusti.length === 2) {
+    wrapper.classList.add("double-gusto");
+  }
+}
+
+function aggiornaExtraCompattiGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  // SLOT VISIVI REALI (da sinistra a destra)
+const slots = [
+  { img: byId("granella-1-img"), txt: byId("granella-1-text"), arrow: byId("granella-1-text")?.closest(".arrow") },
+  { img: byId("granella-2-img"), txt: byId("granella-2-text"), arrow: byId("granella-2-text")?.closest(".arrow") },
+  { img: byId("topping-1-img"),  txt: byId("topping-1-text"),  arrow: byId("topping-1-text")?.closest(".arrow") },
+  { img: byId("topping-2-img"),  txt: byId("topping-2-text"),  arrow: byId("topping-2-text")?.closest(".arrow") },
+  { img: byId("frutta-1-img"),   txt: byId("frutta-1-text"),   arrow: byId("frutta-1-text")?.closest(".arrow") },
+  { img: byId("frutta-2-img"),   txt: byId("frutta-2-text"),   arrow: byId("frutta-2-text")?.closest(".arrow") },
+];
+
+  // 🔄 RESET TOTALE
+  slots.forEach(s => {
+    if (s.img)   s.img.style.display = "none";
+    if (s.txt)   s.txt.textContent = "";
+    if (s.arrow) s.arrow.style.display = "none";
+  });
+
+  // 📦 LISTA COMPATTA IN ORDINE LOGICO
+  const items = [];
+
+  (scelti.granelle || []).forEach(n => {
+    if (MAP_GRANELLE_IMG[n]) {
+      items.push({ img: MAP_GRANELLE_IMG[n], txt: n });
+    }
+  });
+
+  (scelti.topping || []).forEach(n => {
+    if (MAP_TOPPING_IMG[n]) {
+      items.push({ img: MAP_TOPPING_IMG[n], txt: n });
+    }
+  });
+
+  (scelti.ingredienti || []).forEach(n => {
+    if (MAP_INGREDIENTI_IMG[n]) {
+      items.push({ img: MAP_INGREDIENTI_IMG[n], txt: n });
+    }
+  });
+
+  // 🧠 RIEMPI DA SINISTRA → ZERO BUCHI
+  items.forEach((item, i) => {
+    const s = slots[i];
+    if (!s || !s.img || !s.txt || !s.arrow) return;
+
+    s.img.src = item.img;
+    s.img.style.display = "block";
+    s.txt.textContent = item.txt;
+    s.arrow.style.display = "block";
+  });
+}
+
+function aggiornaPallineRiepilogoGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  const gusti = scelti.gusti || [];
+
+  // 🔥 ORDINE BASE: SINISTRA → BASSO → DESTRA → ALTO
+  const map = [
+    { img: "gusto-left-img",   txt: "gusto-left-text" },
+    { img: "gusto-bottom-img", txt: "gusto-bottom-text" },
+    { img: "gusto-right-img",  txt: "gusto-right-text" },
+    { img: "gusto-top-img",    txt: "gusto-top-text" }
+  ];
+
+  // =========================
+  // RESET / RENDER BASE
+  // =========================
+  map.forEach((slot) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+    if (!img || !txt) return;
+
+    const box = img.closest(".box-pallina");
+    const arrow = box ? box.querySelector(".arrow") : null;
+
+    img.style.display = "none";
+    txt.textContent = "";
+    if (arrow) arrow.style.display = "none";
+  });
+
+  const wrapper = document.querySelector(".grande-wrapper");
+  if (!wrapper) return;
+
+  wrapper.classList.remove("single-gusto", "double-gusto", "triple-gusto");
+
+  // =========================
+  // 🔥 1 GUSTO → SOLO BASSO
+  // =========================
+  if (gusti.length === 1) {
+    wrapper.classList.add("single-gusto");
+
+    const img = document.getElementById("gusto-bottom-img");
+    const txt = document.getElementById("gusto-bottom-text");
+    const arrow = img?.closest(".box-pallina")?.querySelector(".arrow");
+
+    if (img && txt) {
+      img.src = MAP_GUSTI_IMG[gusti[0]];
+      img.style.display = "block";
+      txt.textContent = gusti[0];
+      if (arrow) arrow.style.display = "block";
+    }
+
+    return;
+  }
+
+  // =========================
+  // 🔥 2 GUSTI → SINISTRA + DESTRA
+  // =========================
+  if (gusti.length === 2) {
+    wrapper.classList.add("double-gusto");
+
+    const leftImg  = document.getElementById("gusto-left-img");
+    const leftTxt  = document.getElementById("gusto-left-text");
+    const rightImg = document.getElementById("gusto-right-img");
+    const rightTxt = document.getElementById("gusto-right-text");
+
+    const leftArrow  = leftImg?.closest(".box-pallina")?.querySelector(".arrow");
+    const rightArrow = rightImg?.closest(".box-pallina")?.querySelector(".arrow");
+
+    if (leftImg && leftTxt) {
+      leftImg.src = MAP_GUSTI_IMG[gusti[0]];
+      leftImg.style.display = "block";
+      leftTxt.textContent = gusti[0];
+      if (leftArrow) leftArrow.style.display = "block";
+    }
+
+    if (rightImg && rightTxt) {
+      rightImg.src = MAP_GUSTI_IMG[gusti[1]];
+      rightImg.style.display = "block";
+      rightTxt.textContent = gusti[1];
+      if (rightArrow) rightArrow.style.display = "block";
+    }
+
+    return;
+  }
+
+  // =========================
+  // 🔥 3 GUSTI → ORDINE NORMALE + PANNA PIÙ BASSA
+  // =========================
+  if (gusti.length === 3) {
+    wrapper.classList.add("triple-gusto");
+  }
+
+  // =========================
+  // 🔥 3–4 GUSTI → ORDINE NORMALE
+  // =========================
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+    if (!img || !txt) return;
+
+    const box = img.closest(".box-pallina");
+    const arrow = box ? box.querySelector(".arrow") : null;
+
+    if (gusti[i] && MAP_GUSTI_IMG[gusti[i]]) {
+      img.src = MAP_GUSTI_IMG[gusti[i]];
+      img.style.display = "block";
+      txt.textContent = gusti[i];
+      if (arrow) arrow.style.display = "block";
+    }
+  });
+}
+
+function aggiornaGranellaRiepilogo() {
+  const img   = document.getElementById("granella-img");
+  const txt   = document.getElementById("granella-text");
+  const arrow = document.getElementById("granella-arrow");
+
+  if (!img || !txt || !arrow) return;
+
+  const granella = scelti.granelle?.[0]; // prima granella scelta
+
+  if (granella && MAP_GRANELLE_IMG[granella]) {
+    img.src = MAP_GRANELLE_IMG[granella];
+    img.style.display = "block";
+    txt.textContent = granella;
+    arrow.style.display = "block";   // ✅ MOSTRA
+  } else {
+    img.style.display = "none";
+    txt.textContent = "";
+    arrow.style.display = "none";    // ❌ NASCONDE
+  }
+}
+
+function aggiornaGranellaRiepilogoMedia() {
+  if (coppaSelezionata !== "MEDIA") return;
+
+  const granelle = scelti.granelle || [];
+
+  const map = [
+    { img: "granella-1-img", txt: "granella-1-text", arrow: "granella-1-arrow" },
+    { img: "granella-2-img", txt: "granella-2-text", arrow: "granella-2-arrow" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img   = document.getElementById(slot.img);
+    const txt   = document.getElementById(slot.txt);
+    const arrow = document.getElementById(slot.arrow);
+
+    if (!img || !txt || !arrow) return;
+
+    const nome = granelle[i];
+
+    if (nome && MAP_GRANELLE_IMG[nome]) {
+      img.src = MAP_GRANELLE_IMG[nome];
+      img.style.display = "block";
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+      arrow.style.display = "none";    // ❌
+    }
+  });
+}
+
+function aggiornaGranellaRiepilogoGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  const granelle = scelti.granelle || [];
+
+  const map = [
+    { img: "granella-1-img", txt: "granella-1-text", arrow: "granella-1-text" },
+    { img: "granella-2-img", txt: "granella-2-text", arrow: "granella-2-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+    const arrow = txt?.closest(".arrow");
+
+    if (!img || !txt || !arrow) return;
+
+    const nome = granelle[i];
+
+    if (nome && MAP_GRANELLE_IMG[nome]) {
+      img.src = MAP_GRANELLE_IMG[nome];
+      img.style.display = "block";
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+      arrow.style.display = "none";    // ❌
+    }
+  });
+}
+
+function aggiornaToppingRiepilogo() {
+  const img   = document.getElementById("topping-img");
+  const txt   = document.getElementById("topping-text");
+  const arrow = document.getElementById("topping-arrow");
+
+  if (!img || !txt || !arrow) return;
+
+  const topping = scelti.topping?.[0]; // primo topping scelto
+
+  if (topping && MAP_TOPPING_IMG[topping]) {
+    img.src = MAP_TOPPING_IMG[topping];
+    img.style.display = "block";
+    txt.textContent = topping;
+    arrow.style.display = "block";
+  } else {
+    img.style.display = "none";
+    txt.textContent = "";
+    arrow.style.display = "none";
+  }
+}
+
+function aggiornaToppingRiepilogoMedia() {
+  if (coppaSelezionata !== "MEDIA") return;
+
+  const topping = scelti.topping || [];
+
+  const map = [
+    { img: "topping-1-img", txt: "topping-1-text", arrow: "topping-1-arrow" },
+    { img: "topping-2-img", txt: "topping-2-text", arrow: "topping-2-arrow" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img   = document.getElementById(slot.img);
+    const txt   = document.getElementById(slot.txt);
+    const arrow = document.getElementById(slot.arrow);
+
+    if (!img || !txt || !arrow) return;
+
+    const nome = topping[i];
+
+    if (nome && MAP_TOPPING_IMG[nome]) {
+      img.src = MAP_TOPPING_IMG[nome];
+      img.style.display = "block";
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+      arrow.style.display = "none";    // ❌
+    }
+  });
+}
+
+function aggiornaToppingRiepilogoGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  const topping = scelti.topping || [];
+
+  const map = [
+    { img: "topping-1-img", txt: "topping-1-text", arrow: "topping-1-text" },
+    { img: "topping-2-img", txt: "topping-2-text", arrow: "topping-2-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+    const arrow = txt?.closest(".arrow");
+
+    if (!img || !txt || !arrow) return;
+
+    const nome = topping[i];
+
+    if (nome && MAP_TOPPING_IMG[nome]) {
+      img.src = MAP_TOPPING_IMG[nome];
+      img.style.display = "block";
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+      arrow.style.display = "none";    // ❌
+    }
+  });
+}
+
+function aggiornaIngredientiRiepilogo() {
+  const img   = document.getElementById("frutta-img");
+  const txt   = document.getElementById("frutta-text");
+  const arrow = document.getElementById("frutta-arrow");
+
+  if (!img || !txt || !arrow) return;
+
+  const ingrediente = scelti.ingredienti?.[0]; // primo ingrediente scelto
+
+  if (ingrediente && MAP_INGREDIENTI_IMG[ingrediente]) {
+    img.src = MAP_INGREDIENTI_IMG[ingrediente];
+    img.style.display = "block";
+    txt.textContent = ingrediente;
+    arrow.style.display = "block";
+  } else {
+    img.style.display = "none";
+    txt.textContent = "";
+    arrow.style.display = "none";
+  }
+}
+
+function aggiornaIngredientiRiepilogoMedia() {
+  if (coppaSelezionata !== "MEDIA") return;
+
+  const ingrediente = scelti.ingredienti?.[0];
+
+  const img   = document.getElementById("frutta-1-img");
+  const txt   = document.getElementById("frutta-1-text");
+  const arrow = document.getElementById("frutta-1-arrow");
+
+  if (!img || !txt || !arrow) return;
+
+  if (ingrediente && MAP_INGREDIENTI_IMG[ingrediente]) {
+    img.src = MAP_INGREDIENTI_IMG[ingrediente];
+    img.style.display = "block";
+    txt.textContent = ingrediente;
+    arrow.style.display = "block";   // ✅
+  } else {
+    img.style.display = "none";
+    txt.textContent = "";
+    arrow.style.display = "none";    // ❌
+  }
+}
+
+function aggiornaIngredientiRiepilogoGrande() {
+  if (coppaSelezionata !== "GRANDE") return;
+
+  const ingredienti = scelti.ingredienti || [];
+
+  const map = [
+    { img: "frutta-1-img", txt: "frutta-1-text", arrow: "frutta-1-text" },
+    { img: "frutta-2-img", txt: "frutta-2-text", arrow: "frutta-2-text" }
+  ];
+
+  map.forEach((slot, i) => {
+    const img = document.getElementById(slot.img);
+    const txt = document.getElementById(slot.txt);
+    const arrow = txt?.closest(".arrow");
+
+    if (!img || !txt || !arrow) return;
+
+    const nome = ingredienti[i];
+
+    if (nome && MAP_INGREDIENTI_IMG[nome]) {
+      img.src = MAP_INGREDIENTI_IMG[nome];
+      img.style.display = "block";
+      txt.textContent = nome;
+      arrow.style.display = "block";   // ✅
+    } else {
+      img.style.display = "none";
+      txt.textContent = "";
+      arrow.style.display = "none";    // ❌
+    }
+  });
+}
+
+function aggiornaExtraRiepilogo() {
+  const extras = scelti.extra || [];
+  const slots = document.querySelectorAll("#extra-stage .extra-slot");
+
+  // reset totale
+  slots.forEach(slot => {
+    slot.querySelector(".extra-text").textContent = "";
+    slot.style.display = "none";
+  });
+
+  if (extras.length === 0) return;
+
+  // 🔹 1 extra → slot centrale
+  if (extras.length === 1) {
+    const slot = slots[1];
+    slot.style.display = "flex";
+    slot.querySelector(".extra-text").textContent = extras[0];
+    return;
+  }
+
+  // 🔹 2 o 3 extra → da sinistra
+  extras.slice(0, 3).forEach((extra, i) => {
+    const slot = slots[i];
+    slot.style.display = "flex";
+    slot.querySelector(".extra-text").textContent = extra;
+  });
+}
 
 // Carica la tabella "disponibilita" da Supabase
 async function caricaDisponibilita() {
@@ -929,6 +1582,317 @@ function formatGustiQuantities() {
         .join(", ");
 }
 
+function renderCoppaGrande(stage) {
+  stage.innerHTML = `
+
+<div class="grande-wrapper"> 
+
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png">
+  </div>
+
+  <!-- PALLINE -->
+  <div class="box-palline">
+
+    <div class="box box-pallina pallina-top">
+      <div class="arrow" style="left:-60px; top:55%; transform:translateY(-50%);">
+        <div class="arrow-text top gusto-text" id="gusto-top-text">Gusto</div>
+        <svg width="50" height="30" viewBox="0 0 50 30" style="transform: scaleY(-1);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-top-img" src="img/pallina-vaniglia.png">
+    </div>
+
+    <div class="box box-pallina pallina-left">
+      <div class="arrow" style="left:-38px; top:40%; transform:translate(-30px, -50%);">
+        <svg width="50" height="30" viewBox="0 0 50 30">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+        <div class="arrow-text left gusto-text" id="gusto-left-text">Gusto</div>
+      </div>
+      <img id="gusto-left-img" src="img/pallina-fragola.png">
+    </div>
+
+    <div class="box box-pallina pallina-right">
+      <div class="arrow" style="right:-62px; top:30%; transform:translateY(-50%);">
+        <div class="arrow-text right gusto-text" id="gusto-right-text">Gusto</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(180deg) translateY(-14px);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-right-img" src="img/pallina-cioccolato.png">
+    </div>
+
+    <div class="box box-pallina pallina-bottom">
+      <div class="arrow" style="top:115%; left:50%; transform:translateX(-50%);">
+        <div class="arrow-text bottom gusto-text" id="gusto-bottom-text">Gusto</div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(-90deg);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-bottom-img" src="img/pallina-pistacchio.png">
+    </div>
+
+  </div>
+
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-grande.png">
+  </div>
+
+  <!-- GRANELLE -->
+<div class="box box-extra granella-1">
+  <img id="granella-1-img" src="img/granella-nocciola.png">
+
+  <div class="arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom granella-text" id="granella-1-text">Granella</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(-90deg) scaleY(-1);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
+
+<div class="box box-extra granella-2">
+  <img id="granella-2-img" src="img/granella-nocciola.png">
+
+  <div class="arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom granella-text" id="granella-2-text">Granella</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(-90deg);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
+
+  <!-- TOPPING -->
+<div class="box box-extra topping-1">
+  <img id="topping-1-img" src="img/topping-bosco.png">
+
+  <div class="arrow"
+       style="top:-58px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text top topping-text" id="topping-1-text">Topping</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(90deg);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
+
+<div class="box box-extra topping-2">
+  <img id="topping-2-img" src="img/topping-bosco.png">
+
+  <div class="arrow"
+       style="top:-58px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text top topping-text" id="topping-2-text">Topping</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(90deg) scaleY(-1);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
+
+  <!-- FRUTTA -->
+<div class="box box-extra frutta-1">
+  <img id="frutta-1-img" src="img/fragola.png">
+
+  <div class="arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom frutta-text" id="frutta-1-text">Frutta</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(-90deg) scaleY(-1);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
+
+<div class="box box-extra frutta-2">
+  <img id="frutta-2-img" src="img/fragola.png">
+
+  <div class="arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom frutta-text" id="frutta-2-text">Frutta</div>
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(-90deg);">
+      <path d="M30 15 C16 14, -6 18, -12 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+</div>
+
+  <!-- EXTRA STAGE -->
+  <div id="extra-stage">
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+    <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
+  </div>
+
+</div>
+`;
+}
+
+function renderCoppaMedia(stage) {
+  stage.innerHTML = `
+
+<div class="media-coppa">
+
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png">
+  </div>
+
+  <!-- PALLINE -->
+  <div class="box-palline">
+
+    <!-- PALLINA IN ALTO -->
+    <div class="box box-pallina pallina-top">
+      <div class="arrow"
+           style="left:-60px; top:55%; transform:translateY(-50%);">
+        <div class="arrow-text top gusto-top-text" id="gusto-top-text"></div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: scaleY(-1);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-top-img">
+    </div>
+
+    <!-- PALLINA SINISTRA -->
+    <div class="box box-pallina pallina-left">
+      <div class="arrow"
+           style="left:-38px; top:40%; transform:translate(-30px, -50%);">
+        <svg width="50" height="30" viewBox="0 0 50 30">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+        <div class="arrow-text left" id="gusto-left-text"></div>
+      </div>
+      <img id="gusto-left-img">
+    </div>
+
+    <!-- PALLINA DESTRA -->
+    <div class="box box-pallina pallina-right">
+      <div class="arrow"
+           style="right:-62px; top:30%; transform:translateY(-50%);">
+        <div class="arrow-text right" id="gusto-right-text"></div>
+        <svg width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(180deg) translateY(-14px);">
+          <path d="M30 15 C16 14, -6 18, -12 38"/>
+          <path d="M38 15 L30 11 M38 15 L30 19"/>
+        </svg>
+      </div>
+      <img id="gusto-right-img">
+    </div>
+
+  </div>
+
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-media.png">
+  </div>
+
+</div>
+
+<div class="media-extras">
+
+  <!-- GRANELLA 1 -->
+  <div class="box box-extra granella-1">
+    <img id="granella-1-img">
+    <div class="arrow" id="granella-1-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text" id="granella-1-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg) scaleY(-1);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- GRANELLA 2 -->
+  <div class="box box-extra granella-2">
+    <img id="granella-2-img">
+    <div class="arrow" id="granella-2-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom granella-text" id="granella-2-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TOPPING 1 -->
+  <div class="box box-extra topping-1">
+    <img id="topping-1-img">
+    <div class="arrow" id="topping-1-arrow"
+         style="top:-58px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text top topping-text" id="topping-1-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TOPPING 2 -->
+  <div class="box box-extra topping-2">
+    <img id="topping-2-img">
+    <div class="arrow" id="topping-2-arrow"
+         style="top:-58px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text top topping-text" id="topping-2-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform: rotate(90deg) scaleY(-1);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- FRUTTA -->
+  <div class="box box-extra box-frutta">
+    <img id="frutta-1-img">
+    <div class="arrow" id="frutta-1-arrow"
+         style="bottom:-52px; left:50%; transform:translateX(-50%);">
+      <div class="arrow-text bottom frutta-text" id="frutta-1-text"></div>
+      <svg width="50" height="30" viewBox="0 0 50 30"
+           style="transform:rotate(-90deg);">
+        <path d="M30 15 C16 14, -6 18, -12 38"/>
+        <path d="M38 15 L30 11 M38 15 L30 19"/>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXTRA STAGE -->
+<div id="extra-stage">
+  <div class="extra-slot"><div class="extra-text"></div></div>
+  <div class="extra-slot"><div class="extra-text"></div></div>
+  <div class="extra-slot"><div class="extra-text"></div></div>
+</div>
+
+  `;
+}
+
 async function mostraRiepilogo(){
 
   if (coppaSalvata) {
@@ -974,20 +1938,22 @@ async function mostraRiepilogo(){
       window.__lastQrToken = qrToken;
 
   // ✅ 4) Oggetto coppa da salvare (ORA CON NOME + qr_token)
-  const coppa = {
-      nome: coppaNome,
-      email: email || null,
-      guest_id: guest_id,
-      data: new Date().toISOString(),
-      formato: coppaSelezionata,
-      gusti: scelti.gusti,
-      granelle: scelti.granelle,
-      topping: scelti.topping,
-      ingredienti: scelti.ingredienti,
-      extra: scelti.extra,
-      prezzo: totale,
-      qr_token: qrToken   // 🔥 NUOVO CAMPO
-  };
+const coppa = {
+  nome: coppaNome,
+  email: email || null,
+  guest_id: guest_id,
+  data: new Date().toISOString(),
+  formato: coppaSelezionata,
+  gusti: scelti.gusti,
+  granelle: scelti.granelle,
+  topping: scelti.topping,
+  ingredienti: scelti.ingredienti,
+  extra: scelti.extra,
+  prezzo: totale,
+  qr_token: qrToken,
+  tavolo: tavoloSelezionato,   // ✅ QUI
+  confermate: 0
+};
 
   // ✅ 5) Salva su Supabase
   try {
@@ -1058,6 +2024,15 @@ area.innerHTML = `
     <div id="qr-code" data-token="${qrToken}"></div>
 </div>
 
+<!-- 🍨 COPPA GRAFICA -->
+<div id="coppa-wrapper" style="
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+">
+  <div id="coppa-stage"></div>
+</div>
+
 <button class="next-btn" style="margin-top:15px;" onclick="aggiungiAlCarrello()">
     🛒 Aggiungi al carrello
 </button>
@@ -1073,6 +2048,173 @@ area.innerHTML = `
   <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
 </div>
 `;
+const stage = document.getElementById("coppa-stage");
+if (!stage) return;
+
+// reset classi
+document.body.classList.remove("coppa-media", "coppa-grande");
+
+// QUI decidi il formato
+if (coppaSelezionata === "PICCOLA") {
+
+  stage.innerHTML = `
+
+  <!-- PANNA -->
+  <div class="box box-panna">
+    <img src="img/panna.png">
+    <div class="label">Panna</div>
+  </div>
+
+  <!-- PALLINE -->
+  <div class="box-palline">
+
+    <!-- Pallina sinistra -->
+    <div class="box box-pallina pallina-1">
+     <img id="gusto-left-img" src="img/pallina-vaniglia.png">
+
+      <!-- Freccia gusto sinistra -->
+      <div class="arrow"
+     id="gusto-left-arrow"
+     style="left:-38px; top:50%; transform:translate(-30px, -50%);">
+        <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30">
+          <path d="M30 15 C16 14, -6 18, -12 38"
+                fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" />
+          <path d="M38 15 L30 11 M38 15 L30 19"
+                fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+       <div class="arrow-text" id="gusto-left-text">Gusto</div>
+      </div>
+    </div>
+
+    <!-- Pallina destra -->
+    <div class="box box-pallina pallina-2">
+      <img id="gusto-right-img" src="img/pallina-fragola.png">
+
+      <!-- Freccia gusto destra -->
+      <div class="arrow"
+     id="gusto-right-arrow"
+     style="right:-62px; top:50%; transform:translateY(-50%);">
+        <div class="arrow-text right" id="gusto-right-text">Gusto</div>
+        <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+             style="transform: rotate(180deg) translateY(-14px); transform-origin: center;">
+          <path d="M30 15 C16 14, -6 18, -12 38" />
+          <path d="M38 15 L30 11 M38 15 L30 19" />
+        </svg>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COPPA -->
+  <div class="box box-coppa">
+    <img src="img/coppa-piccola.png">
+    <div class="label">Coppa</div>
+  </div>
+
+  <!-- GRANELLA -->
+<div class="box box-extra box-granella">
+  <img id="granella-img" src="img/granella-nocciola.png">
+
+  <div class="arrow" id="granella-arrow"
+     style="bottom:-52px; left:50%; transform:translateX(-50%);">
+    <div class="arrow-text bottom granella-text" id="granella-text">
+      Granella
+    </div>
+
+    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+         style="transform:rotate(-90deg) scaleY(-1); transform-origin:center;">
+      <path d="M30 15 C16 14, -6 18, -12 38" />
+      <path d="M38 15 L30 11 M38 15 L30 19" />
+    </svg>
+  </div>
+</div>
+
+  <!-- TOPPING -->
+<div class="box box-extra box-topping">
+  <img id="topping-img" src="img/topping-bosco.png">
+
+  <div class="arrow"
+       id="topping-arrow"
+       style="top:-58px; left:50%; transform:translateX(-50%);">
+
+    <div class="arrow-text top topping-text" id="topping-text">
+      Topping
+    </div>
+
+    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+         style="transform: rotate(90deg) scaleY(-1); transform-origin: center;">
+      <path d="M30 15 C16 14, -6 18, -12 38" />
+      <path d="M38 15 L30 11 M38 15 L30 19" />
+    </svg>
+  </div>
+</div>
+
+  <!-- FRUTTA -->
+<div class="box box-extra box-frutta">
+  <img id="frutta-img" src="img/fragola.png">
+
+  <div class="arrow"
+       id="frutta-arrow"
+       style="bottom:-52px; left:50%; transform:translateX(-50%);">
+
+    <div class="arrow-text bottom frutta-text" id="frutta-text">
+      Frutta
+    </div>
+
+    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
+         style="transform:rotate(-90deg); transform-origin:center;">
+      <path d="M30 15 C16 14, -6 18, -12 38" />
+      <path d="M38 15 L30 11 M38 15 L30 19" />
+    </svg>
+  </div>
+</div>
+<!-- ================= EXTRA STAGE ================= -->
+<div id="extra-stage">
+
+  <div class="extra-slot" data-slot="0">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
+
+  <div class="extra-slot" data-slot="1">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
+
+  <div class="extra-slot" data-slot="2">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
+
+</div>
+  `;
+}
+
+else if (coppaSelezionata === "MEDIA") {
+
+  document.body.classList.add("coppa-media");
+  renderCoppaMedia(stage);
+}
+else if (coppaSelezionata === "GRANDE") {
+  document.body.classList.add("coppa-grande");
+  renderCoppaGrande(stage);
+}
+if (coppaSelezionata === "PICCOLA") {
+aggiornaPallineRiepilogo();
+aggiornaExtraCompattiPiccola();
+}
+
+if (coppaSelezionata === "MEDIA") {
+aggiornaPallineRiepilogoMedia();
+aggiornaExtraCompattiMedia();
+}
+
+if (coppaSelezionata === "GRANDE") {
+  aggiornaPallineRiepilogoGrande();
+  aggiornaExtraCompattiGrande(); // ✅ UNICA
+}
+
+aggiornaExtraRiepilogo();
 
 // === QR CODE ===
 if (window.QRCode) {
@@ -1098,35 +2240,59 @@ if (window.QRCode) {
   updateCarrelloBadge();
 }
 
+function firmaCoppa(c) {
+    const normalize = arr =>
+        (arr || []).slice().sort().join("|");
+
+    return [
+        c.formato,
+        normalize(c.gusti),
+        normalize(c.granelle),
+        normalize(c.topping),
+        normalize(c.ingredienti),
+        normalize(c.extra)
+    ].join("::");
+}
+
 window.aggiungiAlCarrello = function () {
 
-    // recupero la coppa appena salvata in locale
-    let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-    const ultima = cronologia[0];  // la coppa creata ora
+    let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    const ultima = cronologia[0];
+    if (!ultima) {
+        alert("Errore: impossibile aggiungere la coppa!");
+        return;
+    }
 
-    if (!ultima) {
-        alert("Errore: impossibile aggiungere la coppa!");
-        return;
-    }
+    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
 
-    const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+    const nuovaCoppa = {
+        formato: ultima.formato,
+        gusti: [...ultima.gusti],
+        granelle: [...ultima.granelle],
+        topping: [...ultima.topping],
+        ingredienti: [...ultima.ingredienti],
+        extra: [...ultima.extra],
+        quantita: 1
+    };
 
-    const nuovaCoppa = {
-        id: crypto.randomUUID(),
-        formato: ultima.formato,
-        gusti: [...ultima.gusti],
-        granelle: [...ultima.granelle],
-        topping: [...ultima.topping],
-        ingredienti: [...ultima.ingredienti],
-        extra: [...ultima.extra],
-        quantita: 1,
-    };
+    const firmaNuova = firmaCoppa(nuovaCoppa);
 
-    carrello.push(nuovaCoppa);
-    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+    // 🔥 CERCA COPPA IDENTICA
+    const esistente = carrello.find(c => firmaCoppa(c) === firmaNuova);
 
-    alert("🛒 Coppa aggiunta al carrello!");
-    updateBadgeNav();
+    if (esistente) {
+        // 👉 stessa coppa → aumenta quantità
+        esistente.quantita += 1;
+    } else {
+        // 👉 coppa nuova → aggiungi
+        nuovaCoppa.id = crypto.randomUUID();
+        carrello.push(nuovaCoppa);
+    }
+
+    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+
+    alert("🛒 Coppa aggiunta al carrello!");
+    updateBadgeNav();
 };
 
 function getCarrelloCount() {
