@@ -82,29 +82,20 @@ function aggiornaPallineRiepilogoMedia() {
   if (coppaSelezionata !== "MEDIA") return;
 
   const gusti = scelti.gusti || [];
-  const boxPalline = document.querySelector(".box-palline");
 
-  if (!boxPalline) return;
-
-  // ✅ 1 SOLO GUSTO → CENTRA
-  if (gusti.length === 1) {
-    boxPalline.classList.add("single");
-  } else {
-    boxPalline.classList.remove("single");
-  }
-
+  // ORDINE RIEMPIMENTO: sinistra, destra, top
   const map = [
-    { img: "gusto-top-img",   txt: "gusto-top-text" },
-    { img: "gusto-left-img",  txt: "gusto-left-text" },
-    { img: "gusto-right-img", txt: "gusto-right-text" }
+    { img: "gusto-left-img",  txt: "gusto-left-text",  arrow: "gusto-left-arrow" },
+    { img: "gusto-right-img", txt: "gusto-right-text", arrow: "gusto-right-arrow" },
+    { img: "gusto-top-img",   txt: "gusto-top-text",   arrow: "gusto-top-arrow" }
   ];
 
   map.forEach((slot, i) => {
-    const img = document.getElementById(slot.img);
-    const txt = document.getElementById(slot.txt);
-    const arrow = txt?.closest(".arrow");
+    const img   = document.getElementById(slot.img);
+    const txt   = document.getElementById(slot.txt);
+    const arrow = document.getElementById(slot.arrow);
 
-    if (!img || !txt || !arrow) return;
+    if (!img || !txt) return;
 
     const nome = gusti[i];
 
@@ -112,13 +103,21 @@ function aggiornaPallineRiepilogoMedia() {
       img.src = MAP_GUSTI_IMG[nome];
       img.style.display = "block";
       txt.textContent = nome;
-      arrow.style.display = "block";
+
+      // se esiste anche la freccia, mostrala
+      if (arrow) arrow.style.display = "block";
     } else {
       img.style.display = "none";
       txt.textContent = "";
-      arrow.style.display = "none";
+
+      // se esiste anche la freccia, nascondila
+      if (arrow) arrow.style.display = "none";
     }
   });
+
+  // 🔥 IMPORTANTISSIMO: non usare più la classe single in media
+  const boxPalline = document.querySelector(".coppa-media .box-palline");
+  if (boxPalline) boxPalline.classList.remove("single");
 }
 
 function aggiornaPallineRiepilogoGrande() {
