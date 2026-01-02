@@ -1660,18 +1660,6 @@ body {
   object-fit: contain;
 }
 
-/* ================= LIVELLI VISIVI ================= */
-.box-palline {
-  z-index: 1;
-}
-
-.box-coppa {
-  z-index: 2;
-}
-
-.box-panna {
-  z-index: 3;
-}
 
 /* ================= LABEL ================= */
 .label {
