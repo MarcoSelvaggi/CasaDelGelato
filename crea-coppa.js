@@ -48,7 +48,17 @@ const MAP_GUSTI_IMG = {
   "CREME CARAMEL": "img/caramel.png",
   "BACIO": "img/bacio.png",
   "CAFFÈ": "img/caffe.png",
-  "TIRAMISÙ": "img/tiramisu.png"
+  "TIRAMISÙ": "img/tiramisu.png",
+  "CROCCANTINO AL RUM": "img/croccantino.png",
+  "AMARETTO": "img/amaretto.png",
+  "MALAGA": "img/malaga.png",
+  "CHEESECAKE": "img/cheesecake.png",
+  "COOKIES": "img/cookies.png",
+  "CREMA ANDALUSA": "img/andalusa.png",
+  "CREMINO": "img/cremino.png",
+  "CREMINO AL PISTACCHIO": "img/creminopistacchio.png",
+  "AFTER EIGHT": "img/aftereight.png",
+  "VARIEGATO FICHI NOCI MIELE": "img/variegatofichi.png"
 };
 const MAP_GRANELLE_IMG = {
   "NOCCIOLA": "img/granella-nocciola.png"
