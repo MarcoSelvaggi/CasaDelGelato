@@ -1549,7 +1549,8 @@ body {
   width: 260px;
   height: 270px;
   left: var(--base-left);
-  top: 180px;
+  top: 170px;
+  z-index:1;
 }
 
 /* ================= PALLINE ================= */
@@ -1559,7 +1560,7 @@ body {
   height: 140px;
   left: var(--base-left);
   top: 110px;
-  z-index: 1;
+  z-index: 3;
 }
 
 .box-pallina {
@@ -1594,7 +1595,7 @@ body {
   height: 160px;
   left: calc(var(--base-left) + 130px - 80px);
   top: 10px;
-  z-index: 3;
+  z-index: 4;
 }
 
 /* ================= EXTRA ================= */
