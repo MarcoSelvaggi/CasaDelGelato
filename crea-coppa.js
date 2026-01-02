@@ -133,7 +133,7 @@ function aggiornaPallineRiepilogoGrande() {
 
   const gusti = scelti.gusti || [];
 
-  // 🔥 ORDINE: SINISTRA → CENTRO (BOTTOM) → DESTRA → ALTO
+  // 🔥 ORDINE NORMALE: SINISTRA → CENTRO → DESTRA → ALTO
   const map = [
     { img: "gusto-left-img",   txt: "gusto-left-text" },
     { img: "gusto-bottom-img", txt: "gusto-bottom-text" },
@@ -160,6 +160,39 @@ function aggiornaPallineRiepilogoGrande() {
       if (arrow) arrow.style.display = "none";
     }
   });
+
+  // =========================
+  // 🔥 CASO 1 SOLO GUSTO
+  // =========================
+  const wrapper = document.querySelector(".grande-wrapper");
+  if (!wrapper) return;
+
+  wrapper.classList.remove("single-gusto");
+
+  if (gusti.length === 1) {
+    wrapper.classList.add("single-gusto");
+
+    // forza il gusto SOLO al centro (bottom)
+    map.forEach((slot, i) => {
+      const img = document.getElementById(slot.img);
+      const txt = document.getElementById(slot.txt);
+      const box = img ? img.closest(".box-pallina") : null;
+      const arrow = box ? box.querySelector(".arrow") : null;
+
+      if (!img || !txt) return;
+
+      if (slot.img === "gusto-bottom-img") {
+        img.src = MAP_GUSTI_IMG[gusti[0]];
+        img.style.display = "block";
+        txt.textContent = gusti[0];
+        if (arrow) arrow.style.display = "block";
+      } else {
+        img.style.display = "none";
+        txt.textContent = "";
+        if (arrow) arrow.style.display = "none";
+      }
+    });
+  }
 }
 
 function aggiornaGranellaRiepilogo() {

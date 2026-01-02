@@ -2536,3 +2536,23 @@ body {
 .coppa-grande .topping-2-text {
   margin-left: 30px;
 }
+/* =========================
+   GRANDE – 1 SOLO GUSTO
+========================= */
+
+/* pallina centrale leggermente più su */
+.grande-wrapper.single-gusto .pallina-bottom {
+  transform: translateY(-18px);
+}
+
+/* panna più bassa per coprire la pallina */
+.grande-wrapper.single-gusto .box-panna {
+  transform: translateY(24px);
+}
+
+/* sicurezza: nasconde le altre palline */
+.grande-wrapper.single-gusto .pallina-left,
+.grande-wrapper.single-gusto .pallina-right,
+.grande-wrapper.single-gusto .pallina-top {
+  display: none;
+}
