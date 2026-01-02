@@ -2161,10 +2161,7 @@ body {
 /* centra la pallina sinistra */
 .media-coppa.single-gusto .pallina-left {
   left: 50%;
-  transform: translate(-50%, -12px);
-}
-.media-coppa.single-gusto .box-panna {
-  transform: translateY(8px);
+  transform: translate(-50%, -16px);
 }
 
 /* nasconde le altre palline (sicurezza) */
