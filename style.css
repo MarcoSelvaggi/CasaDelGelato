@@ -2540,9 +2540,10 @@ body {
    GRANDE – 1 SOLO GUSTO
 ========================= */
 
-/* pallina centrale leggermente più su */
+/* pallina CENTRATA DAVVERO */
 .grande-wrapper.single-gusto .pallina-bottom {
-  transform: translateY(-18px);
+  left: 50%;
+  transform: translate(-50%, -18px);
 }
 
 /* panna più bassa per coprire la pallina */
