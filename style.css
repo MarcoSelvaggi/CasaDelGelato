@@ -2154,7 +2154,26 @@ body {
 
   background: transparent;
 }
+/* =========================
+   MEDIA – UN SOLO GUSTO
+========================= */
 
+/* centra la pallina sinistra */
+.media-coppa.single-gusto .pallina-left {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* nasconde le altre palline (sicurezza) */
+.media-coppa.single-gusto .pallina-right,
+.media-coppa.single-gusto .pallina-top {
+  display: none;
+}
+
+/* abbassa leggermente la panna */
+.media-coppa.single-gusto .box-panna {
+  transform: translateY(14px);
+}
 
 
 

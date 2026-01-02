@@ -109,6 +109,14 @@ function aggiornaPallineRiepilogoMedia() {
       if (arrow) arrow.style.display = "none";
     }
   });
+  const wrapper = document.querySelector(".media-coppa");
+if (!wrapper) return;
+
+if (scelti.gusti.length === 1) {
+  wrapper.classList.add("single-gusto");
+} else {
+  wrapper.classList.remove("single-gusto");
+}
 }
 
 function aggiornaPallineRiepilogoGrande() {
