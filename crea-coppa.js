@@ -61,7 +61,13 @@ const MAP_GUSTI_IMG = {
   "VARIEGATO FICHI NOCI MIELE": "img/variegatofichi.png"
 };
 const MAP_GRANELLE_IMG = {
-  "NOCCIOLA": "img/granella-nocciola.png"
+  "NOCCIOLA": "img/granella-nocciola.png",
+  "CROCCANTE": "img/granella-croccante.png",
+  "PISTACCHIO": "img/granella-pistacchio.png",
+  "COCCO RAPE'": "img/cocco-rape.png",
+  "SCAGLIETTE AL CIOCCOLATO": "img/scagliette.png",
+  "SMARTIES": "img/smarties.png",
+  "ZUCCHERINI COLORATI": "img/codette.png"
 };
 const MAP_TOPPING_IMG = {
   "FRUTTI DI BOSCO": "img/topping-bosco.png"
