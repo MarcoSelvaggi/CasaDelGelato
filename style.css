@@ -2206,25 +2206,27 @@ body {
    MEDIA – UN SOLO GUSTO
 ========================= */
 
-/* centra la pallina sinistra */
-.media-coppa.single-gusto .pallina-left {
+.media-coppa.single-gusto .box-palline {
   left: 50%;
-  transform: translate(-50%, -25px);
-  width: 165px;     /* ⬅️ prima 135 */
-  height: 165px;    /* ⬅️ prima 135 */
+  transform: translateX(-50%);
 }
 
-/* nasconde le altre palline (sicurezza) */
+/* usa SOLO la pallina left */
+.media-coppa.single-gusto .pallina-left {
+  left: 50%;
+  top: 40px;
+  transform: translateX(-50%);
+}
+
+/* nasconde le altre */
 .media-coppa.single-gusto .pallina-right,
 .media-coppa.single-gusto .pallina-top {
   display: none;
 }
 
-/* abbassa leggermente la panna */
+/* panna leggermente più bassa */
 .media-coppa.single-gusto .box-panna {
-  width: 130px;      /* più piccola della pallina */
-  height: 130px;
-  top: 95px;         /* controllo VERO della posizione */
+  top: 105px;
 }
 /* =========================
    MEDIA – 2 GUSTI

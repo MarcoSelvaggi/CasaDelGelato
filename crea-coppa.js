@@ -2267,6 +2267,27 @@ if (coppaSelezionata === "MEDIA") {
 aggiornaPallineRiepilogoMedia();
 aggiornaExtraCompattiMedia();
 }
+if (coppaSelezionata === "MEDIA") {
+
+  aggiornaPallineRiepilogoMedia();
+  aggiornaExtraCompattiMedia();
+
+  const mediaCoppa = document.querySelector(".media-coppa");
+  if (!mediaCoppa) return;
+
+  // reset classi
+  mediaCoppa.classList.remove("single-gusto", "double-gusto");
+
+  // 1 gusto
+  if (scelti.gusti.length === 1) {
+    mediaCoppa.classList.add("single-gusto");
+  }
+
+  // 2 gusti
+  if (scelti.gusti.length === 2) {
+    mediaCoppa.classList.add("double-gusto");
+  }
+}
 
 if (coppaSelezionata === "GRANDE") {
   aggiornaPallineRiepilogoGrande();
