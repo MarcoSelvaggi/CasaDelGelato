@@ -73,6 +73,7 @@ const MAP_TOPPING_IMG = {
   "FRUTTI DI BOSCO": "img/topping-bosco.png",
   "ANANAS": "img/topping-ananas.png",
   "ARANCIA": "img/topping-arancia.png",
+  "FRAGOLA": "img/topping-fragola.png",
   "KIWI": "img/topping-kiwi.png",
   "MELONE": "img/topping-melone.png",
   "MENTA": "img/topping-menta.png",
