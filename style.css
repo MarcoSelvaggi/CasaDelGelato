@@ -2222,7 +2222,9 @@ body {
 
 /* abbassa leggermente la panna */
 .media-coppa.single-gusto .box-panna {
-  transform: translateY(14px);
+  width: 130px;      /* più piccola della pallina */
+  height: 130px;
+  top: 95px;         /* controllo VERO della posizione */
 }
 /* =========================
    MEDIA – 2 GUSTI
