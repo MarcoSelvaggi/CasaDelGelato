@@ -1840,7 +1840,7 @@ body {
 .piccola-coppa.single-gusto .pallina-left {
   left: 50%;
   top: 65px; /* leggermente più in alto del media */
-  transform: translateX(-50%) scale(1.15);
+  transform: translateX(-50%) scale(1.25);
 }
 
 /* nasconde le altre */
@@ -1854,8 +1854,8 @@ body {
   z-index: 6;          /* davanti alla pallina */
   width: 110px;        /* ⬅️ più piccola */
   height: 110px;
-  top: 75px;           /* ⬆️ più in alto */
-  transform: scale(0.85);
+  top: 60px;           /* ⬆️ più in alto */
+  transform: scale(0.75);
 }
 
 
