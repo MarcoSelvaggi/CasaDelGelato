@@ -2248,6 +2248,20 @@ if (coppaSelezionata === "PICCOLA") {
 aggiornaPallineRiepilogo();
 aggiornaExtraCompattiPiccola();
 }
+// ===============================
+// 🍨 PICCOLA – CLASSE 1 SOLO GUSTO
+// ===============================
+if (coppaSelezionata === "PICCOLA") {
+  const boxPalline = document.querySelector(".box-palline");
+
+  if (boxPalline) {
+    if (scelti.gusti.length === 1) {
+      boxPalline.classList.add("single");
+    } else {
+      boxPalline.classList.remove("single");
+    }
+  }
+}
 
 if (coppaSelezionata === "MEDIA") {
 aggiornaPallineRiepilogoMedia();
