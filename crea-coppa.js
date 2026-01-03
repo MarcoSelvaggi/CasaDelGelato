@@ -2103,7 +2103,7 @@ document.body.classList.remove("coppa-media", "coppa-grande");
 if (coppaSelezionata === "PICCOLA") {
 
   stage.innerHTML = `
-
+<div class="piccola-coppa">
   <!-- PANNA -->
   <div class="box box-panna">
     <img src="img/panna.png">
