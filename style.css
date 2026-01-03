@@ -1837,8 +1837,8 @@ body {
 
 /* 🍦 RIMPICCIOLISCE LA PANNA */
 .box-palline.single ~ .box-panna{
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
 }
 /* =========================
    PICCOLA – 1 SOLO GUSTO
@@ -1852,7 +1852,7 @@ body {
 
 /* 🍦 ALZA LA PANNA */
 .box-palline.single ~ .box-panna {
-  top: -10px;        /* prima era 10px */
+  top: -20px;        /* prima era 10px */
 }
 
 
