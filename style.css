@@ -1830,25 +1830,36 @@ body {
    PICCOLA – UN SOLO GUSTO
 ========================= */
 
-.piccola-coppa.single-gusto .box-palline{
+/* contenitore palline allineato alla coppa */
+.piccola-coppa.single-gusto .box-palline {
+  left: var(--base-left);
+  top: 190px;          /* ⬅️ più in alto rispetto a MEDIA */
+  z-index: 2;
+}
+
+/* unica pallina centrata */
+.piccola-coppa.single-gusto .pallina-left {
   left: 50%;
+  top: 0;
   transform: translateX(-50%);
 }
 
-.piccola-coppa.single-gusto .pallina-1{
-  left: 50%;
-  top: 70px;
-  transform: translateX(-50%) scale(1.2);
+/* ingrandimento pallina (meno di MEDIA) */
+.piccola-coppa.single-gusto .pallina-left img {
+  transform: scale(1.15);
 }
 
-.piccola-coppa.single-gusto .pallina-2{
+/* nasconde le altre */
+.piccola-coppa.single-gusto .pallina-right,
+.piccola-coppa.single-gusto .pallina-top {
   display: none;
 }
 
-.piccola-coppa.single-gusto .box-panna{
-  z-index: 10;
-  top: 100px;
-  transform: scale(0.85);
+/* panna SOPRA la pallina */
+.piccola-coppa.single-gusto .box-panna {
+  z-index: 10;         /* davanti */
+  top: 105px;          /* ⬅️ più alta */
+  transform: scale(0.8);
 }
 
 
