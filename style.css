@@ -1844,9 +1844,11 @@ body {
   transform: translateX(-50%);
 }
 
-/* ingrandimento pallina (meno di MEDIA) */
-.piccola-coppa.single-gusto .pallina-left img {
-  transform: scale(1.80);
+/* unica pallina centrata e ingrandita */
+.piccola-coppa.single-gusto .pallina-left {
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%) scale(1.25);
 }
 
 /* nasconde le altre */
