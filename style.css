@@ -2203,39 +2203,39 @@ body {
   background: transparent;
 }
 /* =========================
-   MEDIA – UN SOLO GUSTO
+   MEDIA – UN SOLO GUSTO (FIX DEFINITIVO)
 ========================= */
 
-/* contenitore palline */
+/* contenitore palline: agganciato alla coppa */
 .media-coppa.single-gusto .box-palline {
-  left: 50%;
-  transform: translateX(-50%);
+  left: var(--base-left);
+  top: 110px;              /* leggermente più in basso */
   z-index: 2;
 }
 
-/* usa SOLO la pallina sinistra */
+/* unica pallina centrata SULLA COPPA */
 .media-coppa.single-gusto .pallina-left {
   left: 50%;
-  top: 75px;                  /* posizione verticale */
+  top: 0;
   transform: translateX(-50%);
 }
 
-/* ingrandisce SOLO l'immagine (NON il box) */
+/* ingrandisce SOLO l'immagine */
 .media-coppa.single-gusto .pallina-left img {
-  transform: scale(1.2);
+  transform: scale(1.25);
 }
 
-/* nasconde le altre palline */
+/* nasconde le altre */
 .media-coppa.single-gusto .pallina-right,
 .media-coppa.single-gusto .pallina-top {
   display: none;
 }
 
-/* panna DAVANTI alla pallina */
+/* panna davanti alla pallina */
 .media-coppa.single-gusto .box-panna {
-  position: absolute;
-  z-index: 10;        /* sopra pallina e coppa */
-  top: 105px;         /* leggermente più in alto */
+  z-index: 10;
+  top: 70px;              /* più in alto della pallina */
+  left: calc(var(--base-left) + 140px - 85px);
   transform: scale(0.9);
 }
 /* =========================
