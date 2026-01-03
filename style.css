@@ -1827,34 +1827,35 @@ body {
 }
 
 /* =========================
-   PICCOLA – 1 SOLO GUSTO
+   PICCOLO – UN SOLO GUSTO
 ========================= */
 
-/* contenitore in stato "1 gusto" */
-.coppa-piccola.single-gusto .box-palline {
-  top: 85px; /* posizione verticale generale */
-}
-
-/* 🔵 PALLINA UNICA */
-.coppa-piccola.single-gusto .box-pallina {
-  width: 155px;
-  height: 155px;
+/* centra il contenitore palline */
+.piccola-coppa.single-gusto .box-palline {
   left: 50%;
   transform: translateX(-50%);
 }
 
-/* nasconde eventuali altre palline */
-.coppa-piccola.single-gusto .pallina-right,
-.coppa-piccola.single-gusto .pallina-top {
+/* usa una sola pallina */
+.piccola-coppa.single-gusto .pallina-left {
+  left: 50%;
+  top: 65px; /* leggermente più in alto del media */
+  transform: translateX(-50%) scale(1.15);
+}
+
+/* nasconde le altre */
+.piccola-coppa.single-gusto .pallina-right,
+.piccola-coppa.single-gusto .pallina-top {
   display: none;
 }
 
-/* 🍦 PANNA */
-.coppa-piccola.single-gusto .box-panna {
+/* panna più piccola e più alta */
+.piccola-coppa.single-gusto .box-panna {
   z-index: 6;          /* davanti alla pallina */
-  width: 120px;
-  height: 120px;
-  top: 105px;          /* ⬇️ controlla SOLO questo valore */
+  width: 110px;        /* ⬅️ più piccola */
+  height: 110px;
+  top: 75px;           /* ⬆️ più in alto */
+  transform: scale(0.85);
 }
 
 
