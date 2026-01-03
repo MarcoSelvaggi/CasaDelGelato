@@ -2206,19 +2206,17 @@ body {
    MEDIA – UN SOLO GUSTO
 ========================= */
 
-.media-coppa.single-gusto .box-palline {
-  left: 50%;
-  transform: translateX(-50%);
-}
+/* ❌ NON si centra MAI il contenitore palline */
+/* .media-coppa.single-gusto .box-palline { } */
 
-/* usa SOLO la pallina left */
+/* ✅ centra SOLO la pallina */
 .media-coppa.single-gusto .pallina-left {
   left: 50%;
   top: 40px;
   transform: translateX(-50%);
 }
 
-/* nasconde le altre */
+/* nasconde le altre palline */
 .media-coppa.single-gusto .pallina-right,
 .media-coppa.single-gusto .pallina-top {
   display: none;
