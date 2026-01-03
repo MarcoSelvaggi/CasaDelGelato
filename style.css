@@ -1887,7 +1887,7 @@ body {
 /* ================= COPPA ================= */
 .coppa-media .box-coppa {
   width: 280px;
-  height: 190px;
+  height: 300px;
   left: var(--base-left);
   top: 230px;
   overflow: hidden;
