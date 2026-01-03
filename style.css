@@ -1950,7 +1950,7 @@ body {
 .coppa-media .pallina-top {
   left: 50%;
   top: 0;
-  transform: translate(-50%, 50px) scaleY(0.9);
+  transform: translate(-50%, 55px) scaleY(0.9);
   z-index: 4;
 }
 
@@ -2210,6 +2210,8 @@ body {
 .media-coppa.single-gusto .pallina-left {
   left: 50%;
   transform: translate(-50%, -25px);
+  width: 165px;     /* ⬅️ prima 135 */
+  height: 165px;    /* ⬅️ prima 135 */
 }
 
 /* nasconde le altre palline (sicurezza) */
