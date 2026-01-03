@@ -2209,8 +2209,8 @@ body {
 /* usa SOLO la pallina sinistra */
 .media-coppa.single-gusto .pallina-left {
   left: 50%;
-  top: 70px;                  /* ⬇️ ABBASSATA (prima 40px) */
-  transform: translateX(-50%) scale(1.25); /* 🔍 INGRANDITA */
+  top: 75px;                  /* ⬇️ ABBASSATA (prima 40px) */
+  transform: translateX(-50%) scale(1.2); /* 🔍 INGRANDITA */
 }
 
 /* nasconde le altre palline */
@@ -2221,7 +2221,8 @@ body {
 
 /* panna leggermente più bassa e più piccola */
 .media-coppa.single-gusto .box-panna {
-  top: 125px;
+  z-index: 5;          /* ⬅️ DAVANTI alla pallina */
+  top: 85px;           /* ⬆️ più in alto (prima 125px) */
   transform: scale(0.9);
 }
 /* =========================
