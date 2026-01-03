@@ -2209,7 +2209,7 @@ body {
 /* contenitore palline allineato alla coppa */
 .media-coppa.single-gusto .box-palline {
   left: var(--base-left);
-  top: 200px;          /* ⬅️ SCENDE sotto la panna */
+  top: 220px;          /* ⬅️ SCENDE sotto la panna */
   z-index: 2;
 }
 
@@ -2234,7 +2234,7 @@ body {
 /* panna SOPRA la pallina */
 .media-coppa.single-gusto .box-panna {
   z-index: 10;         /* davanti */
-  top: 80px;           /* ⬅️ PIÙ ALTA della pallina */
+  top: 125px;           /* ⬅️ PIÙ ALTA della pallina */
   transform: scale(0.9);
 }
 /* =========================
