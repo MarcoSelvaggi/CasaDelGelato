@@ -1833,7 +1833,7 @@ body {
 /* contenitore palline allineato alla coppa */
 .piccola-coppa.single-gusto .box-palline {
   left: var(--base-left);
-  top: 120px;          /* ⬅️ più in alto rispetto a MEDIA */
+  top: 100px;          /* ⬅️ più in alto rispetto a MEDIA */
   z-index: 2;
 }
 
@@ -1846,7 +1846,7 @@ body {
 
 /* ingrandimento pallina (meno di MEDIA) */
 .piccola-coppa.single-gusto .pallina-left img {
-  transform: scale(1.35);
+  transform: scale(1.55);
 }
 
 /* nasconde le altre */
@@ -1858,7 +1858,7 @@ body {
 /* panna SOPRA la pallina */
 .piccola-coppa.single-gusto .box-panna {
   z-index: 10;         /* davanti */
-  top: 55px;          /* ⬅️ più alta */
+  top: 20px;          /* ⬅️ più alta */
   transform: scale(0.8);
 }
 
