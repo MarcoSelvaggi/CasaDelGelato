@@ -70,7 +70,15 @@ const MAP_GRANELLE_IMG = {
   "ZUCCHERINI COLORATI": "img/codette.png"
 };
 const MAP_TOPPING_IMG = {
-  "FRUTTI DI BOSCO": "img/topping-bosco.png"
+  "FRUTTI DI BOSCO": "img/topping-bosco.png",
+  "ANANAS": "img/topping-ananas.png",
+  "ARANCIA": "img/topping-arancia.png",
+  "KIWI": "img/topping-kiwi.png",
+  "MELONE": "img/topping-melone.png",
+  "MENTA": "img/topping-menta.png",
+  "CARAMELLO": "img/topping-caramello.png",
+  "MALAGA": "img/topping-malaga.png",
+  "CIOCCOLATO": "img/topping-cioccolato.png"
 };
 const MAP_INGREDIENTI_IMG = {
   "FRAGOLE": "img/fragola.png"
