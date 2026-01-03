@@ -1950,7 +1950,7 @@ body {
 .coppa-media .pallina-top {
   left: 50%;
   top: 0;
-  transform: translateX(-50%) scaleY(0.9);
+  transform: translate(-50%, 20px) scaleY(0.9);
   z-index: 4;
 }
 
