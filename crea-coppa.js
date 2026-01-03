@@ -79,7 +79,31 @@ const MAP_TOPPING_IMG = {
   "MENTA": "img/topping-menta.png",
   "CARAMELLO": "img/topping-caramello.png",
   "MALAGA": "img/topping-malaga.png",
-  "CIOCCOLATO": "img/topping-cioccolato.png"
+  "CIOCCOLATO": "img/topping-cioccolato.png",
+  "NOCCIOLA": "img/topping-nocciola.png",
+  "PISTACCHIO": "img/topping-pistacchio.png",
+  "LIQUORE AMARETTO": "img/liquore-amaretto.png",
+  "LIQUORE AL CAFFE'": "img/liquore-caffe.png",
+  "LIQUORE AL COCCO": "img/liquore-cocco.png",
+  "SCIROPPO AMARENA": "img/sciroppo-amarena.png",
+  "JOGURT NATURALE": "img/jogurt-naturale.png",
+  "VOV": "img/vov.png",
+  "CAFFÈ ESPRESSO": "img/espresso.png",
+  "CAFFÈ DECAFFEINATO": "img/decaffeinato.png",
+  "ORZO": "img/orzo.png",
+  "GINSENG": "img/ginseng.png",
+  "CAFFÈ FREDDO": "img/caffe-freddo.png",
+  "CIOCCOLATO FREDDO": "img/cioccolato-freddo.png",
+  "DISARONNO": "img/disaronno.png",
+  "BAILEYS": "img/baileys.png",
+  "COINTREAU": "img/cointreau.png",
+  "GRAND MARNIER": "img/grand-marnier.png",
+  "JACK DANIEL'S": "img/jack.png",
+  "LIMONCELLO": "img/limoncello.png",
+  "RUM": "img/rum.png",
+  "STRAVECCHIO": "img/stravecchio.png",
+  "VECCHIA ROMAGNA": "img/vecchia.png",
+  "VODKA": "img/vodka.png"
 };
 const MAP_INGREDIENTI_IMG = {
   "FRAGOLE": "img/fragola.png"
@@ -865,7 +889,7 @@ const ALLERGENI_GRANELLE = {
 
 const toppingList = [
   "ANANAS","ARANCIA","FRAGOLA","FRUTTI DI BOSCO","KIWI","MELONE","MENTA","CARAMELLO","MALAGA","CIOCCOLATO","NOCCIOLA","PISTACCHIO",
-  "LIQUORE AMARETTO","LIQUORE AL CAFFE'","LIQUORE AL COCCO","SCIROPPO AMARENA","JOGURT NATURALE","VOV","CAFFÈ ESPRESSO","CAFFÈ DECAFFEINATO","ORZO","GINSENG","CAFFÈ FREDDO","CIOCCOLATO FREDDO","DISARONNO","BAYLES","COINTREAU","GRAND MARNIER","JACK DANIEL'S","LIMONCELLO","RUM","STRAVECCHIO","VECCHIA ROMAGNA","VODKA"
+  "LIQUORE AMARETTO","LIQUORE AL CAFFE'","LIQUORE AL COCCO","SCIROPPO AMARENA","JOGURT NATURALE","VOV","CAFFÈ ESPRESSO","CAFFÈ DECAFFEINATO","ORZO","GINSENG","CAFFÈ FREDDO","CIOCCOLATO FREDDO","DISARONNO","BAILEYS","COINTREAU","GRAND MARNIER","JACK DANIEL'S","LIMONCELLO","RUM","STRAVECCHIO","VECCHIA ROMAGNA","VODKA"
 ];
 
 /* =======================
