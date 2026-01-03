@@ -1848,7 +1848,7 @@ body {
 .piccola-coppa.single-gusto .pallina-left {
   left: 50%;
   top: 0;
-  transform: translateX(-50%) scale(1.25);
+  transform: translateX(-50%) scale(1.35);
 }
 
 /* nasconde le altre */
