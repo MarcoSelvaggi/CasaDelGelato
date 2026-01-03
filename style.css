@@ -1838,8 +1838,8 @@ body {
 
 /* 🍦 RIMPICCIOLISCE LA PANNA */
 .box-palline.single ~ .box-panna {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
 }
 
 /* 🔵 ALZA LA PALLINA */
