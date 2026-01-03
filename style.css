@@ -1816,43 +1816,48 @@ body {
   margin-top: 4px;
 }
 
+/* =========================
+   PICCOLA – 1 SOLO GUSTO
+========================= */
+
 /* 🍨 UNA SOLA PALLINA → centrata sulla COPPA */
-/* quando è single, centra la pallina dentro il contenitore */
-.box-palline.single .pallina-1{
+.piccola-coppa.single-gusto .box-palline.single .pallina-1{
   left: 50% !important;
   transform: translateX(-50%) !important;
 }
-.box-palline.single .pallina-2{
-  display:none !important;
+
+.piccola-coppa.single-gusto .box-palline.single .pallina-2{
+  display: none !important;
 }
+
 /* =========================
-   PICCOLA – 1 SOLO GUSTO (DIMENSIONI)
+   DIMENSIONI
 ========================= */
 
 /* 🔵 INGROSSA LA PALLINA */
-.box-palline.single .box-pallina{
+.piccola-coppa.single-gusto .box-palline.single .box-pallina{
   width: 155px;
   height: 155px;
 }
 
 /* 🍦 RIMPICCIOLISCE LA PANNA */
-.box-palline.single ~ .box-panna{
+.piccola-coppa.single-gusto .box-panna{
   width: 80px;
   height: 80px;
 }
+
 /* =========================
-   PICCOLA – 1 SOLO GUSTO
    POSIZIONI
 ========================= */
 
 /* 🔵 ALZA LA PALLINA */
-.box-palline.single {
+.piccola-coppa.single-gusto .box-palline.single{
   top: 85px;        /* prima era 110px */
 }
 
 /* 🍦 ALZA LA PANNA */
-.box-palline.single ~ .box-panna {
-  top: -20px;        /* prima era 10px */
+.piccola-coppa.single-gusto .box-panna{
+  top: -20px;       /* prima era 10px */
 }
 
 
