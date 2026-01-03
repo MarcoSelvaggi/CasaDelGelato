@@ -1837,10 +1837,23 @@ body {
 
 /* 🍦 RIMPICCIOLISCE LA PANNA */
 .box-palline.single ~ .box-panna{
-  width: 125px;
-  height: 125px;
+  width: 110px;
+  height: 110px;
+}
+/* =========================
+   PICCOLA – 1 SOLO GUSTO
+   POSIZIONI
+========================= */
+
+/* 🔵 ALZA LA PALLINA */
+.box-palline.single {
+  top: 85px;        /* prima era 110px */
 }
 
+/* 🍦 ALZA LA PANNA */
+.box-palline.single ~ .box-panna {
+  top: -5px;        /* prima era 10px */
+}
 
 
 
