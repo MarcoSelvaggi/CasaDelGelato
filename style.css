@@ -2209,7 +2209,7 @@ body {
 /* contenitore palline allineato alla coppa */
 .media-coppa.single-gusto .box-palline {
   left: var(--base-left);
-  top: 150px;          /* ⬅️ SCENDE sotto la panna */
+  top: 200px;          /* ⬅️ SCENDE sotto la panna */
   z-index: 2;
 }
 
