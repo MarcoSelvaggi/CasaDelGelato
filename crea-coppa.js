@@ -1690,7 +1690,7 @@ function renderCoppaGrande(stage) {
 
   <!-- COPPA -->
   <div class="box box-coppa">
-    <img src="img/coppa-grande.png">
+    <img src="img/coppa-base.png">
   </div>
 
   <!-- GRANELLE -->
@@ -1849,7 +1849,7 @@ function renderCoppaMedia(stage) {
 
   <!-- COPPA -->
   <div class="box box-coppa">
-    <img src="img/coppa-media.png">
+    <img src="img/coppa-base.png">
   </div>
 
 </div>
