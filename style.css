@@ -1893,7 +1893,7 @@ body {
   overflow: hidden;
 
   position: absolute; /* ⬅️ se non c’è già */
-  z-index: 3;         /* ⬅️ QUESTA È LA CHIAVE */
+  z-index: 1;         /* ⬅️ QUESTA È LA CHIAVE */
 }
 
 .coppa-media .box-coppa img {
@@ -1928,7 +1928,6 @@ body {
   height: 200px;
   left: var(--base-left);
   top: 90px;
-  z-index: 1;
 }
 
 .coppa-media .box-pallina {
@@ -1952,17 +1951,20 @@ body {
   left: 50%;
   top: 0;
   transform: translateX(-50%) scaleY(0.9);
+  z-index: 4;
 }
 
 /* sotto */
 .coppa-media .pallina-left {
   left: 20px;
   bottom: -20px;
+  z-index: 5;
 }
 
 .coppa-media .pallina-right {
   right: 20px;
   bottom: -20px;
+  z-index: 2;
 }
 
 /* ================= EXTRA VERTICALI ================= */
