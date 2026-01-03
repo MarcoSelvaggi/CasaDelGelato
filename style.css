@@ -2206,14 +2206,11 @@ body {
    MEDIA – UN SOLO GUSTO
 ========================= */
 
-/* ❌ NON si centra MAI il contenitore palline */
-/* .media-coppa.single-gusto .box-palline { } */
-
-/* ✅ centra SOLO la pallina */
+/* usa SOLO la pallina sinistra */
 .media-coppa.single-gusto .pallina-left {
   left: 50%;
-  top: 40px;
-  transform: translateX(-50%);
+  top: 70px;                  /* ⬇️ ABBASSATA (prima 40px) */
+  transform: translateX(-50%) scale(1.25); /* 🔍 INGRANDITA */
 }
 
 /* nasconde le altre palline */
@@ -2222,9 +2219,10 @@ body {
   display: none;
 }
 
-/* panna leggermente più bassa */
+/* panna leggermente più bassa e più piccola */
 .media-coppa.single-gusto .box-panna {
-  top: 105px;
+  top: 125px;
+  transform: scale(0.9);
 }
 /* =========================
    MEDIA – 2 GUSTI
