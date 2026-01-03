@@ -2249,23 +2249,14 @@ aggiornaPallineRiepilogo();
 aggiornaExtraCompattiPiccola();
 }
 if (coppaSelezionata === "PICCOLA") {
-
-  aggiornaPallineRiepilogo(); // la tua funzione attuale
+  aggiornaPallineRiepilogo();
   aggiornaExtraCompattiPiccola();
-  const piccolaCoppa = document.querySelector(".piccola-coppa");
-  if (!piccolaCoppa) return;
 
-  // reset classi
-  piccolaCoppa.classList.remove("single-gusto", "double-gusto");
-
-  // 1 gusto
-  if (scelti.gusti.length === 1) {
-    piccolaCoppa.classList.add("single-gusto");
-  }
-
-  // 2 gusti
-  if (scelti.gusti.length === 2) {
-    piccolaCoppa.classList.add("double-gusto");
+  const piccola = document.querySelector(".piccola-coppa");
+  if (piccola) {
+    piccola.classList.remove("single-gusto", "double-gusto");
+    if (scelti.gusti.length === 1) piccola.classList.add("single-gusto");
+    if (scelti.gusti.length === 2) piccola.classList.add("double-gusto");
   }
 }
 
