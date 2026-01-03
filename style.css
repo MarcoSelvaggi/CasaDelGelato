@@ -1835,10 +1835,10 @@ body {
   height: 155px;
 }
 
-/* 🍦 RIMPICCIOLISCE LA PANNA */
-.box-palline.single ~ .box-panna{
-  width: 60px;
-  height: 60px;
+/* 🍦 RIMPICCIOLISCE LA PANNA – 1 SOLO GUSTO */
+.box-palline.single ~ .box-panna {
+  width: 60px !important;
+  height: 60px !important;
 }
 /* =========================
    PICCOLA – 1 SOLO GUSTO
