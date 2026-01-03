@@ -2248,18 +2248,24 @@ if (coppaSelezionata === "PICCOLA") {
 aggiornaPallineRiepilogo();
 aggiornaExtraCompattiPiccola();
 }
-// ===============================
-// 🍨 PICCOLA – CLASSE 1 SOLO GUSTO
-// ===============================
 if (coppaSelezionata === "PICCOLA") {
-  const boxPalline = document.querySelector(".box-palline");
 
-  if (boxPalline) {
-    if (scelti.gusti.length === 1) {
-      boxPalline.classList.add("single");
-    } else {
-      boxPalline.classList.remove("single");
-    }
+  aggiornaPallineRiepilogo(); // la tua funzione attuale
+  aggiornaExtraCompattiPiccola();
+  const piccolaCoppa = document.querySelector(".piccola-coppa");
+  if (!piccolaCoppa) return;
+
+  // reset classi
+  piccolaCoppa.classList.remove("single-gusto", "double-gusto");
+
+  // 1 gusto
+  if (scelti.gusti.length === 1) {
+    piccolaCoppa.classList.add("single-gusto");
+  }
+
+  // 2 gusti
+  if (scelti.gusti.length === 2) {
+    piccolaCoppa.classList.add("double-gusto");
   }
 }
 
