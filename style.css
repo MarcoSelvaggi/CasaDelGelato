@@ -2203,24 +2203,24 @@ body {
   background: transparent;
 }
 /* =========================
-   MEDIA – UN SOLO GUSTO (FIX DEFINITIVO)
+   MEDIA – UN SOLO GUSTO (FIX FINALE)
 ========================= */
 
-/* contenitore palline: agganciato alla coppa */
+/* contenitore palline allineato alla coppa */
 .media-coppa.single-gusto .box-palline {
   left: var(--base-left);
-  top: 110px;              /* leggermente più in basso */
+  top: 150px;          /* ⬅️ SCENDE sotto la panna */
   z-index: 2;
 }
 
-/* unica pallina centrata SULLA COPPA */
+/* unica pallina centrata */
 .media-coppa.single-gusto .pallina-left {
   left: 50%;
   top: 0;
   transform: translateX(-50%);
 }
 
-/* ingrandisce SOLO l'immagine */
+/* ingrandimento pallina */
 .media-coppa.single-gusto .pallina-left img {
   transform: scale(1.25);
 }
@@ -2231,11 +2231,10 @@ body {
   display: none;
 }
 
-/* panna davanti alla pallina */
+/* panna SOPRA la pallina */
 .media-coppa.single-gusto .box-panna {
-  z-index: 10;
-  top: 70px;              /* più in alto della pallina */
-  left: calc(var(--base-left) + 140px - 85px);
+  z-index: 10;         /* davanti */
+  top: 80px;           /* ⬅️ PIÙ ALTA della pallina */
   transform: scale(0.9);
 }
 /* =========================
