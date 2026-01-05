@@ -1603,7 +1603,7 @@ body {
   height: 160px;
   left: calc(var(--base-left) + 130px - 80px);
   top: 20px;
-  z-index: 2;
+  z-index: 5;
 }
 
 /* ================= EXTRA ================= */
