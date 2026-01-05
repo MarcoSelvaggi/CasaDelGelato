@@ -107,7 +107,7 @@ const MAP_TOPPING_IMG = {
 };
 const MAP_INGREDIENTI_IMG = {
   "FRAGOLE": "img/fragole.png",
-  "AMARENE 4PZ": "img/amarene.png",
+  "AMARENE(4PZ)": "img/amarene.png",
   "MACEDONIA": "img/macedonia.png",
   "ANGURIA": "img/anguria.png",
   "ANANAS": "img/ananas-frutto.png",
