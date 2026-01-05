@@ -132,6 +132,12 @@ const MAP_INGREDIENTI_IMG = {
   "CIOCCOLATINI": "img/cioccolatini.png"
 };
 
+const MAP_EXTRA_IMG = {
+  "COCCO (3pz)": "img/extra-cocco.png",
+  "MIX KINDER": "img/extra-kinder.png",
+  "PANNA EXTRA": "img/extra-panna.png"
+};
+
 function aggiornaExtraCompattiPiccola() {
   if (coppaSelezionata !== "PICCOLA") return;
 
@@ -745,27 +751,33 @@ function aggiornaExtraRiepilogo() {
   const extras = scelti.extra || [];
   const slots = document.querySelectorAll("#extra-stage .extra-slot");
 
-  // reset totale
+  // 🔁 reset totale
   slots.forEach(slot => {
-    slot.querySelector(".extra-text").textContent = "";
     slot.style.display = "none";
+    const img = slot.querySelector(".extra-img");
+    const txt = slot.querySelector(".extra-text");
+    if (img) img.style.backgroundImage = "";
+    if (txt) txt.textContent = "";
   });
 
   if (extras.length === 0) return;
 
-  // 🔹 1 extra → slot centrale
-  if (extras.length === 1) {
-    const slot = slots[1];
-    slot.style.display = "flex";
-    slot.querySelector(".extra-text").textContent = extras[0];
-    return;
-  }
+  // 📍 mappa posizioni
+  let positions = [];
+  if (extras.length === 1) positions = [1];        // centro
+  else if (extras.length === 2) positions = [0,2]; // sx + dx
+  else positions = [0,1,2];                         // tutti
 
-  // 🔹 2 o 3 extra → da sinistra
-  extras.slice(0, 3).forEach((extra, i) => {
-    const slot = slots[i];
+  extras.slice(0,3).forEach((nome, i) => {
+    const slot = slots[positions[i]];
+    if (!slot || !MAP_EXTRA_IMG[nome]) return;
+
+    const img = slot.querySelector(".extra-img");
+    const txt = slot.querySelector(".extra-text");
+
     slot.style.display = "flex";
-    slot.querySelector(".extra-text").textContent = extra;
+    if (img) img.style.backgroundImage = `url(${MAP_EXTRA_IMG[nome]})`;
+    if (txt) txt.textContent = nome;
   });
 }
 
