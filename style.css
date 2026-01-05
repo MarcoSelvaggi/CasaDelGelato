@@ -1779,15 +1779,16 @@ body {
   top: 10px;
   left: calc(var(--base-left) + 330px);
   width: 300px;
-  height: 70px;
+  height: 80px;
 
   display: flex;
-  gap: 8px;
-  padding: 6px;
+  gap: 10px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .extra-slot {
-  flex: 1;
+  flex: 1;                 /* ⬅️ SEMPRE 3 SLOT UGUALI */
   height: 100%;
   border: 2px dashed rgba(0,0,0,0.35);
   border-radius: 10px;
@@ -1799,21 +1800,31 @@ body {
 
   padding: 6px;
   box-sizing: border-box;
+  overflow: hidden;        /* ⬅️ IMPEDISCE L’ESPANSIONE */
 }
 
-/* area immagine */
 .extra-img {
   flex: 1;
   width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* area testo */
+.extra-img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .extra-text {
   font-size: 11px;
   font-weight: 600;
   text-align: center;
-  color: #000;
   margin-top: 4px;
+  white-space: nowrap;
 }
 
 /* 🍨 UNA SOLA PALLINA → centrata sulla COPPA */
@@ -2020,8 +2031,8 @@ body {
 }
 
 /* singolo slot */
-.coppa-media #extra-stage .extra-slot {
-  flex: 1;
+.coppa-media .extra-slot {
+  flex: 1;                 /* ⬅️ SEMPRE 3 SLOT UGUALI */
   height: 100%;
   border: 2px dashed rgba(0,0,0,0.35);
   border-radius: 10px;
@@ -2030,23 +2041,32 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+
   padding: 6px;
+  box-sizing: border-box;
+  overflow: hidden;        /* ⬅️ IMPEDISCE L’ESPANSIONE */
 }
 
-.coppa-media #extra-stage .extra-img {
+.coppa-media .extra-img {
   flex: 1;
   width: 100%;
-  border-radius: 6px;
+
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.coppa-media #extra-stage .extra-text {
-  width: 100%;
-  text-align: center;
+.extra-img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.coppa-media .extra-text {
   font-size: 11px;
   font-weight: 600;
+  text-align: center;
   margin-top: 4px;
   white-space: nowrap;
 }
@@ -2189,21 +2209,15 @@ body {
 /* ================= EXTRA STAGE ================= */
 .coppa-media #extra-stage {
   position: absolute;
-
-  /* ⬆️ più in alto */
   top: 10px;
-
-  /* ⬅️ leggermente più vicino alla coppa */
   left: calc(var(--base-left) + 330px);
+  width: 300px;
+  height: 80px;
 
-  /* 📐 più piccolo */
-  width: 280px;
-  height: 70px;
-
-  border: 2px dashed rgba(0,0,0,0.45);
-  border-radius: 12px;
-
-  background: transparent;
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 /* =========================
    MEDIA – UN SOLO GUSTO (FIX FINALE)
@@ -2396,24 +2410,19 @@ body {
 /* ================= EXTRA STAGE ================= */
 .coppa-grande #extra-stage {
   position: absolute;
-  top: 20px;
-  left: calc(var(--base-left) + 420px);
-  width: 320px;
+  top: 10px;
+  left: calc(var(--base-left) + 330px);
+  width: 300px;
   height: 80px;
 
-  border: 2px dashed rgba(0,0,0,0.45);
-  border-radius: 14px;
-  background: transparent;
-
   display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px;
+  gap: 10px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 .coppa-grande .extra-slot {
-  flex: 1;
+  flex: 1;                 /* ⬅️ SEMPRE 3 SLOT UGUALI */
   height: 100%;
   border: 2px dashed rgba(0,0,0,0.35);
   border-radius: 10px;
@@ -2422,18 +2431,34 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+
   padding: 6px;
+  box-sizing: border-box;
+  overflow: hidden;        /* ⬅️ IMPEDISCE L’ESPANSIONE */
 }
 
 .coppa-grande .extra-img {
   flex: 1;
   width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.extra-img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .coppa-grande .extra-text {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   text-align: center;
+  margin-top: 4px;
+  white-space: nowrap;
 }
 /* ================= FORMATO GRANDE – SCALE GLOBALE ================= */
 .coppa-grande .grande-wrapper {
@@ -2660,23 +2685,4 @@ body {
 ========================= */
 .grande-wrapper.triple-gusto .box-panna {
   transform: translateY(30px); /* micro tuning ok 12–18px */
-}
-
-/* ================= EXTRA IMG – GLOBALE ================= */
-
-.extra-img {
-  flex: 1;
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.extra-img img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  display: block;
 }
