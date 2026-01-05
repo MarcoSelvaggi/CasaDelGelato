@@ -1581,7 +1581,7 @@ body {
 .pallina-1 { 
   left: 0; 
   transform: translateX(20px); 
-  z-index: 2;   /* 👈 DAVANTI alla panna */
+  z-index: 3;   /* 👈 DAVANTI alla panna */
 }
 
 .pallina-2 { 
@@ -1603,7 +1603,7 @@ body {
   height: 160px;
   left: calc(var(--base-left) + 130px - 80px);
   top: 20px;
-  z-index: 3;
+  z-index: 2;
 }
 
 /* ================= EXTRA ================= */
