@@ -106,7 +106,30 @@ const MAP_TOPPING_IMG = {
   "VODKA": "img/vodka.png"
 };
 const MAP_INGREDIENTI_IMG = {
-  "FRAGOLE": "img/fragola.png"
+  "FRAGOLE": "img/fragole.png",
+  "AMARENE 4PZ": "img/amarene.png",
+  "MACEDONIA": "img/macedonia.png",
+  "ANGURIA": "img/anguria.png",
+  "ANANAS": "img/ananas.png",
+  "BANANA": "img/banana.png",
+  "KIWI": "img/kiwi.png",
+  "MELONE": "img/melone.png",
+  "MIX BOSCO": "img/mix-bosco.png",
+  "MELA": "img/pesca.png",
+  "PESCA": "img/pesca.png",
+  "UVA": "img/uva.png",
+  "FRUTTI DI BOSCO": "img/fruttidibosco.png",
+  "AMARETTI": "img/amaretti.png",
+  "MANDORLE": "img/mandorle.png",
+  "NOCCIOLINE": "img/noccioline.png",
+  "NOCI": "img/noci.png",
+  "UVETTA": "img/uvetta.png",
+  "MIKADO": "img/mikado.png",
+  "AFTER EIGHT": "img/after-eight.png",
+  "BOUNTY": "img/bounty.png",
+  "KIT KAT": "img/kit-kat.png",
+  "DUPLO": "img/duplo.png",
+  "CIOCCOLATINI": "img/cioccolatini.png"
 };
 
 function aggiornaExtraCompattiPiccola() {
@@ -904,7 +927,7 @@ const ALLERGENI_TOPPING = {
 
 const ingredientiList = [
   "AMARENE(4PZ)","MACEDONIA","ANGURIA","ANANAS","BANANA","FRAGOLE","KIWI","MELONE",
-  "MIX BOSCO","PESCA","UVA","FRUTTI DI BOSCO","AMARETTI","MANDORLE","NOCCIOLINE","NOCI","UVETTA",
+  "MIX BOSCO","MELA","PESCA","UVA","FRUTTI DI BOSCO","AMARETTI","MANDORLE","NOCCIOLINE","NOCI","UVETTA",
   "MIKADO","AFTER EIGHT","BOUNTY","KITKAT","DUPLO","CIOCCOLATINI"
 ];
 
