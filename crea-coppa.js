@@ -1991,9 +1991,18 @@ function renderCoppaMedia(stage) {
 
 <!-- EXTRA STAGE -->
 <div id="extra-stage">
-  <div class="extra-slot"><div class="extra-text"></div></div>
-  <div class="extra-slot"><div class="extra-text"></div></div>
-  <div class="extra-slot"><div class="extra-text"></div></div>
+  <div class="extra-slot">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
+  <div class="extra-slot">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
+  <div class="extra-slot">
+    <div class="extra-img"></div>
+    <div class="extra-text"></div>
+  </div>
 </div>
 
   `;
