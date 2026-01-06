@@ -2645,14 +2645,14 @@ body {
 /* pallina sinistra */
 .grande-wrapper.double-gusto .pallina-left {
   left: 50%;
-  transform: translateX(-55px);
+  transform: translateX(-45px);
 }
 
 /* pallina destra */
 .grande-wrapper.double-gusto .pallina-right {
   left: 50%;
   right: auto;
-  transform: translateX(55px);
+  transform: translateX(45px);
 }
 
 /* nascondiamo le altre palline */
@@ -2666,7 +2666,7 @@ body {
   transform: translateY(18px);
 }
 .grande-wrapper.double-gusto .box-panna {
-  top: 60px;   /* ⬅️ prima era 70 / 80 → diminuisci = sale */
+  top: 45px;   /* ⬅️ prima era 70 / 80 → diminuisci = sale */
 }
 
 /* =========================
