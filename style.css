@@ -2242,7 +2242,7 @@ body {
 }
 .media-coppa.double-gusto .box-panna {
   z-index: 10;              /* 👈 QUESTA È LA CHIAVE */
-  top: 110px;
+  top: 90px;
 }
 
 
