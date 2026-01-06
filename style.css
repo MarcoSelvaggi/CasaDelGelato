@@ -2619,7 +2619,7 @@ body {
 /* pallina CENTRATA DAVVERO */
 .grande-wrapper.single-gusto .pallina-bottom {
   left: 50%;
-  transform: translate(-50%, -18px);
+  transform: translate(-50%, -18px) scale(1.25);
 }
 
 /* panna più bassa per coprire la pallina */
@@ -2633,6 +2633,11 @@ body {
 .grande-wrapper.single-gusto .pallina-top {
   display: none;
 }
+
+.grande-wrapper.single-gusto .box-panna {
+  top: 50px;        /* ⬅️ diminuisci = sale */
+}
+
 /* =========================
    GRANDE – 2 GUSTI
 ========================= */
@@ -2666,7 +2671,7 @@ body {
   transform: translateY(18px);
 }
 .grande-wrapper.double-gusto .box-panna {
-  top: 45px;   /* ⬅️ prima era 70 / 80 → diminuisci = sale */
+  top: 55px;   /* ⬅️ prima era 70 / 80 → diminuisci = sale */
 }
 
 /* =========================
