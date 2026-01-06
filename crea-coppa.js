@@ -748,36 +748,38 @@ function aggiornaIngredientiRiepilogoGrande() {
 }
 
 function aggiornaExtraRiepilogo() {
-  const extras = scelti.extra || [];
   const slots = document.querySelectorAll("#extra-stage .extra-slot");
+  if (!slots.length) return;
 
-  // 🔁 reset totale
+  // reset TUTTI gli slot
   slots.forEach(slot => {
-    slot.style.display = "none";
-    const img = slot.querySelector(".extra-img");
-    const txt = slot.querySelector(".extra-text");
-    if (img) img.style.backgroundImage = "";
-    if (txt) txt.textContent = "";
+    slot.querySelector(".extra-img").innerHTML = "";
+    slot.querySelector(".extra-text").textContent = "";
   });
 
-  if (extras.length === 0) return;
+  const extra = scelti.extra || [];
+  if (extra.length === 0) return;
 
-  // 📍 mappa posizioni
-  let positions = [];
-  if (extras.length === 1) positions = [1];        // centro
-  else if (extras.length === 2) positions = [0,2]; // sx + dx
-  else positions = [0,1,2];                         // tutti
+  // mappa slot da usare
+const slotIndex = [0, 1, 2];
 
-  extras.slice(0,3).forEach((nome, i) => {
-    const slot = slots[positions[i]];
-    if (!slot || !MAP_EXTRA_IMG[nome]) return;
+  slotIndex.forEach((slotPos, i) => {
+    const nome = extra[i];
+    if (!nome) return;
+    const slot = slots[slotPos];
+    if (!slot) return;
 
-    const img = slot.querySelector(".extra-img");
-    const txt = slot.querySelector(".extra-text");
+    const imgBox = slot.querySelector(".extra-img");
+    const txtBox = slot.querySelector(".extra-text");
 
-    slot.style.display = "flex";
-    if (img) img.style.backgroundImage = `url(${MAP_EXTRA_IMG[nome]})`;
-    if (txt) txt.textContent = nome;
+    // TEST: immagini che già hai
+if (MAP_EXTRA_IMG[nome]) {
+  const img = document.createElement("img");
+  img.src = MAP_EXTRA_IMG[nome];
+  img.classList.add("extra-img-el"); // 🔥 FONDAMENTALE
+  imgBox.appendChild(img);
+  txtBox.textContent = nome;
+}
   });
 }
 
