@@ -2890,6 +2890,6 @@ body {
      2️⃣ sposta tutto */
   transform: 
     scale(0.6)
-    translateX(30px)
+    translateX(10px)
     translateY(20px);
 }
