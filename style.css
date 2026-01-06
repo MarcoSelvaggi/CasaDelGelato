@@ -1515,7 +1515,7 @@ body {
 #coppa-stage {
   position: relative;
   width: 860px;
-  height: 500px;
+  height: 800px;
   margin: 40px auto;
   background: #fff;
   border: 3px solid #000;
@@ -1789,6 +1789,7 @@ body {
 
 .extra-slot {
   flex: 1;
+  min-width: 110px;
   border: 2px dashed rgba(0,0,0,0.35);
   border-radius: 10px;
 
@@ -1823,6 +1824,7 @@ body {
   margin-top: 6px;
   line-height: 1.1;
   width: 100%;
+  white-space: nowrap;
 }
 
 /* 🍨 UNA SOLA PALLINA → centrata sulla COPPA */
@@ -1864,6 +1866,36 @@ body {
   transform: scale(0.8);
 }
 
+/* =========================
+   PICCOLA – TOPPING-GRANELLE-INGREDIENTI SOTTO COPPA (SEMPLICE)
+========================= */
+
+.piccola-coppa .box-extra {
+  top: 560px;
+}
+
+.piccola-coppa .box-granella { left: calc(var(--base-left) - 120px + 85px); }
+.piccola-coppa .box-topping  { left: calc(var(--base-left) + 85px); }
+.piccola-coppa .box-frutta   { left: calc(var(--base-left) + 120px + 85px); }
+
+/* =========================
+   PICCOLA – EXTRA VERTICALI
+========================= */
+.piccola-coppa #extra-stage {
+  /* posizione rispetto alla coppa */
+  top: 200px;                             /* sotto la coppa */
+  left: calc(var(--base-left) + 350px);   /* a destra (poi rifiniamo) */
+
+  width: 100px;       /* UNA colonna */
+  height: auto;
+
+  flex-direction: column;   /* ⬅️ CAMBIO CHIAVE */
+  gap: 10px;
+}
+.piccola-coppa #extra-stage .extra-slot {
+  width: 100%;
+  height: 90px;      /* altezza singolo slot */
+}
 
 
 
