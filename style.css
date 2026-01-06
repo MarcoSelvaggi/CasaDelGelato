@@ -2881,15 +2881,39 @@ body {
   position: relative;   /* ⬅️ CHIAVE ASSOLUTA */
 }
 /* =========================
-   GRANDE – SCALE + MOVE TUTTO
+   GRANDE – DEFAULT (DESKTOP / TABLET)
 ========================= */
 .coppa-grande .grande-wrapper {
-  transform-origin: top left;
+  position: relative;
+  transform: none;          /* ⬅️ importantissimo */
+}
+/* =========================
+   GRANDE – MOBILE ONLY
+========================= */
+@media (max-width: 768px) {
+  .coppa-grande .grande-wrapper {
+    transform-origin: top left;
 
-  /* 1️⃣ scala tutto
-     2️⃣ sposta tutto */
-  transform: 
-    scale(0.6)
-    translateX(-5px)
-    translateY(20px);
+    transform:
+      scale(0.6)
+      translateX(-10px)
+      translateY(20px);
+  }
+}
+/* =========================
+   DESKTOP – COPPA STAGE AUTO (GRANDE)
+   (mettere ALLA FINE)
+========================= */
+
+/* base: desktop/tablet più largo */
+.coppa-grande #coppa-stage{
+  width: clamp(860px, 92vw, 980px) !important;
+  height: clamp(800px, 88vh, 900px) !important;
+}
+
+/* opzionale: se vuoi proprio più spazio sotto */
+@media (min-width: 900px){
+  .coppa-grande #coppa-stage{
+    margin: 40px auto !important;
+  }
 }
