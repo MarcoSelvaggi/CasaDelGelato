@@ -1901,7 +1901,7 @@ body {
    SCALE GLOBALE – PICCOLA
 ========================= */
 .piccola-wrapper {
-  transform: scale(0.2);          /* 🔽 riduce tutto */
+  transform: scale(0.7);          /* 🔽 riduce tutto */
   transform-origin: top center;   /* ⬆️ ancora in alto */
 }
 
