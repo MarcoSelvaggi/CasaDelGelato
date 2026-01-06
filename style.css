@@ -2279,7 +2279,7 @@ body {
 /* ================= COPPA ================= */
 .coppa-grande .box-coppa {
   width: 320px;
-  height: 330px;
+  height: 350px;
   left: var(--base-left);
   top: 300px;
   overflow: hidden;
