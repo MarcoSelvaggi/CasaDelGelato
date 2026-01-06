@@ -2881,9 +2881,15 @@ body {
   position: relative;   /* ⬅️ CHIAVE ASSOLUTA */
 }
 /* =========================
-   SCALE + SHIFT – GRANDE
+   GRANDE – SCALE + MOVE TUTTO
 ========================= */
 .coppa-grande .grande-wrapper {
-  transform: scale(0.6) translateX(-120px); /* ⬅️ REGOLA SOLO QUESTO */
-  transform-origin: top center;
+  transform-origin: top left;
+
+  /* 1️⃣ scala tutto
+     2️⃣ sposta tutto */
+  transform: 
+    scale(0.6)
+    translateX(-80px)
+    translateY(20px);
 }
