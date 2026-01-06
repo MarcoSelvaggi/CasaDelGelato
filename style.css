@@ -2645,14 +2645,14 @@ body {
 /* pallina sinistra */
 .grande-wrapper.double-gusto .pallina-left {
   left: 50%;
-  transform: translateX(-60px);
+  transform: translateX(-55px);
 }
 
 /* pallina destra */
 .grande-wrapper.double-gusto .pallina-right {
   left: 50%;
   right: auto;
-  transform: translateX(60px);
+  transform: translateX(55px);
 }
 
 /* nascondiamo le altre palline */
@@ -2665,6 +2665,10 @@ body {
 .grande-wrapper.double-gusto .box-panna {
   transform: translateY(18px);
 }
+.grande-wrapper.double-gusto .box-panna {
+  top: 60px;   /* ⬅️ prima era 70 / 80 → diminuisci = sale */
+}
+
 /* =========================
 /* GRANDE – 3 GUSTI */
 .grande-wrapper.triple-gusto .box-panna {
