@@ -2300,7 +2300,7 @@ body {
   top: 80px;
   z-index: 10;
 
-  transform: scale(0.9);        /* ⬅️ rimpicciolisce */
+  transform: scale(1);        /* ⬅️ rimpicciolisce */
   transform-origin: center;      /* ⬅️ resta centrata */
 }
 
