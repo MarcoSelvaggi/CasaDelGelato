@@ -1906,7 +1906,7 @@ body {
 }
 
 .piccola-coppa {
-  --base-left: 40px;
+  --base-left: 30px;
 }
 
 
@@ -2336,7 +2336,7 @@ body {
 .coppa-media #extra-stage {
   /* posizione rispetto alla coppa */
   top: 280px;                             /* stessa quota della piccola */
-  left: calc(var(--base-left) + 350px);   /* stessa colonna */
+  left: calc(var(--base-left) + 300px);   /* stessa colonna */
 
   width: 100px;       /* UNA colonna */
   height: auto;
