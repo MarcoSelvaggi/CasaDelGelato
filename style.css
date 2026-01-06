@@ -2354,7 +2354,20 @@ body {
   transform: scale(0.6);          /* 🔽 riduce TUTTO */
   transform-origin: top center;   /* ⬆️ ancora in alto */
 }
+/* =========================
+   MEDIA – SCALE + MOVE TUTTO
+========================= */
 
+@media (max-width: 768px) {
+  .coppa-media .media-wrapper {
+    transform-origin: top left;
+
+    transform:
+      scale(0.6)
+      translateX(-10px)   /* ⬅️ più negativo = più a sinistra */
+      translateY(20px);   /* opzionale */
+  }
+}
 
 
 /* ================= FORMATO GRANDE ================= */
@@ -2850,7 +2863,7 @@ body {
   position: absolute;
 
   /* 🎯 MASTER MOVE */
-  left: calc(var(--base-left) + 400px); /* ➜ dx/sx */
+  left: calc(var(--base-left) + 390px); /* ➜ dx/sx */
   top: 300px;                           /* ➜ su/giù */
 
   width: 110px;
