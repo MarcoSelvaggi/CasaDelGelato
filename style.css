@@ -1961,7 +1961,7 @@ body {
 /* sopra */
 .coppa-media .pallina-top {
   left: 50%;
-  top: 90px;                 /* ⬅️ QUI regoli l’altezza */
+  top: 95px;                 /* ⬅️ QUI regoli l’altezza */
   transform: translateX(-50%) scaleY(0.9);
   z-index: 6;
 }
@@ -2242,7 +2242,7 @@ body {
 }
 .media-coppa.double-gusto .box-panna {
   z-index: 10;              /* 👈 QUESTA È LA CHIAVE */
-  top: 110px;
+  top: 120px;
 }
 
 
