@@ -2666,8 +2666,11 @@ body {
   transform: translateY(18px);
 }
 /* =========================
-   GRANDE – 3 GUSTI
-========================= */
+/* GRANDE – 3 GUSTI */
 .grande-wrapper.triple-gusto .box-panna {
-  transform: translateY(30px); /* micro tuning ok 12–18px */
+  top: 45px;   /* ⬆️ diminuisci = sale | aumenta = scende */
+  z-index: 10;
+}
+.grande-wrapper.triple-gusto .pallina-bottom {
+  transform: translateX(-50%) scaleY(0.9);
 }
