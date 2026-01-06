@@ -2884,6 +2884,6 @@ body {
    SCALE + SHIFT – GRANDE
 ========================= */
 .coppa-grande .grande-wrapper {
-  transform: scale(0.6) translateX(-60px); /* ⬅️ REGOLA SOLO QUESTO */
+  transform: scale(0.6) translateX(-120px); /* ⬅️ REGOLA SOLO QUESTO */
   transform-origin: top center;
 }
