@@ -2619,7 +2619,7 @@ body {
 /* pallina CENTRATA DAVVERO */
 .grande-wrapper.single-gusto .pallina-bottom {
   left: 50%;
-  transform: translate(-50%, -18px) scale(1.25);
+  transform: translate(-50%, -18px) scale(1.3);
 }
 
 /* panna più bassa per coprire la pallina */
@@ -2671,7 +2671,7 @@ body {
   transform: translateY(18px);
 }
 .grande-wrapper.double-gusto .box-panna {
-  top: 55px;   /* ⬅️ prima era 70 / 80 → diminuisci = sale */
+  top: 60px;   /* ⬅️ prima era 70 / 80 → diminuisci = sale */
 }
 
 /* =========================
