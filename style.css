@@ -1796,7 +1796,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 
   padding: 6px;
   box-sizing: border-box;
@@ -1823,8 +1823,9 @@ body {
   font-size: 11px;
   font-weight: 600;
   text-align: center;
-  margin-top: 4px;
-  white-space: nowrap;
+  margin-top: 6px;
+  line-height: 1.1;
+  width: 100%;
 }
 
 /* 🍨 UNA SOLA PALLINA → centrata sulla COPPA */
