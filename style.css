@@ -1904,7 +1904,20 @@ body {
   transform: scale(0.6);          /* 🔽 riduce tutto */
   transform-origin: top center;   /* ⬆️ ancora in alto */
 }
+/* =========================
+   PICCOLA – SCALE + MOVE TUTTO
+========================= */
 
+@media (max-width: 768px) {
+  .coppa-piccola .piccola-wrapper {
+    transform-origin: top left;
+
+    transform:
+      scale(0.6)
+      translateX(-10px)   /* ⬅️ più negativo = più a sinistra */
+      translateY(20px);   /* opzionale */
+  }
+}
 
 
 
@@ -2363,7 +2376,7 @@ body {
     transform-origin: top left;
 
     transform:
-      scale(0.6)
+      scale(0.65)
       translateX(-10px)   /* ⬅️ più negativo = più a sinistra */
       translateY(20px);   /* opzionale */
   }
