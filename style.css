@@ -1920,7 +1920,7 @@ body {
   height: 170px;
   left: calc(var(--base-left) + 140px - 85px);
   top: 130px;
-  z-index: 3;
+  z-index: 10;
 }
 .coppa-media .box-panna {
   transform: scale(1.05);      /* ⬅️ rimpicciolisce la panna */
@@ -1961,9 +1961,9 @@ body {
 /* sopra */
 .coppa-media .pallina-top {
   left: 50%;
-  top: 0;
-  transform: translate(-50%, 55px) scaleY(0.9);
-  z-index: 4;
+  top: 90px;                 /* ⬅️ QUI regoli l’altezza */
+  transform: translateX(-50%) scaleY(0.9);
+  z-index: 6;
 }
 
 /* sotto */
@@ -1976,7 +1976,7 @@ body {
 .coppa-media .pallina-right {
   right: 20px;
   bottom: -25px;
-  z-index: 2;
+  z-index: 4;
 }
 
 /* ================= EXTRA VERTICALI ================= */
@@ -2242,7 +2242,7 @@ body {
 }
 .media-coppa.double-gusto .box-panna {
   z-index: 10;              /* 👈 QUESTA È LA CHIAVE */
-  top: 90px;
+  top: 100px;
 }
 
 
