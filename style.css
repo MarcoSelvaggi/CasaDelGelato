@@ -2339,7 +2339,7 @@ body {
 /* pallina in alto */
 .coppa-grande .pallina-top {
   left: 50%;
-  top: 90px;
+  top: 95px;
   transform: translateX(-70%) scaleY(0.85);
   z-index: 3;
 }
