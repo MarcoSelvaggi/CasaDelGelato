@@ -2668,7 +2668,7 @@ body {
 /* =========================
 /* GRANDE – 3 GUSTI */
 .grande-wrapper.triple-gusto .box-panna {
-  top: 60px;   /* ⬆️ diminuisci = sale | aumenta = scende */
+  top: 75px;   /* ⬆️ diminuisci = sale | aumenta = scende */
   z-index: 10;
 }
 .grande-wrapper.triple-gusto .pallina-bottom {
