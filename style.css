@@ -2354,7 +2354,7 @@ body {
 
 .coppa-grande .pallina-bottom {
   left: 50%;
-  top: 90px;
+  top: 95px;
   transform: translateX(-30%) scaleY(0.9);
   z-index: 4;
 }
