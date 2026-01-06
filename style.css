@@ -2881,9 +2881,9 @@ body {
   position: relative;   /* ⬅️ CHIAVE ASSOLUTA */
 }
 /* =========================
-   SCALE GLOBALE – GRANDE
+   SCALE + SHIFT – GRANDE
 ========================= */
 .coppa-grande .grande-wrapper {
-  transform: scale(0.6);
+  transform: scale(0.6) translateX(-40px); /* ⬅️ REGOLA SOLO QUESTO */
   transform-origin: top center;
 }
