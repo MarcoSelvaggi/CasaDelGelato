@@ -2283,7 +2283,7 @@ body {
   left: var(--base-left);
   top: 300px;
   overflow: hidden;
-  z-index: 3;
+  z-index: 1;
 }
 
 .coppa-grande .box-coppa img {
@@ -2298,7 +2298,7 @@ body {
   height: 190px;
   left: calc(var(--base-left) + 160px - 95px);
   top: 30px;
-  z-index: 3;
+  z-index: 10;
 
   transform: scale(0.7);        /* ⬅️ rimpicciolisce */
   transform-origin: center;      /* ⬅️ resta centrata */
@@ -2317,7 +2317,7 @@ body {
   height: 260px;
   left: calc(var(--base-left) - 10px);
   top: 120px;
-  z-index: 1;
+  z-index: 2;
 }
 
 .coppa-grande .box-pallina {
@@ -2341,6 +2341,7 @@ body {
   left: 50%;
   top: 90px;
   transform: translateX(-70%) scaleY(0.85);
+  z-index: 3;
 }
 
 /* palline inferiori – ALLINEATE ALLA COPPA */
@@ -2348,18 +2349,21 @@ body {
   left: 50%;
   top: 90px;
   transform: translateX(-105%) scaleY(0.9);
+  z-index: 2;
 }
 
 .coppa-grande .pallina-bottom {
   left: 50%;
   top: 90px;
   transform: translateX(-30%) scaleY(0.9);
+  z-index: 4;
 }
 
 .coppa-grande .pallina-right {
   left: 50%;
   top: 90px;
   transform: translateX(5%) scaleY(0.9);
+  z-index: 1;
 }
 
 
