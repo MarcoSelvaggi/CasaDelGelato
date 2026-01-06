@@ -1897,6 +1897,15 @@ body {
   height: 90px;      /* altezza singolo slot */
 }
 
+/* =========================
+   SCALE GLOBALE – PICCOLA
+========================= */
+.piccola-wrapper {
+  transform: scale(0.7);          /* 🔽 riduce tutto */
+  transform-origin: top center;   /* ⬆️ ancora in alto */
+}
+
+
 
 
 /* ================= FORMATO MEDIA ================= */

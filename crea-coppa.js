@@ -2173,6 +2173,7 @@ document.body.classList.remove("coppa-media", "coppa-grande");
 if (coppaSelezionata === "PICCOLA") {
 
   stage.innerHTML = `
+  <div class="piccola-wrapper">
 <div class="piccola-coppa">
   <!-- PANNA -->
   <div class="box box-panna">
@@ -2300,7 +2301,7 @@ if (coppaSelezionata === "PICCOLA") {
     <div class="extra-img"></div>
     <div class="extra-text"></div>
   </div>
-
+</div>
 </div>
   `;
 }
