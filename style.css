@@ -1778,7 +1778,7 @@ body {
   position: absolute;
   top: 10px;
   left: calc(var(--base-left) + 330px);
-  width: 300px;
+  width: 340px;
   height: 110px;
 
   display: flex;
@@ -2013,41 +2013,33 @@ body {
 .coppa-media #extra-stage {
   position: absolute;
   top: 10px;
-  left: calc(var(--base-left) + 450px);
-  width: 280px;
-  height: 70px;
-
-  border: 2px dashed rgba(0,0,0,0.45);
-  border-radius: 12px;
-  background: transparent;
+  left: calc(var(--base-left) + 330px);
+  width: 340px;
+  height: 110px;
 
   display: flex;
   gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
+  padding: 8px;
+  box-sizing: border-box;
 }
 
 /* singolo slot */
 .coppa-media .extra-slot {
-  flex: 1;                 /* ⬅️ SEMPRE 3 SLOT UGUALI */
-  height: 100%;
+  flex: 1;
   border: 2px dashed rgba(0,0,0,0.35);
   border-radius: 10px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
 
   padding: 6px;
   box-sizing: border-box;
-  overflow: hidden;        /* ⬅️ IMPEDISCE L’ESPANSIONE */
 }
 
 .coppa-media .extra-img {
-  flex: 1;
   width: 100%;
+  height: 60px;        /* ⬅️ AREA IMMAGINE FISSA */
 
   display: flex;
   align-items: center;
@@ -2065,8 +2057,9 @@ body {
   font-size: 11px;
   font-weight: 600;
   text-align: center;
-  margin-top: 4px;
-  white-space: nowrap;
+  margin-top: 6px;
+  line-height: 1.1;
+  width: 100%;
 }
 /* ================= RIDUZIONE BLOCCO EXTRA – FORMATO MEDIA ================= */
 
@@ -2204,19 +2197,7 @@ body {
 .coppa-media .topping-2-text {
   margin-left: 30px;    /* regola solo questo */
 }
-/* ================= EXTRA STAGE ================= */
-.coppa-media #extra-stage {
-  position: absolute;
-  top: 10px;
-  left: calc(var(--base-left) + 330px);
-  width: 300px;
-  height: 80px;
 
-  display: flex;
-  gap: 10px;
-  padding: 8px;
-  box-sizing: border-box;
-}
 /* =========================
    MEDIA – UN SOLO GUSTO (FIX FINALE)
 ========================= */
@@ -2410,8 +2391,8 @@ body {
   position: absolute;
   top: 10px;
   left: calc(var(--base-left) + 330px);
-  width: 300px;
-  height: 80px;
+  width: 340px;
+  height: 110px;
 
   display: flex;
   gap: 10px;
@@ -2420,24 +2401,21 @@ body {
 }
 
 .coppa-grande .extra-slot {
-  flex: 1;                 /* ⬅️ SEMPRE 3 SLOT UGUALI */
-  height: 100%;
+  flex: 1;
   border: 2px dashed rgba(0,0,0,0.35);
   border-radius: 10px;
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
 
   padding: 6px;
   box-sizing: border-box;
-  overflow: hidden;        /* ⬅️ IMPEDISCE L’ESPANSIONE */
 }
 
 .coppa-grande .extra-img {
-  flex: 1;
   width: 100%;
+  height: 60px;        /* ⬅️ AREA IMMAGINE FISSA */
 
   display: flex;
   align-items: center;
@@ -2455,8 +2433,9 @@ body {
   font-size: 11px;
   font-weight: 600;
   text-align: center;
-  margin-top: 4px;
-  white-space: nowrap;
+  margin-top: 6px;
+  line-height: 1.1;
+  width: 100%;
 }
 /* ================= FORMATO GRANDE – SCALE GLOBALE ================= */
 .coppa-grande .grande-wrapper {
