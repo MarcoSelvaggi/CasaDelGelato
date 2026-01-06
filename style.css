@@ -1919,7 +1919,7 @@ body {
   width: 170px;
   height: 170px;
   left: calc(var(--base-left) + 140px - 85px);
-  top: 130px;
+  top: 125px;
   z-index: 10;
 }
 .coppa-media .box-panna {
@@ -2242,7 +2242,7 @@ body {
 }
 .media-coppa.double-gusto .box-panna {
   z-index: 10;              /* 👈 QUESTA È LA CHIAVE */
-  top: 100px;
+  top: 110px;
 }
 
 
