@@ -1693,6 +1693,7 @@ function renderCoppaGrande(stage) {
 
 <div class="grande-wrapper"> 
 
+<div class="grande-coppa">
   <!-- PANNA -->
   <div class="box box-panna">
     <img src="img/panna.png">
@@ -1753,7 +1754,9 @@ function renderCoppaGrande(stage) {
   <div class="box box-coppa">
     <img src="img/coppa-base.png">
   </div>
+  </div>
 
+ <div class="grande-extras">
   <!-- GRANELLE -->
 <div class="box box-extra granella-1">
   <img id="granella-1-img" src="img/granella-nocciola.png">
@@ -1830,6 +1833,7 @@ function renderCoppaGrande(stage) {
 <div class="box box-extra frutta-2">
   <img id="frutta-2-img" src="img/fragola.png">
 
+
   <div class="arrow"
        style="bottom:-52px; left:50%; transform:translateX(-50%);">
     <div class="arrow-text bottom frutta-text" id="frutta-2-text">Frutta</div>
@@ -1840,7 +1844,7 @@ function renderCoppaGrande(stage) {
     </svg>
   </div>
 </div>
-
+</div>
   <!-- EXTRA STAGE -->
   <div id="extra-stage">
     <div class="extra-slot"><div class="extra-img"></div><div class="extra-text"></div></div>
@@ -1854,7 +1858,7 @@ function renderCoppaGrande(stage) {
 
 function renderCoppaMedia(stage) {
   stage.innerHTML = `
-
+<div class="media-wrapper">
 <div class="media-coppa">
 
   <!-- PANNA -->
@@ -2003,6 +2007,7 @@ function renderCoppaMedia(stage) {
     <div class="extra-img"></div>
     <div class="extra-text"></div>
   </div>
+</div>
 </div>
 
   `;

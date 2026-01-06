@@ -1919,7 +1919,7 @@ body {
 .coppa-media #coppa-stage {
   position: relative;
   width: 860px;
-  height: 520px;
+  height: 800px;
   margin: 40px auto;
   background: #fff;
   border: 3px solid #000;
@@ -2286,6 +2286,75 @@ body {
   top: 120px;
 }
 
+/* =========================
+   MEDIA – BLOCCO EXTRA SOTTO COPPA (MOBILE-LIKE)
+   (sposta granella/topping/frutta sotto la coppa, non più a destra)
+========================= */
+
+.coppa-media .media-extras{
+  position: absolute;
+  left: calc(var(--base-left) - 38px); /* ⬅️ spostalo a dx/sx */
+  top: 560px;                          /* ⬅️ quota sotto coppa */
+  width: 320px;                        /* ⬅️ larghezza blocco */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  z-index: 20;
+}
+
+/* ogni box dentro diventa "normale" nel flex */
+.coppa-media .media-extras .box-extra{
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+}
+
+/* IMPORTANTISSIMO: annulla i left “orizzontali” vecchi */
+.coppa-media .media-extras .granella-1,
+.coppa-media .media-extras .granella-2,
+.coppa-media .media-extras .topping-1,
+.coppa-media .media-extras .topping-2,
+.coppa-media .media-extras .box-frutta{
+  left: 0 !important;
+}
+
+/* layout: 3 per riga (poi va a capo) */
+.coppa-media .media-extras .box-extra{
+  width: calc((320px - 20px) / 3); /* 3 colonne, 2 gap da 10px */
+  height: 120px;                   /* come vuoi */
+}
+
+
+/* =========================
+   MEDIA – EXTRA VERTICALI
+========================= */
+.coppa-media #extra-stage {
+  /* posizione rispetto alla coppa */
+  top: 280px;                             /* stessa quota della piccola */
+  left: calc(var(--base-left) + 350px);   /* stessa colonna */
+
+  width: 100px;       /* UNA colonna */
+  height: auto;
+
+  display: flex;
+  flex-direction: column;   /* ⬅️ verticale */
+  gap: 10px;
+}
+
+.coppa-media #extra-stage .extra-slot {
+  width: 100%;
+  height: 90px;      /* stessa altezza slot */
+}
+
+/* =========================
+   SCALE GLOBALE – MEDIA
+========================= */
+.media-wrapper {
+  transform: scale(0.6);          /* 🔽 riduce TUTTO */
+  transform-origin: top center;   /* ⬆️ ancora in alto */
+}
+
 
 
 /* ================= FORMATO GRANDE ================= */
@@ -2298,8 +2367,8 @@ body {
 /* ================= STAGE ================= */
 .coppa-grande #coppa-stage {
   position: relative;
-  width: 980px;
-  height: 600px;
+  width: 860px;
+  height: 800px;
   margin: 40px auto;
   background: #fff;
   border: 3px solid #000;
@@ -2723,4 +2792,98 @@ body {
 }
 .grande-wrapper.triple-gusto .pallina-bottom {
   transform: translateX(-50%) scaleY(0.9);
+}
+
+
+/* =========================
+   GRANDE – BLOCCO EXTRA SOTTO COPPA (3 + 3)
+   SCHEMA IDENTICO A MEDIA
+========================= */
+
+.coppa-grande .grande-extras{
+  position: absolute;
+
+  /* ⬅️⬇️ QUESTI DUE SONO I MASTER */
+  left: calc(var(--base-left) - 20px); /* sposta tutto a destra/sinistra */
+  top: 720px;                          /* sposta tutto su/giù */
+
+  width: 360px;        /* larghezza totale blocco */
+  display: flex;
+  flex-wrap: wrap;     /* 🔥 VA A CAPO */
+  gap: 12px;
+
+  justify-content: flex-start;
+  z-index: 20;
+}
+
+/* ogni extra diventa un item flex */
+.coppa-grande .grande-extras .box-extra{
+  position: relative !important;
+
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+
+  width: calc((360px - 24px) / 3); /* 3 slot precisi */
+  height: 130px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* ANNULLA DEFINITIVAMENTE i vecchi posizionamenti */
+.coppa-grande .grande-extras .granella-1,
+.coppa-grande .grande-extras .granella-2,
+.coppa-grande .grande-extras .topping-1,
+.coppa-grande .grande-extras .topping-2,
+.coppa-grande .grande-extras .frutta-1,
+.coppa-grande .grande-extras .frutta-2{
+  left: 0 !important;
+  transform: none !important;
+}
+/* =========================
+   GRANDE – EXTRA STAGE (3 SLOT VERTICALI)
+========================= */
+
+.coppa-grande #extra-stage{
+  position: absolute;
+
+  /* 🎯 MASTER MOVE */
+  left: calc(var(--base-left) + 400px); /* ➜ dx/sx */
+  top: 300px;                           /* ➜ su/giù */
+
+  width: 110px;
+  height: auto;
+
+  display: flex;
+  flex-direction: column;  /* ⬅️ VERTICALE */
+  gap: 12px;
+
+  z-index: 30;
+}
+
+/* singolo slot */
+.coppa-grande #extra-stage .extra-slot{
+  width: 100%;
+  height: 95px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+/* =========================
+   SCALE GLOBALE – GRANDE
+========================= */
+
+.coppa-grande .grande-wrapper {
+  position: relative;   /* ⬅️ CHIAVE ASSOLUTA */
+}
+/* =========================
+   SCALE GLOBALE – GRANDE
+========================= */
+.coppa-grande .grande-wrapper {
+  transform: scale(0.6);
+  transform-origin: top center;
 }
