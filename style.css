@@ -2339,27 +2339,27 @@ body {
 /* pallina in alto */
 .coppa-grande .pallina-top {
   left: 50%;
-  top: 10px;
-  transform: translateX(-50%) scaleY(0.85);
+  top: 90px;
+  transform: translateX(-70%) scaleY(0.85);
 }
 
 /* palline inferiori – ALLINEATE ALLA COPPA */
 .coppa-grande .pallina-left {
   left: 50%;
   top: 90px;
-  transform: translateX(-120%) scaleY(0.9);
+  transform: translateX(-105%) scaleY(0.9);
 }
 
 .coppa-grande .pallina-bottom {
   left: 50%;
   top: 90px;
-  transform: translateX(-50%) scaleY(0.9);
+  transform: translateX(-30%) scaleY(0.9);
 }
 
 .coppa-grande .pallina-right {
   left: 50%;
   top: 90px;
-  transform: translateX(20%) scaleY(0.9);
+  transform: translateX(5%) scaleY(0.9);
 }
 
 
