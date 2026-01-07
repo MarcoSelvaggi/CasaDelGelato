@@ -2472,6 +2472,108 @@ body {
   }
 }
 
+/* =====================================================
+   MEDIA – GUSTI (palline)
+   - NON centrati
+   - seguono la freccia come in PICCOLA
+===================================================== */
+
+.coppa-media .box-pallina .arrow-text{
+  text-align: left;
+}
+
+/* gusto destro resta leggibile */
+.coppa-media .box-pallina .arrow-text.right{
+  text-align: left;
+}
+
+/* =====================================================
+   MEDIA – EXTRA (granella / topping / frutta)
+   - centrati rispetto alla freccia
+===================================================== */
+
+.coppa-media .box-extra .arrow-text{
+  text-align: center !important;
+}
+
+/* ============================
+   MEDIA – TESTO GUSTI (FIX DEFINITIVO)
+============================ */
+
+/* VARIABILI DI REGOLAZIONE (MEDIA) */
+.coppa-media{
+  --gusto-left-x: 55px;     /* + = più verso la coppa | - = più lontano */
+  --gusto-left-y: 50px;     /* + = più giù | - = più su */
+
+  --gusto-right-x: -60px;   /* + = più verso la coppa | - = più lontano */
+  --gusto-right-y: -40px;   /* + = più giù | - = più su */
+
+  /* 🔥 GUSTO TOP */
+  --gusto-top-x: -50px;       /* + = dx | - = sx */
+  --gusto-top-y: -30px;     /* + = giù | - = su */
+}
+
+/* BASE COMUNE */
+.coppa-media #gusto-left-text,
+.coppa-media #gusto-right-text,
+.coppa-media #gusto-top-text{
+  position: absolute !important;
+
+  width: 140px !important;
+  max-width: 140px !important;
+
+  white-space: normal !important;
+  text-align: center !important;
+  line-height: 1.1 !important;
+
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* =================
+   GUSTO SINISTRO – MEDIA
+================= */
+.coppa-media #gusto-left-text{
+  right: 100% !important;   /* 🔒 ANCORA ALLA CODA */
+  top: 50% !important;
+
+  transform: translate(
+    calc(-1 * var(--gusto-left-x)),
+    calc(-50% + var(--gusto-left-y))
+  ) !important;
+}
+
+/* =================
+   GUSTO DESTRO – MEDIA
+================= */
+.coppa-media #gusto-right-text{
+  left: 100% !important;    /* 🔒 ANCORA ALLA CODA */
+  top: 50% !important;
+
+  transform: translate(
+    var(--gusto-right-x),
+    calc(-50% + var(--gusto-right-y))
+  ) !important;
+}
+
+/* =================
+   GUSTO TOP – MEDIA
+================= */
+.coppa-media #gusto-top-text{
+  left: 50% !important;
+  bottom: 100% !important;  /* sopra la freccia */
+
+  transform: translate(
+    calc(-50% + var(--gusto-top-x)),
+    var(--gusto-top-y)
+  ) !important;
+}
+
+
+
+
+
+
 
 /* ================= FORMATO GRANDE ================= */
 body {
@@ -3035,3 +3137,81 @@ body {
 }
 
 
+/* =====================================================
+   GRANDE – GUSTI (palline)
+   - NON centrati
+   - seguono la freccia come PICCOLA e MEDIA
+===================================================== */
+
+.coppa-grande .box-pallina .arrow-text{
+  text-align: left;
+}
+
+/* gusto destro leggibile */
+.coppa-grande .box-pallina .arrow-text.right{
+  text-align: left;
+}
+
+/* =====================================================
+   GRANDE – EXTRA (granella / topping / frutta)
+   - centrati rispetto alla freccia
+===================================================== */
+
+.coppa-grande .box-extra .arrow-text{
+  text-align: center !important;
+}
+
+/* ============================
+   GRANDE – TESTO GUSTI (FIX DEFINITIVO)
+============================ */
+
+/* VARIABILI DI REGOLAZIONE (GRANDE) */
+.coppa-grande{
+  --gusto-left-x: 70px;     /* + = più verso la coppa | - = più lontano */
+  --gusto-left-y: 55px;     /* + = più giù | - = più su */
+
+  --gusto-right-x: -75px;   /* + = più verso la coppa | - = più lontano */
+  --gusto-right-y: -45px;   /* + = più giù | - = più su */
+}
+
+/* BASE COMUNE */
+.coppa-grande #gusto-left-text,
+.coppa-grande #gusto-right-text{
+  position: absolute !important;
+
+  width: 160px !important;
+  max-width: 160px !important;
+
+  white-space: normal !important;
+  text-align: center !important;
+  line-height: 1.1 !important;
+
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* =================
+   GUSTO SINISTRO – GRANDE
+================= */
+.coppa-grande #gusto-left-text{
+  right: 100% !important;   /* 🔒 ANCORA ALLA CODA */
+  top: 50% !important;
+
+  transform: translate(
+    calc(-1 * var(--gusto-left-x)),
+    calc(-50% + var(--gusto-left-y))
+  ) !important;
+}
+
+/* =================
+   GUSTO DESTRO – GRANDE
+================= */
+.coppa-grande #gusto-right-text{
+  left: 100% !important;    /* 🔒 ANCORA ALLA CODA */
+  top: 50% !important;
+
+  transform: translate(
+    var(--gusto-right-x),
+    calc(-50% + var(--gusto-right-y))
+  ) !important;
+}

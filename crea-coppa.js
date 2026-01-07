@@ -1872,16 +1872,18 @@ function renderCoppaMedia(stage) {
     <!-- PALLINA IN ALTO -->
     <div class="box box-pallina pallina-top">
       <div class="arrow"
-           style="left:-60px; top:55%; transform:translateY(-50%);">
+           style="left:-60px; top:15%; transform:translateY(-50%);">
         <div class="arrow-text top gusto-top-text" id="gusto-top-text"></div>
-        <svg width="50" height="30" viewBox="0 0 50 30"
-             style="transform: scaleY(-1);">
-          <path d="M30 15 C16 14, -6 18, -12 38"/>
-          <path d="M38 15 L30 11 M38 15 L30 19"/>
-        </svg>
+<svg width="50" height="30" viewBox="0 0 50 30"
+     style="transform: scaleY(-1) rotate(-15deg);
+            transform-origin: center;">
+  <path d="M30 15 C16 14, -6 18, -27 38"/>
+  <path d="M38 15 L30 11 M38 15 L30 19"/>
+</svg>
       </div>
       <img id="gusto-top-img">
     </div>
+
 
     <!-- PALLINA SINISTRA -->
     <div class="box box-pallina pallina-left">
