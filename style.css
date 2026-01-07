@@ -1765,7 +1765,7 @@ body {
 .arrow-text.top {
   left: 50%;
   transform: translateX(-50%);
-  top: -60px;
+  top: -70px;
 }
 .topping-text {
   margin-left: 20px;   /* ⬅️ questo ORA funziona */
