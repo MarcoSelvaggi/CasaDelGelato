@@ -2934,3 +2934,49 @@ body {
     margin: 40px auto !important;
   }
 }
+
+/* =========================================
+   TESTO FRECCE – centrato sulla freccia + a capo se lungo
+   (metti questo blocco alla FINE del CSS)
+========================================= */
+
+/* Regola base: il testo sta al centro del suo contenitore .arrow */
+.coppa-piccola .arrow-text,
+.coppa-media   .arrow-text,
+.coppa-grande  .arrow-text{
+  position: absolute;
+  left: 50% !important;              /* centro del div .arrow */
+  right: auto !important;
+  transform: translateX(-50%) !important;
+
+  width: max-content;                /* prende la sua larghezza... */
+  max-width: 140px;                  /* ...ma oltre questo va a capo */
+  text-align: center;
+
+  white-space: normal !important;    /* ✅ abilita a capo */
+  overflow-wrap: anywhere;           /* ✅ spezza parole lunghissime */
+  word-break: break-word;
+  line-height: 1.1;
+}
+
+/* Se hai ancora vecchie regole che spostano .left/.right, le annulliamo */
+.coppa-piccola .arrow-text.left,
+.coppa-piccola .arrow-text.right,
+.coppa-media   .arrow-text.left,
+.coppa-media   .arrow-text.right,
+.coppa-grande  .arrow-text.left,
+.coppa-grande  .arrow-text.right{
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+
+/* Facoltativo: se su mobile vuoi un max-width più piccolo */
+@media (max-width: 768px){
+  .coppa-piccola .arrow-text,
+  .coppa-media   .arrow-text,
+  .coppa-grande  .arrow-text{
+    max-width: 110px;
+    font-size: 13px; /* se vuoi leggermente più piccolo */
+  }
+}
