@@ -2306,13 +2306,18 @@ body {
   white-space: nowrap;
 }
 
-/* spostamenti separati */
+/* 🔥 TESTO GRANELLA 1 – MEDIA (FORZATO) */
 .coppa-media .granella-1-text {
   margin-left: -40px;
 }
+/* MEDIA – TESTO GRANELLA 1 */
+.coppa-media #granella-1-text{
+  transform: translateX(-80px);  /* ⬅️ sinistra / destra */
+}
 
-.coppa-media .granella-2-text {
-  margin-left: 40px;
+/* MEDIA – TESTO GRANELLA 2 */
+.coppa-media #granella-2-text{
+  transform: translateX(-5px);   /* ➜ sposta a DESTRA */
 }
 .coppa-media .frutta-text {
   margin-left: 30px; /* oppure il valore che avevi trovato perfetto */
@@ -2336,10 +2341,16 @@ body {
 .coppa-media .topping-1-text {
   margin-left: -25px;   /* regola solo questo */
 }
+.coppa-media #topping-1-text{
+  transform: translate(20px, -6px);  /* ⬆️ alza di poco */
+}
 
 /* Topping destro */
 .coppa-media .topping-2-text {
   margin-left: 30px;    /* regola solo questo */
+}
+.coppa-media #topping-2-text{
+  transform: translate(-80px);  
 }
 
 /* =========================
@@ -2378,6 +2389,27 @@ body {
   transform: scale(0.9);
 }
 /* =========================
+   MEDIA – 1 SOLO GUSTO
+   sposta FRECCIA (ORA SI MUOVE)
+========================= */
+
+.coppa-media .media-coppa.single-gusto
+.pallina-left .arrow{
+  left: -100px;     /* ⬅️➜ destra / sinistra */
+  top: 52%;        /* ⬆️⬇️ su / giù */
+}
+/* =========================
+   MEDIA – FRECCIA GUSTO BASE
+========================= */
+
+.coppa-media .pallina-left .arrow{
+  left: -60px;       /* ← come prima */
+  top: 55%;
+  transform: translateY(-50%);
+}
+
+
+/* =========================
    MEDIA – 2 GUSTI
    panna DAVANTI alle palline
 ========================= */
@@ -2397,7 +2429,7 @@ body {
 .coppa-media .media-extras{
   position: absolute;
   left: calc(var(--base-left) - 38px); /* ⬅️ spostalo a dx/sx */
-  top: 560px;                          /* ⬅️ quota sotto coppa */
+  top: 650px;                          /* ⬅️ quota sotto coppa */
   width: 320px;                        /* ⬅️ larghezza blocco */
   display: flex;
   flex-wrap: wrap;
@@ -2471,7 +2503,20 @@ body {
       translateY(20px);   /* opzionale */
   }
 }
+/* =====================================================
+   MEDIA – TESTO FRECCE (BASE COME PICCOLA)
+   - va a capo se lungo
+   - NON modifica le posizioni
+===================================================== */
 
+.coppa-media .arrow-text{
+  white-space: normal !important;        /* ✅ va a capo */
+  max-width: 140px !important;           /* un filo più largo della piccola */
+  line-height: 1.1 !important;
+
+  overflow-wrap: break-word !important;  /* spezza solo se serve */
+  word-break: normal !important;         /* ❌ niente testo verticale */
+}
 /* =====================================================
    MEDIA – GUSTI (palline)
    - NON centrati
@@ -2854,19 +2899,27 @@ body {
   margin-left: 10px;
   margin-top: 0px;   /* ⬇️ abbassa leggermente */
 }
-
+.coppa-grande .arrow-text.right#gusto-right-text{
+  top: -30px !important;                  /* ⬇️ su / giù */
+  transform: translate(-20%, 0) !important; /* ⬅️➡️ verso la freccia */
+}
 /* sopra */
 .coppa-grande .gusto-top-text {
   margin-left: -5px;
   margin-top: 2px;   /* ⬇️ pochissimo */
 }
-
+.coppa-grande #gusto-top-text{
+  top: -20px !important;   /* ⬆️⬇️ SU / GIÙ */
+}
 /* sotto */
 .coppa-grande .gusto-bottom-text {
   margin-left: 25px; /* ➜ verso destra */
   margin-top: 6px;   /* ⬇️ più distante */
 }
-
+.coppa-grande .arrow-text.bottom#gusto-bottom-text{
+  top: -55px !important; /* ⬆️⬇️ su / giù */
+  transform: translate(-10%, 0) !important;
+}
 /* ================= TESTO FRECCIA ================= */
 .coppa-grande .arrow {
   position: absolute;
@@ -2894,9 +2947,14 @@ body {
 .coppa-grande .granella-1-text {
   margin-left: -40px;
 }
-
+.coppa-grande #granella-1-text{
+  transform: translateX(-70px);
+}
 .coppa-grande .granella-2-text {
   margin-left: 40px;
+}
+.coppa-grande #granella-2-text{
+  transform: translateX(-5px);
 }
 
 /* ================= FRUTTA ================= */
@@ -2918,6 +2976,9 @@ body {
 .coppa-grande .frutta-2-text {
   margin-left: 30px;
 }
+.coppa-grande #frutta-1-text{
+  transform: translate(-55px, 6px);
+}
 
 /* ================= TOPPING ================= */
 .coppa-grande .arrow-text.top {
@@ -2936,9 +2997,15 @@ body {
 .coppa-grande .topping-1-text {
   margin-left: -25px;
 }
+.coppa-grande #topping-1-text{
+  transform: translateX(15px);
+}
 
 .coppa-grande .topping-2-text {
   margin-left: 30px;
+}
+.coppa-grande #topping-2-text{
+  transform: translateX(-110px);
 }
 /* =========================
    GRANDE – 1 SOLO GUSTO
@@ -3011,7 +3078,10 @@ body {
 .grande-wrapper.triple-gusto .pallina-bottom {
   transform: translateX(-50%) scaleY(0.9);
 }
-
+/* GRANDE – 3 GUSTI – sposta FRECCIA gusto bottom a destra */
+.grande-wrapper.triple-gusto .pallina-bottom .arrow{
+  left: calc(50% + 85px) !important;  /* ➜ DESTRA */
+}
 
 /* =========================
    GRANDE – BLOCCO EXTRA SOTTO COPPA (3 + 3)
@@ -3023,7 +3093,7 @@ body {
 
   /* ⬅️⬇️ QUESTI DUE SONO I MASTER */
   left: calc(var(--base-left) - 20px); /* sposta tutto a destra/sinistra */
-  top: 720px;                          /* sposta tutto su/giù */
+  top: 740px;                          /* sposta tutto su/giù */
 
   width: 360px;        /* larghezza totale blocco */
   display: flex;
@@ -3138,16 +3208,30 @@ body {
 
 
 /* =====================================================
+   GRANDE – TESTO FRECCE (BASE COME PICCOLA / MEDIA)
+   - va a capo se lungo
+   - NON modifica le posizioni
+===================================================== */
+
+.coppa-grande .arrow-text{
+  white-space: normal !important;
+  max-width: 160px !important;
+  line-height: 1.15 !important;
+
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+/* =====================================================
    GRANDE – GUSTI (palline)
    - NON centrati
-   - seguono la freccia come PICCOLA e MEDIA
+   - seguono la freccia
 ===================================================== */
 
 .coppa-grande .box-pallina .arrow-text{
   text-align: left;
 }
 
-/* gusto destro leggibile */
 .coppa-grande .box-pallina .arrow-text.right{
   text-align: left;
 }
@@ -3162,21 +3246,29 @@ body {
 }
 
 /* ============================
-   GRANDE – TESTO GUSTI (FIX DEFINITIVO)
+   GRANDE – TESTO GUSTI (FIX DEFINITIVO – 4 GUSTI)
 ============================ */
 
-/* VARIABILI DI REGOLAZIONE (GRANDE) */
+/* VARIABILI DI REGOLAZIONE */
 .coppa-grande{
-  --gusto-left-x: 70px;     /* + = più verso la coppa | - = più lontano */
-  --gusto-left-y: 55px;     /* + = più giù | - = più su */
+  --gusto-left-x: 70px;
+  --gusto-left-y: 55px;
 
-  --gusto-right-x: -75px;   /* + = più verso la coppa | - = più lontano */
-  --gusto-right-y: -45px;   /* + = più giù | - = più su */
+  --gusto-right-x: -75px;
+  --gusto-right-y: -45px;
+
+  --gusto-top-x: -60px;
+  --gusto-top-y: -40px;
+
+  --gusto-bottom-x: 25px;
+  --gusto-bottom-y: 35px;
 }
 
 /* BASE COMUNE */
 .coppa-grande #gusto-left-text,
-.coppa-grande #gusto-right-text{
+.coppa-grande #gusto-right-text,
+.coppa-grande #gusto-top-text,
+.coppa-grande #gusto-bottom-text{
   position: absolute !important;
 
   width: 160px !important;
@@ -3184,7 +3276,7 @@ body {
 
   white-space: normal !important;
   text-align: center !important;
-  line-height: 1.1 !important;
+  line-height: 1.15 !important;
 
   overflow-wrap: break-word !important;
   word-break: break-word !important;
@@ -3194,7 +3286,7 @@ body {
    GUSTO SINISTRO – GRANDE
 ================= */
 .coppa-grande #gusto-left-text{
-  right: 100% !important;   /* 🔒 ANCORA ALLA CODA */
+  right: 100% !important;
   top: 50% !important;
 
   transform: translate(
@@ -3207,11 +3299,37 @@ body {
    GUSTO DESTRO – GRANDE
 ================= */
 .coppa-grande #gusto-right-text{
-  left: 100% !important;    /* 🔒 ANCORA ALLA CODA */
+  left: 100% !important;
   top: 50% !important;
 
   transform: translate(
     var(--gusto-right-x),
     calc(-50% + var(--gusto-right-y))
+  ) !important;
+}
+
+/* =================
+   GUSTO TOP – GRANDE
+================= */
+.coppa-grande #gusto-top-text{
+  left: 50% !important;
+  bottom: 100% !important;
+
+  transform: translate(
+    calc(-50% + var(--gusto-top-x)),
+    var(--gusto-top-y)
+  ) !important;
+}
+
+/* =================
+   GUSTO BOTTOM – GRANDE
+================= */
+.coppa-grande #gusto-bottom-text{
+  left: 50% !important;
+  top: 100% !important;
+
+  transform: translate(
+    calc(-50% + var(--gusto-bottom-x)),
+    var(--gusto-bottom-y)
   ) !important;
 }
