@@ -1750,7 +1750,7 @@ body {
 .arrow-text.bottom {
   left: 50%;
   transform: translateX(-50%);
-  top: 55px;        /* sotto la curva */
+  top: 60px;        /* sotto la curva */
 }
 .granella-text {
   margin-left: -40px; /* oppure il valore che avevi trovato perfetto */
@@ -1765,7 +1765,7 @@ body {
 .arrow-text.top {
   left: 50%;
   transform: translateX(-50%);
-  top: -50px;
+  top: -60px;
 }
 .topping-text {
   margin-left: 20px;   /* ⬅️ questo ORA funziona */
@@ -1908,6 +1908,105 @@ body {
 .piccola-coppa {
   --base-left: 30px;
 }
+
+/* =====================================================
+   PICCOLA – TESTO FRECCE
+   - va a capo se lungo
+   - resta agganciato alla freccia
+   - gusti e extra gestiti correttamente
+===================================================== */
+
+/* BASE: abilita il wrap SENZA toccare la posizione */
+.piccola-coppa .arrow-text{
+  white-space: normal !important;        /* ✅ va a capo */
+  max-width: 120px !important;           /* larghezza controllata */
+  line-height: 1.1 !important;
+
+  overflow-wrap: break-word !important;  /* spezza solo se necessario */
+  word-break: normal !important;         /* ❌ niente lettere verticali */
+}
+
+/* =====================================================
+   GUSTI (palline)
+   - NON centrati
+   - seguono la freccia come prima
+===================================================== */
+
+.piccola-coppa .box-pallina .arrow-text{
+  text-align: left;   /* mantiene l’allineamento visivo corretto */
+}
+
+/* gusto destro resta leggibile */
+.piccola-coppa .box-pallina .arrow-text.right{
+  text-align: left;
+}
+
+/* =====================================================
+   EXTRA (granella / topping / frutta)
+   - centrati rispetto alla freccia
+===================================================== */
+
+.piccola-coppa .box-extra .arrow-text{
+  text-align: center !important;
+}
+
+/* ============================
+   PICCOLA – TESTO GUSTI (FIX DEFINITIVO)
+============================ */
+
+/* VARIABILI DI REGOLAZIONE */
+.piccola-coppa{
+  --gusto-left-x: 40px;   /* + = più verso la coppa | - = più lontano */
+  --gusto-left-y: 45px;   /* + = più giù | - = più su */
+
+  --gusto-right-x: -50px;  /* + = più verso la coppa | - = più lontano */
+  --gusto-right-y: -35px;   /* + = più giù | - = più su */
+}
+
+/* BASE COMUNE */
+.piccola-coppa #gusto-left-arrow .arrow-text,
+.piccola-coppa #gusto-right-arrow .arrow-text{
+  position: absolute !important;
+
+  width: 120px !important;
+  max-width: 120px !important;
+
+  white-space: normal !important;
+  text-align: center !important;
+  line-height: 1.1 !important;
+
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* =================
+   GUSTO SINISTRO
+================= */
+.piccola-coppa #gusto-left-arrow .arrow-text{
+  right: 100% !important;    /* 🔒 ANCORA ALLA CODA */
+  top: 50% !important;
+
+  /* 🎯 SPOSTAMENTI REALI */
+  transform: translate(
+    calc(-1 * var(--gusto-left-x)),
+    calc(-50% + var(--gusto-left-y))
+  ) !important;
+}
+
+/* =================
+   GUSTO DESTRO
+================= */
+.piccola-coppa #gusto-right-arrow .arrow-text{
+  left: 100% !important;     /* 🔒 ANCORA ALLA CODA */
+  top: 50% !important;
+
+  transform: translate(
+    var(--gusto-right-x),
+    calc(-50% + var(--gusto-right-y))
+  ) !important;
+}
+
+
 
 
 
@@ -2935,48 +3034,4 @@ body {
   }
 }
 
-/* =========================================
-   TESTO FRECCE – centrato sulla freccia + a capo se lungo
-   (metti questo blocco alla FINE del CSS)
-========================================= */
 
-/* Regola base: il testo sta al centro del suo contenitore .arrow */
-.coppa-piccola .arrow-text,
-.coppa-media   .arrow-text,
-.coppa-grande  .arrow-text{
-  position: absolute;
-  left: 50% !important;              /* centro del div .arrow */
-  right: auto !important;
-  transform: translateX(-50%) !important;
-
-  width: max-content;                /* prende la sua larghezza... */
-  max-width: 140px;                  /* ...ma oltre questo va a capo */
-  text-align: center;
-
-  white-space: normal !important;    /* ✅ abilita a capo */
-  overflow-wrap: anywhere;           /* ✅ spezza parole lunghissime */
-  word-break: break-word;
-  line-height: 1.1;
-}
-
-/* Se hai ancora vecchie regole che spostano .left/.right, le annulliamo */
-.coppa-piccola .arrow-text.left,
-.coppa-piccola .arrow-text.right,
-.coppa-media   .arrow-text.left,
-.coppa-media   .arrow-text.right,
-.coppa-grande  .arrow-text.left,
-.coppa-grande  .arrow-text.right{
-  left: 50% !important;
-  right: auto !important;
-  transform: translateX(-50%) !important;
-}
-
-/* Facoltativo: se su mobile vuoi un max-width più piccolo */
-@media (max-width: 768px){
-  .coppa-piccola .arrow-text,
-  .coppa-media   .arrow-text,
-  .coppa-grande  .arrow-text{
-    max-width: 110px;
-    font-size: 13px; /* se vuoi leggermente più piccolo */
-  }
-}

@@ -2254,9 +2254,9 @@ if (coppaSelezionata === "PICCOLA") {
 <div class="box box-extra box-topping">
   <img id="topping-img" src="img/topping-bosco.png">
 
-  <div class="arrow"
-       id="topping-arrow"
-       style="top:-58px; left:50%; transform:translateX(-50%);">
+<div class="arrow"
+     id="topping-arrow"
+     style="top:-50px; left:50%; transform:translateX(-50%);">
 
     <div class="arrow-text top topping-text" id="topping-text">
       Topping
