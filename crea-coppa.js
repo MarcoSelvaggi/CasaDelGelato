@@ -1703,7 +1703,7 @@ function renderCoppaGrande(stage) {
   <div class="box-palline">
 
     <div class="box box-pallina pallina-top">
-      <div class="arrow" style="left:-45px; top:0%; transform:translateY(-50%);">
+      <div class="arrow" style="left:-50px; top:0%; transform:translateY(-50%);">
         <div class="arrow-text top gusto-text" id="gusto-top-text">Gusto</div>
         <svg width="50" height="30" viewBox="0 0 50 30"
      style="transform: scaleY(-1) rotate(-10deg);
@@ -1740,7 +1740,7 @@ function renderCoppaGrande(stage) {
 
 <div class="box box-pallina pallina-bottom">
   <div class="arrow"
-       style="left:120px; top:-10%; transform:translateY(0);">
+       style="left:130px; top:-10%; transform:translateY(0);">
         <div class="arrow-text bottom gusto-text" id="gusto-bottom-text">Gusto</div>
  <svg width="50" height="30" viewBox="0 0 50 30"
      style="transform: scaleX(-1) scaleY(-1) rotate(-10deg);

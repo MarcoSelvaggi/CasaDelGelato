@@ -1512,15 +1512,24 @@ body {
 }
 
 /* ================= BOX GRANDE ================= */
+/* ================= BOX GRANDE ================= */
 #coppa-stage {
   position: relative;
   width: 860px;
-  height: 800px;
+  height: 520px;          /* ⬅️ ripristinata */
   margin: 40px auto;
   background: #fff;
   border: 3px solid #000;
-  overflow: visible;
+  overflow: visible;     /* ⬅️ come prima */
 }
+/* =========================
+   PICCOLA – RIDUCI ALTEZZA STAGE
+========================= */
+
+body.piccola-coppa #coppa-stage{
+  height: 520px;   /* 🔽 qui cambia davvero */
+}
+
 
 /* ================= CONTROLLO GLOBALE ================= */
 :root {
