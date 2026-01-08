@@ -1787,13 +1787,15 @@ body {
 .arrow-text.top {
   left: 50%;
   transform: translateX(-50%);
-  top: -70px;
+  top: -75px; /* base */
 }
+
 .topping-text {
-  margin-left: 20px;   /* ⬅️ questo ORA funziona */
+  margin-left: 0px;  /* ↔️ orizzontale */
+  top: -65px;        /* ⬇️ ABBASSA QUI */
 }
-.topping-text {
-  top: -75px;   /* ⬅️ questo ORA funziona */
+#topping-text{
+  transform: translate(-50%, 20px); /* ⬇️ ABBASSA */
 }
 /* CONTENITORE EXTRA */
 #extra-stage {
@@ -1901,7 +1903,7 @@ body {
 ========================= */
 
 .piccola-coppa .box-extra {
-  top: 560px;
+  top: 580px;
 }
 
 .piccola-coppa .box-granella { left: calc(var(--base-left) - 120px + 85px); }
@@ -2621,7 +2623,7 @@ body {
 
     transform:
       scale(0.65)
-      translateX(-10px)   /* ⬅️ più negativo = più a sinistra */
+      translateX(30px)   /* ⬅️ più negativo = più a sinistra */
       translateY(20px);   /* opzionale */
   }
 }
