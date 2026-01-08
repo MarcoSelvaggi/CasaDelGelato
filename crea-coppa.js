@@ -1921,7 +1921,7 @@ function renderCoppaMedia(stage) {
     <!-- PALLINA IN ALTO -->
     <div class="box box-pallina pallina-top">
       <div class="arrow"
-           style="left:-60px; top:15%; transform:translateY(-50%);">
+           style="left:-80px; top:15%; transform:translateY(-50%);">
         <div class="arrow-text top gusto-top-text" id="gusto-top-text"></div>
 <svg width="50" height="30" viewBox="0 0 50 30"
      style="transform: scaleY(-1) rotate(-15deg);

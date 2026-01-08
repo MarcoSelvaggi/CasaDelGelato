@@ -2422,30 +2422,37 @@ body {
 }
 
 /* =========================
-   MEDIA – BLOCCO EXTRA SOTTO COPPA (MOBILE-LIKE)
-   (sposta granella/topping/frutta sotto la coppa, non più a destra)
+   MEDIA – BLOCCO EXTRA SOTTO COPPA (STABILE)
 ========================= */
 
 .coppa-media .media-extras{
   position: absolute;
-  left: calc(var(--base-left) - 38px); /* ⬅️ spostalo a dx/sx */
-  top: 650px;                          /* ⬅️ quota sotto coppa */
-  width: 320px;                        /* ⬅️ larghezza blocco */
+  left: calc(var(--base-left) - 38px);
+  top: 650px;
+  width: 320px;
+
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+
+  justify-content: flex-start; /* 🔒 comportamento prevedibile */
   z-index: 20;
 }
 
-/* ogni box dentro diventa "normale" nel flex */
+/* box standard */
 .coppa-media .media-extras .box-extra{
   position: relative !important;
+
+  width: calc((320px - 20px) / 3); /* 3 sopra */
+  height: 120px;
+
   top: auto !important;
   left: auto !important;
   right: auto !important;
+  transform: none !important;
 }
 
-/* IMPORTANTISSIMO: annulla i left “orizzontali” vecchi */
+/* annulla TUTTI i vecchi left */
 .coppa-media .media-extras .granella-1,
 .coppa-media .media-extras .granella-2,
 .coppa-media .media-extras .topping-1,
@@ -2454,11 +2461,7 @@ body {
   left: 0 !important;
 }
 
-/* layout: 3 per riga (poi va a capo) */
-.coppa-media .media-extras .box-extra{
-  width: calc((320px - 20px) / 3); /* 3 colonne, 2 gap da 10px */
-  height: 120px;                   /* come vuoi */
-}
+
 
 
 /* =========================
@@ -3183,7 +3186,7 @@ body {
     transform-origin: top left;
 
     transform:
-      scale(0.6)
+      scale(0.55)
       translateX(-10px)
       translateY(20px);
   }
