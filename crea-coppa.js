@@ -2322,17 +2322,28 @@ if (coppaSelezionata === "PICCOLA") {
 
 <div class="arrow"
      id="topping-arrow"
-     style="top:-45px; left:50%; transform:translateX(-50%);">
+     style="top:-50px; left:50%; transform:translateX(-50%);">
 
     <div class="arrow-text top topping-text" id="topping-text">
       Topping
     </div>
 
-    <svg class="arrow-svg" width="50" height="30" viewBox="0 0 50 30"
-         style="transform: rotate(90deg) scaleY(-1); transform-origin: center;">
-      <path d="M30 15 C16 14, -6 18, -12 38" />
-      <path d="M38 15 L30 11 M38 15 L30 19" />
-    </svg>
+<svg class="arrow-svg" width="50" height="55" viewBox="0 0 50 55">
+  <!-- asta dritta -->
+  <path d="M25 0 L25 38"
+        fill="none"
+        stroke="#000"
+        stroke-width="3"
+        stroke-linecap="round" />
+
+  <!-- punta simmetrica -->
+  <path d="M25 38 L20 32 M25 38 L30 32"
+        fill="none"
+        stroke="#000"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+</svg>
   </div>
 </div>
 
