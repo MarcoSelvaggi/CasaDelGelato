@@ -2091,10 +2091,16 @@ body {
 .coppa-media #coppa-stage {
   position: relative;
   width: 860px;
-  height: 800px;
+  height: 600px;
   margin: 40px auto;
   background: #fff;
   border: 3px solid #000;
+}
+/* =========================
+   MEDIA – RIDUCI ALTEZZA STAGE
+========================= */
+body.coppa-media #coppa-stage{
+  height: 600px;   /* 🔽 regola QUI */
 }
 
 /* riferimento orizzontale */
@@ -2624,7 +2630,7 @@ body {
   transform:
     scale(0.65)
     translateX(30px)
-    translateY(20px);
+    translateY(-70px);
 }
 /* =====================================================
    MEDIA – TESTO FRECCE (BASE COME PICCOLA)
@@ -2754,12 +2760,17 @@ body {
 .coppa-grande #coppa-stage {
   position: relative;
   width: 860px;
-  height: 800px;
+  height: 650px;
   margin: 40px auto;
   background: #fff;
   border: 3px solid #000;
 }
-
+/* =========================
+   GRANDE – RIDUCI ALTEZZA STAGE
+========================= */
+body.coppa-grande #coppa-stage{
+  height: 650px;   /* 🔽 regola QUI */
+}
 /* riferimento orizzontale */
 :root {
   --base-left: 130px;
@@ -3336,50 +3347,22 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 /* =========================
-   SCALE GLOBALE – GRANDE
+   SCALE DEFINITIVO – GRANDE
+   (DESKTOP + MOBILE UGUALI)
 ========================= */
 
-.coppa-grande .grande-wrapper {
-  position: relative;   /* ⬅️ CHIAVE ASSOLUTA */
-}
-/* =========================
-   GRANDE – DEFAULT (DESKTOP / TABLET)
-========================= */
-.coppa-grande .grande-wrapper {
+.coppa-grande .grande-wrapper{
   position: relative;
-  transform: none;          /* ⬅️ importantissimo */
-}
-/* =========================
-   GRANDE – MOBILE ONLY
-========================= */
-@media (max-width: 768px) {
-  .coppa-grande .grande-wrapper {
-    transform-origin: top left;
+  transform-origin: top left;
 
-    transform:
-      scale(0.55)
-      translateX(30px)
-      translateY(20px);
-  }
-}
-/* =========================
-   DESKTOP – COPPA STAGE AUTO (GRANDE)
-   (mettere ALLA FINE)
-========================= */
-
-/* base: desktop/tablet più largo */
-.coppa-grande #coppa-stage{
-  width: clamp(860px, 92vw, 980px) !important;
-  height: clamp(800px, 88vh, 900px) !important;
+  transform:
+    scale(0.55)
+    translateX(30px)
+    translateY(-40px);
 }
 
-/* opzionale: se vuoi proprio più spazio sotto */
-@media (min-width: 900px){
-  .coppa-grande #coppa-stage{
-    margin: 40px auto !important;
-  }
-}
 
 
 /* =====================================================
@@ -3507,4 +3490,35 @@ body {
     calc(-50% + var(--gusto-bottom-x)),
     var(--gusto-bottom-y)
   ) !important;
+}
+
+
+
+
+
+
+
+#instagram-frame{
+  width: 100%;
+}
+/* =========================
+   INSTAGRAM EXPORT – STAGE
+========================= */
+#instagram-stage{
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 99999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#instagram-frame{
+  width: 1080px;
+  height: 1920px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
 }

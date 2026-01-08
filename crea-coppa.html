@@ -151,6 +151,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <section id="step-container" style="display:none;">
 </section>
+<!-- ================= INSTAGRAM STAGE ================= -->
+<!-- 📸 INSTAGRAM EXPORT -->
+<div id="instagram-stage" style="display:none;">
+
+  <!-- ❌ BOTTONE CHIUDI -->
+ <button
+  onclick="
+    document.getElementById('instagram-stage').style.display='none';
+    document.body.style.overflow='';
+  "
+  style="
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100000;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 20px;
+      cursor: pointer;
+    "
+  >
+    ✕
+  </button>
+
+  <!-- FRAME INSTAGRAM -->
+  <div id="instagram-frame"></div>
+
+</div>
+
 
 <!-- FORM REGISTRAZIONE -->
 <div id="reg-box" style="display:none; padding:20px; text-align:center;">
@@ -279,6 +312,15 @@ if (guest_id) {
         </div>
     </div>
 </div>
+
+
+<!-- 📸 INSTAGRAM EXPORT -->
+<div id="instagram-stage" style="display:none;">
+  <div id="instagram-frame">
+    <!-- qui cloneremo la coppa -->
+  </div>
+</div>
+
 
 <!-- ⭐ BOTTOM NAV BAR -->
 <div id="bottom-nav">
