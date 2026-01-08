@@ -1552,7 +1552,13 @@ body {
   top: 170px;
   z-index:1;
 }
+/* =========================
+   PICCOLA – NASCONDI SLOT COPPA (SOLO VISIVO)
+========================= */
 
+.piccola-coppa .box-coppa{
+  border: none !important;
+}
 /* ================= PALLINE ================= */
 .box-palline {
   position: absolute;
@@ -1560,6 +1566,9 @@ body {
   height: 140px;
   left: var(--base-left);
   top: 110px;
+}
+.piccola-coppa .box-pallina{
+  border: none !important;
 }
 
 .box-pallina {
@@ -1605,6 +1614,9 @@ body {
   top: 20px;
   z-index: 5;
 }
+.piccola-coppa .box-panna{
+  border: none !important;
+}
 
 /* ================= EXTRA ================= */
 .box-extra{
@@ -1623,6 +1635,16 @@ body {
   display:block;
 }
 
+
+/* =========================
+   PICCOLA – EXTRA ORIZZONTALI
+   bordo CONTINUO + angoli arrotondati
+========================= */
+
+.piccola-coppa .box-extra{
+  border-style: solid;     /* ⬅️ da tratteggiato a continuo */
+  border-radius: 10px;     /* ⬅️ stessi angoli degli extra verticali */
+}
 
 .box-granella { left: calc(var(--base-left) + 300px); }
 .box-topping  { left: calc(var(--base-left) + 400px); }
@@ -1800,6 +1822,14 @@ body {
   padding: 6px;
   box-sizing: border-box;
 }
+/* =========================
+   PICCOLA – EXTRA VERTICALI
+   bordo CONTINUO
+========================= */
+
+.piccola-coppa #extra-stage .extra-slot{
+  border-style: solid;
+}
 
 .extra-img {
   width: 100%;
@@ -1896,7 +1926,18 @@ body {
   width: 100%;
   height: 90px;      /* altezza singolo slot */
 }
+/* =========================
+   PICCOLA – NASCONDI SLOT EXTRA VUOTI
+========================= */
 
+/* mostra SOLO gli slot che hanno un'immagine */
+.piccola-coppa #extra-stage .extra-slot{
+  display: none;
+}
+
+.piccola-coppa #extra-stage .extra-slot:has(.extra-img img){
+  display: flex;
+}
 /* =========================
    SCALE GLOBALE – PICCOLA
 ========================= */
@@ -1908,6 +1949,23 @@ body {
 .piccola-coppa {
   --base-left: 30px;
 }
+
+/* =========================
+   PICCOLA – NASCONDI SLOT EXTRA VUOTI
+   (GRANELLE / TOPPING / INGREDIENTI)
+========================= */
+
+/* nasconde tutti gli slot */
+.piccola-coppa .box-extra{
+  display: none;
+}
+
+/* mostra SOLO quelli con immagine visibile */
+.piccola-coppa .box-extra:has(img:not([style*="display: none"])) {
+  display: flex;
+}
+
+
 
 /* =====================================================
    PICCOLA – TESTO FRECCE
@@ -2057,6 +2115,13 @@ body {
   height: 100%;
   object-fit: contain;
 }
+/* =========================
+   MEDIA – NASCONDI SLOT COPPA (SOLO VISIVO)
+========================= */
+
+.coppa-media .box-coppa{
+  border: none !important;
+}
 
 /* ================= PANNA ================= */
 .coppa-media .box-panna {
@@ -2076,6 +2141,9 @@ body {
   height: 100%;
   object-fit: contain;
 }
+.coppa-media .box-panna{
+  border: none !important;
+}
 
 /* ================= PALLINE ================= */
 .coppa-media .box-palline {
@@ -2084,6 +2152,9 @@ body {
   height: 200px;
   left: var(--base-left);
   top: 90px;
+}
+.coppa-media .box-pallina{
+  border: none !important;
 }
 
 .coppa-media .box-pallina {
@@ -2140,6 +2211,46 @@ body {
   object-fit: contain;
 }
 
+/* =========================
+   MEDIA – NASCONDI SLOT EXTRA VUOTI
+========================= */
+
+/* nasconde tutti */
+.coppa-media #extra-stage .extra-slot{
+  display: none;
+}
+
+/* mostra SOLO quelli con immagine */
+.coppa-media #extra-stage .extra-slot:has(.extra-img img){
+  display: flex;
+}
+
+/* =========================
+   MEDIA – NASCONDI SLOT EXTRA VUOTI
+   (GRANELLE / TOPPING / INGREDIENTI)
+========================= */
+
+/* nasconde tutti gli slot */
+.coppa-media .box-extra{
+  display: none;
+}
+
+/* mostra SOLO quelli con immagine */
+.coppa-media .box-extra:has(img:not([style*="display: none"])) {
+  display: flex;
+}
+
+
+
+/* =========================
+   MEDIA – EXTRA ORIZZONTALI
+   bordo CONTINUO + angoli arrotondati
+========================= */
+
+.coppa-media .box-extra{
+  border-style: solid;     /* ⬅️ linea continua */
+  border-radius: 10px;     /* ⬅️ stessi angoli degli extra verticali */
+}
 /* ================= FORMATO MEDIA – SPAZIATURA BOX ================= */
 
 /* GRANELLA */
@@ -2179,6 +2290,14 @@ body {
 
   padding: 6px;
   box-sizing: border-box;
+}
+/* =========================
+   MEDIA – EXTRA VERTICALI
+   bordo CONTINUO
+========================= */
+
+.coppa-media #extra-stage .extra-slot{
+  border-style: solid;
 }
 
 .coppa-media .extra-img {
@@ -2667,6 +2786,14 @@ body {
   height: 100%;
   object-fit: contain;
 }
+/* =========================
+   GRANDE – NASCONDI SLOT COPPA (SOLO VISIVO)
+========================= */
+
+.coppa-grande .box-coppa{
+  border: none !important;
+}
+
 
 /* ================= PANNA ================= */
 .coppa-grande .box-panna {
@@ -2686,6 +2813,10 @@ body {
   object-fit: contain;
 }
 
+.coppa-grande .box-panna{
+  border: none !important;
+}
+
 /* ================= PALLINE ================= */
 .coppa-grande .box-palline {
   position: absolute;
@@ -2694,6 +2825,9 @@ body {
   left: calc(var(--base-left) - 10px);
   top: 120px;
   z-index: 2;
+}
+.coppa-grande .box-pallina{
+  border: none !important;
 }
 
 .coppa-grande .box-pallina {
@@ -2760,6 +2894,34 @@ body {
   object-fit: contain;
 }
 
+/* ✅ GRANDE – NASCONDI SLOT EXTRA VUOTI (OVERRIDE FINALE) */
+.coppa-grande #extra-stage .extra-slot{
+  display: none !important;
+}
+
+.coppa-grande #extra-stage .extra-slot:has(.extra-text:not(:empty)){
+  display: flex !important;
+}
+
+
+/* ✅ GRANDE – NASCONDI SLOT TOPPING GRANELLE INGREDIENTI VUOTI (OVERRIDE FINALE) */
+.coppa-grande .grande-extras .box-extra{
+  display: none !important;
+}
+
+.coppa-grande .grande-extras .box-extra:has(.arrow-text:not(:empty)){
+  display: flex !important;
+}
+
+/* =========================
+   GRANDE – EXTRA ORIZZONTALI
+   bordo CONTINUO + angoli arrotondati
+========================= */
+
+.coppa-grande .box-extra{
+  border-style: solid;     /* ⬅️ linea continua */
+  border-radius: 10px;     /* ⬅️ stessi angoli degli extra verticali */
+}
 /* GRANDE – posizioni */
 .coppa-grande .granella-1 { left: calc(var(--base-left) + 380px); }
 .coppa-grande .granella-2 { left: calc(var(--base-left) + 490px); }
@@ -2796,6 +2958,14 @@ body {
   padding: 6px;
   box-sizing: border-box;
 }
+/* =========================
+   GRANDE – EXTRA VERTICALI
+   bordo CONTINUO
+========================= */
+
+.coppa-grande #extra-stage .extra-slot{
+  border-style: solid;
+}
 
 .coppa-grande .extra-img {
   width: 100%;
@@ -2821,6 +2991,7 @@ body {
   line-height: 1.1;
   width: 100%;
 }
+
 /* ================= FORMATO GRANDE – SCALE GLOBALE ================= */
 .coppa-grande .grande-wrapper {
   position: relative;
