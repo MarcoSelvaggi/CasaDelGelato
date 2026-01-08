@@ -2229,9 +2229,10 @@ area.innerHTML = `
 
 <div class="nav-buttons" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
   <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
-<button class="next-btn" onclick="esportaCoppaInstagram()">
-  📸 Condividi su Instagram
-</button>
+  <!-- 🔥 QUESTO -->
+  <button class="next-btn" onclick="condividiSuInstagram()">
+    📸 Condividi su Instagram
+  </button>
   <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
   <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
 </div>
@@ -2677,86 +2678,84 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
-async function esportaCoppaInstagram() {
-  const frame = document.getElementById("instagram-frame");
-  if (!frame) {
-    alert("Frame Instagram non trovato");
-    return;
-  }
+// ===============================
+// 📸 SALVA COPPA COME IMMAGINE
+// ===============================
 
-  // forza dimensioni Stories
-  frame.style.width = "1080px";
-  frame.style.height = "1920px";
 
-  const canvas = await html2canvas(frame, {
-    backgroundColor: "#ffffff",
-    scale: 2,              // 🔥 qualità alta
-    useCORS: true
-  });
-
-  const dataUrl = canvas.toDataURL("image/png");
-
-  // download automatico
-  const link = document.createElement("a");
-  link.href = dataUrl;
-  link.download = "coppa-instagram.png";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  // opzionale: apri Instagram
-  apriInstagramStories();
+function mostraPopupInstagram(){
+  document.getElementById("popup-instagram").style.display = "flex";
 }
 
-function apriInstagramStories() {
+function chiudiPopupInstagram(){
+  document.getElementById("popup-instagram").style.display = "none";
+}
+
+function apriInstagramStories(){
+  chiudiPopupInstagram();
+
   const ua = navigator.userAgent.toLowerCase();
 
-  // Mobile
+  // 📱 mobile
   if (/iphone|ipad|android/.test(ua)) {
     window.location.href = "instagram://story-camera";
-    
-    // fallback se app non installata
+
+    // fallback
     setTimeout(() => {
       window.open("https://www.instagram.com/", "_blank");
-    }, 1500);
-  } else {
-    // Desktop → web
+    }, 1200);
+  } 
+  // 💻 desktop
+  else {
     window.open("https://www.instagram.com/", "_blank");
   }
 }
 
-window.apriInstagramExport = function () {
-  const igStage = document.getElementById("instagram-stage");
-  const igFrame = document.getElementById("instagram-frame");
 
-  igFrame.innerHTML = "";
+window.condividiSuInstagram = async function () {
+  const coppa = document.getElementById("coppa-stage");
 
-  const stage = document.getElementById("coppa-stage");
-  if (!stage) {
-    console.error("❌ coppa-stage non trovato");
+  if (!coppa) {
+    alert("Coppa non trovata");
     return;
   }
 
-  // 🔁 CLONA LO STAGE, NON IL WRAPPER
-  const clone = stage.cloneNode(true);
-  clone.id = "coppa-stage-instagram";
+  // 🔒 blocca scroll
+  document.body.style.overflow = "hidden";
 
-  // 🔥 FRAME riferimento
-  igFrame.style.position = "relative";
+  // 👁️ assicurati che sia in viewport
+  coppa.scrollIntoView({ block: "center", behavior: "instant" });
 
-  // 🔥 QUESTO È L’ELEMENTO DA MUOVERE
-  clone.style.position = "absolute";
-  clone.style.left = "35%";
-  clone.style.top = "35%";
-  clone.style.transform = "translate(-50%, -65%) scale(0.85)";
-  clone.style.transformOrigin = "center";
+  // ⏳ aspetta paint reale
+  await new Promise(r => requestAnimationFrame(r));
+  await new Promise(r => setTimeout(r, 300));
 
-  igFrame.appendChild(clone);
-  igStage.style.display = "flex";
-document.body.style.overflow = "hidden"; // 🔒 blocca scroll
+  const canvas = await html2canvas(coppa, {
+    backgroundColor: "#fff",
+    scale: 2,
+    useCORS: true,
+    scrollX: 0,
+    scrollY: 0,
+    windowWidth: document.documentElement.clientWidth,
+    windowHeight: document.documentElement.clientHeight
+  });
 
-  console.log("✅ Coppa Instagram pronta", clone.getBoundingClientRect());
+  const dataUrl = canvas.toDataURL("image/png");
+
+  const link = document.createElement("a");
+  link.href = dataUrl;
+  link.download = "coppa-casadelgelato.png";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // 🔓 ripristina scroll
+  document.body.style.overflow = "";
+
+  // popup dopo
+  setTimeout(mostraPopupInstagram, 2000);
 };
+
 
 // 🛒 APRE IL CARRELLO
 window.apriCarrello = function() {

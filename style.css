@@ -3495,30 +3495,3 @@ body.coppa-grande #coppa-stage{
 
 
 
-
-
-
-#instagram-frame{
-  width: 100%;
-}
-/* =========================
-   INSTAGRAM EXPORT – STAGE
-========================= */
-#instagram-stage{
-  position: fixed;
-  inset: 0;
-  background: #fff;
-  z-index: 99999;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#instagram-frame{
-  width: 1080px;
-  height: 1920px;
-  background: #fff;
-  position: relative;
-  overflow: hidden;
-}

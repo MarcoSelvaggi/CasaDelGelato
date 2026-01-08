@@ -151,38 +151,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <section id="step-container" style="display:none;">
 </section>
-<!-- ================= INSTAGRAM STAGE ================= -->
-<!-- 📸 INSTAGRAM EXPORT -->
-<div id="instagram-stage" style="display:none;">
-
-  <!-- ❌ BOTTONE CHIUDI -->
- <button
-  onclick="
-    document.getElementById('instagram-stage').style.display='none';
-    document.body.style.overflow='';
-  "
-  style="
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 100000;
-      background: #000;
-      color: #fff;
-      border: none;
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      font-size: 20px;
-      cursor: pointer;
-    "
-  >
-    ✕
-  </button>
-
-  <!-- FRAME INSTAGRAM -->
-  <div id="instagram-frame"></div>
-
-</div>
 
 
 <!-- FORM REGISTRAZIONE -->
@@ -313,14 +281,46 @@ if (guest_id) {
     </div>
 </div>
 
+<!-- 🍨 POPUP INSTAGRAM -->
+<div id="popup-instagram" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+">
+  <div style="
+    background: #fff;
+    padding: 22px;
+    border-radius: 16px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  ">
+    <h3 style="margin-bottom:10px;">📸 Condividi su Instagram</h3>
 
-<!-- 📸 INSTAGRAM EXPORT -->
-<div id="instagram-stage" style="display:none;">
-  <div id="instagram-frame">
-    <!-- qui cloneremo la coppa -->
+    <p style="font-size:14px; line-height:1.4;">
+      Condividi la tua coppa su Instagram e tagga  
+      <b>@casadelgelato.it</b> 🍨
+    </p>
+
+    <div style="margin-top:18px; display:flex; gap:10px;">
+      <button onclick="chiudiPopupInstagram()"
+        style="flex:1; padding:10px; border-radius:10px; border:1px solid #ccc;">
+        Annulla
+      </button>
+
+      <button onclick="apriInstagramStories()"
+        style="flex:1; padding:10px; border-radius:10px; border:none;
+               background:#ff2d55; color:#fff; font-weight:700;">
+        Apri Instagram
+      </button>
+    </div>
   </div>
 </div>
-
 
 <!-- ⭐ BOTTOM NAV BAR -->
 <div id="bottom-nav">
