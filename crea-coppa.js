@@ -2166,6 +2166,28 @@ const coppa = {
   confermate: 0
 };
 console.log("📌 PRIMA DI salvaCoppaSupabase");
+// ===============================
+// 🖼️ SNAPSHOT COPPA (QUI ESATTO)
+// ===============================
+await waitNextPaint();
+
+const coppaEl = document.getElementById("coppa-stage");
+if (!coppaEl) {
+  console.warn("❌ coppa-stage non trovato");
+} else {
+  const canvas = await html2canvas(coppaEl, {
+    backgroundColor: null,
+    scale: 2,
+    useCORS: true
+  });
+
+  coppa.coppa_img = canvas.toDataURL("image/png");
+
+  console.log(
+    "🖼️ COPPA CATTURATA OK:",
+    coppa.coppa_img.slice(0, 80)
+  );
+}
   // ✅ 5) Salva su Supabase
   try {
       const res = await salvaCoppaSupabase(coppa);
@@ -2507,13 +2529,8 @@ if (coppaSelezionata === "GRANDE") {
 }
 
 aggiornaExtraRiepilogo();
-// ✅ SNAPSHOT COPPA (per Cronologia)
-try {
-  const img = await captureCoppaImage();
-  if (img) coppa.coppa_img = img;
-} catch (e) {
-  console.warn("Snapshot coppa fallito:", e);
-}
+
+
 // === QR CODE ===
 if (window.QRCode) {
     const qrContainer = document.getElementById("qr-code");
@@ -2526,21 +2543,7 @@ if (window.QRCode) {
 } else {
     console.error("Libreria QRCode non trovata");
 }
-// 🎨 GENERA IMMAGINE COPPA (BASE64)
-setTimeout(() => {
-  const coppaEl = document.getElementById("coppa-stage");
-  if (!coppaEl) return;
 
-  html2canvas(coppaEl, {
-    backgroundColor: null,
-    scale: 2
-  }).then(canvas => {
-    window.coppaImgBase64 = canvas.toDataURL("image/png");
-    console.log("🖼️ Coppa grafica generata");
-  }).catch(err => {
-    console.error("Errore generazione coppa img:", err);
-  });
-}, 300);
 
   // 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
   const mini = document.getElementById("riepilogo-mini");
@@ -2552,6 +2555,12 @@ setTimeout(() => {
   mostraBottomNav();
   updateRiepilogo();
   updateCarrelloBadge();
+}
+
+function waitNextPaint() {
+  return new Promise(resolve => requestAnimationFrame(() => {
+    requestAnimationFrame(resolve);
+  }));
 }
 
 function firmaCoppa(c) {
