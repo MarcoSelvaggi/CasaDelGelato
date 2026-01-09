@@ -2214,6 +2214,7 @@ area.innerHTML = `
 
   <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
 </div>
+</div> <!-- 🔴 CHIUDE .scontrino -->
 
 <div id="qr-wrapper" style="
     margin-top:24px;
