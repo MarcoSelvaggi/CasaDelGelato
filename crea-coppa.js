@@ -2713,49 +2713,62 @@ function apriInstagramStories(){
 
 
 window.condividiSuInstagram = async function () {
-  const coppa = document.getElementById("coppa-stage");
+  const coppaStage = document.getElementById("coppa-stage");
 
-  if (!coppa) {
+  if (!coppaStage) {
     alert("Coppa non trovata");
     return;
   }
 
-  // 🔒 blocca scroll
-  document.body.style.overflow = "hidden";
+  // 📍 porta la coppa ben visibile (evita crop errati)
+  coppaStage.scrollIntoView({ block: "center" });
 
-  // 👁️ assicurati che sia in viewport
-  coppa.scrollIntoView({ block: "center", behavior: "instant" });
-
-  // ⏳ aspetta paint reale
+  // ⏳ aspetta il rendering reale
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 300));
 
-  const canvas = await html2canvas(coppa, {
+  // 📐 rettangolo ESATTO della coppa come a schermo
+  const rect = coppaStage.getBoundingClientRect();
+
+  // 📸 screenshot della PAGINA + crop sulla coppa
+  const canvas = await html2canvas(document.body, {
     backgroundColor: "#fff",
     scale: 2,
     useCORS: true,
-    scrollX: 0,
-    scrollY: 0,
+
+    // 🎯 crop preciso (coordinate documento)
+    x: rect.left + window.scrollX,
+    y: rect.top + window.scrollY,
+    width: rect.width,
+    height: rect.height,
+
+    // 🔒 coerenza viewport
     windowWidth: document.documentElement.clientWidth,
     windowHeight: document.documentElement.clientHeight
   });
 
-  const dataUrl = canvas.toDataURL("image/png");
+  // 💾 salva come immagine (NO toDataURL)
+  canvas.toBlob(blob => {
+    if (!blob) {
+      alert("Errore durante la creazione dell’immagine");
+      return;
+    }
 
-  const link = document.createElement("a");
-  link.href = dataUrl;
-  link.download = "coppa-casadelgelato.png";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+    const url = URL.createObjectURL(blob);
 
-  // 🔓 ripristina scroll
-  document.body.style.overflow = "";
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "coppa-casadelgelato.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-  // popup dopo
-  setTimeout(mostraPopupInstagram, 2000);
+    URL.revokeObjectURL(url);
+
+    // ⏳ dopo il download → popup Instagram
+    setTimeout(mostraPopupInstagram, 1500);
+  });
 };
-
 
 // 🛒 APRE IL CARRELLO
 window.apriCarrello = function() {
