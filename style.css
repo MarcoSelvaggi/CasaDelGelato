@@ -3566,3 +3566,57 @@ body.coppa-grande #coppa-stage{
   position: static;        /* 🔥 importantissimo */
   width: 100%;
 }
+
+/* ===== RIEPILOGO FINALE ===== */
+body.step-riepilogo .riepilogo-title {
+  position: relative;      /* 🔴 CHIAVE */
+  top: -50px;              /* ⬅️ ALZA SOLO IL TITOLO */
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+.riepilogo-header {
+  margin-top: 0px; /* ⬅️ QUESTO È IL VALORE CHE CERCHI */
+  text-align: center;
+}
+
+.riepilogo-subtitle {
+  margin-top: -20px;   /* ⬅️ QUESTO */
+  font-size: 14px;
+  opacity: 0.75;
+  text-align: center;
+}
+/* 🔝 REGISTRATI — SOLO RIEPILOGO FINALE */
+body.step-riepilogo .riepilogo-registrati {
+  position: fixed;
+  top: 72px;              /* sotto la top bar */
+  right: 14px;
+
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+
+  border-radius: 12px;
+  background: #007aff;
+  color: #fff;
+  border: none;
+
+  z-index: 9999;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+}
+.riepilogo-totale-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  gap: 12px;
+}
+
+.riepilogo-totale-row .back-btn {
+  position: static;        /* importantissimo */
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 10px;
+}

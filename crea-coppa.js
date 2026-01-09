@@ -1035,6 +1035,7 @@ if (title) {
 }
 // ---------------- FORMATO ----------------
 function showSizeScreen(){
+  document.body.classList.remove("step-riepilogo");
   document.querySelector("header").style.display = "block";
 
   // 🔥 RESET COMPLETO PER NUOVA COPPA
@@ -2082,7 +2083,7 @@ function renderCoppaMedia(stage) {
 }
 
 async function mostraRiepilogo(){
-
+document.body.classList.add("step-riepilogo");
   if (coppaSalvata) {
       console.log("⛔ Coppa già salvata");
       return;
@@ -2166,9 +2167,13 @@ console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
 
   // ✅ 7) Riepilogo grafico (come prima)
 area.innerHTML = `
-    <h2 style="display:flex; justify-content:space-between; align-items:center;">
-        Riepilogo finale
-    </h2>
+<div class="riepilogo-header">
+  <h2 class="riepilogo-title">Riepilogo</h2>
+
+  <p class="riepilogo-subtitle">
+    📣 Comunica al cameriere la tua coppa gelato 📣
+  </p>
+</div>
 
 <div class="scontrino" id="scontrino-da-share">
   <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
@@ -2200,15 +2205,31 @@ area.innerHTML = `
     }
   </p>
 
-  <hr>
-  <p><b>Totale:</b> €${totale.toFixed(2)}</p>
+<hr>
+
+<div class="riepilogo-totale-row">
+  <div class="totale-prezzo">
+    <b>Totale:</b> €${totale.toFixed(2)}
+  </div>
+
+  <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
 </div>
 
 <div id="qr-wrapper" style="
-    margin-top:18px;
+    margin-top:24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
     text-align:center;
 ">
-    <p><b>QR Code per conferma coppa</b></p>
+    <p style="
+      font-size:15px;
+      font-weight:600;
+      margin-bottom:10px;
+    ">
+      Mostra il QR code per confermare la coppa
+    </p>
+
     <div id="qr-code" data-token="${qrToken}"></div>
 </div>
 
@@ -2225,9 +2246,6 @@ area.innerHTML = `
     🛒 Aggiungi al carrello
 </button>
 
-<p style="margin-top:12px; font-size:14px; text-align:center; opacity:0.75;">
- 📣 Comunica al cameriere la tua coppa gelato 📣
-</p>
 
 <div class="riepilogo-actions" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
   <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
@@ -2235,8 +2253,9 @@ area.innerHTML = `
   <button class="next-btn" onclick="condividiSuInstagram()">
     📸 Condividi su Instagram
   </button>
-  <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
-  <button class="next-btn" onclick="apriRegistrazione()">🧑‍💻 Registrati</button>
+  <button class="next-btn riepilogo-registrati" onclick="apriRegistrazione()">
+  🧑‍💻 Registrati
+</button>
 </div>
 `;
 const stage = document.getElementById("coppa-stage");

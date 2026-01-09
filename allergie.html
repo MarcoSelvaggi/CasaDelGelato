@@ -118,6 +118,18 @@
 .allergene.active .check {
   display: block;
 }
+.btn-torna-coppa{
+  display: inline-block;
+  margin: 16px auto 24px;
+  padding: 12px 18px;
+  background: #000;
+  color: #fff;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+}
 
   </style>
 </head>
@@ -197,8 +209,18 @@ function renderAllergeni() {
     <p style="margin-top:20px;font-size:14px;opacity:.7">
       Le selezioni verranno applicate durante la creazione della coppa
     </p>
+
+    <!-- 🍨 TORNA ALLA COPPA -->
+    <div style="text-align:center; margin-top:24px;">
+      <a href="crea-coppa.html?step=size"
+         class="btn-torna-coppa">
+        Inizia
+      </a>
+    </div>
   `;
 }
+
+
 
 window.toggleAllergene = function(nome) {
   if (allergeniSelezionati.includes(nome)) {
