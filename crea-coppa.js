@@ -2713,62 +2713,104 @@ function apriInstagramStories(){
 
 
 window.condividiSuInstagram = async function () {
-  const coppaStage = document.getElementById("coppa-stage");
-
-  if (!coppaStage) {
-    alert("Coppa non trovata");
+  const png = await generaCoppaPNG();
+  if (!png) {
+    alert("Errore generazione immagine");
     return;
   }
 
-  // 📍 porta la coppa ben visibile (evita crop errati)
-  coppaStage.scrollIntoView({ block: "center" });
+  // download
+  const link = document.createElement("a");
+  link.href = png;
+  link.download = "coppa-casadelgelato.png";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 
-  // ⏳ aspetta il rendering reale
+  // popup dopo 2s
+  setTimeout(mostraPopupInstagram, 2000);
+};
+
+window.testExportCoppa = async function () {
+  const exportBox = document.getElementById("coppa-export");
+  if (!exportBox) return console.error("manca #coppa-export");
+
+  exportBox.innerHTML = "";
+
+  const wrapper =
+    document.querySelector(".piccola-wrapper") ||
+    document.querySelector(".media-wrapper") ||
+    document.querySelector(".grande-wrapper");
+
+  if (!wrapper) return console.error("wrapper non trovato");
+
+  const clone = wrapper.cloneNode(true);
+
+  // IMPORTANTISSIMO: ricrea il "contesto" (body class) dentro export
+  // perché i tuoi CSS sono tipo .piccola-coppa .box...
+  const ctx = document.createElement("div");
+  ctx.className =
+    document.body.classList.contains("piccola-coppa") ? "piccola-coppa" :
+    document.body.classList.contains("coppa-media")   ? "coppa-media"   :
+    document.body.classList.contains("coppa-grande")  ? "coppa-grande"  : "";
+
+  ctx.appendChild(clone);
+  exportBox.appendChild(ctx);
+
+  // aspetta render
   await new Promise(r => requestAnimationFrame(r));
-  await new Promise(r => setTimeout(r, 300));
+  await new Promise(r => setTimeout(r, 200));
 
-  // 📐 rettangolo ESATTO della coppa come a schermo
-  const rect = coppaStage.getBoundingClientRect();
+  // LOG dimensioni reali
+  const rect = exportBox.getBoundingClientRect();
+  console.log("exportBox rect:", rect);
 
-  // 📸 screenshot della PAGINA + crop sulla coppa
-  const canvas = await html2canvas(document.body, {
+  const canvas = await html2canvas(exportBox, {
     backgroundColor: "#fff",
     scale: 2,
-    useCORS: true,
-
-    // 🎯 crop preciso (coordinate documento)
-    x: rect.left + window.scrollX,
-    y: rect.top + window.scrollY,
-    width: rect.width,
-    height: rect.height,
-
-    // 🔒 coerenza viewport
-    windowWidth: document.documentElement.clientWidth,
-    windowHeight: document.documentElement.clientHeight
+    useCORS: true
   });
 
-  // 💾 salva come immagine (NO toDataURL)
+  console.log("canvas size:", canvas.width, canvas.height);
+
+  // prova toBlob (più affidabile di toDataURL)
   canvas.toBlob(blob => {
-    if (!blob) {
-      alert("Errore durante la creazione dell’immagine");
+    console.log("blob:", blob, "size:", blob?.size);
+
+    if (!blob || blob.size === 0) {
+      alert("❌ Blob vuoto: è quasi certamente un problema di CORS / file://");
       return;
     }
 
     const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "coppa-casadelgelato.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "TEST-coppa.png";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     URL.revokeObjectURL(url);
 
-    // ⏳ dopo il download → popup Instagram
-    setTimeout(mostraPopupInstagram, 1500);
-  });
+    alert("✅ Export OK (TEST)");
+  }, "image/png");
 };
+
+async function generaCoppaPNG() {
+  const exportBox = preparaCoppaExportPNG();
+  if (!exportBox) return;
+
+  await new Promise(r => requestAnimationFrame(r));
+  await new Promise(r => setTimeout(r, 200));
+
+  const canvas = await html2canvas(exportBox, {
+    backgroundColor: "#fff",
+    scale: 2,
+    useCORS: true
+  });
+
+  return canvas.toDataURL("image/png");
+}
+
 
 // 🛒 APRE IL CARRELLO
 window.apriCarrello = function() {
