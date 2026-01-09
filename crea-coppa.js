@@ -2082,6 +2082,22 @@ function renderCoppaMedia(stage) {
   `;
 }
 
+async function captureCoppaImage() {
+  const stage = document.getElementById("coppa-stage");
+  if (!stage) return null;
+
+  // html2canvas è già incluso nella pagina
+  if (typeof html2canvas !== "function") return null;
+
+  const canvas = await html2canvas(stage, {
+    backgroundColor: null,
+    scale: 2,
+    useCORS: true
+  });
+
+  return canvas.toDataURL("image/png");
+}
+
 async function mostraRiepilogo(){
 document.body.classList.add("step-riepilogo");
   if (coppaSalvata) {
@@ -2143,6 +2159,7 @@ const coppa = {
   extra: scelti.extra,
   prezzo: totale,
   qr_token: qrToken,
+  coppa_img: window.coppaImgBase64 || null,
   tavolo: tavoloSelezionato,   // ✅ QUI
   confermate: 0
 };
@@ -2236,7 +2253,20 @@ area.innerHTML = `
     : "Registrati e accedi per mostrare il QR code"}
 </p>
 
-<div id="qr-code" class="${isLogged ? "" : "qr-locked"}" data-token="${qrToken}"></div>
+<div class="qr-container">
+  <div id="qr-code"
+       class="${isLogged ? "" : "qr-locked"}"
+       data-token="${qrToken}">
+  </div>
+
+  ${!isLogged ? `
+    <div class="qr-overlay">
+      <div class="qr-lock">
+        🔒
+        <div class="qr-lock-text">Accesso richiesto</div>
+      </div>
+    </div>
+  ` : ""}
 </div>
 
 <!-- 🍨 COPPA GRAFICA -->
@@ -2475,7 +2505,13 @@ if (coppaSelezionata === "GRANDE") {
 }
 
 aggiornaExtraRiepilogo();
-
+// ✅ SNAPSHOT COPPA (per Cronologia)
+try {
+  const img = await captureCoppaImage();
+  if (img) coppa.coppa_img = img;
+} catch (e) {
+  console.warn("Snapshot coppa fallito:", e);
+}
 // === QR CODE ===
 if (window.QRCode) {
     const qrContainer = document.getElementById("qr-code");
@@ -2488,6 +2524,21 @@ if (window.QRCode) {
 } else {
     console.error("Libreria QRCode non trovata");
 }
+// 🎨 GENERA IMMAGINE COPPA (BASE64)
+setTimeout(() => {
+  const coppaEl = document.getElementById("coppa-stage");
+  if (!coppaEl) return;
+
+  html2canvas(coppaEl, {
+    backgroundColor: null,
+    scale: 2
+  }).then(canvas => {
+    window.coppaImgBase64 = canvas.toDataURL("image/png");
+    console.log("🖼️ Coppa grafica generata");
+  }).catch(err => {
+    console.error("Errore generazione coppa img:", err);
+  });
+}, 300);
 
   // 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
   const mini = document.getElementById("riepilogo-mini");
