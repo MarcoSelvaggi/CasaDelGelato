@@ -2099,6 +2099,7 @@ async function captureCoppaImage() {
 }
 
 async function mostraRiepilogo(){
+  console.log("🚀 mostraRiepilogo CHIAMATA");
 document.body.classList.add("step-riepilogo");
   if (coppaSalvata) {
       console.log("⛔ Coppa già salvata");
@@ -2164,7 +2165,7 @@ const coppa = {
   tavolo: tavoloSelezionato,   // ✅ QUI
   confermate: 0
 };
-
+console.log("📌 PRIMA DI salvaCoppaSupabase");
   // ✅ 5) Salva su Supabase
   try {
       const res = await salvaCoppaSupabase(coppa);
@@ -2178,7 +2179,7 @@ const coppa = {
   } catch (err) {
       console.error("Errore inatteso Supabase:", err);
   }
-
+console.log("📌 DOPO salvaCoppaSupabase");
  // 🔥 Evita duplicazioni: salva la coppa solo se non esiste già
 if (!cronologiaArr.some(x => x.data === coppa.data)) {
     cronologiaArr.unshift(coppa);
