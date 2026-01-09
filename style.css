@@ -3620,3 +3620,10 @@ body.step-riepilogo .riepilogo-registrati {
   font-size: 13px;
   border-radius: 10px;
 }
+/* QR bloccato per utenti non loggati */
+.qr-locked {
+  filter: blur(8px);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.6;
+}

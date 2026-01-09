@@ -2108,6 +2108,9 @@ document.body.classList.add("step-riepilogo");
 
   // ✅ 2) Recupero email e guest_id
   const email = localStorage.getItem("user_email") || null;
+const isLogged =
+  localStorage.getItem("userLogged") === "1" &&
+  !!localStorage.getItem("user_email");
 
   let guest_id = localStorage.getItem("guest_id");
   if (!guest_id) {
@@ -2223,15 +2226,17 @@ area.innerHTML = `
     align-items:center;
     text-align:center;
 ">
-    <p style="
-      font-size:15px;
-      font-weight:600;
-      margin-bottom:10px;
-    ">
-      Mostra il QR code per confermare la coppa
-    </p>
+<p style="
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:10px;
+">
+  ${isLogged
+    ? "Mostra il QR code per confermare la coppa"
+    : "Registrati e accedi per mostrare il QR code"}
+</p>
 
-    <div id="qr-code" data-token="${qrToken}"></div>
+<div id="qr-code" class="${isLogged ? "" : "qr-locked"}" data-token="${qrToken}"></div>
 </div>
 
 <!-- 🍨 COPPA GRAFICA -->
