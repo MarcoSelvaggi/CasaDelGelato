@@ -121,7 +121,9 @@ export async function salvaCoppaSupabase(coppa) {
     }
 
     console.log("📤 Invio coppa:", coppa);
-
+console.log("🧪 coppa ricevuta:", coppa);
+console.log("🧪 coppa.coppa_img:", coppa.coppa_img);
+console.log("🧪 typeof coppa.coppa_img:", typeof coppa.coppa_img);
     const { data, error } = await supabase
         .from("coppe")
         .insert([coppa]);

@@ -2146,6 +2146,7 @@ const isLogged =
       window.__lastQrToken = qrToken;
 
   // ✅ 4) Oggetto coppa da salvare (ORA CON NOME + qr_token)
+  console.log("🖼️ coppaImgBase64 =", window.coppaImgBase64);
 const coppa = {
   nome: coppaNome,
   email: email || null,
