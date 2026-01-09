@@ -3,19 +3,22 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>Crea la tua Coppa</title>
 
   <link rel="stylesheet" href="style.css">
+
+  <!-- LIBRERIE -->
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <!-- Supabase: modulo che attacca le funzioni su window -->
+
+  <!-- Supabase -->
   <script type="module" src="supabase.js"></script>
 
-<!-- Logica Crea Coppa (una sola volta) -->
- <script defer src="carrello.js"></script>
-<script defer src="crea-coppa.js"></script>
+  <!-- Script app -->
+  <script defer src="carrello.js"></script>
+  <script defer src="crea-coppa.js"></script>
+</head>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -77,8 +80,21 @@ document.addEventListener("DOMContentLoaded", function () {
   <h2>Seleziona il tavolo</h2>
 
 <div class="tavolo-zona">
-  <button id="btn-dentro" onclick="scegliZona('D')">Dentro</button>
-  <button id="btn-fuori" onclick="scegliZona('F')">Fuori</button>
+  <button
+    id="btn-dentro"
+    class="tavolo-zona-btn"
+    data-zona="D"
+    onclick="scegliZona('D')">
+    Dentro
+  </button>
+
+  <button
+    id="btn-fuori"
+    class="tavolo-zona-btn"
+    data-zona="F"
+    onclick="scegliZona('F')">
+    Fuori
+  </button>
 </div>
 
 <div id="numeri-tavolo" class="tavolo-grid"></div>
@@ -178,24 +194,49 @@ document.addEventListener("DOMContentLoaded", function () {
 <div id="popup-coppa">
   <div class="popup-content">
     <h2>🍨 Come funziona</h2>
-    <p>Seleziona prima il formato. Poi scegli gusti, granelle, topping ed ingredienti. Infine conferma e detta la tua coppa al cameriere! ✅ 
-      (Panna montata inclusa nel prezzo)</p>
+
+    <p class="popup-text">
+      Scegli il formato della coppa, poi personalizzala con gusti, granelle,
+      topping ed extra.<br>
+      Alla fine conferma e mostra la coppa al cameriere.<br>
+      <span style="opacity:.7">(Panna montata inclusa nel prezzo)</span>
+    </p>
+
+    <!-- 🔘 NON MOSTRARE PIÙ -->
+    <label class="popup-hide">
+      <input type="checkbox" id="popup-hide-forever">
+      Non mostrare più
+    </label>
+
     <button id="popup-ok">Ho capito</button>
   </div>
 </div>
 
 <script>
-// NON mostrare il popup se arrivo da "usa questa coppa"
-const fromCrono = window.location.search.includes("from=cronologia");
+  const params = new URLSearchParams(window.location.search);
 
-if (!fromCrono) {
-    document.getElementById("popup-coppa").style.display = "flex";
-    document.getElementById("popup-ok").onclick = () => {
-        document.getElementById("popup-coppa").style.display = "none";
-    };
-} else {
-    document.getElementById("popup-coppa").style.display = "none";
-}
+  const fromCrono    = params.get("from") === "cronologia";
+  const fromAllergie = params.get("step") === "size";
+
+  const popup = document.getElementById("popup-coppa");
+  const btnOk = document.getElementById("popup-ok");
+  const hideCheckbox = document.getElementById("popup-hide-forever");
+
+  const hideForever = localStorage.getItem("hide_popup_coppa") === "1";
+
+  // ❌ condizioni per NON mostrarlo
+  if (fromCrono || fromAllergie || hideForever) {
+    popup.style.display = "none";
+  } else {
+    popup.style.display = "flex";
+  }
+
+  btnOk.onclick = () => {
+    if (hideCheckbox.checked) {
+      localStorage.setItem("hide_popup_coppa", "1");
+    }
+    popup.style.display = "none";
+  };
 </script>
 
 <script>
@@ -382,10 +423,20 @@ let zonaSelezionata = null;
 function scegliZona(zona) {
   zonaSelezionata = zona;
 
+  // 🔵 RESET VISIVO
+  document.getElementById("btn-dentro").classList.remove("active");
+  document.getElementById("btn-fuori").classList.remove("active");
+
+  // 🔵 ATTIVA ZONA SELEZIONATA
+  if (zona === "D") {
+    document.getElementById("btn-dentro").classList.add("active");
+  } else {
+    document.getElementById("btn-fuori").classList.add("active");
+  }
+
+  // ===== CODICE ESISTENTE (NON TOCCATO) =====
   const container = document.getElementById("numeri-tavolo");
   container.innerHTML = "";
-
-  // ✅ QUESTA RIGA VA QUI
   container.className = "tavolo-grid";
 
   const max = zona === "D" ? 16 : 23;
@@ -396,7 +447,7 @@ function scegliZona(zona) {
 
     const btn = document.createElement("button");
     btn.textContent = codice;
-    btn.className = "tavolo-btn"; // ← lo useremo dopo
+    btn.className = "tavolo-btn";
     btn.onclick = () => scegliTavolo(codice, btn);
 
     container.appendChild(btn);
@@ -425,7 +476,9 @@ function confermaTavolo() {
 
   // mostra step formato
   document.getElementById("step-size").style.display = "block";
+  mostraBottomNav();
 }
+
 </script>
 <script type="module">
 import { supabase } from "./supabase.js";
@@ -558,5 +611,18 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   <span id="wait-mmss">0:00</span>
 </span>
 </div>
+<script>
+
+function mostraBottomNav() {
+  const nav = document.getElementById("bottom-nav");
+  if (nav) nav.style.display = "flex";
+}
+
+function nascondiBottomNav() {
+  const nav = document.getElementById("bottom-nav");
+  if (nav) nav.style.display = "none";
+}
+</script>
+
 </body>
 </html>

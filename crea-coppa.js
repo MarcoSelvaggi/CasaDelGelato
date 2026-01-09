@@ -1,3 +1,4 @@
+
 console.log("JS CARICATO ✔️");
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
@@ -13,6 +14,7 @@ let gustiQuantities = {};      // es: { VANIGLIA: 2, FRAGOLA: 1 }
 let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in modifica)
 let collapseTimer = null
 let coppaSalvata = false;
+
 
 
 // =======================
@@ -1064,7 +1066,7 @@ gustiList.forEach(gusto => gustiQuantities[gusto] = 0);
   step = "gusti";
   byId("step-size").style.display = "none";
   byId("step-container").style.display = "block";
-
+  nascondiBottomNav();
   renderStepGusti();
   updateRiepilogo();   // <-- crea dataset.full e dataset.mini
 
@@ -1696,7 +1698,7 @@ function renderCoppaGrande(stage) {
 <div class="grande-coppa">
   <!-- PANNA -->
   <div class="box box-panna">
-    <img src="img/panna.png">
+    <img src="img/panna.png"crossorigin="anonymous">
   </div>
 
   <!-- PALLINE -->
@@ -1712,7 +1714,7 @@ function renderCoppaGrande(stage) {
           <path d="M38 15 L30 11 M38 15 L30 19"/>
         </svg>
       </div>
-      <img id="gusto-top-img" src="img/pallina-vaniglia.png">
+      <img id="gusto-top-img" src="img/pallina-vaniglia.png"crossorigin="anonymous">
     </div>
 
     <div class="box box-pallina pallina-left">
@@ -1723,7 +1725,7 @@ function renderCoppaGrande(stage) {
         </svg>
         <div class="arrow-text left gusto-text" id="gusto-left-text">Gusto</div>
       </div>
-      <img id="gusto-left-img" src="img/pallina-fragola.png">
+      <img id="gusto-left-img" src="img/pallina-fragola.png"crossorigin="anonymous">
     </div>
 
     <div class="box box-pallina pallina-right">
@@ -1735,7 +1737,7 @@ function renderCoppaGrande(stage) {
           <path d="M38 15 L30 11 M38 15 L30 19"/>
         </svg>
       </div>
-      <img id="gusto-right-img" src="img/pallina-cioccolato.png">
+      <img id="gusto-right-img" src="img/pallina-cioccolato.png"crossorigin="anonymous">
     </div>
 
 <div class="box box-pallina pallina-bottom">
@@ -1750,21 +1752,21 @@ function renderCoppaGrande(stage) {
     </svg>
   </div>
 
-  <img id="gusto-bottom-img" src="img/pallina-pistacchio.png">
+  <img id="gusto-bottom-img" src="img/pallina-pistacchio.png"crossorigin="anonymous">
 </div>
 
   </div>
 
   <!-- COPPA -->
   <div class="box box-coppa">
-    <img src="img/coppa-base.png">
+    <img src="img/coppa-base.png"crossorigin="anonymous">
   </div>
   </div>
 
  <div class="grande-extras">
   <!-- GRANELLE -->
 <div class="box box-extra granella-1">
-  <img id="granella-1-img">
+  <img id="granella-1-img"crossorigin="anonymous">
 
   <div class="arrow" id="granella-1-arrow"
        style="top:-52px; left:50%; transform:translateX(-50%);">
@@ -1781,7 +1783,7 @@ function renderCoppaGrande(stage) {
 </div>
 
 <div class="box box-extra granella-2">
-  <img id="granella-2-img">
+  <img id="granella-2-img"crossorigin="anonymous">
 
   <div class="arrow" id="granella-2-arrow"
        style="top:-52px; left:50%; transform:translateX(-50%);">
@@ -1810,7 +1812,7 @@ function renderCoppaGrande(stage) {
 
   <!-- TOPPING -->
 <div class="box box-extra topping-1">
-  <img id="topping-1-img" src="img/topping-bosco.png">
+  <img id="topping-1-img" src="img/topping-bosco.png"crossorigin="anonymous">
 
   <div class="arrow"
        style="top:-50px; left:50%; transform:translateX(-50%);">
@@ -1829,7 +1831,7 @@ function renderCoppaGrande(stage) {
 
 <!-- TOPPING 2 -->
 <div class="box box-extra topping-2">
-  <img id="topping-2-img">
+  <img id="topping-2-img"crossorigin="anonymous">
 
   <div class="arrow" id="topping-2-arrow"
        style="bottom:-52px; left:50%; transform:translateX(-50%);">
@@ -1851,7 +1853,7 @@ function renderCoppaGrande(stage) {
 
   <!-- FRUTTA -->
 <div class="box box-extra frutta-1">
-  <img id="frutta-1-img" src="img/fragola.png">
+  <img id="frutta-1-img" src="img/fragola.png"crossorigin="anonymous">
 
   <div class="arrow"
        style="bottom:-52px; left:50%; transform:translateX(-50%);">
@@ -1881,7 +1883,7 @@ function renderCoppaGrande(stage) {
 
 
 <div class="box box-extra frutta-2">
-  <img id="frutta-2-img" src="img/fragola.png">
+  <img id="frutta-2-img" src="img/fragola.png"crossorigin="anonymous">
 
   <div class="arrow"
        style="bottom:-52px; left:50%; transform:translateX(-50%);">
@@ -1912,7 +1914,7 @@ function renderCoppaMedia(stage) {
 
   <!-- PANNA -->
   <div class="box box-panna">
-    <img src="img/panna.png">
+    <img src="img/panna.png"crossorigin="anonymous">
   </div>
 
   <!-- PALLINE -->
@@ -1930,7 +1932,7 @@ function renderCoppaMedia(stage) {
   <path d="M38 15 L30 11 M38 15 L30 19"/>
 </svg>
       </div>
-      <img id="gusto-top-img">
+      <img id="gusto-top-img"crossorigin="anonymous">
     </div>
 
 
@@ -1944,7 +1946,7 @@ function renderCoppaMedia(stage) {
         </svg>
         <div class="arrow-text left" id="gusto-left-text"></div>
       </div>
-      <img id="gusto-left-img">
+      <img id="gusto-left-img"crossorigin="anonymous">
     </div>
 
     <!-- PALLINA DESTRA -->
@@ -1958,14 +1960,14 @@ function renderCoppaMedia(stage) {
           <path d="M38 15 L30 11 M38 15 L30 19"/>
         </svg>
       </div>
-      <img id="gusto-right-img">
+      <img id="gusto-right-img"crossorigin="anonymous">
     </div>
 
   </div>
 
   <!-- COPPA -->
   <div class="box box-coppa">
-    <img src="img/coppa-base.png">
+    <img src="img/coppa-base.png"crossorigin="anonymous">
   </div>
 
 </div>
@@ -1974,7 +1976,7 @@ function renderCoppaMedia(stage) {
 
   <!-- GRANELLA 1 -->
   <div class="box box-extra granella-1">
-    <img id="granella-1-img">
+    <img id="granella-1-img"crossorigin="anonymous">
     <div class="arrow" id="granella-1-arrow"
      style="top:-52px; left:50%; transform:translateX(-50%);">
       <div class="arrow-text top granella-text" id="granella-1-text"></div>
@@ -1988,7 +1990,7 @@ function renderCoppaMedia(stage) {
 
   <!-- GRANELLA 2 -->
   <div class="box box-extra granella-2">
-    <img id="granella-2-img">
+    <img id="granella-2-img"crossorigin="anonymous">
     <div class="arrow" id="granella-2-arrow"
          style="top:-52px; left:50%; transform:translateX(-50%);">
       <div class="arrow-text top granella-text" id="granella-2-text"></div>
@@ -2013,7 +2015,7 @@ function renderCoppaMedia(stage) {
 
   <!-- TOPPING 1 -->
   <div class="box box-extra topping-1">
-    <img id="topping-1-img">
+    <img id="topping-1-img"crossorigin="anonymous">
     <div class="arrow" id="topping-1-arrow"
          style="top:-50px; left:50%; transform:translateX(-50%);">
       <div class="arrow-text top topping-text" id="topping-1-text"></div>
@@ -2031,7 +2033,7 @@ function renderCoppaMedia(stage) {
 
   <!-- TOPPING 2 -->
   <div class="box box-extra topping-2">
-    <img id="topping-2-img">
+    <img id="topping-2-img"crossorigin="anonymous">
     <div class="arrow" id="topping-2-arrow"
          style="bottom:-52px; left:50%; transform:translateX(-50%);">
       <div class="arrow-text bottom topping-text" id="topping-2-text"></div>
@@ -2045,7 +2047,7 @@ function renderCoppaMedia(stage) {
 
   <!-- FRUTTA -->
   <div class="box box-extra box-frutta">
-    <img id="frutta-1-img">
+    <img id="frutta-1-img"crossorigin="anonymous">
     <div class="arrow" id="frutta-1-arrow"
          style="bottom:-52px; left:50%; transform:translateX(-50%);">
       <div class="arrow-text bottom frutta-text" id="frutta-1-text"></div>
@@ -2227,7 +2229,7 @@ area.innerHTML = `
  📣 Comunica al cameriere la tua coppa gelato 📣
 </p>
 
-<div class="nav-buttons" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+<div class="riepilogo-actions" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
   <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
   <!-- 🔥 QUESTO -->
   <button class="next-btn" onclick="condividiSuInstagram()">
@@ -2251,7 +2253,7 @@ if (coppaSelezionata === "PICCOLA") {
 <div class="piccola-coppa">
   <!-- PANNA -->
   <div class="box box-panna">
-    <img src="img/panna.png">
+    <img src="img/panna.png"crossorigin="anonymous">
     <div class="label">Panna</div>
   </div>
 
@@ -2260,7 +2262,7 @@ if (coppaSelezionata === "PICCOLA") {
 
     <!-- Pallina sinistra -->
     <div class="box box-pallina pallina-1">
-     <img id="gusto-left-img" src="img/pallina-vaniglia.png">
+     <img id="gusto-left-img" src="img/pallina-vaniglia.png"crossorigin="anonymous">
 
       <!-- Freccia gusto sinistra -->
       <div class="arrow"
@@ -2278,7 +2280,7 @@ if (coppaSelezionata === "PICCOLA") {
 
     <!-- Pallina destra -->
     <div class="box box-pallina pallina-2">
-      <img id="gusto-right-img" src="img/pallina-fragola.png">
+      <img id="gusto-right-img" src="img/pallina-fragola.png"crossorigin="anonymous">
 
       <!-- Freccia gusto destra -->
       <div class="arrow"
@@ -2297,13 +2299,13 @@ if (coppaSelezionata === "PICCOLA") {
 
   <!-- COPPA -->
   <div class="box box-coppa">
-    <img src="img/coppa-base.png">
+    <img src="img/coppa-base.png"crossorigin="anonymous">
     <div class="label">Coppa</div>
   </div>
 
   <!-- GRANELLA -->
 <div class="box box-extra box-granella">
-  <img id="granella-img" src="img/granella-nocciola.png">
+  <img id="granella-img" src="img/granella-nocciola.png"crossorigin="anonymous">
 
   <div class="arrow" id="granella-arrow"
      style="bottom:-52px; left:50%; transform:translateX(-50%);">
@@ -2321,7 +2323,7 @@ if (coppaSelezionata === "PICCOLA") {
 
   <!-- TOPPING -->
 <div class="box box-extra box-topping">
-  <img id="topping-img" src="img/topping-bosco.png">
+  <img id="topping-img" src="img/topping-bosco.png"crossorigin="anonymous">
 
 <div class="arrow"
      id="topping-arrow"
@@ -2352,7 +2354,7 @@ if (coppaSelezionata === "PICCOLA") {
 
   <!-- FRUTTA -->
 <div class="box box-extra box-frutta">
-  <img id="frutta-img" src="img/fragola.png">
+  <img id="frutta-img" src="img/fragola.png"crossorigin="anonymous">
 
   <div class="arrow"
        id="frutta-arrow"
@@ -2469,6 +2471,7 @@ if (window.QRCode) {
     mini.classList.remove("open");
     mini.innerHTML = mini.dataset.mini || "";
   }
+  mostraBottomNav();
   updateRiepilogo();
   updateCarrelloBadge();
 }
@@ -2810,7 +2813,45 @@ async function generaCoppaPNG() {
 
   return canvas.toDataURL("image/png");
 }
+function preparaCoppaExportPNG() {
+  const exportBox = document.getElementById("coppa-export");
+  if (!exportBox) {
+    console.error("❌ manca #coppa-export");
+    return null;
+  }
 
+  exportBox.innerHTML = "";
+
+  // wrapper reale visibile all’utente
+  const wrapper =
+    document.querySelector(".piccola-wrapper") ||
+    document.querySelector(".media-wrapper") ||
+    document.querySelector(".grande-wrapper");
+
+  if (!wrapper) {
+    console.error("❌ wrapper coppa non trovato");
+    return null;
+  }
+
+  // clona la coppa VISIVA
+  const clone = wrapper.cloneNode(true);
+
+  // 🔥 ricrea il contesto CSS (QUESTO evita la distorsione)
+  const ctx = document.createElement("div");
+
+  if (document.body.classList.contains("piccola-coppa")) {
+    ctx.className = "piccola-coppa";
+  } else if (document.body.classList.contains("coppa-media")) {
+    ctx.className = "coppa-media";
+  } else if (document.body.classList.contains("coppa-grande")) {
+    ctx.className = "coppa-grande";
+  }
+
+  ctx.appendChild(clone);
+  exportBox.appendChild(ctx);
+
+  return exportBox;
+}
 
 // 🛒 APRE IL CARRELLO
 window.apriCarrello = function() {
@@ -3075,3 +3116,36 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("🟢 CLICK RICEVUTO SUL MINI RIEPILOGO");
   });
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const step = params.get("step");
+
+  if (step === "size") {
+    console.log("➡️ Accesso diretto alla scelta formato");
+
+    // nascondi tavolo
+    const tavolo = document.getElementById("step-tavolo");
+    if (tavolo) tavolo.style.display = "none";
+
+    // nascondi step container (gusti ecc)
+    const container = document.getElementById("step-container");
+    if (container) container.style.display = "none";
+
+    // mostra selezione formato
+    const size = document.getElementById("step-size");
+    if (size) size.style.display = "block";
+
+    // titolo coerente
+    const title = document.getElementById("step-title");
+    if (title) title.style.display = "none";
+  }
+});
+function mostraBottomNav() {
+  const nav = document.getElementById("bottom-nav");
+  if (nav) nav.style.display = "flex";
+}
+
+function nascondiBottomNav() {
+  const nav = document.getElementById("bottom-nav");
+  if (nav) nav.style.display = "none";
+}
