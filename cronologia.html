@@ -60,33 +60,80 @@
             margin: 10px 0;
         }
 
-        .controls {
-            max-width: 600px;
-            margin: 0 auto 16px;
-            padding: 0 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+/* =========================
+   CONTENITORE CONTROLLI
+========================= */
+.controls {
+  max-width: 600px;
+  margin: 0 auto 16px;
+  padding: 0 16px;
 
-        #search {
-            width: 100%;
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-        #toggle-preferiti,
-        #ordine-select {
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: none;
-            font-size: 14px;
-        }
+/* =========================
+   RIGA SUPERIORE
+   (Preferiti + Ordine)
+========================= */
+.controls-top {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
 
-        #toggle-preferiti { background: #ffd700; }
-        #ordine-select { background: #fff; border: 1px solid #ccc; }
+/* =========================
+   BOTTONE PREFERITI
+========================= */
+#toggle-preferiti {
+  padding: 6px 12px;
+  height: 34px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  border-radius: 999px;
+  border: 1px solid #d1d1d6;
+  background: #f2f2f7;
+  color: #333;
+
+  cursor: pointer;
+}
+
+/* stato attivo */
+#toggle-preferiti.attivo {
+  background: #ffd60a;
+  border-color: #e6c200;
+}
+
+/* =========================
+   SELECT ORDINE
+========================= */
+#ordine-select {
+  padding: 6px 12px;
+  height: 34px;
+
+  font-size: 13px;
+
+  border-radius: 999px;
+  border: 1px solid #d1d1d6;
+  background: #fff;
+  color: #333;
+}
+
+/* =========================
+   INPUT RICERCA (SOTTO)
+========================= */
+#search {
+  width: 100%;
+  padding: 10px 12px;
+
+  font-size: 15px;
+
+  border-radius: 12px;
+  border: 1px solid #ccc;
+}
 
 .cup-card {
     background: white;
@@ -168,6 +215,12 @@
     contain: layout paint;
 }
 }
+/* ===== CONTROLLI COMPATTI ===== */
+.controls {
+  flex-direction: row;
+  gap: 8px;
+}
+
     </style>
 </head>
 
@@ -185,26 +238,30 @@
 <div id="top-fixed-spacer"></div>
 
 <!-- ⭐ TITOLO ORIGINALE (fuori dalla barra) -->
-<h1>📚 Cronologia Coppe</h1>
+<h1>Cronologia Coppe</h1>
 
 <!-- 🎁 FEDELTA' / COUNTER COPPE CONFERMATE -->
 <div id="fedelta-box" style="
-  max-width:600px;
-  margin: 10px auto 14px;
-  padding: 14px 16px;
+  max-width:520px;
+  width: 88%;
+  margin: 12px auto 16px;
+  padding: 10px 12px;
   background: white;
-  border-radius: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 ">
-  <div style="display:flex; justify-content:space-between; align-items:center;">
-    <b>Coppe confermate</b>
-    <span id="fedelta-count" style="font-weight:800;">0/10</span>
-  </div>
+ <div style="display:flex; justify-content:space-between; align-items:center;">
+  <b style="font-size:14px;">Coppe confermate</b>
+  <span id="fedelta-count" style="font-weight:700; font-size:13px;">0/10</span>
+</div>
 
-  <div style="height:10px; background:#eee; border-radius:999px; overflow:hidden; margin-top:10px;">
-    <div id="fedelta-bar" style="height:10px; width:0%; background:#34c759;"></div>
-  </div>
-
+ <div style="height:6px; background:#eee; border-radius:999px; overflow:hidden; margin-top:10px;">
+ <div id="fedelta-bar" style="
+  height:6px;
+  width:0%;
+  background:linear-gradient(90deg, #34c759, #30d158);
+"></div>
+</div> <!-- 🔴 CHIUSO QUI -->
   <div id="fedelta-msg" style="margin-top:10px; font-size:14px; color:#444;">
     Caricamento...
   </div>
@@ -226,16 +283,16 @@
 
 <!-- ⭐ CONTROLLI -->
 <div class="controls">
-    <input id="search" type="text" placeholder="Cerca per nome, data, gusto..." autocomplete="off">
+  <input id="search" type="text" placeholder="Cerca per nome, data, gusto..." autocomplete="off">
 
-    <button id="toggle-preferiti">⭐ Mostra solo preferiti</button>
+  <button id="toggle-preferiti">⭐ Preferiti</button>
 
-    <select id="ordine-select">
-        <option value="data_desc">Ordina: più recenti prima</option>
-        <option value="data_asc">Ordina: più vecchie prima</option>
-        <option value="nome_az">Ordina: nome A→Z</option>
-        <option value="nome_za">Ordina: nome Z→A</option>
-    </select>
+  <select id="ordine-select">
+    <option value="data_desc">Ordina: più recenti prima</option>
+    <option value="data_asc">Ordina: più vecchie prima</option>
+    <option value="nome_az">Ordina: nome A→Z</option>
+    <option value="nome_za">Ordina: nome Z→A</option>
+  </select>
 </div>
 
 <div id="lista-coppe"></div>
@@ -525,7 +582,7 @@ function aggiornaFedelta() {
   barEl.style.width = ((progress / 10) * 100) + "%";
 
   if (justUnlocked) {
-    msgEl.innerHTML = `🎉 <b>Coupon sbloccato!</b><br>Rivolgiti alla cassa 💚`;
+    msgEl.innerHTML = `🎉 <b>Coupon sbloccato!</b><br>Rivolgiti alla cassa! `;
   } else {
     msgEl.textContent = couponSbloccati > 0
       ? `Hai già sbloccato ${couponSbloccati} coupon 🎁 Continua per il prossimo!`
@@ -591,7 +648,7 @@ function renderLista() {
     lista.innerHTML = "";
 
     if (arr.length === 0) {
-        lista.innerHTML = `<p class="empty-msg">Nessuna coppa trovata 😢</p>`;
+        lista.innerHTML = `<p class="empty-msg">Nessuna coppa trovata</p>`;
         return;
     }
 
@@ -748,12 +805,19 @@ if (btn) {
         renderLista();
     });
 
-    document.getElementById("toggle-preferiti").addEventListener("click", () => {
-        mostraSoloPreferiti = !mostraSoloPreferiti;
-        document.getElementById("toggle-preferiti").textContent =
-            mostraSoloPreferiti ? "⭐ Mostra tutti" : "⭐ Mostra solo preferiti";
-        renderLista();
-    });
+document.getElementById("toggle-preferiti").addEventListener("click", () => {
+    mostraSoloPreferiti = !mostraSoloPreferiti;
+
+    document.getElementById("toggle-preferiti").textContent =
+        mostraSoloPreferiti ? "Mostra tutti" : "⭐ Preferiti";
+
+    // 🔥 QUESTA È LA RIGA CHE TI HO DETTO
+    document
+      .getElementById("toggle-preferiti")
+      .classList.toggle("attivo", mostraSoloPreferiti);
+
+    renderLista();
+});
 
     document.getElementById("ordine-select").addEventListener("change", e => {
         criterioOrdine = e.target.value;
