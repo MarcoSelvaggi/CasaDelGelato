@@ -1081,6 +1081,7 @@ gustiList.forEach(gusto => gustiQuantities[gusto] = 0);
   }
 }
 
+
 // === Quando clicco un gusto lo metto "in modifica" (giallo) ===
 function selectGusto(nome) {
     if (!coppaSelezionata) return;
@@ -2161,46 +2162,12 @@ const coppa = {
   extra: scelti.extra,
   prezzo: totale,
   qr_token: qrToken,
-  coppa_img: window.coppaImgBase64 || null,
   tavolo: tavoloSelezionato,   // ✅ QUI
   confermate: 0
 };
 console.log("📌 PRIMA DI salvaCoppaSupabase");
-// ===============================
-// 🖼️ SNAPSHOT COPPA (QUI ESATTO)
-// ===============================
-await waitNextPaint();
 
-const coppaEl = document.getElementById("coppa-stage");
-if (!coppaEl) {
-  console.warn("❌ coppa-stage non trovato");
-} else {
-  const canvas = await html2canvas(coppaEl, {
-    backgroundColor: null,
-    scale: 2,
-    useCORS: true
-  });
 
-  coppa.coppa_img = canvas.toDataURL("image/png");
-
-  console.log(
-    "🖼️ COPPA CATTURATA OK:",
-    coppa.coppa_img.slice(0, 80)
-  );
-}
-  // ✅ 5) Salva su Supabase
-  try {
-      const res = await salvaCoppaSupabase(coppa);
-
-      if (!res.success) {
-          console.error("Errore Supabase:", res.error);
-          alert("⚠️ Coppa NON salvata su Supabase");
-      } else {
-          console.log("Coppa salvata correttamente su Supabase!");
-      }
-  } catch (err) {
-      console.error("Errore inatteso Supabase:", err);
-  }
 console.log("📌 DOPO salvaCoppaSupabase");
  // 🔥 Evita duplicazioni: salva la coppa solo se non esiste già
 if (!cronologiaArr.some(x => x.data === coppa.data)) {
@@ -2529,7 +2496,41 @@ if (coppaSelezionata === "GRANDE") {
 }
 
 aggiornaExtraRiepilogo();
+// ===============================
+// 🖼️ SNAPSHOT COPPA (QUI ESATTO)
+// ===============================
+await waitNextPaint();
 
+const coppaEl = document.getElementById("coppa-stage");
+if (!coppaEl) {
+  console.warn("❌ coppa-stage non trovato");
+} else {
+  const canvas = await html2canvas(coppaEl, {
+    backgroundColor: null,
+    scale: 2,
+    useCORS: true
+  });
+
+  coppa.coppa_img = canvas.toDataURL("image/png");
+
+  console.log(
+    "🖼️ COPPA CATTURATA OK:",
+    coppa.coppa_img.slice(0, 80)
+  );
+}
+  // ✅ 5) Salva su Supabase
+  try {
+      const res = await salvaCoppaSupabase(coppa);
+
+      if (!res.success) {
+          console.error("Errore Supabase:", res.error);
+          alert("⚠️ Coppa NON salvata su Supabase");
+      } else {
+          console.log("Coppa salvata correttamente su Supabase!");
+      }
+  } catch (err) {
+      console.error("Errore inatteso Supabase:", err);
+  }
 
 // === QR CODE ===
 if (window.QRCode) {
