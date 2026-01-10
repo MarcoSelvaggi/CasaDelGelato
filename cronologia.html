@@ -88,7 +88,7 @@
         #toggle-preferiti { background: #ffd700; }
         #ordine-select { background: #fff; border: 1px solid #ccc; }
 
- .cup-card {
+.cup-card {
     background: white;
     padding: 16px;
     border-radius: 14px;
@@ -98,7 +98,8 @@
     margin-left: auto;
     margin-right: auto;
 
-    position: relative; /* ✅ NECESSARIO */
+    position: relative;
+    overflow: hidden; /* ✅ FONDAMENTALE */
 }
 
         .cup-title { display: flex; justify-content: space-between; align-items: center; }
@@ -159,8 +160,13 @@
 }
 .coppa-thumb-wrapper {
     position: absolute;
-    top: 56px;        /* ⬅️ regola qui l’altezza */
+    top: 56px;
     right: 16px;
+    pointer-events: auto;
+    /* 🔒 ISOLAMENTO: solo cronologia */
+#lista-coppe .coppa-thumb-wrapper {
+    contain: layout paint;
+}
 }
     </style>
 </head>
