@@ -172,10 +172,10 @@ export async function getUtentiSupabase() {
 }
 
 // =====================================================
-// 🔥 ESPORTO SU window
+// 🔥 ESPONGO FUNZIONI A WINDOW (per script NON module)
 // =====================================================
 if (typeof window !== "undefined") {
   window.supabase = supabase;
-  window.salvaRegistrazioneSupabase = salvaRegistrazioneSupabase;
   window.salvaCoppaSupabase = salvaCoppaSupabase;
+  window.salvaRegistrazioneSupabase = salvaRegistrazioneSupabase;
 }

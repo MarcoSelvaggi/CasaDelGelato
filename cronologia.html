@@ -88,19 +88,23 @@
         #toggle-preferiti { background: #ffd700; }
         #ordine-select { background: #fff; border: 1px solid #ccc; }
 
-        .cup-card {
-            background: white;
-            padding: 16px;
-            border-radius: 14px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+ .cup-card {
+    background: white;
+    padding: 16px;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+
+    position: relative; /* ✅ NECESSARIO */
+}
 
         .cup-title { display: flex; justify-content: space-between; align-items: center; }
         .cup-title b { font-size: 18px; }
+        
+
 
         .edit-btn, .delete-btn, .fav-btn {
             background: none;
@@ -141,6 +145,23 @@
             padding: 0 2px;
             border-radius: 3px;
         }
+        .coppa-thumb-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 34px; 
+}
+
+.coppa-thumb {
+  width: 80px; /* ⬅️ qui la grandezza */
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+.coppa-thumb-wrapper {
+    position: absolute;
+    top: 56px;        /* ⬅️ regola qui l’altezza */
+    right: 16px;
+}
     </style>
 </head>
 
@@ -514,6 +535,46 @@ function aggiornaFedelta() {
   }
 }
 
+function apriCoppaFullscreen(src) {
+  const overlay = document.getElementById("coppa-overlay");
+  const img = document.getElementById("coppa-overlay-img");
+
+  if (!overlay || !img) return;
+
+  img.src = src;
+  overlay.style.display = "flex";
+}
+
+function chiudiCoppaFullscreen() {
+  const overlay = document.getElementById("coppa-overlay");
+  const img = document.getElementById("coppa-overlay-img");
+
+  if (!overlay || !img) return;
+
+  overlay.style.display = "none";
+  img.src = "";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("coppa-overlay");
+  const closeBtn = document.getElementById("coppa-overlay-close");
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", (e) => {
+      e.stopPropagation(); // 🔥 FONDAMENTALE
+      chiudiCoppaFullscreen();
+    });
+  }
+
+  if (overlay) {
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) {
+        chiudiCoppaFullscreen();
+      }
+    });
+  }
+});
+
 function renderLista() {
     const arr = getCoppeFiltrateEOrdinate()
                   .filter(c => !c.eliminata);   // ✅ NASCONDE LE ELIMINATE
@@ -583,7 +644,15 @@ ${c.confermate && c.confermate > 0 ? `
         <button class="delete-btn">🗑</button>
     </div>
 </div>
-
+${c.coppa_img ? `
+  <div class="coppa-thumb-wrapper">
+    <img 
+  src="${c.coppa_img}" 
+  class="coppa-thumb"
+  onclick="apriCoppaFullscreen('${c.coppa_img}')"
+>
+  </div>
+` : ``}
     <div class="small">${formattaDataBella(c.data)}</div>
     <div class="small"><b>Formato:</b> ${evidenzia(c.formato || "")}</div>
     <div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
@@ -952,5 +1021,39 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   <span id="wait-mmss">0:00</span>
 </span>
 </div>
+
+<div id="coppa-overlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+">
+  <img id="coppa-overlay-img" style="
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  ">
+
+  <button id="coppa-overlay-close" style="
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: none;
+    font-size: 22px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  ">
+    ✕
+  </button>
+</div>
+
+
 </body>
 </html>
