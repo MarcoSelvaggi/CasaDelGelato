@@ -3746,3 +3746,18 @@ body.step-riepilogo .riepilogo-registrati {
   width: 860px;
   margin: 40px auto;
 }
+/* 🔒 FIX MOBILE – NON TAGLIARE LA COPPA */
+@media (max-width: 768px) {
+  body.step-riepilogo {
+    overflow-x: visible !important;
+  }
+
+  #coppa-wrapper {
+    width: 100%;
+    overflow-x: visible !important;
+  }
+
+  #coppa-stage {
+    overflow: visible !important;
+  }
+}
