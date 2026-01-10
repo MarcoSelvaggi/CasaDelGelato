@@ -3659,3 +3659,33 @@ body.step-riepilogo .riepilogo-registrati {
   margin-top: 6px;
   opacity: 0.85;
 }
+
+/* 🔒 FIX MOBILE DEFINITIVO */
+@media (max-width: 768px) {
+  body {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .cup-card {
+    max-width: 100%;
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  #lista-coppe {
+    width: 100%;
+    overflow-x: hidden;
+  }
+}
+@media (max-width: 768px) {
+  .coppa-thumb {
+    width: 64px;
+    max-width: 64px;
+  }
+
+  .coppa-thumb-wrapper {
+    top: 48px;
+    right: 12px;
+  }
+}
