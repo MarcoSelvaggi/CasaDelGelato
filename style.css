@@ -3743,7 +3743,6 @@ body.step-riepilogo .riepilogo-registrati {
 }
 
 #coppa-stage {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+  width: 860px;
+  margin: 40px auto;
 }
