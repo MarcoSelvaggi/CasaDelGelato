@@ -70,9 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
     <div id="island-progress"><div id="island-bar"></div></div>
 </div>
 
-<header style="text-align:center; padding:26px;">
-  <h1>Crea la tua Coppa Gelato</h1>
-</header>
 
 <!-- 🪑 SELEZIONE TAVOLO -->
 <section id="step-tavolo" style="text-align:center; padding:20px;">
@@ -108,18 +105,13 @@ document.addEventListener("DOMContentLoaded", function () {
 </button>
 
 </section>
+  <section id="step-size" style="text-align:center; display:none;">
+  
 
-<section id="step-size" style="text-align:center; display:none;">
-  <h2>Scegli il Formato</h2>
-  <p style="margin-top:6px; font-size:15px; color:#444; font-weight:500;">
-    Panna inclusa
-  </p>
-
+  
   <p style="margin-top:2px; font-size:13px; color:#666; line-height:1.3;">
-    ⚠️Per eventuali allergie o intolleranze consultare la lista 
-    e avvisare il cameriere⚠️
-
-    (Selezionando gli allergeni i prodotti verranno già filtrati durante la creazione della coppa)
+    Hai allergie o intolleranze?  
+    Seleziona gli allergeni: gli ingredienti verranno filtrati automaticamente.
   </p>
 
   <!-- 🔶 Tasto Allergie direttamente sotto il testo -->
@@ -136,10 +128,11 @@ document.addEventListener("DOMContentLoaded", function () {
               text-decoration:none;
               box-shadow:0 2px 5px rgba(0,0,0,0.20);
          ">
-          ⚠️ Apri lista allergeni
+          ⚠️ Seleziona allergeni
       </a>
   </div>
 
+<h2>Scegli il Formato</h2>
   <!-- SCELTA FORMATO (onclick usa funzioni globali di crea-coppa.js) -->
  <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
   <div class="formato-titolo">PICCOLA • €7,50</div>

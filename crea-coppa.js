@@ -16,7 +16,6 @@ let collapseTimer = null
 let coppaSalvata = false;
 
 
-
 // =======================
 // DISPONIBILITÀ INGREDIENTI
 // =======================
@@ -1036,7 +1035,10 @@ if (title) {
 // ---------------- FORMATO ----------------
 function showSizeScreen(){
   document.body.classList.remove("step-riepilogo");
-  document.querySelector("header").style.display = "block";
+  const header = document.querySelector("header");
+if (header) {
+  header.style.display = "none";
+}
 
   // 🔥 RESET COMPLETO PER NUOVA COPPA
   coppaSalvata = false;          // ← FONDAMENTALE
@@ -1044,46 +1046,63 @@ function showSizeScreen(){
 
   byId("step-size").style.display = "block";
   byId("step-container").style.display = "none";
-
+// 🔥 NASCONDI SEMPRE IL TITOLO QUANDO TORNI AI FORMATI
+const title = document.getElementById("step-title");
+if (title) {
+  title.classList.add("hidden");
+}
   updateRiepilogo();
 }
 
 function selectSize(size, g, gr, t, ing){
-  // Mostra il mini riepilogo solo dopo la selezione del formato
-document.getElementById("riepilogo-mini").style.display = "block";
-document.body.classList.remove("step-size");
-  document.querySelector("header").style.display = "none";
+
+  // 🔥 RIATTIVA MINI RIEPILOGO DOPO "CREA UN'ALTRA"
+  const el = document.getElementById("riepilogo-mini");
+  if (el) {
+    el.classList.remove("hidden");
+    el.style.pointerEvents = "auto";
+    el.style.display = "block";
+  }
+
+  document.body.classList.remove("step-size");
+
+  const header = document.querySelector("header");
+  if (header) header.style.display = "none";
+
   coppaSelezionata = size;
-  titoloGustiVisibile = true;   // 🔁 ogni nuova coppa fa riapparire i titoli
+  titoloGustiVisibile = true;
+
   max = { gusti:g, granelle:gr, topping:t, ingredienti:ing, extra:Infinity };
   scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 
-  // === 🔥 STEP 2: inizializza quantità gusti ===
+  // 🔥 reset gusti
   gustiQuantities = {};
-gustiList.forEach(gusto => gustiQuantities[gusto] = 0);
+  gustiList.forEach(gusto => gustiQuantities[gusto] = 0);
   gustoInModifica = null;
-  // ==============================================
 
-  step = "gusti";
-  byId("step-size").style.display = "none";
-  byId("step-container").style.display = "block";
-  nascondiBottomNav();
-  renderStepGusti();
-  updateRiepilogo();   // <-- crea dataset.full e dataset.mini
+// 🔥 cambio step
+step = "gusti";
+titoloGustiVisibile = true;
 
-  // --- 🔥 SOLO DOPO updateRiepilogo() È SICURO ---
-  const el = document.getElementById("riepilogo-mini");
 
-  // Se il dataset è stato creato → inizializza il mini-riepilogo
-  if (el && el.dataset && typeof el.dataset.mini !== "undefined") {
-      el.classList.add("collapsed");
-      el.innerHTML = el.dataset.mini;
+byId("step-size").style.display = "none";
+byId("step-container").style.display = "block";
+
+nascondiBottomNav();
+renderStepGusti();
+updateRiepilogo();
+
+  // mini riepilogo chiuso ma cliccabile
+  if (el && el.dataset.mini) {
+    el.classList.add("collapsed");
+    el.innerHTML = el.dataset.mini;
   }
 }
 
 
 // === Quando clicco un gusto lo metto "in modifica" (giallo) ===
 function selectGusto(nome) {
+ 
     if (!coppaSelezionata) return;
 
     const maxTot = max.gusti || 0;
@@ -1093,7 +1112,6 @@ function selectGusto(nome) {
 
     // ➤ Se gusto era 0 → diventa 1
     if (qtyAttuale === 0) {
-hideStepTitle();
         // Limite raggiunto → errore
         if (totalePrima >= maxTot) {
             limitEffect("gusti", nome);
@@ -1105,7 +1123,7 @@ hideStepTitle();
 
         // 🔥 NASCONDE IL TITOLO SOLO AL PRIMO GUSTO
         titoloGustiVisibile = false;
-        hideStepTitle();
+      
 
         showIsland("gusti", nome);
 
@@ -1122,7 +1140,7 @@ hideStepTitle();
 
     // ✅ SE ORA HO RAGGIUNTO IL MASSIMO → APRO MINI RIEPILOGO
     if (totaleDopo === maxTot) {
-        openMiniRiepilogoTemporaneo();
+        
         gustoInModifica = null;
     }
 
@@ -1149,18 +1167,22 @@ function updateStatusGusti() {
 
 // === RENDER GUSTI CON QUANTITÀ E BOTTONI + / − ===
 function renderStepGusti() {
-    const title = document.getElementById("step-title");
+const title = document.getElementById("step-title");
+if (title) {
 
-    // 🔥 Mostra il titolo solo se siamo all'inizio (nessun gusto selezionato)
-    if (title) {
-        if (titoloGustiVisibile) {
-            title.textContent = "Gusti";
-            title.style.display = "block";
-        } else {
-            title.style.display = "none";
-        }
-    }
+  if (step === "gusti")        title.textContent = "Gusti";
+  else if (step === "granelle")title.textContent = "Granelle";
+  else if (step === "topping") title.textContent = "Topping";
+  else if (step === "ingredienti") title.textContent = "Ingredienti";
+  else if (step === "extra")   title.textContent = "Extra";
+  else                         title.textContent = "";
 
+  if (titoloGustiVisibile) {
+    title.classList.remove("hidden");
+  } else {
+    title.classList.add("hidden");
+  }
+}
     const cont = byId("step-container");
     if (!cont) return;
 
@@ -1224,13 +1246,21 @@ if (gustoVietato) cls += " item-allergene";
     }, 10);
 }
 
+function showStepTitle(text) {
+  const title = document.getElementById("step-title");
+  if (!title) return;
+
+  if (text) title.textContent = text;
+
+  title.classList.remove("hidden");
+}
+
 function hideStepTitle() {
     const title = document.getElementById("step-title");
     if (title) {
-        title.style.display = "none";
+        title.classList.add("hidden");
     }
 }
-
 function openMiniRiepilogoTemporaneo() {
     const el = document.getElementById("riepilogo-mini");
     if (!el) return;
@@ -1254,7 +1284,7 @@ function openMiniRiepilogoTemporaneo() {
             el.classList.add("collapsed");
             el.classList.remove("open");
             el.innerHTML = el.dataset.mini || "";
-        }, 2000);
+        }, 5000);
     });
 }
 
@@ -1303,7 +1333,7 @@ function changeGustoQty(nome, delta) {
 
     // 👉 Se raggiungo il massimo → apri mini riepilogo
     if (totaleDopo === maxTot) {
-        openMiniRiepilogoTemporaneo();
+        
         gustoInModifica = null;
     }
 
@@ -1343,16 +1373,22 @@ function render() {
   }
 
   // ---------------- TITOLO STEP ----------------
-  const title = document.getElementById("step-title");
-  if (title) {
-    if (step === "granelle")        title.textContent = "Granelle";
-    else if (step === "topping")    title.textContent = "Topping";
-    else if (step === "ingredienti")title.textContent = "Ingredienti";
-    else if (step === "extra")      title.textContent = "Extra";
+const title = document.getElementById("step-title");
+if (title) {
 
-    title.style.display = titoloGustiVisibile ? "block" : "none";
+  if (step === "gusti")        title.textContent = "Gusti";
+  else if (step === "granelle")title.textContent = "Granelle";
+  else if (step === "topping") title.textContent = "Topping";
+  else if (step === "ingredienti") title.textContent = "Ingredienti";
+  else if (step === "extra")   title.textContent = "Extra";
+  else                         title.textContent = "";
+
+  if (titoloGustiVisibile) {
+    title.classList.remove("hidden");
+  } else {
+    title.classList.add("hidden");
   }
-
+}
   // ---------------- CONTENUTO LISTA + BOTTONI ----------------
   area.innerHTML = `
     <h2 style="display:none"></h2>
@@ -1430,72 +1466,67 @@ function limitEffect(step, nome){
 }
 
 function toggle(step, nome, el) {
-hideStepTitle();
-    const container = document.getElementById("riepilogo-mini");
 
-    // ---------------- EXTRA ----------------
-    if (step === "extra") {
-        if (scelti.extra.includes(nome)) {
-            scelti.extra = scelti.extra.filter(x => x !== nome);
-        } else {
-            scelti.extra.push(nome);
-        }
+  const container = document.getElementById("riepilogo-mini");
 
-        showIsland(step, nome);
-        render();
-        updateRiepilogo();
-        stabilizeMiniRiepilogo();
-
-        // shake mini riepilogo (MA NON APRIRLO MAI negli extra)
-        container.classList.remove("shake");
-        void container.offsetWidth;
-        container.classList.add("shake");
-        setTimeout(() => container.classList.remove("shake"), 350);
-
-        return;
-    }
-
-    // ---------------- TOGGLE NORMALI ----------------
-    if (scelti[step].includes(nome)) {
-        scelti[step] = scelti[step].filter(x => x !== nome);
+  // ---------------- EXTRA ----------------
+  if (step === "extra") {
+    if (scelti.extra.includes(nome)) {
+      scelti.extra = scelti.extra.filter(x => x !== nome);
     } else {
-        if (scelti[step].length >= max[step]) {
-            // limite raggiunto
-            limitEffect(step, nome);
-            return;
-        }
-        scelti[step].push(nome);
+      scelti.extra.push(nome);
     }
-    // 🔥 Nascondi il titolo quando l’utente seleziona la prima volta
-titoloGustiVisibile = false;
-hideStepTitle();
 
     showIsland(step, nome);
     render();
     updateRiepilogo();
     stabilizeMiniRiepilogo();
 
-    const currentCount = scelti[step].length;
-    const maxCount = max[step];
-
-    // 🎯 RAGGIUNTO IL MASSIMO → APRI MINI-RIEPILOGO PER 2 SECONDI
-    if (maxCount && currentCount === maxCount) {
-
-        // funzione universale
-        openMiniRiepilogoTemporaneo();
-
-        return;
-    }
-
-    // 🎯 NON ancora al massimo → resta chiuso ma fai shake
-    container.classList.remove("open");
-    container.classList.add("collapsed");
-    container.innerHTML = container.dataset.mini || "";
-
+    // shake (senza aprire)
     container.classList.remove("shake");
     void container.offsetWidth;
     container.classList.add("shake");
     setTimeout(() => container.classList.remove("shake"), 350);
+
+    return;
+  }
+
+  // ---------------- TOGGLE NORMALI ----------------
+  if (scelti[step].includes(nome)) {
+    scelti[step] = scelti[step].filter(x => x !== nome);
+
+
+  } else {
+    // 🚫 se siamo al limite → NON nascondere titolo
+    if (scelti[step].length >= max[step]) {
+      limitEffect(step, nome);
+      return;
+    }
+
+    // ✅ aggiunta valida → nascondi titolo
+    scelti[step].push(nome);
+  }
+
+  showIsland(step, nome);
+  render();
+  updateRiepilogo();
+  stabilizeMiniRiepilogo();
+
+  const currentCount = scelti[step].length;
+  const maxCount = max[step];
+
+  // ❌ QUI se vuoi non aprirlo più al raggiungimento max, commenta questa parte:
+  // if (maxCount && currentCount === maxCount) openMiniRiepilogoTemporaneo();
+
+  // shake
+  container.classList.remove("open");
+  container.classList.add("collapsed");
+  container.innerHTML = container.dataset.mini || "";
+
+  container.classList.remove("shake");
+  void container.offsetWidth;
+  container.classList.add("shake");
+  setTimeout(() => container.classList.remove("shake"), 350);
 }
 // ---------------- NAV ----------------
 function nextStep() {
@@ -1509,23 +1540,21 @@ function nextStep() {
 else if (step === "extra") {
     const el = document.getElementById("riepilogo-mini");
 
-    // 👉 SE il mini è già aperto → vai al riepilogo finale
-    if (el && el.classList.contains("open")) {
-        return mostraRiepilogo();
-    }
+    // 🔥 PRIMO CLICK → APRI MINI
+    if (el && !el.classList.contains("open")) {
+        step = "riepilogo-mini-open";
 
-    // 👉 PRIMO CLICK: apri mini riepilogo
-    step = "riepilogo-mini-open";
-
-    if (el) {
         el.classList.remove("collapsed");
         el.classList.add("open");
         el.innerHTML = el.dataset.full || "";
+
+        if (collapseTimer) clearTimeout(collapseTimer);
+        collapseTimer = null;
+        return;
     }
 
-    if (collapseTimer) clearTimeout(collapseTimer);
-    collapseTimer = null;
-    return;
+    // 🔥 SECONDO CLICK → RIEPILOGO FINALE
+    return mostraRiepilogo();
 }
 
   // 🔥 quando lo step è già "riepilogo-mini-open"
@@ -1560,6 +1589,10 @@ function nextStepFromMini() {
 }
 
 function prevStep(){
+  if (step === "riepilogo") {
+  const title = document.getElementById("step-title");
+  if (title) title.classList.add("hidden");
+}
   if(step === "gusti"){ 
     showSizeScreen(); 
     return; 
@@ -1665,7 +1698,7 @@ function autoCollapseRiepilogo(){
   collapseTimer = setTimeout(() => {
     el.classList.add("collapsed");
     el.innerHTML = el.dataset.mini || "";
-  }, 2000);
+  }, 5000);
 }
 
 // ---------------- SHARE ----------------
@@ -2100,20 +2133,33 @@ async function captureCoppaImage() {
 }
 
 async function mostraRiepilogo(){
+
   console.log("🚀 mostraRiepilogo CHIAMATA");
-document.body.classList.add("step-riepilogo");
-  if (coppaSalvata) {
-      console.log("⛔ Coppa già salvata");
-      return;
+
+  step = "riepilogo";                 // 🔥 PRIMA DI TUTTO
+  document.body.classList.add("step-riepilogo");
+
+  // 🔥 DISTRUGGE QUALSIASI TITOLO RESIDUO
+  const title = document.getElementById("step-title");
+  if (title) {
+    title.textContent = "";
+    title.classList.add("hidden");
   }
+
+  const header = document.querySelector("header");
+  if (header) {
+    header.style.display = "none";
+  }
+
+  if (coppaSalvata) {
+    console.log("⛔ Coppa già salvata");
+    return;
+  }
+
   coppaSalvata = true;
-  step = "riepilogo";
+
   const area = byId("step-container");
 
-  // 🔥 Nasconde titoli e residui dello step corrente
-  const t = document.getElementById("step-title");
-  if (t) t.style.display = "none";
-  document.querySelector("header").style.display = "none";
 
   // ✅ 1) Calcolo il prezzo SUBITO
   const prezzoBase = prezziBase[coppaSelezionata] || 0;
@@ -3225,7 +3271,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // titolo coerente
     const title = document.getElementById("step-title");
-    if (title) title.style.display = "none";
+    if (title) title.classList.add("hidden");
   }
 });
 function mostraBottomNav() {
@@ -3237,3 +3283,17 @@ function nascondiBottomNav() {
   const nav = document.getElementById("bottom-nav");
   if (nav) nav.style.display = "none";
 }
+// 🔥 FIX RIENTRO DA ALTRE PAGINE (Registrati / Profilo / Back browser)
+window.addEventListener("pageshow", () => {
+
+  const title = document.getElementById("step-title");
+  if (title) {
+    title.textContent = "";
+    title.classList.add("hidden");
+  }
+
+  // 🔥 Se il riepilogo è visibile → forza stato corretto
+  if (document.body.classList.contains("step-riepilogo")) {
+    step = "riepilogo";
+  }
+});

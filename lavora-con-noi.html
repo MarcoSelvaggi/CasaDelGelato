@@ -14,6 +14,9 @@
             background: #f6f6f7;
             font-family: system-ui, -apple-system, sans-serif;
         }
+        * {
+    box-sizing: border-box;
+}
 
         /* 🔝 BARRA FISSA CON HOME CENTRATO */
         #top-fixed-bar {
@@ -100,28 +103,29 @@
             font-weight: bold;
             cursor: pointer;
         }
+/* 🍏 TOAST CONFERMA INVIO */
+#toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 16px 22px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+  z-index: 999999;
+}
 
-        /* 🍏 NOTIFICA STILE APPLE */
-        #toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) scale(0.9);
-            background: rgba(0,0,0,0.85);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 14px;
-            font-size: 15px;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.25s ease-out;
-            z-index: 99999;
-        }
-
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
-        }
+#toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
     </style>
 </head>
 
@@ -241,50 +245,64 @@ document.getElementById("locale").addEventListener("change", () => {
         t.classList.add("show");
         setTimeout(() => t.classList.remove("show"), 2500);
     }
+</script>
+<script>
+async function inviaCandidatura() {
 
-    // 📧 INVIO CANDIDATURA
-    function inviaCandidatura() {
+  const locale = document.getElementById("locale").value;
+  const nome = document.getElementById("nome").value;
+  const cognome = document.getElementById("cognome").value;
+  const email = document.getElementById("email").value;
+  const eta = document.getElementById("eta").value;
+  const cell = document.getElementById("cell").value;
+  const mansione = document.getElementById("mansione").value;
+  const fileInput = document.getElementById("cv");
+  const messaggio = document.getElementById("messaggio").value;
 
-        const locale = document.getElementById("locale").value;
-        const nome = document.getElementById("nome").value;
-        const cognome = document.getElementById("cognome").value;
-        const email = document.getElementById("email").value;
-        const eta = document.getElementById("eta").value;
-        const cell = document.getElementById("cell").value;
-        const mansione = document.getElementById("mansione").value;
-        const cv = document.getElementById("cv").value;
+  if (!locale || !nome || !cognome || !email || !eta || !cell || !mansione || fileInput.files.length === 0) {
+    alert("⚠️ Compila tutti i campi obbligatori");
+    return;
+  }
 
-        // 🔥 CONTROLLO OBBLIGATORI
-        if (!locale || !nome || !cognome || !email || !eta || !cell || !mansione || !cv) {
-            alert("⚠️ Per favore compila tutti i campi obbligatori.");
-            return;
-        }
+  const file = fileInput.files[0];
 
-        // Messaggio
-        const messaggio = document.getElementById("messaggio").value;
+  // 🔁 Converti CV in Base64
+  const toBase64 = file =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
-        const body =
-`Locale: ${locale}
-Nome: ${nome}
-Cognome: ${cognome}
-Email: ${email}
+  const cvBase64 = await toBase64(file);
+
+  // 📡 INVIO ALLA TUA API VERCEL
+  const res = await fetch("https://casa-del-gelato-mailer-f7ds.vercel.app/api/lavora", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      locale,
+      nome: `${nome} ${cognome}`,
+      email,
+      messaggio: `
 Età: ${eta}
 Cellulare: ${cell}
 Mansione: ${mansione}
 
-Messaggio:
 ${messaggio}
-`;
+      `,
+      cvBase64,
+      cvNome: file.name
+    })
+  });
 
-        // mailto
-        const mailto = `mailto:casadelgelato.it@icloud.com?subject=Candidatura - ${locale}&body=${encodeURIComponent(body)}`;
-
-        // Invia
-        window.location.href = mailto;
-
-        // Mostra notifica
-        showToast();
-    }
+  if (res.ok) {
+    showToast();
+  } else {
+    alert("❌ Errore invio candidatura");
+  }
+}
 </script>
 <script type="module">
   import { supabase } from "./supabase.js";
@@ -306,8 +324,6 @@ ${messaggio}
         <img src="icone/menu.png" alt="">
         <span>Menu</span>
     </a>
-
-</div>
 
 </div>
 

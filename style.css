@@ -114,6 +114,7 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   font-weight: 700;
 }
 
+
 /* === LANGUAGE MENU (risolto — si apre e chiude) === */
 #lang-toggle {
   position: fixed;
@@ -263,17 +264,19 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 
 /* ================= LISTA SELEZIONABILE ================= */
 .menu-item {
-  padding: 12px 18px;
-  margin: 8px auto;
-  background: #ffffffd6;
-  border-radius: 14px;
-  font-size: 18px;
-  width: 90%;
-  max-width: 420px;
+  padding: 14px 16px;
+  margin: 16px auto;        /* 🔥 più spazio tra le card */
+  background: #ffffff;
+  border-radius: 16px;
+  font-size: 17px;
+
+  width: calc(100% - 32px); /* 🔥 stacca dai bordi */
+  max-width: 360px;         /* 🔥 più stretta */
+
   text-align: center;
   border: 1px solid #ddd;
   cursor: pointer;
-  transition: .3s;
+  transition: .25s ease;
 }
 .menu-item:hover {
   transform: scale(1.03);
@@ -450,10 +453,7 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
    FIX DEFINITIVO NAV STEP
 ========================= */
 
-/* Disattiva layout precedenti */
-.nav-buttons {
-  display: block !important;
-}
+
 
 /* RESET eventuale full width */
 .next-btn,
@@ -471,9 +471,15 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 
   display: flex;
   align-items: center;
-  justify-content: space-between; /* ⬅️ CHIAVE */
+  justify-content: space-between;
 
-  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  /* ⬅️⬅️ QUI IL FIX */
+  padding:
+    12px
+    calc(16px + env(safe-area-inset-right))
+    calc(12px + env(safe-area-inset-bottom))
+    calc(16px + env(safe-area-inset-left));
+
   background: rgba(255, 255, 255, 0.96);
   border-top: 1px solid rgba(0,0,0,0.08);
   backdrop-filter: blur(10px);
@@ -481,10 +487,19 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   z-index: 9998;
 }
 
+.nav-buttons {
+  box-sizing: border-box;
+}
+
+.back-btn,
+.next-btn {
+  box-sizing: border-box;
+  max-width: calc(50% - 8px);
+}
 /* BOTTONI */
 .back-btn,
 .next-btn {
-  width: auto !important;
+  width: auto;
   padding: 8px 14px;
   border-radius: 12px;
   border: none;
@@ -709,9 +724,8 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   width: fit-content;
   max-width: 200px;                 /* NON esplode più */
   min-width: 110px;
-
-  font-size: 14px;
-  line-height: 1.28;
+font-size: 14px;
+line-height: 1.28;
   color: #000;
   z-index: 99999;
   cursor: pointer;
@@ -765,6 +779,12 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   flex-direction: column;
   align-items: flex-start;
   padding: 2px 0;
+}
+/* 🔽 SOLO i valori (gusti, topping, ingredienti, extra) */
+#riepilogo-mini .line-value {
+  font-size: 10.5px;     /* ← rimpicciolisce SOLO Vaniglia, Smarties ecc. */
+  line-height: 1.2;
+  font-weight: 500;
 }
 
 #riepilogo-mini .riepilogo-line b {
@@ -890,28 +910,20 @@ body.step-size #riepilogo-mini {
 
 /* ===== TITOLO DELLA SEZIONE (Gusti, Topping, ecc.) ===== */
 .step-title {
-    font-size: 22px;
-    font-weight: 700;
-    text-align: center;
-    margin: 10px 0 14px;
-    opacity: 0.85;
-    transition: opacity .25s ease, transform .25s ease;
-}
-
-/* quando deve sparire */
-.step-title.hidden {
-    opacity: 0;
-    transform: translateY(-6px);
-    pointer-events: none;
-}
-
-.step-title {
-  text-align: center;
   font-size: 22px;
   font-weight: 700;
-  margin-top: 10px;
-  margin-bottom: 16px;
+  text-align: center;
+  margin: 10px 0 16px;
+  opacity: 1;
+  transition: opacity .25s ease, transform .25s ease;
 }
+
+.step-title.hidden {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+}
+
 
 /* ========== GESTIONE GUSTI CON QUANTITÀ ========== */
 
