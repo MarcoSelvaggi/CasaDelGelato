@@ -3659,3 +3659,29 @@ body.step-riepilogo .riepilogo-registrati {
   margin-top: 6px;
   opacity: 0.85;
 }
+/* =========================
+   RIEPILOGO – COPPA GRAFICA
+   ========================= */
+
+#coppa-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.step-riepilogo #coppa-stage {
+  width: 220px;
+  max-width: 90vw;
+  height: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  overflow: hidden;
+}
+.step-riepilogo #coppa-stage * {
+  position: relative !important;
+  transform: none !important;
+}
