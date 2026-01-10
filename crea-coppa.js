@@ -1169,13 +1169,7 @@ function updateStatusGusti() {
 function renderStepGusti() {
 const title = document.getElementById("step-title");
 if (title) {
-
-  if (step === "gusti")        title.textContent = "Gusti";
-  else if (step === "granelle")title.textContent = "Granelle";
-  else if (step === "topping") title.textContent = "Topping";
-  else if (step === "ingredienti") title.textContent = "Ingredienti";
-  else if (step === "extra")   title.textContent = "Extra";
-  else                         title.textContent = "";
+  title.textContent = "Gusti";
 
   if (titoloGustiVisibile) {
     title.classList.remove("hidden");
@@ -1503,8 +1497,11 @@ function toggle(step, nome, el) {
       return;
     }
 
-    // ✅ aggiunta valida → nascondi titolo
-    scelti[step].push(nome);
+  scelti[step].push(nome);
+
+// 🔥 NASCONDI TITOLO DELLO STEP CORRENTE
+titoloGustiVisibile = false;
+hideStepTitle();
   }
 
   showIsland(step, nome);
@@ -2136,8 +2133,21 @@ async function mostraRiepilogo(){
 
   console.log("🚀 mostraRiepilogo CHIAMATA");
 
-  step = "riepilogo";                 // 🔥 PRIMA DI TUTTO
+  step = "riepilogo";
   document.body.classList.add("step-riepilogo");
+
+  // 🔥 CHIUDI IMMEDIATAMENTE MINI RIEPILOGO
+  const mini = document.getElementById("riepilogo-mini");
+  if (mini) {
+    mini.classList.add("collapsed");
+    mini.classList.remove("open");
+    mini.innerHTML = mini.dataset.mini || "";
+  }
+
+  if (collapseTimer) {
+    clearTimeout(collapseTimer);
+    collapseTimer = null;
+  }
 
   // 🔥 DISTRUGGE QUALSIASI TITOLO RESIDUO
   const title = document.getElementById("step-title");
@@ -2235,20 +2245,21 @@ area.innerHTML = `
 <div class="scontrino" id="scontrino-da-share">
   <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
 
-  <p><b>Gusti:</b><br>
+<p>
+  <b>Gusti:</b>
   ${(() => {
-      const grouped = {};
-      Object.entries(gustiQuantities).forEach(([nome, qty]) => {
-          if (qty > 0) grouped[nome] = qty;
-      });
+    const grouped = {};
+    Object.entries(gustiQuantities).forEach(([nome, qty]) => {
+      if (qty > 0) grouped[nome] = qty;
+    });
 
-      if (Object.keys(grouped).length === 0) return "-";
+    if (Object.keys(grouped).length === 0) return "-";
 
-      return Object.entries(grouped)
-        .map(([nome, qty]) => qty === 1 ? `- ${nome}` : `- ${nome} x${qty}`)
-        .join("<br>");
+    return Object.entries(grouped)
+      .map(([nome, qty]) => qty === 1 ? nome : `${nome} x${qty}`)
+      .join(", ");
   })()}
-  </p>
+</p>
 
   <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
   <p><b>Topping:</b> ${safeJoin(scelti.topping)}</p>
@@ -2257,7 +2268,9 @@ area.innerHTML = `
   <p><b>Extra:</b> 
     ${
       prezzoExtraDettaglio.length
-      ? prezzoExtraDettaglio.map(x=> `${x.nome} (+€${x.prezzo.toFixed(2)})`).join(", ")
+      ? prezzoExtraDettaglio.map(x =>
+  `${x.nome} <span class="extra-price">(+€${x.prezzo.toFixed(2)})</span>`
+).join(", ")
       : "-"
     }
   </p>
@@ -2591,14 +2604,6 @@ if (window.QRCode) {
     console.error("Libreria QRCode non trovata");
 }
 
-
-  // 🔒 Chiudi SEMPRE il mini-riepilogo nel riepilogo finale
-  const mini = document.getElementById("riepilogo-mini");
-  if (mini) {
-    mini.classList.add("collapsed");
-    mini.classList.remove("open");
-    mini.innerHTML = mini.dataset.mini || "";
-  }
   mostraBottomNav();
   updateRiepilogo();
   updateCarrelloBadge();
