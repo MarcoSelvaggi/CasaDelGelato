@@ -1997,6 +1997,25 @@ body.exporting #coppa-stage .arrow-text {
 }
 
 
+/* =========================
+   PICCOLA – CONTENITORE EXTRA (CENTRO STABILE)
+========================= */
+.piccola-coppa .extra-row{
+  position: absolute;
+  left: 50%;
+  top: 600px;
+
+  /* 🎯 centratura + shift a sinistra (VALORE CONFERMATO) */
+  transform: translateX(-50%) translateX(-260px);
+
+  display: flex;
+  gap: 18px;
+  z-index: 30;
+}
+
+/* =========================
+   PICCOLA – BOX EXTRA GRANDI
+========================= */
 .piccola-coppa .box-extra{
   position: relative !important;
 
@@ -2005,24 +2024,7 @@ body.exporting #coppa-stage .arrow-text {
 
   top: auto !important;
   left: auto !important;
-  transform: none !important;
-}
-
-.piccola-coppa .box-granella { left: calc(var(--base-left) - 120px + 85px); }
-.piccola-coppa .box-topping  { left: calc(var(--base-left) + 85px); }
-.piccola-coppa .box-frutta   { left: calc(var(--base-left) + 120px + 85px); }
-
-.piccola-coppa .extra-row{
-  position: absolute;
-  left: 50%;
-  top: 520px;
-
-  /* ⬇️ QUESTO È IL TUO VALORE CONFERMATO DA CONSOLE */
-  transform: translate(-480px, 40px);
-
-  display: flex;
-  gap: 18px;
-  z-index: 30;
+  transform: none !important;    /* 🔥 NON devono traslare */
 }
 
 /* =========================
