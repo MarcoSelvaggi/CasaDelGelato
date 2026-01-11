@@ -1883,31 +1883,33 @@ body.piccola-coppa #coppa-stage{
 .arrow-text.bottom {
   left: 50%;
   transform: translateX(-50%);
-  top: 60px;        /* sotto la curva */
+  top: 0px;        /* sotto la curva */
 }
 .granella-text {
-  margin-left: -40px; /* oppure il valore che avevi trovato perfetto */
+  margin-left: -2px; /* oppure il valore che avevi trovato perfetto */
 }
 .frutta-text {
-  margin-left: 30px; /* oppure il valore che avevi trovato perfetto */
+  margin-left: 0px; /* oppure il valore che avevi trovato perfetto */
 }
 .arrow {
   position: absolute;
 }
 
+/* base comune */
 .arrow-text.top {
   left: 50%;
   transform: translateX(-50%);
-  top: -75px; /* base */
+  text-align: center;
 }
 
-.topping-text {
-  margin-left: 0px;  /* ↔️ orizzontale */
-  top: -65px;        /* ⬇️ ABBASSA QUI */
+/* TOPPING: ancora dal BASSO */
+.arrow-text.top.topping-text {
+  bottom: 25px;     /* ⬅️ QUESTA È LA CHIAVE */
+  top: auto;         /* ❗ DISATTIVA top */
+  line-height: 1.1;
+  max-width: 90px;
 }
-#topping-text{
-  transform: translate(-50%, 20px); /* ⬇️ ABBASSA */
-}
+
 /* CONTENITORE EXTRA */
 #extra-stage {
   position: absolute;
@@ -2537,28 +2539,32 @@ body.coppa-media #coppa-stage{
   transform: translateX(-50%);
   top: 55px;        /* sotto la curva */
 }
-/* stile comune, NON sposta */
+/* MEDIA – stile comune testo granella */
 .coppa-media .granella-text {
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
 }
 
-/* 🔥 TESTO GRANELLA 1 – MEDIA (FORZATO) */
-.coppa-media .granella-1-text {
-  margin-left: -40px;
-}
-/* MEDIA – TESTO GRANELLA 1 */
-.coppa-media #granella-1-text{
-  transform: translateX(-80px);  /* ⬅️ sinistra / destra */
+/* MEDIA – TESTO GRANELLA 1 (POSIZIONE DEFINITIVA) */
+.coppa-media #granella-1-text {
+  top: auto;          /* 🔥 OBBLIGATORIO */
+  bottom: 0px;        /* allineamento verticale */
+  margin-left: 0px;  /* spostamento a destra */
 }
 
-/* MEDIA – TESTO GRANELLA 2 */
-.coppa-media #granella-2-text{
-  transform: translateX(-5px);   /* ➜ sposta a DESTRA */
+/* MEDIA – TESTO GRANELLA 2 (LOGICA CORRETTA) */
+.coppa-media #granella-2-text {
+  top: auto;           /* 🔥 obbligatorio */
+  bottom: 25px;        /* ⬇️ valore che mi hai dato */
+  margin-left: 0px; /* ⬅️ valore che mi hai dato */
 }
-.coppa-media .frutta-text {
-  margin-left: 30px; /* oppure il valore che avevi trovato perfetto */
+/* MEDIA – TESTO FRUTTA 1 */
+.coppa-media #frutta-1-text {
+  left: 50%;
+  transform: translate(-25px, -55px); /* ← i tuoi valori */
+  text-align: center;
+  line-height: 1.1;
 }
 .coppa-media .arrow {
   position: absolute;
@@ -2567,28 +2573,36 @@ body.coppa-media #coppa-stage{
 .coppa-media .arrow-text.top {
   left: 50%;
   transform: translateX(-50%);
-  top: -50px;
+  top: auto;              /* 🔥 disattiva il top */
+  bottom: auto;           /* sarà il singolo testo a decidere */
 }
 .coppa-media .topping-text {
-  top: -75px;
   font-size: 14px;
   font-weight: 600;
-  white-space: nowrap;
+  white-space: normal;    /* ✅ permette wrap corretto */
+  text-align: center;
+  line-height: 1.1;
 }
-/* Topping sinistro */
-.coppa-media .topping-1-text {
-  margin-left: -25px;   /* regola solo questo */
-}
-.coppa-media #topping-1-text{
-  transform: translate(20px, -6px);  /* ⬆️ alza di poco */
+/* MEDIA – TESTO TOPPING 1 (ANCORATO DAL BASSO) */
+.coppa-media #topping-1-text {
+  top: auto !important;     /* 🔒 fondamentale */
+  bottom: 2px;             /* ⬆️⬇️ REGOLA SOLO QUESTO */
+  margin-left: 0px;       /* ⬅️➡️ REGOLA SOLO QUESTO */
+
+  max-width: 140px;         /* opzionale ma consigliato */
 }
 
-/* Topping destro */
-.coppa-media .topping-2-text {
-  margin-left: 30px;    /* regola solo questo */
-}
-.coppa-media #topping-2-text{
-  transform: translate(-80px);  
+/* MEDIA – TESTO TOPPING 2 (BASE STABILE, NO TOP/BOTTOM/MARGIN) */
+.coppa-media #topping-2-text {
+  left: 50%;                 /* ancora centrale */
+  transform: translate(-50%, -55px); /* 🔴 punto di partenza */
+  
+  text-align: center;
+  line-height: 1.1;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: normal;       /* gestisce bene kiwi / frutti di bosco */
+  max-width: 140px;          /* sicurezza wrap */
 }
 
 /* =========================
@@ -3226,74 +3240,101 @@ body.coppa-grande #coppa-stage{
 }
 
 /* ================= GRANELLA ================= */
+/* GRANDE – stile comune testo granella */
 .coppa-grande .granella-text {
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
 }
 
-.coppa-grande .granella-1-text {
-  margin-left: -40px;
+/* GRANDE – TESTO GRANELLA 1 (POSIZIONE DEFINITIVA) */
+.coppa-grande #granella-1-text {
+  top: auto;          /* 🔥 OBBLIGATORIO */
+  bottom: 0px;        /* allineamento verticale */
+  margin-left: 2px;  /* spostamento a destra */
 }
-.coppa-grande #granella-1-text{
-  transform: translateX(-70px);
-}
-.coppa-grande .granella-2-text {
-  margin-left: 40px;
-}
-.coppa-grande #granella-2-text{
-  transform: translateX(-5px);
+/* GRANDE – TESTO GRANELLA 2 (POSIZIONE DEFINITIVA) */
+.coppa-grande #granella-2-text {
+  top: auto;          /* 🔥 OBBLIGATORIO */
+  bottom: 24px;        /* ⬆️⬇️ regola altezza */
+  margin-left: 2px;  /* ⬅️➡️ regola orizzontale */
 }
 
 /* ================= FRUTTA ================= */
-/* ===== FRUTTA (IDENTICO A TOPPING) ===== */
 
-/* base frutta – SOLO stile */
+/* base frutta – stile */
 .coppa-grande .frutta-text {
   font-size: 14px;
   font-weight: 600;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.1;
 }
 
-/* frutta sinistra */
-.coppa-grande .frutta-1-text {
-  margin-left: -25px;
+/* GRANDE – TESTO FRUTTA 1 (ANCORATO DAL TOP) */
+.coppa-grande #frutta-1-text {
+  left: 50%;
+  top: 20px;                 /* ⬅️ questo è il riferimento UNICO */
+  transform: translateX(-50%);
+
+  min-height: 32px;           /* 🔥 CHIAVE: stabilizza kiwi / after eight */
+  display: flex;
+  align-items: flex-start;    /* 🔥 parte sempre dall’alto */
+
+  max-width: 140px;
 }
 
-/* frutta destra */
-.coppa-grande .frutta-2-text {
-  margin-left: 30px;
-}
-.coppa-grande #frutta-1-text{
-  transform: translate(-55px, 6px);
+/* GRANDE – TESTO FRUTTA 2 (ANCORATO DAL TOP, STABILE) */
+.coppa-grande #frutta-2-text {
+  left: 50%;
+  top: -5px;                 /* stesso riferimento di frutta 1 */
+  transform: translateX(-50%);
+
+  min-height: 32px;           /* 🔥 stabilizza kiwi / testi lunghi */
+  display: flex;
+  align-items: flex-start;
+
+  max-width: 140px;
+  text-align: center;
+  line-height: 1.1;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: normal;
 }
 
 /* ================= TOPPING ================= */
 .coppa-grande .arrow-text.top {
   left: 50%;
   transform: translateX(-50%);
-  top: -50px;
 }
 
 .coppa-grande .topping-text {
-  top: -75px;
   font-size: 14px;
   font-weight: 600;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.1;
 }
 
-.coppa-grande .topping-1-text {
-  margin-left: -25px;
-}
-.coppa-grande #topping-1-text{
-  transform: translateX(15px);
+/* GRANDE – TOPPING 1 */
+.coppa-grande #topping-1-text {
+  top: auto !important;
+  bottom: 2px;          /* ⬆️⬇️ regola SOLO questo */
+  margin-left: 0;       /* 🔥 SEMPRE 0 */
+  max-width: 160px;
 }
 
-.coppa-grande .topping-2-text {
-  margin-left: 30px;
-}
-.coppa-grande #topping-2-text{
-  transform: translateX(-110px);
+/* GRANDE – TESTO TOPPING 2 (BASE STABILE, NO TOP/BOTTOM/MARGIN) */
+.coppa-grande #topping-2-text {
+  left: 50%;                         /* ancora centrale */
+  transform: translate(-50%, -60px); /* 🔴 punto di partenza (leggermente più alto del media) */
+
+  text-align: center;
+  line-height: 1.1;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: normal;               /* kiwi / frutti di bosco OK */
+  max-width: 160px;                  /* più largo del media */
 }
 /* =========================
    GRANDE – 1 SOLO GUSTO
@@ -3760,4 +3801,25 @@ body.step-riepilogo .riepilogo-registrati {
   #coppa-stage {
     overflow: visible !important;
   }
+}
+/* =====================================================
+   🔥 NASCONDI SOLO LE FRECCE (LINEE / SVG)
+   TESTI SEMPRE VISIBILI
+   ===================================================== */
+
+/* NON nascondere il contenitore */
+.arrow {
+  pointer-events: none; /* sicurezza */
+}
+
+/* nasconde SOLO il disegno della freccia */
+.arrow svg,
+.arrow path {
+  opacity: 0 !important;
+}
+
+/* forza il testo SEMPRE visibile */
+.arrow-text {
+  opacity: 1 !important;
+  display: block !important;
 }

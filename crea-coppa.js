@@ -1,21 +1,27 @@
 
 console.log("JS CARICATO ✔️");
+
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
 let titoloGustiVisibile = true;
 let scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 let max = { gusti:0, granelle:0, topping:0, ingredienti:0, extra:0 };
 let step = "size"; // iniziamo sulla scelta formato
-let allergeniCliente = JSON.parse(
-  localStorage.getItem("allergeni_cliente") || "[]"
-);
 // === SISTEMA QUANTITÀ GUSTI ===
 let gustiQuantities = {};      // es: { VANIGLIA: 2, FRAGOLA: 1 }
 let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in modifica)
 let collapseTimer = null
 let coppaSalvata = false;
 
-
+// 🔥 SE ARRIVO DA "USA QUESTA COPPA" → NASCONDI STEP TAVOLO
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("coppaDaUsare")) {
+    const stepTavolo = document.getElementById("step-tavolo");
+    if (stepTavolo) {
+      stepTavolo.style.display = "none";
+    }
+  }
+});
 // =======================
 // DISPONIBILITÀ INGREDIENTI
 // =======================
@@ -3200,10 +3206,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // una volta letta, la elimino
+    // elimina dopo lettura
     localStorage.removeItem("coppaDaUsare");
 
-    // In base al formato, simulo la scelta formato
+    // selezione formato
     if (c.formato === "PICCOLA") {
         selectSize("PICCOLA", 2, 1, 1, 1);
     } else if (c.formato === "MEDIA") {
@@ -3211,15 +3217,11 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (c.formato === "GRANDE") {
         selectSize("GRANDE", 4, 2, 2, 2);
     } else {
-        // formato sconosciuto → fallback PICCOLA
-        selectSize(c.formato || "PICCOLA", 2,1,1,1);
+        selectSize("PICCOLA", 2, 1, 1, 1);
     }
 
-    // Ora riempiamo i dati salvati
-
-    // GUSTI: ricostruisco gustiQuantities
+    // GUSTI
     if (Array.isArray(c.gusti)) {
-        // azzero
         gustiQuantities = {};
         gustiList.forEach(g => gustiQuantities[g] = 0);
 
@@ -3232,17 +3234,13 @@ document.addEventListener("DOMContentLoaded", () => {
         rebuildSceltiGustiFromQuantities();
     }
 
-    // Altri step (array semplici)
-    scelti.granelle     = Array.isArray(c.granelle)     ? [...c.granelle]     : [];
-    scelti.topping      = Array.isArray(c.topping)      ? [...c.topping]      : [];
-    scelti.ingredienti  = Array.isArray(c.ingredienti)  ? [...c.ingredienti]  : [];
-    scelti.extra        = Array.isArray(c.extra)        ? [...c.extra]        : [];
+    // altri ingredienti
+    scelti.granelle    = Array.isArray(c.granelle)    ? [...c.granelle]    : [];
+    scelti.topping     = Array.isArray(c.topping)     ? [...c.topping]     : [];
+    scelti.ingredienti = Array.isArray(c.ingredienti) ? [...c.ingredienti] : [];
+    scelti.extra       = Array.isArray(c.extra)       ? [...c.extra]       : [];
 
-    // Aggiorna stato gusti (giallo/verde)
     updateStatusGusti();
-
-    // Mostra lo step gusti già compilato
-    step = "gusti";
     renderStepGusti();
     updateRiepilogo();
 });

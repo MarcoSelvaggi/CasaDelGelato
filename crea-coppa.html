@@ -458,19 +458,20 @@ function scegliTavolo(codice, btn) {
 
   document.getElementById("btn-conferma-tavolo").style.display = "block";
 }
+
 function confermaTavolo() {
   if (!tavoloSelezionato) {
     alert("Seleziona un tavolo");
     return;
   }
 
-  // nascondi step tavolo
   document.getElementById("step-tavolo").style.display = "none";
-
-  // mostra step formato
   document.getElementById("step-size").style.display = "block";
   mostraBottomNav();
 }
+
+
+
 
 </script>
 <script type="module">

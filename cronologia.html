@@ -310,24 +310,39 @@ function dedupCoppe(lista) {
     const map = new Map();
 
     for (let c of lista) {
-        if (!c.data) continue;
 
-        // Usa timestamp per avere uniformità
-        const timestamp = new Date(c.data).getTime();
+        // 🔥 CHIAVE 1: QR TOKEN (PRIORITARIA)
+        let key = null;
 
-        // guest_id identifica UNIVOCAMENTE il dispositivo
-        const guest = c.guest_id || "";
+        if (c.qr_token) {
+            key = "qr|" + c.qr_token;
+        } else if (c.data) {
+            // fallback vecchio
+            const timestamp = new Date(c.data).getTime();
+            const guest = c.guest_id || c.email || "anon";
+            key = "legacy|" + guest + "|" + timestamp;
+        } else {
+            continue;
+        }
 
-        const key = guest + "|" + timestamp;
-
-        // Se stessa coppa ma una ha ID e l’altra no → tieni quella con ID
         if (map.has(key)) {
             const existing = map.get(key);
 
-            if (!existing.id && c.id) {
-                map.set(key, c); // preferisci versione Supabase
+            // ✅ 1) preferisci SEMPRE quella con immagine
+            if (!existing.coppa_img && c.coppa_img) {
+                map.set(key, c);
+                continue;
             }
 
+            // ✅ 2) se entrambe hanno immagine → preferisci Supabase
+            if (existing.coppa_img && c.coppa_img) {
+                if (!existing.id && c.id) {
+                    map.set(key, c);
+                }
+                continue;
+            }
+
+            // altrimenti tieni la prima
         } else {
             map.set(key, c);
         }
