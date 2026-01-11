@@ -3535,19 +3535,18 @@ body.coppa-grande #coppa-stage{
 ============================ */
 
 /* VARIABILI DI REGOLAZIONE */
+/*
 .coppa-grande{
   --gusto-left-x: 70px;
   --gusto-left-y: 55px;
-
   --gusto-right-x: -75px;
   --gusto-right-y: -45px;
-
   --gusto-top-x: -60px;
   --gusto-top-y: -40px;
-
   --gusto-bottom-x: 25px;
   --gusto-bottom-y: 35px;
 }
+*/
 
 /* BASE COMUNE */
 .coppa-grande #gusto-left-text,
@@ -3570,6 +3569,7 @@ body.coppa-grande #coppa-stage{
 /* =================
    GUSTO SINISTRO – GRANDE
 ================= */
+/*
 .coppa-grande #gusto-left-text{
   right: 100% !important;
   top: 50% !important;
@@ -3579,10 +3579,11 @@ body.coppa-grande #coppa-stage{
     calc(-50% + var(--gusto-left-y))
   ) !important;
 }
-
+*/
 /* =================
    GUSTO DESTRO – GRANDE
 ================= */
+/*
 .coppa-grande #gusto-right-text{
   left: 100% !important;
   top: 50% !important;
@@ -3592,10 +3593,11 @@ body.coppa-grande #coppa-stage{
     calc(-50% + var(--gusto-right-y))
   ) !important;
 }
-
+*/
 /* =================
    GUSTO TOP – GRANDE
 ================= */
+/*
 .coppa-grande #gusto-top-text{
   left: 50% !important;
   bottom: 100% !important;
@@ -3605,10 +3607,11 @@ body.coppa-grande #coppa-stage{
     var(--gusto-top-y)
   ) !important;
 }
-
+*/
 /* =================
    GUSTO BOTTOM – GRANDE
 ================= */
+/*
 .coppa-grande #gusto-bottom-text{
   left: 50% !important;
   top: 100% !important;
@@ -3618,7 +3621,60 @@ body.coppa-grande #coppa-stage{
     var(--gusto-bottom-y)
   ) !important;
 }
+*/
 
+/* =================
+   GUSTO SINISTRO – GRANDE
+================= */
+.coppa-grande #gusto-left-text{
+  position: absolute;
+  left: -115px;  /* ←→ destra/sinistra */
+  top: 60px;     /* ↑↓ su/giù */
+}
+
+
+/* =================
+   GUSTO DESTRO – GRANDE
+================= */
+.coppa-grande #gusto-right-text{
+  position: absolute;
+  left: 40px;   /* ←→ spostamento orizzontale */
+  top: 0px;     /* ↑↓ spostamento verticale */
+}
+
+/* =================
+   GUSTO TOP – GRANDE
+================= */
+.coppa-grande #gusto-top-text{
+  position: absolute;
+  left: -60px;    /* ←→ sposta a destra/sinistra */
+  top: -60px;   /* ↑↓ sposta su/giù */
+}
+
+/* =================
+   GUSTO BOTTOM – GRANDE
+================= */
+.coppa-grande #gusto-bottom-text{
+  position: absolute;
+  left: 40px;    /* ←→ destra/sinistra */
+  top: 140px;   /* ↑↓ su/giù (sotto le palline) */
+}
+
+/* =========================
+   GRANDE – GUSTI POSIZIONE STATICA (BASE)
+========================= */
+
+.coppa-grande #gusto-left-text,
+.coppa-grande #gusto-right-text,
+.coppa-grande #gusto-top-text,
+.coppa-grande #gusto-bottom-text{
+  position: absolute;
+  width: 160px;
+  max-width: 160px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.15;
+}
 
 
 .popup-text {
