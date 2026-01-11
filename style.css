@@ -2396,17 +2396,64 @@ body.coppa-media #coppa-stage{
 /* ================= FORMATO MEDIA – SPAZIATURA BOX ================= */
 
 /* GRANELLA */
+/*
 .coppa-media .granella-1 { left: calc(var(--base-left) + 340px); }
 .coppa-media .granella-2 { left: calc(var(--base-left) + 440px); }
-
+*/
 /* TOPPING */
+/*
 .coppa-media .topping-1  { left: calc(var(--base-left) + 560px); }
 .coppa-media .topping-2  { left: calc(var(--base-left) + 660px); }
-
+*/
 /* FRUTTA */
+/*
 .coppa-media .box-frutta { left: calc(var(--base-left) + 780px); }
+*/
+
+
+/* =========================
+   MEDIA – CONTENITORE EXTRA (STABILE)
+========================= */
+.coppa-media .media-extras{
+  position: absolute;
+  left: 50%;
+  top: 650px;                /* ⬆️⬇️ ALTEZZA SOTTO COPPA */
+
+  width: 390px;              /* ✅ COME CONSOLE */
+    transform: translateX(-50%) translateX(140px) translateY(-40px); /* ✅ COME CONSOLE */
+
+  display: flex;
+  flex-wrap: wrap;           /* 🔥 3 sopra + 2 sotto */
+  gap: 18px;
+  z-index: 30;
+}
+
+/* =========================
+   MEDIA – BOX EXTRA (DIMENSIONI)
+========================= */
+.coppa-media .media-extras .box-extra{
+  position: relative !important;
+
+  width: 120px;              /* ✅ COME CONSOLE */
+  height: 155px;             /* ✅ COME CONSOLE */
+
+  top: auto !important;
+  left: auto !important;
+  transform: none !important; /* 🔥 FONDAMENTALE */
+}
+@media (max-width: 768px){
+  .coppa-media .media-extras{
+    left: 50%;
+    top: 620px;
+
+    transform: translateX(-50%) translateX(0px);
+
+    gap: 14px;
+  }
+}
 
 /* ================= EXTRA STAGE (IDENTICO A PICCOLA) ================= */
+/*
 .coppa-media #extra-stage {
   position: absolute;
   top: 10px;
@@ -2419,8 +2466,9 @@ body.coppa-media #coppa-stage{
   padding: 8px;
   box-sizing: border-box;
 }
-
+*/
 /* singolo slot */
+/*
 .coppa-media .extra-slot {
   flex: 1;
   border: 2px dashed rgba(0,0,0,0.35);
@@ -2433,6 +2481,9 @@ body.coppa-media #coppa-stage{
   padding: 6px;
   box-sizing: border-box;
 }
+*/
+
+
 /* =========================
    MEDIA – EXTRA VERTICALI
    bordo CONTINUO
@@ -2466,12 +2517,13 @@ body.coppa-media #coppa-stage{
   line-height: 1.1;
   width: 100%;
 }
-/* ================= RIDUZIONE BLOCCO EXTRA – FORMATO MEDIA ================= */
-
+/* ❌ DISATTIVA – sovrascrive il transform */
+/*
 .coppa-media .media-extras {
-  transform: scale(0.85);           /* 🔽 rimpicciolisce tutto */
-  transform-origin: top left;      /* ancora in alto a sinistra */
+  transform: scale(0.85);
+  transform-origin: top left;
 }
+*/
 /* ================= RIDUZIONE BLOCCO COPPA – FORMATO MEDIA ================= */
 
 .coppa-media .media-coppa {
