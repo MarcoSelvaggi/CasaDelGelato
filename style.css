@@ -2457,10 +2457,13 @@ body.coppa-media #coppa-stage{
     left: 50%;
     top: 620px;
 
-    /* ✅ MOBILE: % */
-    transform: translateX(-50%) translateX(-12%);
+    /* ✅ centrato vero + piccolo offset sicuro */
+    transform: translateX(-50%) translateX(20px);
 
     gap: 14px;
+
+    /* 🔒 SICUREZZA CONTRO TAGLIO */
+    max-width: calc(100vw - 24px);
   }
 }
 
