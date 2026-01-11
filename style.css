@@ -2412,21 +2412,31 @@ body.coppa-media #coppa-stage{
 
 
 /* =========================
-   MEDIA – CONTENITORE EXTRA (DEFINITIVO)
+   MEDIA – CONTENITORE EXTRA (DESKTOP)
 ========================= */
 .coppa-media .media-extras{
   position: absolute;
   left: 50%;
-  top: 650px;
+  top: 620px;
 
   width: 390px;
 
-  transform: translateX(-50%) translateX(140px) translateY(-40px);
+  /* ✅ DESKTOP: PX */
+  transform: translateX(-50%) translateX(140px);
 
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 14px;
   z-index: 30;
+}
+
+/* NON ELIMINARE */
+.coppa-media .media-wrapper{
+  transform-origin: top left;
+  transform:
+    scale(0.65)
+    translateX(30px)
+    translateY(-70px);
 }
 
 /* =========================
@@ -2447,6 +2457,7 @@ body.coppa-media #coppa-stage{
     left: 50%;
     top: 620px;
 
+    /* ✅ MOBILE: % */
     transform: translateX(-50%) translateX(-12%);
 
     gap: 14px;
@@ -2809,17 +2820,7 @@ body.coppa-media #coppa-stage{
   height: 90px;      /* stessa altezza slot */
 }
 
-/* =========================
-   MEDIA – SCALE DEFINITIVO (DESKTOP + MOBILE)
-========================= */
-.coppa-media .media-wrapper{
-  transform-origin: top left;
 
-  transform:
-    scale(0.65)
-    translateX(30px)
-    translateY(-70px);
-}
 /* =====================================================
    MEDIA – TESTO FRECCE (BASE COME PICCOLA)
    - va a capo se lungo
