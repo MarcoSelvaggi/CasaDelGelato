@@ -2944,11 +2944,23 @@ window.testExportCoppa = async function () {
 };
 
 async function generaCoppaPNG() {
-  const exportBox = preparaCoppaExportPNG();
-  if (!exportBox) return;
+  document.body.classList.add("exporting");
 
+  const exportBox = preparaCoppaExportPNG();
+  if (!exportBox) {
+    document.body.classList.remove("exporting");
+    return;
+  }
+
+  // ⏱️ aspetta layout stabile
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 200));
+
+  // ✅ CONGELA TESTI PRIMA DI html2canvas
+  freezeArrowTextPositions(exportBox);
+
+  // micro-wait (facoltativo ma aiuta)
+  await new Promise(r => requestAnimationFrame(r));
 
   const canvas = await html2canvas(exportBox, {
     backgroundColor: "#fff",
@@ -2956,8 +2968,10 @@ async function generaCoppaPNG() {
     useCORS: true
   });
 
+  document.body.classList.remove("exporting");
   return canvas.toDataURL("image/png");
 }
+
 function preparaCoppaExportPNG() {
   const exportBox = document.getElementById("coppa-export");
   if (!exportBox) {
@@ -2978,8 +2992,12 @@ function preparaCoppaExportPNG() {
     return null;
   }
 
-  // clona la coppa VISIVA
-  const clone = wrapper.cloneNode(true);
+// clona la coppa VISIVA
+const clone = wrapper.cloneNode(true);
+
+// 🔒 DISATTIVA SOLO LA SCALE DEL WRAPPER
+clone.style.transform = 'none';
+clone.style.transformOrigin = 'top left';
 
   // 🔥 ricrea il contesto CSS (QUESTO evita la distorsione)
   const ctx = document.createElement("div");
@@ -2996,6 +3014,28 @@ function preparaCoppaExportPNG() {
   exportBox.appendChild(ctx);
 
   return exportBox;
+}
+
+function freezeArrowTextPositions(exportRoot) {
+  const stage = exportRoot.querySelector("#coppa-stage") || exportRoot;
+  const stageRect = stage.getBoundingClientRect();
+
+  exportRoot.querySelectorAll(".arrow-text").forEach(el => {
+    const r = el.getBoundingClientRect();
+
+    // posizione relativa allo stage
+    const left = r.left - stageRect.left;
+    const top  = r.top  - stageRect.top;
+
+    // congela
+    el.style.transform = "none";
+    el.style.left = left + "px";
+    el.style.top  = top + "px";
+
+    // evita regole che usano bottom/right
+    el.style.right = "auto";
+    el.style.bottom = "auto";
+  });
 }
 
 // 🛒 APRE IL CARRELLO

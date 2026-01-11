@@ -1838,27 +1838,18 @@ body.piccola-coppa #coppa-stage{
   color: #000;
 }
 
-/* posizionamento TESTO – calibrato sulla tua freccia */
-.arrow-text.left {
+/* ================= GUSTI – PICCOLA ================= */
+
+/* gusto sinistro */
+.coppa-piccola #gusto-1-text {
+  top: 20px;
   left: 36px;
-  top: 20px;
 }
 
-.arrow-text.right {
+/* gusto destro */
+.coppa-piccola #gusto-2-text {
+  top: 20px;
   right: 36px;
-  top: 20px;
-}
-
-.arrow-text.top {
-  top: -26px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.arrow-text.bottom {
-  bottom: -26px;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 
@@ -1883,10 +1874,9 @@ body.piccola-coppa #coppa-stage{
 .frutta-text {
   margin-left: 0px; /* oppure il valore che avevi trovato perfetto */
 }
-/* 🔒 BLOCCO STABILITÀ EXPORT / INSTAGRAM */
-#coppa-stage .arrow-text {
+/* 🔒 BLOCCA transform SOLO DURANTE EXPORT */
+body.exporting #coppa-stage .arrow-text {
   transform: none !important;
-  will-change: auto;
 }
 
 
@@ -2148,30 +2138,35 @@ body.piccola-coppa #coppa-stage{
 }
 
 /* =================
-   GUSTO SINISTRO
+   PICCOLA – GUSTO SINISTRO (FINALE)
 ================= */
 .piccola-coppa #gusto-left-arrow .arrow-text{
-  right: 100% !important;    /* 🔒 ANCORA ALLA CODA */
-  top: 50% !important;
+  right: 100%;
+  top: 50%;
 
-  /* 🎯 SPOSTAMENTI REALI */
-  transform: translate(
-    calc(-1 * var(--gusto-left-x)),
-    calc(-50% + var(--gusto-left-y))
-  ) !important;
+  transform: translate(20px, 20px); /* ✅ VALORI CONFERMATI */
+
+  width: 120px;
+  max-width: 120px;
+  text-align: center;
+  line-height: 1.1;
+  white-space: normal;
 }
 
 /* =================
-   GUSTO DESTRO
+   PICCOLA – GUSTO DESTRO (FINALE)
 ================= */
 .piccola-coppa #gusto-right-arrow .arrow-text{
-  left: 100% !important;     /* 🔒 ANCORA ALLA CODA */
-  top: 50% !important;
+  left: 100%;
+  top: 50%;
 
-  transform: translate(
-    var(--gusto-right-x),
-    calc(-50% + var(--gusto-right-y))
-  ) !important;
+  transform: translate(-40px, -50px); /* ⬅️➡️ QUI I TUOI VALORI */
+
+  width: 120px;
+  max-width: 120px;
+  text-align: center;
+  line-height: 1.1;
+  white-space: normal;
 }
 
 
@@ -2492,24 +2487,22 @@ body.coppa-media #coppa-stage{
   color: #000;
 }
 
-/* gusto sinistra */
+/*
 .coppa-media .arrow-text.left {
   left: -35px;
   top: 40px;
 }
 
-/* gusto destra */
 .coppa-media .arrow-text.right {
   right: 36px;
   top: 20px;
 }
 
-/* gusto in alto – SOLO QUESTA */
 .coppa-media .arrow-text.top.gusto-top-text {
   left: -30%;
   top: -35px;
-  transform: translateX(-50%);
 }
+*/
 
 /* frecce sotto (granella, frutta ecc) */
 .coppa-media .arrow-text.bottom {
@@ -2819,45 +2812,57 @@ body.coppa-media #coppa-stage{
    GUSTO SINISTRO – MEDIA
 ================= */
 .coppa-media #gusto-left-text{
-  right: 100% !important;   /* 🔒 ANCORA ALLA CODA */
+  right: 100% !important;
   top: 50% !important;
 
-  transform: translate(
-    calc(-1 * var(--gusto-left-x)),
-    calc(-50% + var(--gusto-left-y))
-  ) !important;
+  transform: translate(20px, 10px) !important;
 }
 
 /* =================
-   GUSTO DESTRO – MEDIA
+   GUSTO DESTRO – MEDIA (FIX DEFINITIVO)
 ================= */
 .coppa-media #gusto-right-text{
-  left: 100% !important;    /* 🔒 ANCORA ALLA CODA */
+  left: 100% !important;   /* 🔒 ANCORA ALLA CODA */
   top: 50% !important;
 
-  transform: translate(
-    var(--gusto-right-x),
-    calc(-50% + var(--gusto-right-y))
-  ) !important;
+  transform: translate(-60px, -40px) !important;
 }
 
 /* =================
-   GUSTO TOP – MEDIA
+   GUSTO TOP – MEDIA (DEFINITIVO, SENZA VARIABILI)
 ================= */
 .coppa-media #gusto-top-text{
   left: 50% !important;
-  bottom: 100% !important;  /* sopra la freccia */
+  bottom: 100% !important;   /* sopra la freccia */
+  top: auto !important;
 
-  transform: translate(
-    calc(-50% + var(--gusto-top-x)),
-    var(--gusto-top-y)
-  ) !important;
+  transform: translate(-80%, -30px) !important;  /* ⬅️⬆️ QUI SI REGOLA TUTTO */
+
+  text-align: center;
+  line-height: 1.1;
+  max-width: 140px;
+  white-space: normal;
+}
+/* ===============================
+   FIX CANVAS / EXPORT
+   =============================== */
+body.exporting #coppa-stage .arrow-text{
+  transform: none !important;
 }
 
+/* 🔒 EXPORT MODE – RESET STRUTTURALE */
+body.exporting .piccola-wrapper,
+body.exporting .media-wrapper,
+body.exporting .grande-wrapper,
+body.exporting .media-coppa,
+body.exporting .media-extras,
+body.exporting .media-extras-top {
+  transform: none !important;
+}
 
-
-
-
+body.exporting * {
+  transform-origin: top left !important;
+}
 
 
 /* ================= FORMATO GRANDE ================= */
