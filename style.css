@@ -1867,14 +1867,6 @@ body.piccola-coppa #coppa-stage{
   position: absolute;
 }
 
-.arrow-text {
-  position: absolute;
-  left: -35px;     /* ← molto vicino all'inizio della coda */
-  top: 45px;     /* ↓ sotto la curva, punto cerchiato */
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
-}
 .arrow-text.right {
   left: auto;        /* disattiva la sinistra */
   right: -35px;      /* agganciato alla coda (specchio) */
@@ -1891,9 +1883,12 @@ body.piccola-coppa #coppa-stage{
 .frutta-text {
   margin-left: 0px; /* oppure il valore che avevi trovato perfetto */
 }
-.arrow {
-  position: absolute;
+/* 🔒 BLOCCO STABILITÀ EXPORT / INSTAGRAM */
+#coppa-stage .arrow-text {
+  transform: none !important;
+  will-change: auto;
 }
+
 
 /* base comune */
 .arrow-text.top {
