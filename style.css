@@ -2027,6 +2027,18 @@ body.exporting #coppa-stage .arrow-text {
   transform: none !important;    /* 🔥 NON devono traslare */
 }
 
+@media (max-width: 768px){
+  .piccola-coppa .extra-row{
+    left: 50%;
+    top: 520px;
+
+    /* 🔥 SOLO percentuali → non si rompe con scale */
+    transform: translateX(-50%) translateX(-12%);
+
+    gap: 14px;
+  }
+}
+
 /* =========================
    PICCOLA – EXTRA VERTICALI
 ========================= */
