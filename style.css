@@ -2832,7 +2832,7 @@ body.coppa-media #coppa-stage{
 .coppa-media #gusto-top-text{
   position: absolute;
   top: -50px;          /* ⬆️ valore confermato da console */
-  margin-left: -50px; /* ⬅️ valore confermato da console */
+  margin-left: -130px; /* ⬅️ valore confermato da console */
 }
 /* 🔒 BLOCCO FINALE GUSTI MEDIA */
 .coppa-media #gusto-left-text,
@@ -2843,6 +2843,10 @@ body.coppa-media #coppa-stage{
   line-height: 1.1;
   max-width: 140px;
 }
+
+
+
+
 
 
 /* ================= FORMATO GRANDE ================= */
