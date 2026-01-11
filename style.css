@@ -1996,17 +1996,34 @@ body.exporting #coppa-stage .arrow-text {
   transform: scale(0.8);
 }
 
-/* =========================
-   PICCOLA – TOPPING-GRANELLE-INGREDIENTI SOTTO COPPA (SEMPLICE)
-========================= */
 
-.piccola-coppa .box-extra {
-  top: 580px;
+.piccola-coppa .box-extra{
+  position: relative !important;
+
+  width: 130px;
+  height: 160px;
+
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
 }
 
 .piccola-coppa .box-granella { left: calc(var(--base-left) - 120px + 85px); }
 .piccola-coppa .box-topping  { left: calc(var(--base-left) + 85px); }
 .piccola-coppa .box-frutta   { left: calc(var(--base-left) + 120px + 85px); }
+
+.piccola-coppa .extra-row{
+  position: absolute;
+  left: 50%;
+  top: 520px;
+
+  /* ⬇️ QUESTO È IL TUO VALORE CONFERMATO DA CONSOLE */
+  transform: translate(-480px, 40px);
+
+  display: flex;
+  gap: 18px;
+  z-index: 30;
+}
 
 /* =========================
    PICCOLA – EXTRA VERTICALI
@@ -3628,7 +3645,7 @@ body.coppa-grande #coppa-stage{
 ================= */
 .coppa-grande #gusto-left-text{
   position: absolute;
-  left: -115px;  /* ←→ destra/sinistra */
+  left: -110px;  /* ←→ destra/sinistra */
   top: 60px;     /* ↑↓ su/giù */
 }
 

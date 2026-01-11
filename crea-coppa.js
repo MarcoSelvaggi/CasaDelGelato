@@ -2414,6 +2414,7 @@ if (coppaSelezionata === "PICCOLA") {
     <div class="label">Coppa</div>
   </div>
 
+  <div class="extra-row">
   <!-- GRANELLA -->
 <div class="box box-extra box-granella">
   <img id="granella-img" src="img/granella-nocciola.png"crossorigin="anonymous">
@@ -2482,6 +2483,8 @@ if (coppaSelezionata === "PICCOLA") {
     </svg>
   </div>
 </div>
+</div>
+
 <!-- ================= EXTRA STAGE ================= -->
 <div id="extra-stage">
 
@@ -2981,41 +2984,41 @@ function preparaCoppaExportPNG() {
 
   exportBox.innerHTML = "";
 
-  // wrapper reale visibile all’utente
-  const wrapper =
-    document.querySelector(".piccola-wrapper") ||
-    document.querySelector(".media-wrapper") ||
-    document.querySelector(".grande-wrapper");
-
-  if (!wrapper) {
-    console.error("❌ wrapper coppa non trovato");
+  // ✅ Clona SOLO lo stage (NO wrapper scalati)
+  const stage = document.getElementById("coppa-stage");
+  if (!stage) {
+    console.error("❌ manca #coppa-stage");
     return null;
   }
 
-// clona la coppa VISIVA
-const clone = wrapper.cloneNode(true);
+  const stageClone = stage.cloneNode(true);
 
-// 🔒 DISATTIVA SOLO LA SCALE DEL WRAPPER
-clone.style.transform = 'none';
-clone.style.transformOrigin = 'top left';
+  // 🔥 IMPORTANTISSIMO: nessun transform sul clone o contenitori export
+  stageClone.style.transform = "none";
+  stageClone.style.transformOrigin = "top left";
 
-  // 🔥 ricrea il contesto CSS (QUESTO evita la distorsione)
+  // Contesto CSS del formato
   const ctx = document.createElement("div");
+  if (document.body.classList.contains("piccola-coppa")) ctx.className = "piccola-coppa";
+  else if (document.body.classList.contains("coppa-media")) ctx.className = "coppa-media";
+  else if (document.body.classList.contains("coppa-grande")) ctx.className = "coppa-grande";
 
-  if (document.body.classList.contains("piccola-coppa")) {
-    ctx.className = "piccola-coppa";
-  } else if (document.body.classList.contains("coppa-media")) {
-    ctx.className = "coppa-media";
-  } else if (document.body.classList.contains("coppa-grande")) {
-    ctx.className = "coppa-grande";
-  }
+  // Contenitore neutro: niente scale/translate
+  ctx.style.position = "relative";
+  ctx.style.transform = "none";
+  ctx.style.transformOrigin = "top left";
 
-  ctx.appendChild(clone);
+  ctx.appendChild(stageClone);
   exportBox.appendChild(ctx);
+
+  // opzionale: assicurati che exportBox non venga “stretto” da layout
+  exportBox.style.position = "fixed";
+  exportBox.style.left = "-10000px";
+  exportBox.style.top = "0";
+  exportBox.style.background = "#fff";
 
   return exportBox;
 }
-
 function freezeArrowTextPositions(exportRoot) {
   const stage = exportRoot.querySelector("#coppa-stage") || exportRoot;
   const stageRect = stage.getBoundingClientRect();
