@@ -2412,18 +2412,19 @@ body.coppa-media #coppa-stage{
 
 
 /* =========================
-   MEDIA – CONTENITORE EXTRA (STABILE)
+   MEDIA – CONTENITORE EXTRA (DEFINITIVO)
 ========================= */
 .coppa-media .media-extras{
   position: absolute;
   left: 50%;
-  top: 650px;                /* ⬆️⬇️ ALTEZZA SOTTO COPPA */
+  top: 650px;
 
-  width: 390px;              /* ✅ COME CONSOLE */
-    transform: translateX(-50%) translateX(140px) translateY(-40px); /* ✅ COME CONSOLE */
+  width: 390px;
+
+  transform: translateX(-50%) translateX(140px) translateY(-40px);
 
   display: flex;
-  flex-wrap: wrap;           /* 🔥 3 sopra + 2 sotto */
+  flex-wrap: wrap;
   gap: 18px;
   z-index: 30;
 }
@@ -2446,7 +2447,7 @@ body.coppa-media #coppa-stage{
     left: 50%;
     top: 620px;
 
-    transform: translateX(-50%) translateX(0px);
+    transform: translateX(-50%) translateX(-12%);
 
     gap: 14px;
   }
