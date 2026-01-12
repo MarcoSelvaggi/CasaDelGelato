@@ -1621,7 +1621,7 @@ body {
   height: 520px;          /* ⬅️ ripristinata */
   margin: 40px auto;
   background: #fff;
-  border: 3px solid #000;
+  border: none; 
   overflow: visible;     /* ⬅️ come prima */
 }
 /* =========================
@@ -2228,8 +2228,8 @@ body {
   width: 860px;
   height: 600px;
   margin: 40px auto;
-  background: #fff;
-  border: 3px solid #000;
+  background: #fff;   /* o #fff se vuoi sfondo */
+  border: none;              /* ✅ invisibile */
 }
 /* =========================
    MEDIA – RIDUCI ALTEZZA STAGE
@@ -2262,9 +2262,10 @@ body.coppa-media #coppa-stage{
   z-index: 1;         /* ⬅️ QUESTA È LA CHIAVE */
 }
 
-.coppa-media .box-coppa img {
-  width: 100%;
+.coppa-media .box-coppa img{
+  width: auto;
   height: 100%;
+  max-width: 100%;
   object-fit: contain;
 }
 /* =========================
@@ -2463,16 +2464,19 @@ body.coppa-media #coppa-stage{
 
 @media (max-width: 768px){
   .coppa-media .media-extras{
-    left: 50% !important;
-    top: 660px !important; /* puoi ritoccare solo questo se serve */
+    left: 72px !important;
+    top: 610px !important;
 
-    /* 🎯 VALORI CONFERMATI DA CONSOLE (MOBILE) */
-    transform: translateX(-50%) translateX(15%) translateY(-40px) !important;
+    transform: none !important;
 
-    width: min(450px, 100vw) !important;
-    gap: 14px !important;
+    width: 380px !important;
+    gap: 10px !important;
+
+    /* ✅ SPOSTAMENTO A SINISTRA */
+    margin-left: -30px;   /* regola solo questo valore */
   }
 }
+
 
 
 /* ================= EXTRA STAGE (IDENTICO A PICCOLA) ================= */
@@ -2944,7 +2948,6 @@ body.coppa-media #coppa-stage{
 
 
 
-
 /* ================= FORMATO GRANDE ================= */
 body {
   margin: 0;
@@ -2959,7 +2962,7 @@ body {
   height: 650px;
   margin: 40px auto;
   background: #fff;
-  border: 3px solid #000;
+  border: none; 
 }
 /* =========================
    GRANDE – RIDUCI ALTEZZA STAGE

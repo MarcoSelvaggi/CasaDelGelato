@@ -2584,6 +2584,7 @@ const coppaEl = document.getElementById("coppa-stage");
 if (!coppaEl) {
   console.warn("❌ coppa-stage non trovato");
 } else {
+
   const canvas = await html2canvas(coppaEl, {
     backgroundColor: null,
     scale: 2,
@@ -2591,6 +2592,7 @@ if (!coppaEl) {
   });
 
   coppa.coppa_img = canvas.toDataURL("image/png");
+
 
   console.log(
     "🖼️ COPPA CATTURATA OK:",
@@ -2966,15 +2968,10 @@ async function generaCoppaPNG() {
     return;
   }
 
-  // ⏱️ aspetta layout stabile
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 200));
 
-  // ✅ CONGELA TESTI PRIMA DI html2canvas
   freezeArrowTextPositions(exportBox);
-
-  // micro-wait (facoltativo ma aiuta)
-  await new Promise(r => requestAnimationFrame(r));
 
   const canvas = await html2canvas(exportBox, {
     backgroundColor: "#fff",
@@ -3030,6 +3027,7 @@ function preparaCoppaExportPNG() {
 
   return exportBox;
 }
+
 function freezeArrowTextPositions(exportRoot) {
   const stage = exportRoot.querySelector("#coppa-stage") || exportRoot;
   const stageRect = stage.getBoundingClientRect();
@@ -3051,6 +3049,7 @@ function freezeArrowTextPositions(exportRoot) {
     el.style.bottom = "auto";
   });
 }
+
 
 // 🛒 APRE IL CARRELLO
 window.apriCarrello = function() {

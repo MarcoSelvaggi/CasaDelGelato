@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Cronologia Coppe</title>
+    <title>Coppe Create</title>
     <link rel="stylesheet" href="bottom-nav.css">
     <script src="global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -220,6 +220,72 @@
   flex-direction: row;
   gap: 8px;
 }
+/* === POPUP OVERLAY === */
+.popup-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+/* === CARD === */
+.popup-card{
+  width: 280px;
+  background: white;
+  border-radius: 18px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  animation: popupIn 0.2s ease-out;
+}
+
+.popup-card h3{
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+
+.popup-card p{
+  margin: 0 0 14px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* === BOTTONI === */
+.popup-btn{
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.popup-btn.danger{
+  background: #ff3b30;
+  color: white;
+}
+
+.popup-btn.star{
+  background: #ffd60a;
+  color: #000;
+}
+
+.popup-btn.cancel{
+  background: #f2f2f7;
+  color: #333;
+}
+
+/* animazione */
+@keyframes popupIn{
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
 
     </style>
 </head>
@@ -238,7 +304,7 @@
 <div id="top-fixed-spacer"></div>
 
 <!-- ⭐ TITOLO ORIGINALE (fuori dalla barra) -->
-<h1>Cronologia Coppe</h1>
+<h1>Coppe Create</h1>
 
 <!-- 🎁 FEDELTA' / COUNTER COPPE CONFERMATE -->
 <div id="fedelta-box" style="
@@ -293,6 +359,22 @@
     <option value="nome_az">Ordina: nome A→Z</option>
     <option value="nome_za">Ordina: nome Z→A</option>
   </select>
+</div>
+
+<div class="controls-top">
+  <button id="btn-gestisci-coppe" style="
+    padding:6px 12px;
+    height:34px;
+    font-size:13px;
+    font-weight:600;
+    border-radius:999px;
+    border:1px solid #ff3b30;
+    background:#ffecec;
+    color:#c70000;
+    cursor:pointer;
+  ">
+    🗑 Gestisci coppe
+  </button>
 </div>
 
 <div id="lista-coppe"></div>
@@ -410,6 +492,69 @@ const prezziExtra = {
         const regex = new RegExp("(" + q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + ")", "gi");
         return String(testo).replace(regex, "<mark>$1</mark>");
     }
+
+    async function eliminaTutteCoppe() {
+  if (!confirm("⚠️ Vuoi eliminare TUTTE le coppe?\nL’operazione non è reversibile.")) return;
+
+  // 🔥 Soft delete locale
+  coppe = coppe.map(c => ({
+    ...c,
+    eliminata: true,
+    data_eliminazione: new Date().toISOString()
+  }));
+
+  localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
+
+  // 🔥 Soft delete Supabase
+  if (window.supabase) {
+    const email = localStorage.getItem("user_email");
+    if (email) {
+      await supabase
+        .from("coppe")
+        .update({
+          eliminata: true,
+          data_eliminazione: new Date().toISOString()
+        })
+        .eq("email", email);
+    }
+  }
+
+  renderLista();
+}
+
+async function tieniSoloPreferiti() {
+  if (!confirm("⚠️ Vuoi eliminare tutte le coppe NON preferite?")) return;
+
+  const now = new Date().toISOString();
+
+  coppe = coppe.map(c => {
+    if (c.preferito) return c;
+    return {
+      ...c,
+      eliminata: true,
+      data_eliminazione: now
+    };
+  });
+
+  localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
+
+  // 🔥 Supabase
+  if (window.supabase) {
+    const email = localStorage.getItem("user_email");
+    if (email) {
+      await supabase
+        .from("coppe")
+        .update({
+          eliminata: true,
+          data_eliminazione: now
+        })
+        .eq("email", email)
+        .neq("preferito", true);
+    }
+  }
+
+  renderLista();
+}
 
 async function eliminaCoppa(idx) {
     const c = coppe[idx];
@@ -853,12 +998,15 @@ document.getElementById("toggle-preferiti").addEventListener("click", () => {
     renderLista();
 });
 
-    document.getElementById("ordine-select").addEventListener("change", e => {
-        criterioOrdine = e.target.value;
-        renderLista();
-    });
-
+document.getElementById("ordine-select").addEventListener("change", e => {
+    criterioOrdine = e.target.value;
     renderLista();
+});
+
+
+
+// 🔥 PRIMO RENDER
+renderLista();
 </script>
 <script type="module">
 import { supabase } from "./supabase.js";
@@ -1158,6 +1306,54 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   </button>
 </div>
 
+<!-- 🗑️ POPUP ELIMINA COPPE -->
+<div id="delete-popup" class="popup-overlay" style="display:none;">
+  <div class="popup-card">
+    <h3>Azione irreversibile!</h3>
+    <p>Eliminando perderai tutti i tuoi progressi</p>
+
+    <button class="popup-btn danger" id="popup-elimina-tutte">
+      🗑 Elimina tutte
+    </button>
+
+    <button class="popup-btn star" id="popup-tieni-preferiti">
+      ⭐ Tieni solo i preferiti
+    </button>
+
+    <button class="popup-btn cancel" id="popup-annulla">
+      Annulla
+    </button>
+  </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const popup = document.getElementById("delete-popup");
+  const btnOpen = document.getElementById("btn-gestisci-coppe");
+
+  if (!popup || !btnOpen) {
+    console.error("Popup o bottone non trovati", { popup, btnOpen });
+    return;
+  }
+
+  btnOpen.onclick = () => {
+    popup.style.display = "flex";
+  };
+
+  document.getElementById("popup-annulla").onclick = () => {
+    popup.style.display = "none";
+  };
+
+  document.getElementById("popup-elimina-tutte").onclick = () => {
+    popup.style.display = "none";
+    eliminaTutteCoppe();
+  };
+
+  document.getElementById("popup-tieni-preferiti").onclick = () => {
+    popup.style.display = "none";
+    tieniSoloPreferiti();
+  };
+});
+</script>
 
 </body>
 </html>
