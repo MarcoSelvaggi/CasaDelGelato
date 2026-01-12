@@ -653,7 +653,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-function renderLista() {
+function waitImg(img) {
+  return new Promise(resolve => {
+    if (!img) return resolve();
+    if (img.complete && img.naturalWidth > 0) return resolve();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+  });
+}
+
+async function waitAllImages(container) {
+  if (!container) return;
+  const imgs = Array.from(container.querySelectorAll("img"));
+  await Promise.all(imgs.map(waitImg));
+}
+
+
+async function renderLista() {
     const arr = getCoppeFiltrateEOrdinate()
                   .filter(c => !c.eliminata);   // ✅ NASCONDE LE ELIMINATE
 
@@ -667,7 +683,7 @@ function renderLista() {
         return;
     }
 
-    arr.forEach(c => {
+    for (const c of arr) {
         const idx = coppe.indexOf(c);
         const nome = c.nome || `Coppa #${idx + 1}`;
         const stellina = c.preferito ? "⭐" : "☆";
@@ -784,36 +800,39 @@ ${c.coppa_img ? `
 };
 
             lista.appendChild(div);
+            await waitAllImages(div);
+
             // === QR CODE nella cronologia ===
 const btn = div.querySelector(".toggle-qr");
 const box = div.querySelector(".qr-wrapper");
 const qrDiv = div.querySelector(`.qr-code`);
 
-if (btn) {
-    btn.onclick = () => {
-        const visible = box.style.display === "block";
+        if (btn) {
+            btn.onclick = () => {
+                const visible = box.style.display === "block";
 
-        if (visible) {
-            box.style.display = "none";
-            btn.textContent = "Mostra QR";
-        } else {
-            box.style.display = "block";
-            btn.textContent = "Nascondi QR";
+                if (visible) {
+                    box.style.display = "none";
+                    btn.textContent = "Mostra QR";
+                } else {
+                    box.style.display = "block";
+                    btn.textContent = "Nascondi QR";
 
-            // genera QR SOLO quando aperto
-            if (window.QRCode && qrDiv && !qrDiv.dataset.generated) {
-                new QRCode(qrDiv, {
-                    text: c.qr_token,
-                    width: 140,
-                    height: 140
-                });
-                qrDiv.dataset.generated = "1";
-            }
+                    if (window.QRCode && qrDiv && !qrDiv.dataset.generated) {
+                        new QRCode(qrDiv, {
+                            text: c.qr_token,
+                            width: 140,
+                            height: 140
+                        });
+                        qrDiv.dataset.generated = "1";
+                    }
+                }
+            };
         }
-    };
-}
-        });
-    }
+
+    } // ✅ CHIUDE IL for (const c of arr)
+
+} // ✅ CHIUDE async function renderLista()
 
     document.getElementById("search").addEventListener("input", e => {
         termineRicerca = e.target.value;
