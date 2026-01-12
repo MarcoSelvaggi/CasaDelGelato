@@ -1792,6 +1792,9 @@ body.piccola-coppa #coppa-stage{
   object-fit: contain;
   transform: none !important;   /* 🔒 FIX CANVAS */
 }
+.piccola-coppa .box-coppa{
+  transform: none !important;
+}
 
 .box-panna img{
   position: absolute;
