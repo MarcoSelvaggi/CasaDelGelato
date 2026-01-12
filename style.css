@@ -2458,7 +2458,7 @@ body.coppa-media #coppa-stage{
     top: 620px;
 
     /* ✅ centrato vero + piccolo offset sicuro */
-    transform: translateX(-50%) translateX(20px);
+    transform: translateX(-50%) translateX(140px);
 
     gap: 14px;
 
@@ -3485,43 +3485,44 @@ body.coppa-grande #coppa-stage{
 }
 
 /* =========================
-   GRANDE – BLOCCO EXTRA SOTTO COPPA (3 + 3)
-   SCHEMA IDENTICO A MEDIA
+   GRANDE – BLOCCO EXTRA (3 + 3 FISSO)
 ========================= */
-
 .coppa-grande .grande-extras{
   position: absolute;
 
-  /* ⬅️⬇️ QUESTI DUE SONO I MASTER */
-  left: calc(var(--base-left) - 20px); /* sposta tutto a destra/sinistra */
-  top: 740px;                          /* sposta tutto su/giù */
+  /* 🎯 POSIZIONE MASTER */
+  left: calc(var(--base-left) - 80px);
+  top: 740px;
 
-  width: 360px;        /* larghezza totale blocco */
+  width: 478px;                /* 🔒 150*3 + gap */
   display: flex;
-  flex-wrap: wrap;     /* 🔥 VA A CAPO */
-  gap: 12px;
+  flex-wrap: wrap;             /* 🔥 3 sopra + 3 sotto */
+  gap: 14px;
 
   justify-content: flex-start;
   z-index: 20;
 }
 
-/* ogni extra diventa un item flex */
+/* =========================
+   GRANDE – BOX EXTRA GRANDI
+========================= */
 .coppa-grande .grande-extras .box-extra{
   position: relative !important;
+
+  width: 150px;                /* ✅ CONFERMATO */
+  height: 175px;               /* ✅ CONFERMATO */
 
   top: auto !important;
   left: auto !important;
   right: auto !important;
-
-  width: calc((360px - 24px) / 3); /* 3 slot precisi */
-  height: 130px;
+  transform: none !important;
 
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
 
-/* ANNULLA DEFINITIVAMENTE i vecchi posizionamenti */
+/* 🔥 ANNULLA DEFINITIVAMENTE i vecchi left */
 .coppa-grande .grande-extras .granella-1,
 .coppa-grande .grande-extras .granella-2,
 .coppa-grande .grande-extras .topping-1,
@@ -3716,8 +3717,8 @@ body.coppa-grande #coppa-stage{
 ================= */
 .coppa-grande #gusto-left-text{
   position: absolute;
-  left: -110px;  /* ←→ destra/sinistra */
-  top: 60px;     /* ↑↓ su/giù */
+  left: -80px;  /* ←→ destra/sinistra */
+  top: -20px;     /* ↑↓ su/giù */
 }
 
 
@@ -3731,12 +3732,23 @@ body.coppa-grande #coppa-stage{
 }
 
 /* =================
-   GUSTO TOP – GRANDE
+   GUSTO TOP – GRANDE (DEFINITIVO, SENZA FRECCE)
 ================= */
-.coppa-grande #gusto-top-text{
+.coppa-grande .pallina-top #gusto-top-text{
   position: absolute;
-  left: -60px;    /* ←→ sposta a destra/sinistra */
-  top: -60px;   /* ↑↓ sposta su/giù */
+
+  margin-left: -130px;   /* ←→ destra / sinistra */
+  margin-top: -35px;    /* ↑↓ su / giù */
+
+  transform: none !important;  /* 🔒 BLOCCA QUALSIASI VECCHIO TRANSFORM */
+  top: 0;                       /* base neutra */
+  left: 0;
+
+  width: 160px;
+  max-width: 160px;
+  text-align: center;
+  line-height: 1.15;
+  white-space: normal;
 }
 
 /* =================

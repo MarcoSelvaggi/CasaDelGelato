@@ -1743,8 +1743,8 @@ function renderCoppaGrande(stage) {
   <div class="box-palline">
 
     <div class="box box-pallina pallina-top">
-      <div class="arrow" style="left:-50px; top:0%; transform:translateY(-50%);">
-        <div class="arrow-text top gusto-text" id="gusto-top-text">Gusto</div>
+      <div class="arrow arrow-top">
+       <div class="arrow-text top gusto-text gusto-top-text">Gusto</div>
         <svg width="50" height="30" viewBox="0 0 50 30"
      style="transform: scaleY(-1) rotate(-10deg);
             transform-origin: center;">
