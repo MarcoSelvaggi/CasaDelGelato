@@ -1784,9 +1784,17 @@ body.piccola-coppa #coppa-stage{
   object-fit: contain;
   pointer-events: none;
 }
-.box-coppa img {
+/* =========================
+   PICCOLA – FIX COPPA CANVAS
+========================= */
+.piccola-coppa .box-coppa img{
+  position: absolute;
+  inset: 0;
+
   width: 100%;
-  height: 100%;
+  height: auto;          /* 🔥 CHIAVE */
+  max-height: 100%;      /* 🔒 limite */
+  
   object-fit: contain;
 }
 
