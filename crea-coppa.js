@@ -1742,18 +1742,27 @@ function renderCoppaGrande(stage) {
   <!-- PALLINE -->
   <div class="box-palline">
 
-    <div class="box box-pallina pallina-top">
-      <div class="arrow arrow-top">
-       <div class="arrow-text top gusto-text gusto-top-text">Gusto</div>
-        <svg width="50" height="30" viewBox="0 0 50 30"
-     style="transform: scaleY(-1) rotate(-10deg);
-            transform-origin: center;">
-          <path d="M30 15 C16 14, -6 18, -27 38"/>
-          <path d="M38 15 L30 11 M38 15 L30 19"/>
-        </svg>
-      </div>
-      <img id="gusto-top-img" src="img/pallina-vaniglia.png"crossorigin="anonymous">
-    </div>
+<div class="box box-pallina pallina-top">
+  <div class="arrow arrow-top">
+    <div
+      class="arrow-text top gusto-text gusto-top-text"
+      id="gusto-top-text"
+    ></div>
+
+    <svg width="50" height="30" viewBox="0 0 50 30"
+         style="transform: scaleY(-1) rotate(-10deg);
+                transform-origin: center;">
+      <path d="M30 15 C16 14, -6 18, -27 38"/>
+      <path d="M38 15 L30 11 M38 15 L30 19"/>
+    </svg>
+  </div>
+
+  <img
+    id="gusto-top-img"
+    src="img/pallina-vaniglia.png"
+    crossorigin="anonymous"
+  >
+</div>
 
     <div class="box box-pallina pallina-left">
       <div class="arrow" style="left:-38px; top:40%; transform:translate(-30px, -50%);">
@@ -2362,6 +2371,7 @@ if (coppaSelezionata === "PICCOLA") {
   stage.innerHTML = `
   <div class="piccola-wrapper">
 <div class="piccola-coppa">
+<div class="piccola-coppa-core">
   <!-- PANNA -->
   <div class="box box-panna">
     <img src="img/panna.png"crossorigin="anonymous">
@@ -2413,6 +2423,7 @@ if (coppaSelezionata === "PICCOLA") {
     <img src="img/coppa-base.png"crossorigin="anonymous">
     <div class="label">Coppa</div>
   </div>
+</div>
 
   <div class="extra-row">
   <!-- GRANELLA -->

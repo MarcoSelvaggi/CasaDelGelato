@@ -1663,6 +1663,16 @@ body.piccola-coppa #coppa-stage{
   top: 170px;
   z-index:1;
 }
+
+
+/* =========================
+   PICCOLA – SCALE COPPA + GUSTI + PANNA
+========================= */
+.piccola-coppa .piccola-coppa-core{
+  transform-origin: top center;
+  transform: scale(1.12);
+}
+
 /* =========================
    PICCOLA – NASCONDI SLOT COPPA (SOLO VISIVO)
 ========================= */
@@ -2030,7 +2040,7 @@ body.exporting #coppa-stage .arrow-text {
 @media (max-width: 768px){
   .piccola-coppa .extra-row{
     left: 50%;
-    top: 520px;
+    top: 600px;
 
     /* 🔥 SOLO percentuali → non si rompe con scale */
     transform: translateX(-50%) translateX(-12%);
@@ -2175,7 +2185,7 @@ body.exporting #coppa-stage .arrow-text {
   right: 100%;
   top: 50%;
 
-  transform: translate(20px, 20px); /* ✅ VALORI CONFERMATI */
+  transform: translate(60px, -45px); /* ✅ VALORI CONFERMATI */
 
   width: 120px;
   max-width: 120px;
@@ -2419,9 +2429,8 @@ body.coppa-media #coppa-stage{
   left: 50%;
   top: 620px;
 
-  width: 390px;
+  width: 360px; /* ✅ VALORE DEFINITIVO (3 sopra + 3 sotto) */
 
-  /* ✅ DESKTOP: PX */
   transform: translateX(-50%) translateX(140px);
 
   display: flex;
@@ -2440,17 +2449,17 @@ body.coppa-media #coppa-stage{
 }
 
 /* =========================
-   MEDIA – BOX EXTRA (DIMENSIONI)
+   MEDIA – BOX EXTRA (DIMENSIONI DEFINITIVE)
 ========================= */
 .coppa-media .media-extras .box-extra{
   position: relative !important;
 
-  width: 120px;              /* ✅ COME CONSOLE */
-  height: 155px;             /* ✅ COME CONSOLE */
+  width: 105px;   /* ✅ VALORE DEFINITIVO */
+  height: 136px;  /* ✅ VALORE DEFINITIVO */
 
   top: auto !important;
   left: auto !important;
-  transform: none !important; /* 🔥 FONDAMENTALE */
+  transform: none !important; /* 🔒 niente traslazioni */
 }
 @media (max-width: 768px){
   .coppa-media .media-extras{
@@ -3737,8 +3746,8 @@ body.coppa-grande #coppa-stage{
 .coppa-grande .pallina-top #gusto-top-text{
   position: absolute;
 
-  margin-left: -130px;   /* ←→ destra / sinistra */
-  margin-top: -35px;    /* ↑↓ su / giù */
+  margin-left: -180px;   /* ←→ destra / sinistra */
+  margin-top: -55px;    /* ↑↓ su / giù */
 
   transform: none !important;  /* 🔒 BLOCCA QUALSIASI VECCHIO TRANSFORM */
   top: 0;                       /* base neutra */
