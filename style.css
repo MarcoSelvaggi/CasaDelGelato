@@ -2254,7 +2254,7 @@ body.coppa-media #coppa-stage{
 .coppa-media .box-coppa {
   width: 280px;
   height: 300px;
-  left: var(--base-left);
+  left: calc(var(--base-left) + 17px); /* 🎯 SHIFT DEFINITIVO */
   top: 230px;
   overflow: hidden;
 
