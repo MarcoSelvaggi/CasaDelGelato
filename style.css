@@ -1784,20 +1784,18 @@ body.piccola-coppa #coppa-stage{
   object-fit: contain;
   pointer-events: none;
 }
-/* =========================
-   PICCOLA – FIX COPPA CANVAS (DEFINITIVO)
-========================= */
 .piccola-coppa .box-coppa img{
-  position: static !important;   /* 🔥 CHIAVE ASSOLUTA */
-  display: block;
-
-  width: 100%;
-  height: auto !important;       /* 🔥 */
-  max-height: 100%;
-
+  width: auto;
+  height: 100%;
+  max-width: 100%;
   object-fit: contain;
 }
-
+/* =========================
+   EXPORT PNG – FIX PICCOLA
+========================= */
+body.exporting .piccola-wrapper{
+  transform: none !important;
+}
 .box-panna img{
   position: absolute;
   inset: 0;
