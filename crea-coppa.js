@@ -2241,10 +2241,12 @@ console.log("📌 PRIMA DI salvaCoppaSupabase");
 
 console.log("📌 DOPO salvaCoppaSupabase");
  // 🔥 Evita duplicazioni: salva la coppa solo se non esiste già
+ /*
 if (!cronologiaArr.some(x => x.data === coppa.data)) {
     cronologiaArr.unshift(coppa);
     localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologiaArr));
 }
+    */
 console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
 
   // ✅ 7) Riepilogo grafico (come prima)
@@ -2585,19 +2587,27 @@ if (!coppaEl) {
   console.warn("❌ coppa-stage non trovato");
 } else {
 
-  const canvas = await html2canvas(coppaEl, {
-    backgroundColor: null,
-    scale: 2,
-    useCORS: true
-  });
+const canvas = await html2canvas(coppaEl, {
+  backgroundColor: null,
+  scale: 2,
+  useCORS: true
+});
 
-  coppa.coppa_img = canvas.toDataURL("image/png");
+coppa.coppa_img = canvas.toDataURL("image/png");
+window.coppaCorrente = coppa;
+// 🔍 DEBUG: verifica che ESISTA davvero
+console.log(
+  "🖼️ COPPA CATTURATA OK:",
+  coppa.coppa_img.slice(0, 80)
+);
 
+// ✅ SOLO ORA salvi in cronologia
+let cronologiaArr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
 
-  console.log(
-    "🖼️ COPPA CATTURATA OK:",
-    coppa.coppa_img.slice(0, 80)
-  );
+if (!cronologiaArr.some(x => x.data === coppa.data)) {
+  cronologiaArr.unshift(coppa);
+  localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologiaArr));
+}
 }
   // ✅ 5) Salva su Supabase
   try {
@@ -2877,22 +2887,45 @@ function apriInstagramStories(){
 
 
 window.condividiSuInstagram = async function () {
-  const png = await generaCoppaPNG();
-  if (!png) {
-    alert("Errore generazione immagine");
+  const coppa = window.coppaCorrente;
+
+  if (!coppa || !coppa.coppa_img) {
+    alert("Immagine coppa non disponibile. Torna al riepilogo e riprova.");
     return;
   }
 
-  // download
-  const link = document.createElement("a");
-  link.href = png;
-  link.download = "coppa-casadelgelato.png";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const res = await fetch(coppa.coppa_img);
+  const blob = await res.blob();
 
-  // popup dopo 2s
-  setTimeout(mostraPopupInstagram, 2000);
+  const file = new File(
+    [blob],
+    "coppa-casadelgelato.png",
+    { type: "image/png" }
+  );
+
+  let shared = false;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "La mia coppa 🍨",
+        text: "Guarda la coppa che ho creato da Casa del Gelato!",
+        files: [file]
+      });
+      shared = true;
+    } catch (e) {
+      console.warn("Share fallito, uso download", e);
+    }
+  }
+
+  if (!shared) {
+    const link = document.createElement("a");
+    link.href = coppa.coppa_img;
+    link.download = "coppa-casadelgelato.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 };
 
 window.testExportCoppa = async function () {
