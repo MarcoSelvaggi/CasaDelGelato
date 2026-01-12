@@ -1785,16 +1785,16 @@ body.piccola-coppa #coppa-stage{
   pointer-events: none;
 }
 /* =========================
-   PICCOLA – FIX COPPA CANVAS
+   PICCOLA – FIX COPPA CANVAS (DEFINITIVO)
 ========================= */
 .piccola-coppa .box-coppa img{
-  position: absolute;
-  inset: 0;
+  position: static !important;   /* 🔥 CHIAVE ASSOLUTA */
+  display: block;
 
   width: 100%;
-  height: auto;          /* 🔥 CHIAVE */
-  max-height: 100%;      /* 🔒 limite */
-  
+  height: auto !important;       /* 🔥 */
+  max-height: 100%;
+
   object-fit: contain;
 }
 
@@ -2994,9 +2994,10 @@ body.coppa-grande #coppa-stage{
   z-index: 1;
 }
 
-.coppa-grande .box-coppa img {
-  width: 100%;
+.coppa-grande .box-coppa img{
+  width: auto;
   height: 100%;
+  max-width: 100%;
   object-fit: contain;
 }
 /* =========================
