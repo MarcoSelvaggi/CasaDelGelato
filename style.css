@@ -2421,22 +2421,21 @@ body.coppa-media #coppa-stage{
 */
 
 
-/* =========================
-   MEDIA – CONTENITORE EXTRA (DESKTOP)
-========================= */
 .coppa-media .media-extras{
-  position: absolute;
-  left: 50%;
-  top: 620px;
+  position: absolute !important;
 
-  width: 360px; /* ✅ VALORE DEFINITIVO (3 sopra + 3 sotto) */
+  /* 🎯 DESKTOP – VALORI FINALI */
+  left: calc(50% - 20px);  /* ⬅️ QUESTO */
+  top: 640px;               /* ⬆️ QUESTO */
 
-  transform: translateX(-50%) translateX(140px);
+  width: 450px !important;
 
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  z-index: 30;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 14px !important;
+  z-index: 30 !important;
+
+  transform: none !important;
 }
 
 /* NON ELIMINARE */
@@ -2454,27 +2453,27 @@ body.coppa-media #coppa-stage{
 .coppa-media .media-extras .box-extra{
   position: relative !important;
 
-  width: 105px;   /* ✅ VALORE DEFINITIVO */
-  height: 136px;  /* ✅ VALORE DEFINITIVO */
+  width: 110px !important;   /* ✅ VALORE CONFERMATO */
+  height: 140px !important;  /* ✅ VALORE CONFERMATO */
 
   top: auto !important;
   left: auto !important;
-  transform: none !important; /* 🔒 niente traslazioni */
+  transform: none !important; /* 🔒 blocca qualsiasi vecchia traslazione */
 }
+
 @media (max-width: 768px){
   .coppa-media .media-extras{
-    left: 50%;
-    top: 620px;
+    left: 50% !important;
+    top: 660px !important; /* puoi ritoccare solo questo se serve */
 
-    /* ✅ centrato vero + piccolo offset sicuro */
-    transform: translateX(-50%) translateX(140px);
+    /* 🎯 VALORI CONFERMATI DA CONSOLE (MOBILE) */
+    transform: translateX(-50%) translateX(15%) translateY(-40px) !important;
 
-    gap: 14px;
-
-    /* 🔒 SICUREZZA CONTRO TAGLIO */
-    max-width: calc(100vw - 24px);
+    width: min(450px, 100vw) !important;
+    gap: 14px !important;
   }
 }
+
 
 /* ================= EXTRA STAGE (IDENTICO A PICCOLA) ================= */
 /*
