@@ -641,6 +641,56 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   border-color: red !important;
   animation: shake 0.4s ease;
 }
+
+/* ===============================
+   RIEPILOGO – WHATSAPP TOP RIGHT
+=============================== */
+
+.scontrino {
+  position: relative;
+}
+
+.share-whatsapp-top {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  height: 28px;
+  padding: 0 10px 0 8px;
+  width: auto;
+
+  border-radius: 8px;
+  border: none;
+
+  background: #25D366;
+  color: #fff;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+
+  cursor: pointer;
+  z-index: 10;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.share-whatsapp-top .share-icon {
+  width: 14px;
+  height: 14px;
+
+  display: block;
+  flex-shrink: 0;
+
+  color: #fff;
+  stroke: currentColor;
+  fill: none;
+}
 /* ----------------------------------
    Forza: niente spunta di default
    ---------------------------------- */
@@ -1624,6 +1674,8 @@ body {
   border: none; 
   overflow: visible;     /* ⬅️ come prima */
 }
+
+
 /* =========================
    PICCOLA – RIDUCI ALTEZZA STAGE
 ========================= */
@@ -3835,10 +3887,14 @@ body.step-riepilogo .riepilogo-title {
   opacity: 0.75;
   text-align: center;
 }
-/* 🔝 REGISTRATI — SOLO RIEPILOGO FINALE */
-body.step-riepilogo .riepilogo-registrati {
-  position: fixed;
-  top: 72px;              /* sotto la top bar */
+/* REGISTRATI — alto a destra MA SCORRE */
+body.step-riepilogo{
+  position: relative; /* 🔥 riferimento */
+}
+
+body.step-riepilogo .riepilogo-registrati{
+  position: absolute;     /* 🔥 NON fixed */
+  top: 72px;              /* sotto top bar */
   right: 14px;
 
   padding: 8px 12px;
@@ -3850,8 +3906,7 @@ body.step-riepilogo .riepilogo-registrati {
   color: #fff;
   border: none;
 
-  z-index: 9999;
-
+  z-index: 20;
   box-shadow: 0 4px 12px rgba(0,0,0,0.18);
 }
 .riepilogo-totale-row {
@@ -3977,4 +4032,127 @@ body.step-riepilogo .riepilogo-registrati {
 .arrow-text {
   opacity: 1 !important;
   display: block !important;
+}
+
+
+/* ===============================
+   BLOCCO SCROLL ORIZZONTALE
+=============================== */
+html, body{
+  overflow-x: hidden;
+}
+
+
+/* prende SOLO il bottone Instagram */
+.riepilogo-actions button[onclick="condividiSuInstagram()"]{
+  position: fixed;          /* 🔥 indipendente dal layout */
+  bottom: 88px;             /* 🔥 sopra la bottom bar */
+  right: 14px;              /* 🔥 tutto a destra */
+
+  height: 22px;             /* 🔥 molto piccolo */
+  padding: 0 8px;
+
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+
+  width: auto;
+  min-width: unset;
+
+  border-radius: 8px;
+  background: #D6B28A;
+  color: #fff;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  z-index: 999;
+}
+
+/* hover / tap */
+.riepilogo-actions button[onclick="condividiSuInstagram()"]:hover{
+  transform: scale(1.05);
+}
+
+.riepilogo-actions button[onclick="condividiSuInstagram()"]:active{
+  transform: scale(0.95);
+}
+
+/* ===============================
+   ☁️ NUVOLA INSTAGRAM
+=============================== */
+#instagram-nuvola{
+  position: fixed;
+  right: 10px;
+  bottom: 130px;
+
+  background: rgba(0,0,0,0.78);
+  color: #fff;
+
+  padding: 8px 10px;        /* ⬅️ MOLTO più compatta */
+  border-radius: 14px;     /* ⬅️ meno “palloncino” */
+
+  font-size: 11px;         /* ⬅️ testo più piccolo */
+  line-height: 1.15;
+  font-weight: 600;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+
+  z-index: 9999;
+}
+
+#instagram-nuvola .nuvola-content{
+  text-align: left;
+}
+
+#instagram-nuvola small{
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+#instagram-nuvola.show{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.riepilogo-cart-row{
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 🛒 Aggiungi al carrello – flottante */
+.add-cart-inline{
+  position: fixed;
+  bottom: 88px;
+  left: 14px;
+
+  height: 24px;        /* ⬅️ +2px */
+  padding: 0 10px;     /* ⬅️ +2px laterali */
+
+  font-size: 11px;     /* ⬅️ +1px */
+  font-weight: 600;
+  line-height: 1;
+
+  border-radius: 9px;  /* ⬅️ leggermente più morbido */
+  border: none;
+
+  background: #3b82f6;
+  color: #fff;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  z-index: 999;
+
+  transition: transform 0.15s ease;
+}
+
+.add-cart-inline:active{
+  transform: scale(0.95);
 }

@@ -2144,6 +2144,33 @@ async function captureCoppaImage() {
   return canvas.toDataURL("image/png");
 }
 
+function posizionaInstagramButton() {
+  const btn = document.querySelector(".share-instagram");
+  const wrapper = document.getElementById("coppa-wrapper");
+  if (!btn || !wrapper) return;
+
+  // 🎯 coppa reale (box visivo)
+  const coppa =
+    wrapper.querySelector(".piccola-coppa") ||
+    wrapper.querySelector(".media-coppa") ||
+    wrapper.querySelector(".grande-coppa");
+
+  if (!coppa) return;
+
+  const coppaRect = coppa.getBoundingClientRect();
+  const wrapperRect = wrapper.getBoundingClientRect();
+
+  // 🔧 OFFSET come WhatsApp nello scontrino
+  const OFFSET = 12; // puoi portarlo a 16 se vuoi identico
+
+  // 📍 TOP-RIGHT INTERNO ALLA COPPA
+  btn.style.top =
+    (coppaRect.top - wrapperRect.top + OFFSET) + "px";
+
+  btn.style.left =
+    (coppaRect.left - wrapperRect.left + coppaRect.width - btn.offsetWidth - OFFSET) + "px";
+}
+
 async function mostraRiepilogo(){
 
   console.log("🚀 mostraRiepilogo CHIAMATA");
@@ -2260,6 +2287,45 @@ area.innerHTML = `
 </div>
 
 <div class="scontrino" id="scontrino-da-share">
+  <!-- 📲 WHATSAPP TOP RIGHT -->
+<button
+  class="share-whatsapp-top"
+  onclick="shareWhatsApp()"
+  aria-label="Condividi su WhatsApp"
+>
+<svg
+  class="share-icon"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+>
+  <!-- FRECCIA -->
+  <path
+    d="M12 3v10"
+    stroke="currentColor"
+    stroke-width="2.4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M8.5 6.5L12 3l3.5 3.5"
+    stroke="currentColor"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- BOX -->
+  <path
+    d="M5 11.5v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"
+    stroke="currentColor"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none"
+  />
+</svg>
+
+  <span class="share-label">Condividi</span>
+</button>
   <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
 
 <p>
@@ -2301,7 +2367,16 @@ area.innerHTML = `
 
   <button class="back-btn" onclick="showSizeScreen()">➕ Crea un'altra</button>
 </div>
+<div class="riepilogo-cart-row">
+  <button class="next-btn add-cart-inline" onclick="aggiungiAlCarrello()">
+    Aggiungi al carrello
+  </button>
+</div>
 </div> <!-- 🔴 CHIUDE .scontrino -->
+
+  <button class="next-btn riepilogo-registrati" onclick="apriRegistrazione()">
+  Registrati
+</button>
 
 <div id="qr-wrapper" style="
     margin-top:24px;
@@ -2345,22 +2420,17 @@ area.innerHTML = `
   <div id="coppa-stage"></div>
 </div>
 
-<button class="next-btn" style="margin-top:15px;" onclick="aggiungiAlCarrello()">
-    🛒 Aggiungi al carrello
-</button>
 
 
 <div class="riepilogo-actions" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-  <button class="next-btn" onclick="shareWhatsApp()">📲 Condividi su WhatsApp</button>
+
   <!-- 🔥 QUESTO -->
   <button class="next-btn" onclick="condividiSuInstagram()">
-    📸 Condividi su Instagram
+    📸 Instagram
   </button>
-  <button class="next-btn riepilogo-registrati" onclick="apriRegistrazione()">
-  🧑‍💻 Registrati
-</button>
 </div>
 `;
+
 const stage = document.getElementById("coppa-stage");
 if (!stage) return;
 
@@ -2543,6 +2613,7 @@ if (coppaSelezionata === "PICCOLA") {
     if (scelti.gusti.length === 1) piccola.classList.add("single-gusto");
     if (scelti.gusti.length === 2) piccola.classList.add("double-gusto");
   }
+  posizionaInstagramButton();
 }
 
 if (coppaSelezionata === "MEDIA") {
@@ -2570,10 +2641,11 @@ if (coppaSelezionata === "MEDIA") {
     mediaCoppa.classList.add("double-gusto");
   }
 }
-
+posizionaInstagramButton();
 if (coppaSelezionata === "GRANDE") {
   aggiornaPallineRiepilogoGrande();
   aggiornaExtraCompattiGrande(); // ✅ UNICA
+  posizionaInstagramButton();
 }
 
 aggiornaExtraRiepilogo();
@@ -2600,12 +2672,21 @@ console.log(
   "🖼️ COPPA CATTURATA OK:",
   coppa.coppa_img.slice(0, 80)
 );
-
-// ✅ SOLO ORA salvi in cronologia
+const nuvola = document.getElementById("instagram-nuvola");
+if (nuvola) {
+  setTimeout(() => {
+    nuvola.classList.add("show");
+  }, 20000); // 20 secondi
+}
+// ✅ SOLO ORA salvi in cronologia (VERSIONE LEGGERA)
 let cronologiaArr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
 
-if (!cronologiaArr.some(x => x.data === coppa.data)) {
-  cronologiaArr.unshift(coppa);
+// 🔥 copia SENZA immagine
+const coppaForLocal = { ...coppa };
+delete coppaForLocal.coppa_img;
+
+if (!cronologiaArr.some(x => x.data === coppaForLocal.data)) {
+  cronologiaArr.unshift(coppaForLocal);
   localStorage.setItem("cronologiaCoppe", JSON.stringify(cronologiaArr));
 }
 }
@@ -2885,23 +2966,20 @@ function apriInstagramStories(){
   }
 }
 
+window._eseguiCondivisioneInstagram = async function () {
+  const nuvola = document.getElementById("instagram-nuvola");
+  if (nuvola) nuvola.classList.remove("show");
 
-window.condividiSuInstagram = async function () {
   const coppa = window.coppaCorrente;
-
   if (!coppa || !coppa.coppa_img) {
-    alert("Immagine coppa non disponibile. Torna al riepilogo e riprova.");
+    alert("Preparazione immagine coppa. Attendi ancora qualche istante.");
     return;
   }
 
   const res = await fetch(coppa.coppa_img);
   const blob = await res.blob();
 
-  const file = new File(
-    [blob],
-    "coppa-casadelgelato.png",
-    { type: "image/png" }
-  );
+  const file = new File([blob], "coppa-casadelgelato.png", { type: "image/png" });
 
   let shared = false;
 
@@ -2926,6 +3004,9 @@ window.condividiSuInstagram = async function () {
     link.click();
     document.body.removeChild(link);
   }
+};
+window.condividiSuInstagram = function () {
+  mostraPopupInstagram();
 };
 
 window.testExportCoppa = async function () {
@@ -3386,3 +3467,25 @@ window.addEventListener("pageshow", () => {
     step = "riepilogo";
   }
 });
+// ===============================
+// ☁️ INSTAGRAM NUVOLA UI
+// ===============================
+(function creaInstagramNuvoletta() {
+  if (document.getElementById("instagram-nuvola")) return;
+
+  const nuvola = document.createElement("div");
+  nuvola.id = "instagram-nuvola";
+  nuvola.innerHTML = `
+    <div class="nuvola-content">
+      📸 <b>Immagine pronta</b><br>
+      <span>Tocca per condividere su Instagram</span>
+    </div>
+  `;
+
+  // ⬇️ QUESTA È LA PARTE NUOVA
+  nuvola.addEventListener("click", () => {
+    nuvola.classList.remove("show");
+  });
+
+  document.body.appendChild(nuvola);
+})();

@@ -240,6 +240,9 @@ document.getElementById("riepilogo-mini").style.display = "none";
 <script>
 // APRI MODULO
 function apriRegistrazione() {
+    // 🔥 segna che veniamo dal riepilogo
+    localStorage.setItem("returnToRiepilogo", "1");
+
     document.getElementById("step-size").style.display = "none";
     document.getElementById("step-container").style.display = "none";
     document.getElementById("step-title").style.display = "none";
@@ -287,8 +290,25 @@ if (guest_id) {
         .eq("guest_id", guest_id)
         .is("email", null);
 }
+
+// ✅ TORNA AL RIEPILOGO SE ARRIVI DA LÌ
+if (localStorage.getItem("returnToRiepilogo") === "1") {
+    localStorage.removeItem("returnToRiepilogo");
+
+    document.getElementById("reg-box").style.display = "none";
+    document.getElementById("step-container").style.display = "block";
+    document.getElementById("step-title").style.display = "block";
+
+    // opzionale: nascondi il pulsante Registrati
+    document.querySelector(".riepilogo-registrati")?.remove();
+
     alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
-    window.location.href = "index.html";
+    return; // 🔥 BLOCCA QUALSIASI REDIRECT
+}
+
+// ⛔️ SOLO SE NON ARRIVI DAL RIEPILOGO (CASI FUTURI)
+alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
+window.location.href = "index.html";
 }
 </script>
 
@@ -358,11 +378,11 @@ if (guest_id) {
         Annulla
       </button>
 
-      <button onclick="apriInstagramStories()"
-        style="flex:1; padding:10px; border-radius:10px; border:none;
-               background:#ff2d55; color:#fff; font-weight:700;">
-        Apri Instagram
-      </button>
+<button onclick="chiudiPopupInstagram(); _eseguiCondivisioneInstagram();"
+  style="flex:1; padding:10px; border-radius:10px; border:none;
+         background:#ff2d55; color:#fff; font-weight:700;">
+  Apri Instagram
+</button>
     </div>
   </div>
 </div>
