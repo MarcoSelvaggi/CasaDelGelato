@@ -63,16 +63,16 @@
 /* =========================
    CONTENITORE CONTROLLI
 ========================= */
-.controls {
-  max-width: 600px;
-  margin: 0 auto 16px;
+.controls{
+  max-width: 520px;        /* 🔥 stessa logica delle card */
+  margin: 0 auto 16px;     /* 🔥 centro perfetto pagina */
   padding: 0 16px;
 
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  justify-content: center; /* 🔥 CENTRO REALE */
+  gap: 8px;
 }
-
 /* =========================
    RIGA SUPERIORE
    (Preferiti + Ordine)
@@ -82,19 +82,19 @@
   justify-content: center;
   gap: 10px;
 }
-
 /* =========================
    BOTTONE PREFERITI
 ========================= */
 #toggle-preferiti {
-  padding: 6px 12px;
-  height: 34px;
+  height: 34px;                 /* uguale al select */
+  padding: 6px 14px;            /* stesso respiro */
 
   font-size: 13px;
   font-weight: 600;
 
-  border-radius: 999px;
+  border-radius: 10px;          /* ⬅️ stessi bordi smussati */
   border: 1px solid #d1d1d6;
+
   background: #f2f2f7;
   color: #333;
 
@@ -107,33 +107,45 @@
   border-color: #e6c200;
 }
 
+/* stato attivo */
+#toggle-preferiti.attivo {
+  background: #ffd60a;
+  border-color: #e6c200;
+}
+
+/* =========================
+   SELECT ORDINE
+========================= */
 /* =========================
    SELECT ORDINE
 ========================= */
 #ordine-select {
-  padding: 6px 12px;
+  -webkit-appearance: none;
+  appearance: none;
+
   height: 34px;
+  padding: 6px 32px 6px 12px;
 
   font-size: 13px;
+  font-weight: 500;
 
-  border-radius: 999px;
+  border-radius: 10px;
   border: 1px solid #d1d1d6;
-  background: #fff;
+  background-color: #fff;
   color: #333;
+
+  cursor: pointer;
+
+  /* freccia custom */
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
+<path d='M7 10l5 5 5-5' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/>\
+</svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px;
 }
 
-/* =========================
-   INPUT RICERCA (SOTTO)
-========================= */
-#search {
-  width: 100%;
-  padding: 10px 12px;
-
-  font-size: 15px;
-
-  border-radius: 12px;
-  border: 1px solid #ccc;
-}
 
 .cup-card {
     background: white;
@@ -146,11 +158,21 @@
     margin-right: auto;
 
     position: relative;
-    overflow: hidden; /* ✅ FONDAMENTALE */
+    overflow: hidden;
+
+    min-height: 140px; /* 🔥 RISERVA SPAZIO IMMAGINE */
 }
 
-        .cup-title { display: flex; justify-content: space-between; align-items: center; }
-        .cup-title b { font-size: 18px; }
+.cup-title{
+  position: relative;
+  display: block;          /* ⬅️ NON flex */
+  padding-right: 90px;     /* ⬅️ spazio per icone a destra */
+}
+
+.cup-title b{
+  font-size: 18px;
+  display: block;
+}
         
 
 
@@ -206,14 +228,15 @@
   cursor: pointer;
 }
 .coppa-thumb-wrapper {
-    position: absolute;
-    top: 56px;
-    right: 16px;
-    pointer-events: auto;
-    /* 🔒 ISOLAMENTO: solo cronologia */
-#lista-coppe .coppa-thumb-wrapper {
-    contain: layout paint;
+  position: absolute;
+  top: 30px;
+  right: 16px;
+  pointer-events: auto;
 }
+
+/* 🔒 ISOLAMENTO: solo cronologia */
+#lista-coppe .coppa-thumb-wrapper {
+  contain: layout paint;
 }
 /* ===== CONTROLLI COMPATTI ===== */
 .controls {
@@ -286,7 +309,822 @@
   from { transform: scale(0.9); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
 }
+/* ===============================
+   CRONOLOGIA COPPE – TESTI COMPATTI (FINALE)
+=============================== */
 
+/* Titolo coppa (leggermente ridotto, ma leggibile) */
+.cup-card .cup-title b{
+  font-size: 15px;
+}
+
+/* Testi di dettaglio: gusti, topping, ingredienti, extra */
+.cup-card .small,
+.cup-card p{
+  font-size: 12px;
+  line-height: 1.35;
+  color: #555;
+  margin: 4px 0;
+}
+
+/* Bottoni nella card (compatti ma cliccabili) */
+.cup-card .copy-btn,
+.cup-card .use-btn{
+  font-size: 13px;
+  padding: 6px 10px;
+}
+/* ===============================
+   CRONOLOGIA COPPE – SPAZIO PER MINIATURA
+=============================== */
+
+/* Riserva spazio a destra per l'immagine */
+.cup-card{
+  padding-right: 95px; /* ⬅️ spazio dedicato alla coppa */
+}
+.cup-content{
+  padding-right: 20px;   /* 🔥 spazio orizzontale per immagine */
+  min-height: 180px;      /* 🔥 spazio verticale riservato */
+}
+/* ===============================
+   CRONOLOGIA – CESTINO ICONA
+=============================== */
+.delete-btn{
+  background: none;        /* ❌ niente cerchio */
+  border: none;
+  padding: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+/* SVG */
+.delete-btn svg{
+  width: 26px;             /* dimensione cestino */
+  height: 26px;
+
+  fill: none;
+  stroke: #000;            /* nero */
+  stroke-width: 1.6;       /* ⬅️ bordo esterno PIÙ FINE */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* hover leggero */
+.delete-btn:hover svg{
+  transform: scale(1.08);
+}
+
+/* tap */
+.delete-btn:active svg{
+  transform: scale(0.95);
+}
+.cup-actions{
+  display: flex;
+  align-items: center;   /* 🔥 allineamento perfetto */
+  gap: 10px;
+
+}
+/* ===============================
+   AZIONI CARD (stella, penna, cestino)
+=============================== */
+
+.cup-card{
+  position: relative; /* 🔥 fondamentale */
+}
+
+.cup-actions{
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* contenitore titolo */
+.cup-title{
+  position: relative;
+  padding-right: 90px;   /* spazio per icone a destra */
+}
+
+/* nome coppa */
+.cup-title b{
+  font-size: 18px;
+  display: block;
+}
+
+/* azioni in alto a destra */
+.cup-actions{
+  position: absolute;
+  top: -6px;
+
+  right: 16px;          /* 🔥 riferimento al bordo card */
+  transform: translateX(95px); /* 🔥 supera il padding */
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ===============================
+   CRONOLOGIA – ICONA MODIFICA
+=============================== */
+.edit-btn{
+  background: none;
+  border: none;
+  padding: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+/* SVG icona */
+.edit-btn svg{
+  width: 26px;          /* ⬅️ leggermente più leggibile */
+  height: 26px;
+
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.6;    /* ⬅️ allineato a cestino */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+/* hover (desktop) */
+.edit-btn:hover svg{
+  transform: scale(1.06);
+  opacity: 0.85;
+}
+
+/* tap (mobile) */
+.edit-btn:active svg{
+  transform: scale(0.94);
+  opacity: 0.7;
+}
+/* ===============================
+   CRONOLOGIA – ICONA STELLA
+=============================== */
+.fav-btn{
+  font-size: 26px;        /* ⬅️ aumenta la stella */
+  line-height: 1;
+  padding: 4px;           /* stesso respiro delle altre */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===============================
+   CRONOLOGIA – STELLA SVG
+=============================== */
+.fav-btn{
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fav-btn svg{
+  width: 26px;
+  height: 26px;
+
+  fill: none;                 /* ⭐ vuota */
+  stroke: #000;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+
+  transition: fill 0.2s ease, stroke 0.2s ease, transform 0.15s ease;
+}
+
+/* ⭐ STATO ATTIVO */
+.fav-btn.attiva svg{
+  fill: #ffd60a;              /* giallo Apple */
+  stroke: #e6b800;
+}
+
+/* feedback */
+.fav-btn:active svg{
+  transform: scale(0.92);
+}
+.cup-name.editing{
+  outline: none;
+  border-bottom: 2px solid #007aff;
+  background: rgba(0,122,255,0.08);
+}
+.rename-wrapper{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  max-width: 220px;   /* ⬅️ limita larghezza */
+}
+
+.rename-input{
+  height: 28px;              /* ⬅️ CHIAVE */
+  padding: 2px 26px 2px 6px; /* ⬅️ compatto */
+  font-size: 15px;           /* ⬅️ come titolo */
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.rename-save{
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  font-size: 14px;   /* ⬅️ più piccola */
+  line-height: 1;
+  color: #34c759;
+}
+/* titolo coppa: può andare a capo */
+.cup-title b.cup-name{
+  display: block;
+  max-width: calc(100% - 100px);
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.2;
+}
+
+/* separati, NON annidati */
+.cup-title .rename-wrapper{
+  max-width: calc(100% - 100px);
+}
+
+.cup-title .rename-input{
+  width: 100%;
+  box-sizing: border-box;
+  white-space: normal;
+}
+
+/* ===============================
+   RINOMINA TITOLO COPPA
+=============================== */
+
+.rename-wrapper{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  max-width: calc(100% - 20px); /* spazio icone a destra */
+}
+
+.rename-input{
+  flex: 1;
+  min-width: 0;
+
+  padding: 6px 34px 6px 8px; /* 🔥 spazio a DESTRA per ✔️ */
+
+  font-size: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+
+  box-sizing: border-box; /* 🔥 fondamentale */
+}
+
+/* spunta */
+.rename-save{
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+.price{
+  text-align: right;
+  font-weight: 700;
+  font-size: 13px;
+
+  margin-right: -80px;   /* ⬅️ spinge il prezzo più a destra */
+}
+/* ===============================
+   QR + CONFERMATA INLINE
+=============================== */
+.qr-row{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.badge-confermata{
+  background: #34c759;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* ===============================
+   OVERLAY – PULSANTE INSTAGRAM
+=============================== */
+.overlay-instagram-btn{
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+
+  height: 32px;          /* ⬅️ da 22px → 32px */
+  padding: 0 14px;       /* ⬅️ più respiro */
+
+  font-size: 14px;       /* ⬅️ da 10px → 14px */
+  font-weight: 600;
+  line-height: 1;
+
+  border-radius: 12px;   /* ⬅️ più Apple-style */
+  border: none;
+
+  background: #D6B28A;
+  color: #fff;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;              /* ⬅️ icona + testo più separati */
+
+  cursor: pointer;
+  z-index: 100000;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25); /* ⬅️ più presenza */
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* hover / tap */
+.overlay-instagram-btn:hover{
+  transform: scale(1.05);
+}
+
+.overlay-instagram-btn:active{
+  transform: scale(0.95);
+}
+
+/* ===============================
+   iOS STYLE – COPIA
+=============================== */
+.copy-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  height: 26px;
+  padding: 0 10px;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  color: #444;
+  background: rgba(0,0,0,0.06);
+
+  border: none;
+  border-radius: 999px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+/* icona */
+.copy-btn svg{
+  width: 14px;
+  height: 14px;
+
+  fill: none;
+  stroke: #555;
+  stroke-width: 1.6;
+}
+
+/* hover / tap */
+.copy-btn:hover{
+  background: rgba(0,0,0,0.09);
+}
+
+.copy-btn:active{
+  transform: scale(0.96);
+  background: rgba(0,0,0,0.12);
+}
+.use-btn{
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+
+  border-radius: 12px;
+  border: none;
+
+  background: #007aff;          /* 🔵 blu iOS */
+  color: #fff;
+
+  box-shadow: 0 4px 12px rgba(0,122,255,0.35);
+  cursor: pointer;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* hover (desktop) */
+.use-btn:hover{
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,122,255,0.45);
+}
+
+/* tap (mobile) */
+.use-btn:active{
+  transform: scale(0.95);
+  box-shadow: 0 2px 8px rgba(0,122,255,0.35);
+}
+
+.empty-msg{
+  margin-top: 40px;
+  text-align: center;
+
+  font-size: 15px;
+  font-weight: 600;
+  color: #666;
+}
+/* 🔎 SEARCH BAR FISSA IN BASSO – CENTRO PERFETTO (NO translate) */
+#search-bar-fixed{
+  position: fixed;
+  bottom: 78px; /* sopra bottom nav */
+
+  /* centratura reale */
+  left: max(12px, env(safe-area-inset-left));
+  right: max(12px, env(safe-area-inset-right));
+  margin: 0 auto;
+
+  max-width: 420px;
+  z-index: 10000;
+}
+
+/* input */
+#search-bar-fixed #search{
+  width: 100%;
+  box-sizing: border-box; /* 🔥 importantissimo */
+
+  padding: 11px 14px;
+  font-size: 14px;
+
+  border-radius: 14px;
+  border: 1px solid #d1d1d6;
+  background: #fff;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+}
+
+/* ===============================
+   FEDELTA – BASE
+=============================== */
+#fedelta-box{
+  max-width: 520px;
+  width: 88%;
+  margin: 12px auto 0;
+  padding: 12px 14px;          /* ⬅️ ALTEZZA NORMALE */
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+
+  transition:
+    transform 0.35s cubic-bezier(.22,.61,.36,1),
+    padding 0.25s ease,
+    border-radius 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.25s ease;
+
+  will-change: transform, opacity;
+}
+
+/* ===============================
+   FEDELTA – STATO COMPATTO
+=============================== */
+#fedelta-box.compact{
+  position: fixed;
+  top: 64px;
+
+  left: 12px;
+  right: 12px;
+  margin: 0 auto;
+
+  max-width: 520px;
+
+  padding: 4px 12px;      /* 🔥 RIDUZIONE SOLO QUI */
+  border-radius: 999px;
+
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  z-index: 9998;
+}
+#fedelta-box.compact .fedelta-bar-wrapper{
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+}
+/* ===============================
+   CONTENUTO – TRANSIZIONI SOFT
+=============================== */
+#fedelta-box b,
+#fedelta-count,
+#fedelta-msg,
+#btn-vedi-coupon{
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+/* ===============================
+   COMPACT – NASCONDI TESTI
+=============================== */
+#fedelta-box.compact b,
+#fedelta-box.compact #fedelta-count,
+#fedelta-box.compact #fedelta-msg,
+#fedelta-box.compact #btn-vedi-coupon{
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+}
+
+/* ===============================
+   BARRA – SEMPRE VISIBILE
+=============================== */
+#fedelta-box .fedelta-bar-wrapper{
+  margin-top: 10px;
+}
+
+#fedelta-box.compact .fedelta-bar-wrapper{
+  margin-top: 0;
+}
+
+#fedelta-box.compact #fedelta-bar{
+  height: 7px;
+}
+/* BARRA PIÙ SOTTILE IN MODALITÀ COMPATTA */
+#fedelta-box.compact .fedelta-bar-wrapper > div{
+  height: 4px;            /* prima 6px */
+}
+
+#fedelta-box.compact #fedelta-bar{
+  height: 4px;
+}
+#fedelta-box.compact{
+  padding: 6px 12px;      /* prima 10px 12px */
+}
+#fedelta-box.compact{
+  backdrop-filter: blur(8px);
+} 
+/* ===============================
+   FEDELTA – BARRA (BASE)
+=============================== */
+/* wrapper barra */
+.fedelta-bar-wrapper{
+  height: 6px;                 /* altezza reale */
+  background: #eee;
+  border-radius: 999px;
+  overflow: hidden;
+  margin: 0;                   /* ⬅️ NIENTE SPAZIO */
+}
+
+/* barra verde */
+#fedelta-bar{
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #34c759, #30d158);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* ✅ NON CAMBIARE lo stato normale: resta quello inline */
+
+/* ✅ SOLO COMPACT: override dell'inline con !important */
+#fedelta-box.compact{
+  position: fixed !important;
+  top: 64px !important;
+
+  left: 12px !important;
+  right: 12px !important;
+  margin: 0 auto !important;
+
+  max-width: 520px !important;
+
+  padding: 12px 12px !important;       /* 🔥 QUI si stringe il bianco sopra/sotto */
+  border-radius: 999px !important;
+
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18) !important;
+  z-index: 9998 !important;
+}
+
+/* in compatta nascondo header/messaggio/bottone (ma la barra resta) */
+#fedelta-box.compact .fedelta-header,
+#fedelta-box.compact #fedelta-msg,
+#fedelta-box.compact #btn-vedi-coupon{
+  display: none !important;
+}
+
+/* barra wrapper: nessun margine extra */
+#fedelta-box.compact .fedelta-bar-wrapper{
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ===============================
+   FEDELTA – STATO COMPLETO (più aria)
+=============================== */
+
+/* spazio tra titolo e barra */
+#fedelta-box:not(.compact) .fedelta-header{
+  margin-bottom: 12px;
+}
+
+/* barra un filo più spessa e respirata */
+#fedelta-box:not(.compact) .fedelta-bar-wrapper{
+  margin: 10px 0;
+}
+
+/* messaggio sotto con più distacco */
+#fedelta-box:not(.compact) #fedelta-msg{
+  margin-top: 12px;
+}
+
+/* ===============================
+   FEDELTA – TESTI PIÙ PICCOLI (solo stato completo)
+=============================== */
+
+/* titolo */
+#fedelta-box:not(.compact) .fedelta-header b{
+  font-size: 13px;   /* prima 14px */
+}
+
+/* contatore 0/10 */
+#fedelta-box:not(.compact) #fedelta-count{
+  font-size: 12px;   /* prima 13px */
+}
+
+/* messaggio sotto la barra */
+#fedelta-box:not(.compact) #fedelta-msg{
+  font-size: 13px;   /* prima 14px */
+  line-height: 1.3;
+}
+
+/* bottone coupon */
+#fedelta-box:not(.compact) #btn-vedi-coupon{
+  font-size: 13px;
+  padding: 9px 12px;
+}
+/* ===============================
+   FEDELTA – SPACER ANTI-SCATTO
+=============================== */
+#fedelta-spacer{
+  height: 0;
+}
+
+/* normale */
+#fedelta-box{
+  max-width: 520px;
+  width: 88%;
+  margin: 12px auto 0;
+  padding: 12px 14px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+/* compatta */
+#fedelta-box.compact{
+  position: fixed;
+  top: 64px;
+  left: 12px;
+  right: 12px;
+  margin: 0 auto;
+  max-width: 520px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  z-index: 9998;
+}
+#fedelta-box.compact{
+  animation: fedeltaFade 0.25s ease;
+}
+
+@keyframes fedeltaFade{
+  from{
+    opacity: 0;
+  }
+  to{
+    opacity: 1;
+  }
+}
+/* ===============================
+   GESTISCI COPPE – STILE ROSSO (NO CERCHIO)
+=============================== */
+#btn-gestisci-coppe{
+  height: 32px;
+  padding: 5px 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;          /* 🔥 come gli altri */
+  border: 1.5px solid #ff3b30;
+
+  background: #fff;
+  cursor: pointer;
+
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+/* icona */
+#btn-gestisci-coppe svg{
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+  stroke: #ff3b30;
+  stroke-width: 1.6;
+}
+
+/* hover */
+#btn-gestisci-coppe:hover{
+  background: #ffecec;
+}
+
+/* tap */
+#btn-gestisci-coppe:active{
+  transform: scale(0.95);
+}
+
+/* =========================
+   BOTTONE PREFERITI (ICONA)
+========================= */
+#toggle-preferiti{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  height: 32px;
+  padding: 5px 12px;
+
+  font-size: 12.5px;
+  font-weight: 600;
+
+  border-radius: 10px;
+  border: 1px solid #d1d1d6;
+  background: #f2f2f7;
+  color: #333;
+
+  cursor: pointer;
+}
+
+/* stella */
+#toggle-preferiti svg{
+  width: 18px;
+  height: 18px;
+
+  fill: none;                 /* ⭐ vuota */
+  stroke: #000;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+
+  transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+/* stato attivo = stessa logica delle card */
+/* stella */
+#toggle-preferiti svg{
+  width: 18px;
+  height: 18px;
+
+  fill: #ffd60a;          /* ⭐ GIALLA SUBITO */
+  stroke: #e6b800;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+} 
+  body{
+  padding-bottom: 120px; /* 🔥 spazio per search + bottom nav */
+}
     </style>
 </head>
 
@@ -306,6 +1144,7 @@
 <!-- ⭐ TITOLO ORIGINALE (fuori dalla barra) -->
 <h1>Coppe Create</h1>
 
+
 <!-- 🎁 FEDELTA' / COUNTER COPPE CONFERMATE -->
 <div id="fedelta-box" style="
   max-width:520px;
@@ -316,42 +1155,62 @@
   border-radius: 12px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 ">
- <div style="display:flex; justify-content:space-between; align-items:center;">
-  <b style="font-size:14px;">Coppe confermate</b>
-  <span id="fedelta-count" style="font-weight:700; font-size:13px;">0/10</span>
-</div>
 
- <div style="height:6px; background:#eee; border-radius:999px; overflow:hidden; margin-top:10px;">
- <div id="fedelta-bar" style="
-  height:6px;
-  width:0%;
-  background:linear-gradient(90deg, #34c759, #30d158);
-"></div>
-</div> <!-- 🔴 CHIUSO QUI -->
-  <div id="fedelta-msg" style="margin-top:10px; font-size:14px; color:#444;">
-    Caricamento...
+  <!-- 🔽 CONTENUTO COMPLETO -->
+<div class="fedelta-full">
+
+  <!-- titolo + counter -->
+  <div class="fedelta-header" style="display:flex; justify-content:space-between; align-items:center;">
+    <b style="font-size:14px;">Coppe confermate</b>
+    <span id="fedelta-count" style="font-weight:700; font-size:13px;">0/10</span>
   </div>
-  <button id="btn-vedi-coupon" style="
-  display:none;
-  margin-top:10px;
-  width:100%;
-  padding:10px 12px;
-  border:none;
-  border-radius:12px;
-  background:#007aff;
-  color:white;
-  font-weight:700;
-  cursor:pointer;
-">
-  🎁 Vedi coupon
-</button>
+
+<!-- 🔥 BARRA FEDELTÀ – STRUTTURA CORRETTA -->
+<div class="fedelta-bar-wrapper">
+  <div id="fedelta-bar"></div>
 </div>
 
-<!-- ⭐ CONTROLLI -->
-<div class="controls">
-  <input id="search" type="text" placeholder="Cerca per nome, data, gusto..." autocomplete="off">
+    <div id="fedelta-msg">
+      Caricamento...
+    </div>
 
-  <button id="toggle-preferiti">⭐ Preferiti</button>
+    <button id="btn-vedi-coupon" style="
+      display:none;
+      margin-top:10px;
+      width:100%;
+      padding:10px 12px;
+      border:none;
+      border-radius:12px;
+      background:#007aff;
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+    ">
+      🎁 Vedi coupon
+    </button>
+
+  </div>
+</div>
+<div id="fedelta-spacer"></div>
+
+<!-- 🔎 SEARCH BAR FISSA IN BASSO -->
+<div id="search-bar-fixed">
+  <input
+    id="search"
+    type="text"
+    placeholder="Cerca per nome, data, gusto..."
+    autocomplete="off"
+  >
+</div>
+<!-- ⭐ CONTROLLI -->
+<!-- ⭐ CONTROLLI (TUTTI SULLA STESSA RIGA) -->
+<div class="controls">
+<button id="toggle-preferiti" aria-label="Preferiti">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 3.5l2.9 5.9 6.6 1-4.8 4.6 1.2 6.6L12 18.8 6.1 21.6l1.2-6.6-4.8-4.6 6.6-1L12 3.5z"/>
+  </svg>
+  <span>Preferiti</span>
+</button>
 
   <select id="ordine-select">
     <option value="data_desc">Ordina: più recenti prima</option>
@@ -359,27 +1218,26 @@
     <option value="nome_az">Ordina: nome A→Z</option>
     <option value="nome_za">Ordina: nome Z→A</option>
   </select>
-</div>
 
-<div class="controls-top">
-  <button id="btn-gestisci-coppe" style="
-    padding:6px 12px;
-    height:34px;
-    font-size:13px;
-    font-weight:600;
-    border-radius:999px;
-    border:1px solid #ff3b30;
-    background:#ffecec;
-    color:#c70000;
-    cursor:pointer;
-  ">
-    🗑 Gestisci coppe
+  <!-- 🗑 GESTISCI COPPE A DESTRA -->
+  <button
+    id="btn-gestisci-coppe"
+    class="delete-btn danger"
+    aria-label="Gestisci coppe"
+  >
+    <svg viewBox="0 0 24 24">
+      <path d="M4 7h16"/>
+      <path d="M9 4h6"/>
+      <rect x="6" y="7" width="12" height="14" rx="2"/>
+      <line x1="10" y1="10" x2="10" y2="18"/>
+      <line x1="14" y1="10" x2="14" y2="18"/>
+    </svg>
   </button>
 </div>
 
 <div id="lista-coppe"></div>
 
-<a href="index.html" class="btn">⬅ Torna alla Home</a>
+<a href="index.html" class="btn">Torna alla Home</a>
 
 <!-- ⭐ TUTTO IL TUO JS ORIGINALE (INTATTO) -->
 <script>
@@ -588,12 +1446,11 @@ async function eliminaCoppa(idx) {
     renderLista();
 }
 
-async function rinominaCoppa(idx) {
+
+async function rinominaCoppa(idx, nuovoNome) {
     const c = coppe[idx];
     if (!c) return;
 
-    const nuovoNome = prompt("Nuovo nome per questa coppa:", c.nome || "");
-    if (!nuovoNome || !nuovoNome.trim()) return;
 
     const nomePulito = nuovoNome.trim();
 
@@ -758,7 +1615,8 @@ function aggiornaFedelta() {
   }
 }
 
-function apriCoppaFullscreen(src) {
+
+function apriCoppaFullscreen(src, coppa) {
   const overlay = document.getElementById("coppa-overlay");
   const img = document.getElementById("coppa-overlay-img");
 
@@ -766,6 +1624,9 @@ function apriCoppaFullscreen(src) {
 
   img.src = src;
   overlay.style.display = "flex";
+
+  // 🔥 QUESTA È LA RIGA CHIAVE
+  window.coppaCorrente = coppa;
 }
 
 function chiudiCoppaFullscreen() {
@@ -863,64 +1724,101 @@ const extraText = formatExtra(c.extra);
             div.className = "cup-card";
 div.innerHTML = `
 <div class="cup-title">
-    <b>${evidenzia(nome)}</b>
-    <div>
-${c.confermate && c.confermate > 0 ? `
-    <span style="
-        background:#34c759;
-        color:white;
-        padding:3px 8px;
-        border-radius:8px;
-        font-size:12px;
-        font-weight:600;
-        margin-right:6px;
-    ">
-        ✔ Confermata${c.confermate > 1 ? ` x${c.confermate}` : ``}
-    </span>
-` : ``}
-        <button class="fav-btn">${stellina}</button>
-        <button class="edit-btn">✏️</button>
-        <button class="delete-btn">🗑</button>
-    </div>
+  <b 
+  class="cup-name"
+  data-idx="${idx}"
+>
+  ${evidenzia(nome)}
+</b>
+
+
+  <div class="cup-actions">
+<button class="edit-btn" aria-label="Modifica nome">
+<svg viewBox="0 0 24 24" aria-hidden="true">
+  <!-- matita -->
+  <path d="M16.5 3.5l4 4L8 18.5H4v-4L16.5 3.5z" />
+
+  <!-- linea sotto (staccata) -->
+  <path d="M3 21h18" />
+</svg>
+</button>
+
+<button 
+  class="fav-btn ${c.preferito ? 'attiva' : ''}"
+  aria-label="Preferito"
+  onclick="togglePreferito(${idx})"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 3.5l2.9 5.9 6.6 1-4.8 4.6 1.2 6.6L12 18.8 6.1 21.6l1.2-6.6-4.8-4.6 6.6-1L12 3.5z"/>
+  </svg>
+</button>
+
+    <button class="delete-btn" aria-label="Elimina">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 7h16"/>
+        <path d="M9 4h6"/>
+        <rect x="6" y="7" width="12" height="14" rx="2"/>
+        <line x1="10" y1="10" x2="10" y2="18"/>
+        <line x1="14" y1="10" x2="14" y2="18"/>
+      </svg>
+    </button>
+  </div>
 </div>
+
 ${c.coppa_img ? `
   <div class="coppa-thumb-wrapper">
-    <img 
-  src="${c.coppa_img}" 
+<img
+  src="${c.coppa_img}"
   class="coppa-thumb"
-  onclick="apriCoppaFullscreen('${c.coppa_img}')"
+  onclick="apriCoppaFullscreen('${c.coppa_img}', coppe[${idx}])"
 >
   </div>
 ` : ``}
-    <div class="small">${formattaDataBella(c.data)}</div>
-    <div class="small"><b>Formato:</b> ${evidenzia(c.formato || "")}</div>
-    <div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
-    <div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
-    <div class="small"><b>Topping:</b> ${evidenzia(toppingText)}</div>
-    <div class="small"><b>Ingredienti:</b> ${evidenzia(ingredientiText)}</div>
-    <div class="small"><b>Extra:</b> ${evidenzia(extraText || "-")}</div>
 
-    <div class="small" style="text-align:right; font-weight:bold;">
-        Prezzo: €${(c.prezzo || 0).toFixed(2)}
-    </div>
+<div class="cup-content">
+<div class="small">${formattaDataBella(c.data)}</div>
+<div class="small"><b>Formato:</b> ${evidenzia(c.formato || "")}</div>
+<div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
+<div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
+<div class="small"><b>Topping:</b> ${evidenzia(toppingText)}</div>
+<div class="small"><b>Ingredienti:</b> ${evidenzia(ingredientiText)}</div>
+<div class="small"><b>Extra:</b> ${evidenzia(extraText || "-")}</div>
+</div>
 
-    <button class="show-qr-btn">📱 Mostra QR</button>
+ <div class="price">
+  Prezzo: €${(c.prezzo || 0).toFixed(2)}
+</div>
 
-    <div class="qr-box" id="qr-${idx}" style="
-        display:none;
-        margin-top:12px;
-        text-align:center;
-    "></div>
+<div class="qr-row">
+  <button class="show-qr-btn">Mostra QR</button>
+
+  ${c.confermate && c.confermate > 0 ? `
+    <span class="badge-confermata">
+      ✔ Confermata${c.confermate > 1 ? ` x${c.confermate}` : ``}
+    </span>
+  ` : ``}
+</div>
+
+<div class="qr-box" id="qr-${idx}" style="
+    display:none;
+    margin-top:12px;
+    text-align:center;
+"></div>
 
     <div class="buttons-row">
-        <button class="copy-btn">📋 Copia</button>
-        <button class="use-btn">⚡ Usa questa coppa</button>
+        <button class="copy-btn" aria-label="Copia">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="7" y="7" width="12" height="12" rx="3"/>
+    <rect x="3" y="3" width="12" height="12" rx="3"/>
+  </svg>
+  <span>Copia</span>
+</button>
+        <button class="use-btn">Usa questa coppa</button>
     </div>
 `;
-
-            div.querySelector(".fav-btn").onclick = () => togglePreferito(idx);
-            div.querySelector(".edit-btn").onclick = () => rinominaCoppa(idx);
-            div.querySelector(".delete-btn").onclick = () => eliminaCoppa(idx);
+div.querySelector(".fav-btn").onclick = () => togglePreferito(idx);
+div.querySelector(".edit-btn").onclick = () => abilitaRinomina(idx);
+div.querySelector(".delete-btn").onclick = () => eliminaCoppa(idx);
             div.querySelector(".copy-btn").onclick = () => copiaTesto(testoDaCopiare);
             div.querySelector(".use-btn").onclick = () => usaQuestaCoppa(idx);
             div.querySelector(".show-qr-btn").onclick = () => {
@@ -984,18 +1882,22 @@ const qrDiv = div.querySelector(`.qr-code`);
         renderLista();
     });
 
+
 document.getElementById("toggle-preferiti").addEventListener("click", () => {
-    mostraSoloPreferiti = !mostraSoloPreferiti;
+  mostraSoloPreferiti = !mostraSoloPreferiti;
 
-    document.getElementById("toggle-preferiti").textContent =
-        mostraSoloPreferiti ? "Mostra tutti" : "⭐ Preferiti";
+  const btn = document.getElementById("toggle-preferiti");
 
-    // 🔥 QUESTA È LA RIGA CHE TI HO DETTO
-    document
-      .getElementById("toggle-preferiti")
-      .classList.toggle("attivo", mostraSoloPreferiti);
+  // ⭐ attiva/disattiva SOLO la classe
+  btn.classList.toggle("attivo", mostraSoloPreferiti);
 
-    renderLista();
+  // (opzionale) cambia solo il testo, NON il bottone
+  const label = btn.querySelector(".label");
+  if (label) {
+    label.textContent = mostraSoloPreferiti ? "Mostra tutti" : "Preferiti";
+  }
+
+  renderLista();
 });
 
 document.getElementById("ordine-select").addEventListener("change", e => {
@@ -1148,6 +2050,70 @@ import { supabase } from "./supabase.js";
 let waitInterval = null;
 let collapseTimeout = null;
 
+window.abilitaRinomina = function(idx){
+  const card = document.querySelectorAll(".cup-card")[idx];
+  if (!card) return;
+
+  const titleEl = card.querySelector(".cup-title b");
+  if (!titleEl) return;
+
+  const nomeAttuale = titleEl.textContent.trim();
+
+  // wrapper
+  const wrapper = document.createElement("div");
+  wrapper.className = "rename-wrapper";
+
+  // input
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = nomeAttuale;
+  input.className = "rename-input";
+
+  // bottone salva ✔️
+  const saveBtn = document.createElement("button");
+  saveBtn.className = "rename-save";
+  saveBtn.innerHTML = "✔️";
+
+  wrapper.appendChild(input);
+  wrapper.appendChild(saveBtn);
+
+  titleEl.replaceWith(wrapper);
+  input.focus();
+  input.select();
+
+  // ✔️ salva
+  saveBtn.onclick = () => {
+    salvaRinomina(idx, input.value, wrapper);
+  };
+
+  // ENTER = salva
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      salvaRinomina(idx, input.value, wrapper);
+    }
+    if (e.key === "Escape") {
+      ripristinaTitolo(wrapper, nomeAttuale);
+    }
+  });
+};
+
+function salvaRinomina(idx, valore, wrapper){
+  const nuovoNome = valore.trim();
+  if (!nuovoNome) {
+    ripristinaTitolo(wrapper, coppe[idx].nome || "");
+    return;
+  }
+
+  rinominaCoppa(idx, nuovoNome);
+}
+
+function ripristinaTitolo(wrapper, testo){
+  const b = document.createElement("b");
+  b.className = "cup-name";
+  b.textContent = testo;
+  wrapper.replaceWith(b);
+}
+
 function expandWaitBar() {
   const full = document.getElementById("wait-full");
   const compact = document.getElementById("wait-compact");
@@ -1289,6 +2255,12 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
     border-radius: 14px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   ">
+<button
+  class="overlay-instagram-btn"
+  onclick="condividiSuInstagram()"
+>
+  📸 Condividi su Instagram
+</button>
 
   <button id="coppa-overlay-close" style="
     position: absolute;
@@ -1353,6 +2325,190 @@ document.addEventListener("DOMContentLoaded", () => {
     tieniSoloPreferiti();
   };
 });
+</script>
+
+
+</body>
+</html>
+
+<script>
+window._eseguiCondivisioneInstagram = async function () {
+  const imgUrl = window.__coppaInstagramSrc;
+
+  if (!imgUrl) {
+    alert("Immagine non disponibile");
+    return;
+  }
+
+  const res = await fetch(imgUrl);
+  const blob = await res.blob();
+
+  const file = new File(
+    [blob],
+    "coppa-casadelgelato.png",
+    { type: "image/png" }
+  );
+
+  let shared = false;
+
+  if (navigator.share && navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({
+        title: "La mia coppa 🍨",
+        text: "Guarda la coppa che ho creato da Casa del Gelato!",
+        files: [file]
+      });
+      shared = true;
+    } catch (e) {
+      console.warn("Share annullato", e);
+    }
+  }
+
+  // fallback: download diretto
+  if (!shared) {
+    const link = document.createElement("a");
+    link.href = imgUrl;
+    link.download = "coppa-casadelgelato.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+};
+</script>
+
+<!-- 🍨 POPUP INSTAGRAM -->
+<div id="popup-instagram" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+">
+  <div style="
+    background: #fff;
+    padding: 22px;
+    border-radius: 16px;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  ">
+    <h3 style="margin-bottom:10px;">📸 Condividi su Instagram</h3>
+
+    <p style="font-size:14px; line-height:1.4;">
+      Condividi la tua coppa su Instagram e tagga  
+      <b>@casadelgelato.it</b> 🍨
+    </p>
+
+    <div style="margin-top:18px; display:flex; gap:10px;">
+      <button onclick="chiudiPopupInstagram()"
+        style="flex:1; padding:10px; border-radius:10px; border:1px solid #ccc;">
+        Annulla
+      </button>
+
+      <button onclick="chiudiPopupInstagram(); _eseguiCondivisioneInstagram();"
+        style="flex:1; padding:10px; border-radius:10px; border:none;
+               background:#ff2d55; color:#fff; font-weight:700;">
+        Apri Instagram
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+/* =========================
+   📸 INSTAGRAM – CRONOLOGIA
+========================= */
+
+window.condividiSuInstagram = function () {
+  const popup = document.getElementById("popup-instagram");
+  if (!popup) {
+    console.error("popup-instagram non trovato");
+    return;
+  }
+  popup.style.display = "flex";
+};
+
+window.chiudiPopupInstagram = function () {
+  const popup = document.getElementById("popup-instagram");
+  if (popup) popup.style.display = "none";
+};
+
+window._eseguiCondivisioneInstagram = async function () {
+  const coppa = window.coppaCorrente;
+
+  if (!coppa || !coppa.coppa_img) {
+    alert("Preparazione immagine coppa. Attendi ancora un istante.");
+    return;
+  }
+
+  try {
+    const res = await fetch(coppa.coppa_img);
+    const blob = await res.blob();
+
+    const file = new File(
+      [blob],
+      "coppa-casadelgelato.png",
+      { type: "image/png" }
+    );
+
+    let shared = false;
+
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({
+          title: "La mia coppa 🍨",
+          text: "Guarda la coppa che ho creato da Casa del Gelato!",
+          files: [file]
+        });
+        shared = true;
+      } catch (e) {
+        console.warn("Share annullato", e);
+      }
+    }
+
+    // fallback: download
+    if (!shared) {
+      const link = document.createElement("a");
+      link.href = coppa.coppa_img;
+      link.download = "coppa-casadelgelato.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  } catch (err) {
+    console.error("Errore condivisione Instagram:", err);
+    alert("Errore durante la condivisione.");
+  }
+};
+</script>
+
+<script>
+(() => {
+  const box = document.getElementById("fedelta-box");
+  const spacer = document.getElementById("fedelta-spacer");
+  if (!box || !spacer) return;
+
+  let compact = false;
+
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY;
+
+    if (y > 120 && !compact) {
+      const rect = box.getBoundingClientRect();
+      spacer.style.height = rect.height + "px"; // 🔒 PRECISO
+      box.classList.add("compact");
+      compact = true;
+    }
+
+    if (y < 60 && compact) {
+      box.classList.remove("compact");
+      spacer.style.height = "0px";
+      compact = false;
+    }
+  }, { passive: true });
+})();
 </script>
 
 </body>

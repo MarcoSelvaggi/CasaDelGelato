@@ -1,6 +1,9 @@
 
 console.log("JS CARICATO ✔️");
-
+// 🔑 GARANTISCI guest_id SEMPRE
+if (!localStorage.getItem("guest_id")) {
+  localStorage.setItem("guest_id", "guest_" + crypto.randomUUID());
+}
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
 let titoloGustiVisibile = true;
@@ -2430,7 +2433,13 @@ area.innerHTML = `
   </button>
 </div>
 `;
-
+// 🔒 Nascondi "Registrati" se l'utente è già loggato
+if (
+  localStorage.getItem("userLogged") === "1" &&
+  localStorage.getItem("user_email")
+) {
+  document.querySelector(".riepilogo-registrati")?.remove();
+}
 const stage = document.getElementById("coppa-stage");
 if (!stage) return;
 
