@@ -2254,13 +2254,16 @@ body.coppa-media #coppa-stage{
 .coppa-media .box-coppa {
   width: 280px;
   height: 300px;
-  left: calc(var(--base-left) + 17px); /* 🎯 SHIFT DEFINITIVO */
-  top: 230px;
-  overflow: hidden;
 
-  position: absolute; /* ⬅️ se non c’è già */
-  z-index: 1;         /* ⬅️ QUESTA È LA CHIAVE */
+  left: calc(var(--base-left) - 0px); /* ✅ SHIFT DEFINITIVO */
+  top: 230px;
+
+  overflow: hidden;
+  position: absolute;
+  z-index: 1;
+  border: none;
 }
+/* ================= COPPA MEDIA – POSIZIONE DEFINITIVA ================= */
 
 .coppa-media .box-coppa img{
   width: auto;
