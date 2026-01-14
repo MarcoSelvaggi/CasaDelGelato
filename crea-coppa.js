@@ -1197,7 +1197,7 @@ if (title) {
     let html = `
         <div class="ingredienti-lista">
     `;
-
+ const isStepCompleted = totale === maxTot;
     gustiList.forEach(nome => {
       // 🚫 Controllo allergeni
 const allergeniGusto = ALLERGENI_GUSTI[nome] || [];
@@ -1205,14 +1205,16 @@ const gustoVietato = allergeniGusto.some(a => allergeniCliente.includes(a));
       // 🚫 Controllo disponibilità
 const disponibile = DISPONIBILITA["Gusti"]?.[nome] !== false;
         const qty = gustiQuantities[nome] || 0;
-        const isEditing = (gustoInModifica === nome);
-        const isConfirmed = qty > 0 && !isEditing;
-        const showControls = isEditing || qty > 0;
+       const isSelected = qty > 0;
+const isConfirmed = isSelected && isStepCompleted;
+const isPending = isSelected && !isStepCompleted;
+
+const showControls = isSelected || gustoInModifica === nome;
 
         let cls = "item gusto-item";
 if (!disponibile) cls += " gusto-disabled";
-if (isEditing) cls += " gusto-pending";
-else if (isConfirmed) cls += " gusto-confirmed";
+if (isPending) cls += " gusto-pending";       // 🟡
+if (isConfirmed) cls += " gusto-confirmed";   // 🟢
 if (gustoVietato) cls += " item-allergene";
 
    
@@ -1237,8 +1239,8 @@ if (gustoVietato) cls += " item-allergene";
         </div>
 
         <div class="nav-buttons">
-            <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
-            <button class="next-btn" onclick="nextStep()">Avanti ➜</button>
+            <button class="back-btn" onclick="prevStep()">← Indietro</button>
+            <button class="next-btn" onclick="nextStep()">Avanti →</button>
         </div>
     `;
 
@@ -2282,11 +2284,32 @@ console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
   // ✅ 7) Riepilogo grafico (come prima)
 area.innerHTML = `
 <div class="riepilogo-header">
-  <h2 class="riepilogo-title">Riepilogo</h2>
+  <h2 class="riepilogo-title">Ecco la tua coppa! 🍨 </h2>
 
-  <p class="riepilogo-subtitle">
-    📣 Comunica al cameriere la tua coppa gelato 📣
-  </p>
+<p class="riepilogo-subtitle" style="
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+  margin-top: -20px;
+  text-align: center;
+"> 
+  📣 Scorri fino in fondo per comunicarla al cameriere! 📣
+</p>
+
+
+  <button class="next-btn riepilogo-registrati" onclick="apriRegistrazione()">
+  Registrati
+</button>
+
+
+
+<!-- 🍨 COPPA GRAFICA -->
+<div id="coppa-wrapper" style="
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+">
+  <div id="coppa-stage"></div>
 </div>
 
 <div class="scontrino" id="scontrino-da-share">
@@ -2377,10 +2400,6 @@ area.innerHTML = `
 </div>
 </div> <!-- 🔴 CHIUDE .scontrino -->
 
-  <button class="next-btn riepilogo-registrati" onclick="apriRegistrazione()">
-  Registrati
-</button>
-
 <div id="qr-wrapper" style="
     margin-top:24px;
     display:flex;
@@ -2413,17 +2432,6 @@ area.innerHTML = `
     </div>
   ` : ""}
 </div>
-
-<!-- 🍨 COPPA GRAFICA -->
-<div id="coppa-wrapper" style="
-  margin-top: 24px;
-  display: flex;
-  justify-content: center;
-">
-  <div id="coppa-stage"></div>
-</div>
-
-
 
 <div class="riepilogo-actions" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
 
@@ -2880,26 +2888,34 @@ function shareInstagram(){
 }
 function salvaScontrinoComeImmagine() {
   const scontrino = document.querySelector(".scontrino");
-  if(!scontrino){
+  if (!scontrino) {
     alert("Errore: scontrino non trovato.");
     return;
   }
 
-  html2canvas(scontrino, { scale: 3 }).then(canvas => {
+  html2canvas(scontrino, { scale: 3 })
+    .then(canvas => {
 
-    // ✅ Sempre salvataggio file, niente share API
-    const link = document.createElement("a");
-    link.download = "coppa.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+      canvas.toBlob(blob => {
+        const file = new File([blob], "coppa.png", { type: "image/png" });
 
-    // ✅ Info utente
-    alert("📸 Immagine salvata!\nOra puoi condividerla su Instagram.")
-  }).catch(err => {
-    console.error(err);
-    alert("Errore durante la creazione dell'immagine.");
-  });
+        if (navigator.share) {
+          navigator.share({
+            files: [file],
+            title: "La mia coppa gelato 🍨"
+          });
+        } else {
+          alert("Tieni premuto sull'immagine per condividerla.");
+        }
+      });
+
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Errore durante la creazione dell'immagine.");
+    });
 }
+
 function expandMiniRiepilogo(){
   const el = document.getElementById("riepilogo-mini");
   if(!el) return;
@@ -3487,7 +3503,7 @@ window.addEventListener("pageshow", () => {
   nuvola.innerHTML = `
     <div class="nuvola-content">
       📸 <b>Immagine pronta</b><br>
-      <span>Tocca per condividere su Instagram</span>
+      <span>Condividi e taggaci su Instagram</span>
     </div>
   `;
 

@@ -1573,12 +1573,15 @@ header,
 .conferma-btn {
   padding: 10px 18px;
   border-radius: 12px;
-  border: 1px solid #d0d0d0;
-  background: #f5f5f7;
+
+  border: none;
+  background: #007aff;
+  color: #fff;
+
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  width: auto;          /* ⬅️ fondamentale */
+  width: auto;
   max-width: none;
   margin-left: auto;
   margin-right: auto;
@@ -1592,20 +1595,30 @@ header,
 button.conferma-btn {
   padding: 10px 18px;
   border-radius: 14px;
-  border: 1px solid #ddd;
-  background: #f5f5f7;
-  color: #111;
+
+  border: none;                 /* ⬅️ prima: 1px solid #ddd */
+  background: #007aff;          /* ⬅️ prima: #f5f5f7 */
+  color: #fff;                  /* ⬅️ prima: #111 */
+
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;             /* (opzionale ma consigliato) */
   cursor: pointer;
   width: auto;
   min-width: 120px;
+
+  box-shadow: 0 6px 16px rgba(0,122,255,0.35); /* ⬅️ Apple-style */
 }
 
 button.conferma-btn:hover {
   background: #ececec;
 }
-
+.conferma-btn{
+  background: #007aff !important;
+  color: #fff !important;
+  border: none !important;
+  font-weight: 600;
+  box-shadow: 0 6px 16px rgba(0,122,255,0.35);
+}
 /* ⏱️ WAIT BAR – ultra compatta */
 #wait-bar {
   font-size: 12px;
@@ -3922,6 +3935,10 @@ body.step-riepilogo .riepilogo-registrati{
   padding: 6px 12px;
   font-size: 13px;
   border-radius: 10px;
+}
+/* 🔥 SPAZIO EXTRA SOLO NEL RIEPILOGO FINALE */
+body.step-riepilogo #step-container{
+  padding-bottom: 50px;
 }
 /* QR bloccato per utenti non loggati */
 .qr-locked {
