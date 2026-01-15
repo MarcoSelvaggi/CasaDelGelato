@@ -4270,3 +4270,23 @@ body.step-riepilogo .back-btn:active{
   /* SOLO estetica */
   padding: 12px 0 8px;
 }
+/* 🔒 FIX SCROLL ORIZZONTALE IOS – RIEPILOGO */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body.step-riepilogo {
+  overflow-x: hidden;
+}
+
+body.step-riepilogo #step-container {
+  overflow-x: hidden;
+}
+/* 🍨 ISOLA LA COPPA GRAFICA (NON SI SPOSTA PIÙ) */
+#coppa-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow: hidden; /* 🔥 QUESTO RISOLVE IL PROBLEMA */
+}
