@@ -655,23 +655,19 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   top: 16px;
   right: 16px;
 
+  width: 28px;          /* 🔥 quadrato */
   height: 28px;
-  padding: 0 10px 0 8px;
-  width: auto;
 
+  padding: 0;           /* 🔥 NIENTE padding */
   border-radius: 8px;
   border: none;
 
   background: #25D366;
   color: #fff;
 
-  display: inline-flex;
+  display: flex;        /* 🔥 non inline-flex */
   align-items: center;
-  gap: 4px;
-
-  font-size: 12px;
-  font-weight: 600;
-  font-family: inherit;
+  justify-content: center; /* 🔥 CENTRO PERFETTO */
 
   cursor: pointer;
   z-index: 10;
@@ -3896,7 +3892,7 @@ body.step-riepilogo .riepilogo-title {
 
 .riepilogo-subtitle {
   margin-top: -20px;   /* ⬅️ QUESTO */
-  font-size: 14px;
+  font-size: 13px;
   opacity: 0.75;
   text-align: center;
 }
@@ -3936,9 +3932,8 @@ body.step-riepilogo .riepilogo-registrati{
   font-size: 13px;
   border-radius: 10px;
 }
-/* 🔥 SPAZIO EXTRA SOLO NEL RIEPILOGO FINALE */
 body.step-riepilogo #step-container{
-  padding-bottom: 50px;
+  padding-bottom: 0;
 }
 /* QR bloccato per utenti non loggati */
 .qr-locked {
@@ -4060,37 +4055,42 @@ html, body{
 }
 
 
-/* prende SOLO il bottone Instagram */
-.riepilogo-actions button[onclick="condividiSuInstagram()"]{
-  position: fixed;          /* 🔥 indipendente dal layout */
-  bottom: 88px;             /* 🔥 sopra la bottom bar */
-  right: 14px;              /* 🔥 tutto a destra */
+/* 📸 Bottone Instagram – NON flottante */
+.riepilogo-actions{
+  width: 100%;                 /* 🔥 QUESTA È LA CHIAVE */
+  margin-top: 24px;
 
-  height: 22px;             /* 🔥 molto piccolo */
-  padding: 0 8px;
+  display: flex;
+  justify-content: flex-end;   /* 👉 destra */
 
-  font-size: 10px;
+  padding-right: 16px;
+  padding-bottom: 24px;
+  box-sizing: border-box;
+}
+
+/* bottone Instagram (NON flottante) */
+.riepilogo-actions .next-btn{
+  height: 44px;
+  padding: 0 22px;
+
+  font-size: 15px;
   font-weight: 600;
-  line-height: 1;
 
-  width: auto;
-  min-width: unset;
+  border-radius: 14px;
+  border: none;
 
-  border-radius: 8px;
-  background: #D6B28A;
+  background: linear-gradient(135deg, #fd5949, #d6249f, #285AEB);
   color: #fff;
 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-  z-index: 999;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  cursor: pointer;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* hover / tap */
-.riepilogo-actions button[onclick="condividiSuInstagram()"]:hover{
-  transform: scale(1.05);
-}
-
-.riepilogo-actions button[onclick="condividiSuInstagram()"]:active{
-  transform: scale(0.95);
+/* feedback */
+.riepilogo-actions .next-btn:active{
+  transform: scale(0.96);
 }
 
 /* ===============================
@@ -4099,7 +4099,7 @@ html, body{
 #instagram-nuvola{
   position: fixed;
   right: 10px;
-  bottom: 130px;
+  bottom: 140px;
 
   background: rgba(0,0,0,0.78);
   color: #fff;
@@ -4145,31 +4145,128 @@ html, body{
   justify-content: flex-end;
 }
 
-/* 🛒 Aggiungi al carrello – flottante */
+/* 🛒 Aggiungi al carrello – normale (NON flottante) */
 .add-cart-inline{
-  position: fixed;
-  bottom: 88px;
-  left: 14px;
+  position: static;        /* ❌ NON fixed */
+  
+  height: 44px;            /* ⬆️ più grande */
+  padding: 0 20px;         /* ⬆️ più aria */
 
-  height: 24px;        /* ⬅️ +2px */
-  padding: 0 10px;     /* ⬅️ +2px laterali */
-
-  font-size: 11px;     /* ⬅️ +1px */
+  font-size: 15px;         /* ⬆️ più leggibile */
   font-weight: 600;
-  line-height: 1;
 
-  border-radius: 9px;  /* ⬅️ leggermente più morbido */
+  border-radius: 14px;     /* Apple-style */
   border: none;
 
-  background: #3b82f6;
+  background: #007aff;
   color: #fff;
 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-  z-index: 999;
+  box-shadow: 0 6px 16px rgba(0,122,255,0.35);
+  cursor: pointer;
 
-  transition: transform 0.15s ease;
+  margin: 16px auto 0;     /* ⬅️ centrato e distanziato */
+  display: block;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .add-cart-inline:active{
-  transform: scale(0.95);
+  transform: scale(0.97);
+  box-shadow: 0 3px 8px rgba(0,122,255,0.25);
+}
+
+
+/* contenitore pulsante Instagram */
+.qr-actions{
+  width: 100%;              /* 🔥 fondamentale */
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 80px;
+  padding-right: 20px;
+}
+
+/* bottone */
+.instagram-btn{
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 600;
+
+  border-radius: 14px;
+  border: none;
+
+  background: linear-gradient(135deg,#fd5949,#d6249f,#285AEB);
+  color: #fff;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+}
+
+/* ➕ CREA UN'ALTRA – beige */
+body.step-riepilogo .back-btn{
+  background: #E6D3B1;        /* beige */
+  color: #4a3b2a;             /* testo marrone scuro */
+  border: none;
+
+  font-weight: 600;
+  border-radius: 12px;
+
+  padding: 8px 14px;
+  font-size: 14px;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* hover */
+body.step-riepilogo .back-btn:hover{
+  background: #dec79f;
+}
+
+/* tap */
+body.step-riepilogo .back-btn:active{
+  transform: scale(0.96);
+}
+
+.scontrino{
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  color: #111;
+  padding: 20px 18px;
+  border-radius: 18px;
+
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+
+  max-width: 520px;        /* ⬅️ larghezza controllata */
+  width: calc(100% - 56px);/* ⬅️ aria ai lati (14px + 14px) */
+  margin: 0 auto;          /* ⬅️ CENTRATA */
+}
+
+/* ===============================
+   BOX COPPA – STILE SCONTRINO
+   (NON SPOSTA NULLA)
+=============================== */
+
+#coppa-wrapper{
+  width: 100%;
+  margin: 24px auto 0;
+
+  display: flex;
+  justify-content: center;
+}
+
+#coppa-stage{
+  /* ❌ NON TOCCHIAMO width / transform */
+
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.4);
+
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+
+  /* SOLO estetica */
+  padding: 12px 0 8px;
 }

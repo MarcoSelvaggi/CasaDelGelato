@@ -2304,6 +2304,7 @@ area.innerHTML = `
 
 
 <!-- 🍨 COPPA GRAFICA -->
+
 <div id="coppa-wrapper" style="
   margin-top: 24px;
   display: flex;
@@ -2311,6 +2312,7 @@ area.innerHTML = `
 ">
   <div id="coppa-stage"></div>
 </div>
+
 
 <div class="scontrino" id="scontrino-da-share">
   <!-- 📲 WHATSAPP TOP RIGHT -->
@@ -2350,7 +2352,6 @@ area.innerHTML = `
   />
 </svg>
 
-  <span class="share-label">Condividi</span>
 </button>
   <p><b>Formato:</b> ${coppaSelezionata} — €${prezzoBase.toFixed(2)}</p>
 
@@ -2407,7 +2408,7 @@ area.innerHTML = `
     align-items:center;
     text-align:center;
 ">
-<p style="
+<p id="qr-status-text" style="
   font-size:15px;
   font-weight:600;
   margin-bottom:10px;
@@ -2433,13 +2434,12 @@ area.innerHTML = `
   ` : ""}
 </div>
 
-<div class="riepilogo-actions" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
-
-  <!-- 🔥 QUESTO -->
-  <button class="next-btn" onclick="condividiSuInstagram()">
+<div class="qr-actions">
+  <button class="next-btn instagram-btn" onclick="condividiSuInstagram()">
     📸 Instagram
   </button>
 </div>
+
 `;
 // 🔒 Nascondi "Registrati" se l'utente è già loggato
 if (
@@ -2684,6 +2684,8 @@ const canvas = await html2canvas(coppaEl, {
 
 coppa.coppa_img = canvas.toDataURL("image/png");
 window.coppaCorrente = coppa;
+// 🔥 ascolta conferma QR in realtime
+ascoltaConfermaCoppaRealtime(coppa.qr_token);
 // 🔍 DEBUG: verifica che ESISTA davvero
 console.log(
   "🖼️ COPPA CATTURATA OK:",
@@ -2733,7 +2735,10 @@ if (window.QRCode) {
 } else {
     console.error("Libreria QRCode non trovata");
 }
-
+// ✅ SE LA COPPA È GIÀ STATA CONFERMATA (scan QR)
+if (window.coppaCorrente?.confermata === true) {
+  setCoppaConfermata();
+}
   mostraBottomNav();
   updateRiepilogo();
   updateCarrelloBadge();
@@ -2992,44 +2997,31 @@ function apriInstagramStories(){
 }
 
 window._eseguiCondivisioneInstagram = async function () {
-  const nuvola = document.getElementById("instagram-nuvola");
-  if (nuvola) nuvola.classList.remove("show");
 
-  const coppa = window.coppaCorrente;
-  if (!coppa || !coppa.coppa_img) {
-    alert("Preparazione immagine coppa. Attendi ancora qualche istante.");
+  const blob = await generaCoppaInstagramStory();
+  if (!blob) {
+    alert("Errore creazione immagine Instagram");
     return;
   }
 
-  const res = await fetch(coppa.coppa_img);
-  const blob = await res.blob();
-
-  const file = new File([blob], "coppa-casadelgelato.png", { type: "image/png" });
-
-  let shared = false;
+  const file = new File([blob], "coppa-instagram.png", {
+    type: "image/png"
+  });
 
   if (navigator.share) {
     try {
       await navigator.share({
-        title: "La mia coppa 🍨",
-        text: "Guarda la coppa che ho creato da Casa del Gelato!",
-        files: [file]
+        files: [file],
+        title: "La mia coppa 🍨"
       });
-      shared = true;
     } catch (e) {
-      console.warn("Share fallito, uso download", e);
+      console.warn("Condivisione annullata");
     }
-  }
-
-  if (!shared) {
-    const link = document.createElement("a");
-    link.href = coppa.coppa_img;
-    link.download = "coppa-casadelgelato.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  } else {
+    alert("Apri Instagram e carica l’immagine manualmente");
   }
 };
+
 window.condividiSuInstagram = function () {
   mostraPopupInstagram();
 };
@@ -3507,10 +3499,99 @@ window.addEventListener("pageshow", () => {
     </div>
   `;
 
-  // ⬇️ QUESTA È LA PARTE NUOVA
+  // ✅ CLICK: chiude + scrolla in fondo
   nuvola.addEventListener("click", () => {
+    // chiude la nuvoletta
     nuvola.classList.remove("show");
+
+    // scroll fluido fino in fondo pagina
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth"
+    });
   });
 
   document.body.appendChild(nuvola);
 })();
+
+function setCoppaConfermata() {
+  const text = document.getElementById("qr-status-text");
+  if (!text) return;
+
+  text.textContent = "✅ Coppa confermata";
+  text.style.color = "#34c759";
+  text.style.fontWeight = "700";
+
+  // opzionale: rendi il QR “inattivo”
+  const qr = document.getElementById("qr-code");
+  if (qr) {
+    qr.style.opacity = "0.4";
+    qr.style.pointerEvents = "none";
+  }
+}
+function ascoltaConfermaCoppaRealtime(qrToken) {
+  if (!window.supabase || !qrToken) return;
+
+  supabase
+    .channel("coppa-confirmata-" + qrToken)
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "coppe",
+        filter: `qr_token=eq.${qrToken}`
+      },
+      payload => {
+        console.log("✅ COPPA CONFERMATA (REALTIME)", payload);
+
+        // aggiorna stato locale
+        if (window.coppaCorrente) {
+          window.coppaCorrente.confermata = true;
+        }
+
+        // 🔥 aggiorna UI
+        setCoppaConfermata();
+      }
+    )
+    .subscribe();
+}
+async function generaCoppaInstagramStory() {
+  const stage = document.getElementById("coppa-stage");
+  if (!stage) return null;
+
+  // crea canvas 9:16
+  const canvas = document.createElement("canvas");
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const ctx = canvas.getContext("2d");
+
+  // sfondo bianco (Instagram)
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // cattura coppa
+  const coppaCanvas = await html2canvas(stage, {
+    backgroundColor: null,
+    scale: 2,
+    useCORS: true
+  });
+
+  // centra la coppa verticalmente
+  const scale = Math.min(
+    canvas.width / coppaCanvas.width,
+    canvas.height / coppaCanvas.height
+  ) * 0.85;
+
+  const w = coppaCanvas.width * scale;
+  const h = coppaCanvas.height * scale;
+
+  const x = (canvas.width - w) / 2;
+  const y = (canvas.height - h) / 2;
+
+  ctx.drawImage(coppaCanvas, x, y, w, h);
+
+  return new Promise(res =>
+    canvas.toBlob(blob => res(blob), "image/png")
+  );
+}
