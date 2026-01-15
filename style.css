@@ -3892,7 +3892,7 @@ body.step-riepilogo .riepilogo-title {
 
 .riepilogo-subtitle {
   margin-top: -20px;   /* ⬅️ QUESTO */
-  font-size: 13px;
+  font-size: 12px;
   opacity: 0.75;
   text-align: center;
 }
@@ -4104,17 +4104,19 @@ html, body{
   background: rgba(0,0,0,0.78);
   color: #fff;
 
-  padding: 8px 10px;        /* ⬅️ MOLTO più compatta */
-  border-radius: 14px;     /* ⬅️ meno “palloncino” */
+  padding: 14px 16px;              /* ✅ come console */
+  border-radius: 14px;
 
-  font-size: 11px;         /* ⬅️ testo più piccolo */
+  font-size: 14px;                 /* ✅ come console */
   line-height: 1.15;
   font-weight: 600;
 
   box-shadow: 0 6px 18px rgba(0,0,0,0.22);
 
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(8px) scale(1.05);   /* ✅ scale applicato QUI */
+  transform-origin: center;                 /* ✅ */
+
   pointer-events: none;
 
   transition:
@@ -4126,16 +4128,17 @@ html, body{
 
 #instagram-nuvola .nuvola-content{
   text-align: left;
+  font-size: 14px;                 /* ✅ sicurezza */
 }
 
 #instagram-nuvola small{
-  font-size: 10px;
+  font-size: 12px;                 /* proporzionato al nuovo size */
   opacity: 0.9;
 }
 
 #instagram-nuvola.show{
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1.05);     /* ✅ mantiene la scala */
   pointer-events: auto;
 }
 
@@ -4289,4 +4292,15 @@ body.step-riepilogo #step-container {
   display: flex;
   justify-content: center;
   overflow: hidden; /* 🔥 QUESTO RISOLVE IL PROBLEMA */
+}
+.riepilogo-header {
+  padding-top: 50px;   /* 🔥 spazio sotto la top bar */
+}
+/* 🔒 NASCOSTA DI DEFAULT */
+#instagram-nuvola{
+  display: none;
+}
+/* ✅ visibile SOLO nel riepilogo */
+body.step-riepilogo #instagram-nuvola{
+  display: block;
 }

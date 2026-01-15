@@ -15,6 +15,7 @@ let gustiQuantities = {};      // es: { VANIGLIA: 2, FRAGOLA: 1 }
 let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in modifica)
 let collapseTimer = null
 let coppaSalvata = false;
+let registrazioneAperta = false;
 
 // 🔥 SE ARRIVO DA "USA QUESTA COPPA" → NASCONDI STEP TAVOLO
 document.addEventListener("DOMContentLoaded", () => {
@@ -1041,6 +1042,35 @@ if (title) {
   clearTimeout(island._hideTO);
   island._hideTO = setTimeout(() => island.classList.remove("show"), 1400);
 }
+
+function showIslandAvvisoGusti(mancanti) {
+  const island = byId("dynamic-island");
+  const title = byId("island-title");
+  const added = byId("island-added");
+  const bar = byId("island-bar");
+
+  if (!island || !title) return;
+
+  // 🧠 testo corretto singolare/plurale
+  title.textContent =
+    mancanti === 1
+      ? "Seleziona ancora 1 gusto"
+      : `Seleziona ancora ${mancanti} gusti`;
+
+  // ❌ niente “aggiunto”
+  if (added) added.textContent = "";
+
+
+  // 👀 mostra la island
+  island.classList.add("show");
+
+  // ⏱️ si richiude da sola
+  clearTimeout(window.__islandTimer);
+  window.__islandTimer = setTimeout(() => {
+    island.classList.remove("show");
+  }, 2000);
+}
+
 // ---------------- FORMATO ----------------
 function showSizeScreen(){
   document.body.classList.remove("step-riepilogo");
@@ -1174,6 +1204,11 @@ function updateStatusGusti() {
     }
 }
 
+function totaleGustiSelezionati() {
+  return Object.values(gustiQuantities || {})
+    .reduce((sum, q) => sum + q, 0);
+}
+
 // === RENDER GUSTI CON QUANTITÀ E BOTTONI + / − ===
 function renderStepGusti() {
 const title = document.getElementById("step-title");
@@ -1191,7 +1226,8 @@ if (title) {
 
     const maxTot = max.gusti || 0;
     const totale = Object.values(gustiQuantities).reduce((a, b) => a + b, 0);
-
+// 🔒 BLOCCO AVANTI SE NON HAI ESATTAMENTE max gusti
+const gustiCompleti = totale === maxTot;
     updateStatusGusti();
 
     let html = `
@@ -1238,10 +1274,14 @@ if (gustoVietato) cls += " item-allergene";
     html += `
         </div>
 
-        <div class="nav-buttons">
-            <button class="back-btn" onclick="prevStep()">← Indietro</button>
-            <button class="next-btn" onclick="nextStep()">Avanti →</button>
-        </div>
+       <div class="nav-buttons">
+    <button class="back-btn" onclick="prevStep()">← Indietro</button>
+
+    <button
+<button class="next-btn" onclick="nextStep()">
+  Avanti →
+</button>
+</div>
     `;
 
     cont.innerHTML = html;
@@ -1536,40 +1576,68 @@ hideStepTitle();
   container.classList.add("shake");
   setTimeout(() => container.classList.remove("shake"), 350);
 }
+
+
 // ---------------- NAV ----------------
 function nextStep() {
 
+  /* =========================
+     🍨 BLOCCO GUSTI OBBLIGATORI
+  ========================= */
+  if (step === "gusti") {
+    const tot = Object.values(gustiQuantities).reduce((a, b) => a + b, 0);
+
+    if (tot < max.gusti) {
+      const mancanti = max.gusti - tot;
+      showIslandAvvisoGusti(mancanti); // ✅ DYNAMIC ISLAND
+      return; // ⛔ STOP TOTALE
+    }
+
+    if (tot > max.gusti) return; // sicurezza
+  }
+
+  /* =========================
+     🔥 STEP EXTRA → MINI RIEPILOGO / FINALE
+     (VA PRIMA DEGLI ALTRI)
+  ========================= */
+  if (step === "extra") {
+    const el = document.getElementById("riepilogo-mini");
+
+    // ▶️ PRIMO CLICK → apri mini riepilogo
+    if (el && !el.classList.contains("open")) {
+      el.classList.remove("collapsed");
+      el.classList.add("open");
+      el.innerHTML = el.dataset.full || "";
+
+      if (collapseTimer) clearTimeout(collapseTimer);
+      collapseTimer = null;
+
+      step = "riepilogo-mini-open";
+      return;
+    }
+
+    // ▶️ SECONDO CLICK → riepilogo finale
+    return mostraRiepilogo();
+  }
+
+  /* =========================
+     ✅ DA MINI RIEPILOGO → FINALE
+  ========================= */
+  if (step === "riepilogo-mini-open") {
+    return mostraRiepilogo();
+  }
+
+  /* =========================
+     ➜ AVANZAMENTO STEP NORMALI
+  ========================= */
   if (step === "gusti") step = "granelle";
   else if (step === "granelle") step = "topping";
   else if (step === "topping") step = "ingredienti";
   else if (step === "ingredienti") step = "extra";
 
-// 🔥 STEP EXTRA → APRI MINI O VAI AL RIEPILOGO
-else if (step === "extra") {
-    const el = document.getElementById("riepilogo-mini");
-
-    // 🔥 PRIMO CLICK → APRI MINI
-    if (el && !el.classList.contains("open")) {
-        step = "riepilogo-mini-open";
-
-        el.classList.remove("collapsed");
-        el.classList.add("open");
-        el.innerHTML = el.dataset.full || "";
-
-        if (collapseTimer) clearTimeout(collapseTimer);
-        collapseTimer = null;
-        return;
-    }
-
-    // 🔥 SECONDO CLICK → RIEPILOGO FINALE
-    return mostraRiepilogo();
-}
-
-  // 🔥 quando lo step è già "riepilogo-mini-open"
-  else if (step === "riepilogo-mini-open") {
-      return mostraRiepilogo(); 
-  }
-
+  /* =========================
+     🔄 RENDER STANDARD
+  ========================= */
   titoloGustiVisibile = true;
   render();
   updateRiepilogo();
@@ -1597,24 +1665,33 @@ function nextStepFromMini() {
 }
 
 function prevStep(){
-  if (step === "riepilogo") {
-  const title = document.getElementById("step-title");
-  if (title) title.classList.add("hidden");
-}
-  if(step === "gusti"){ 
-    showSizeScreen(); 
-    return; 
+
+  // 🔥 chiudi sempre il mini riepilogo se aperto
+  const el = document.getElementById("riepilogo-mini");
+  if (el && el.classList.contains("open")) {
+    el.classList.add("collapsed");
+    el.classList.remove("open");
+    el.innerHTML = el.dataset.mini || "";
   }
 
-  if(step === "granelle") step = "gusti";
-  else if(step === "topping") step = "granelle";
-  else if(step === "ingredienti") step = "topping";
-  else if(step === "extra") step = "ingredienti";
+  if (collapseTimer) {
+    clearTimeout(collapseTimer);
+    collapseTimer = null;
+  }
 
-  // 🔥 FIX: tornando indietro il titolo deve essere di nuovo visibile
+  if (step === "gusti") {
+    showSizeScreen();
+    return;
+  }
+
+  if (step === "granelle") step = "gusti";
+  else if (step === "topping") step = "granelle";
+  else if (step === "ingredienti") step = "topping";
+  else if (step === "extra") step = "ingredienti";
+
   titoloGustiVisibile = true;
-
   render();
+  updateRiepilogo();
 }
 
 // ---------------- MINI-RIEPILOGO ----------------
@@ -1637,6 +1714,8 @@ function updateRiepilogo(){
       el.dataset.mini = "";
       return;
   }
+
+
 
   // 🔥 RAGGRUPPA GUSTI COME "Vaniglia x2"
   function compressGusti(arr) {
@@ -1702,13 +1781,11 @@ function autoCollapseRiepilogo(){
   if(el.classList.contains("collapsed")) return;
 
   if(collapseTimer) clearTimeout(collapseTimer);
-
-  collapseTimer = setTimeout(() => {
-    el.classList.add("collapsed");
-    el.innerHTML = el.dataset.mini || "";
-  }, 5000);
+collapseTimer = setTimeout(() => {
+  el.classList.add("collapsed");
+  el.innerHTML = el.dataset.mini || "";
+}, 5000);
 }
-
 // ---------------- SHARE ----------------
 function shareRiepilogo(){
   const text = `COPPA ${coppaSelezionata}\n\n`+
@@ -2290,14 +2367,17 @@ area.innerHTML = `
   font-size: 14px;
   font-weight: 700;
   color: #111;
-  margin-top: -20px;
+  margin-top: 6px;
   text-align: center;
 "> 
   📣 Scorri fino in fondo per comunicarla al cameriere! 📣
 </p>
 
 
-  <button class="next-btn riepilogo-registrati" onclick="apriRegistrazione()">
+<button
+  class="next-btn riepilogo-registrati"
+  onclick="onApriRegistrazione(); apriRegistrazione();"
+>
   Registrati
 </button>
 
@@ -2448,6 +2528,7 @@ if (
 ) {
   document.querySelector(".riepilogo-registrati")?.remove();
 }
+
 const stage = document.getElementById("coppa-stage");
 if (!stage) return;
 
@@ -2695,7 +2776,7 @@ const nuvola = document.getElementById("instagram-nuvola");
 if (nuvola) {
   setTimeout(() => {
     nuvola.classList.add("show");
-  }, 20000); // 20 secondi
+  }, 20000);
 }
 // ✅ SOLO ORA salvi in cronologia (VERSIONE LEGGERA)
 let cronologiaArr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
@@ -2907,7 +2988,7 @@ function salvaScontrinoComeImmagine() {
         if (navigator.share) {
           navigator.share({
             files: [file],
-            title: "La mia coppa gelato 🍨"
+            title: "Guarda la coppa che ho creato da Casa Del Gelato! 🍨"
           });
         } else {
           alert("Tieni premuto sull'immagine per condividerla.");
@@ -2967,6 +3048,33 @@ document.addEventListener("DOMContentLoaded", () => {
 // 📸 SALVA COPPA COME IMMAGINE
 // ===============================
 
+function onApriRegistrazione() {
+  registrazioneAperta = true;
+
+  const nuvola = document.getElementById("instagram-nuvola");
+  if (nuvola) nuvola.classList.remove("show");
+}
+
+function onChiudiRegistrazione() {
+  registrazioneAperta = false;
+
+  aggiornaNuvolettaInstagram();
+}
+
+function aggiornaNuvolettaInstagram() {
+  const nuvola = document.getElementById("instagram-nuvola");
+  if (!nuvola) return;
+
+  if (registrazioneAperta) {
+    nuvola.classList.remove("show");
+    return;
+  }
+
+  // appare con un minimo di delay elegante
+  setTimeout(() => {
+    nuvola.classList.add("show");
+  }, 1200);
+}
 
 function mostraPopupInstagram(){
   document.getElementById("popup-instagram").style.display = "flex";
@@ -3012,7 +3120,7 @@ window._eseguiCondivisioneInstagram = async function () {
     try {
       await navigator.share({
         files: [file],
-        title: "La mia coppa 🍨"
+        title: "Guarda la coppa che ho creato da Casa Del Gelato! 🍨"
       });
     } catch (e) {
       console.warn("Condivisione annullata");
@@ -3513,6 +3621,84 @@ window.addEventListener("pageshow", () => {
 
   document.body.appendChild(nuvola);
 })();
+
+function nascondiNuvolaInstagram() {
+  const n = document.getElementById("instagram-nuvola");
+  if (n) n.classList.remove("show");
+}
+
+function mostraNuvolaInstagram() {
+  const n = document.getElementById("instagram-nuvola");
+  if (n) n.classList.add("show");
+}
+
+function apriRegistrazione() {
+  // 🔥 segna che veniamo dal riepilogo
+  localStorage.setItem("returnToRiepilogo", "1");
+
+  // ✅ NASCONDI NUVOLA mentre ti registri
+  nascondiNuvolaInstagram();
+
+  document.getElementById("step-size").style.display = "none";
+  document.getElementById("step-container").style.display = "none";
+  document.getElementById("step-title").style.display = "none";
+
+  document.getElementById("reg-box").style.display = "block";
+}
+
+// CHIUDI MODULO
+function chiudiRegistrazione() {
+  document.getElementById("reg-box").style.display = "none";
+  document.getElementById("step-container").style.display = "block";
+  document.getElementById("step-title").style.display = "block";
+
+  // ✅ RI-MOSTRA NUVOLA quando torni al riepilogo finale
+  if (document.body.classList.contains("step-riepilogo")) {
+    mostraNuvolaInstagram();
+  }
+}
+
+function forzaCoppaNonConfermata() {
+  // 🔥 reset stato logico
+  if (window.coppaCorrente) {
+    window.coppaCorrente.confermata = false;
+  }
+
+  // 🔥 reset UI
+  const text = document.getElementById("qr-status-text");
+  const qr = document.getElementById("qr-code");
+  const overlay = document.querySelector(".qr-overlay");
+
+  if (text) {
+    text.textContent = "Mostra il QR code per confermare la coppa";
+    text.style.color = "";
+    text.style.fontWeight = "600";
+  }
+
+  if (qr) {
+    qr.classList.remove("qr-locked");
+    qr.style.opacity = "1";
+    qr.style.pointerEvents = "auto";
+  }
+
+  // 🔥 rimuove lucchetto se presente
+  if (overlay) overlay.remove();
+}
+
+function resetCoppaNonConfermata() {
+  const text = document.getElementById("qr-status-text");
+  if (!text) return;
+
+  text.textContent = "Mostra il QR code per confermare la coppa";
+  text.style.color = "#111";
+  text.style.fontWeight = "600";
+
+  const qr = document.getElementById("qr-code");
+  if (qr) {
+    qr.style.opacity = "1";
+    qr.style.pointerEvents = "auto";
+  }
+}
 
 function setCoppaConfermata() {
   const text = document.getElementById("qr-status-text");

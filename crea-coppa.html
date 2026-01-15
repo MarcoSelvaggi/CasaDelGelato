@@ -240,7 +240,6 @@ document.getElementById("riepilogo-mini").style.display = "none";
 <script>
 // APRI MODULO
 function apriRegistrazione() {
-    // 🔥 segna che veniamo dal riepilogo
     localStorage.setItem("returnToRiepilogo", "1");
 
     document.getElementById("step-size").style.display = "none";
@@ -248,6 +247,10 @@ function apriRegistrazione() {
     document.getElementById("step-title").style.display = "none";
 
     document.getElementById("reg-box").style.display = "block";
+
+    // 🔥 NASCONDI NUVOLA INSTAGRAM
+    const nuvola = document.getElementById("instagram-nuvola");
+    if (nuvola) nuvola.style.display = "none";
 }
 
 // CHIUDI MODULO
@@ -255,6 +258,10 @@ function chiudiRegistrazione() {
     document.getElementById("reg-box").style.display = "none";
     document.getElementById("step-container").style.display = "block";
     document.getElementById("step-title").style.display = "block";
+
+    // 🔥 RI-MOSTRA NUVOLA INSTAGRAM
+    const nuvola = document.getElementById("instagram-nuvola");
+    if (nuvola) nuvola.style.display = "";
 }
 
 // SALVA REGISTRAZIONE (usa Supabase globale)
@@ -302,13 +309,15 @@ if (localStorage.getItem("returnToRiepilogo") === "1") {
     // opzionale: nascondi il pulsante Registrati
     document.querySelector(".riepilogo-registrati")?.remove();
 
+    // ☁️ ri-mostra la nuvoletta Instagram
+    const nuvola = document.getElementById("instagram-nuvola");
+    if (nuvola) nuvola.style.display = "";
+
+forzaCoppaNonConfermata();
+
     alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
     return; // 🔥 BLOCCA QUALSIASI REDIRECT
 }
-
-// ⛔️ SOLO SE NON ARRIVI DAL RIEPILOGO (CASI FUTURI)
-alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
-window.location.href = "index.html";
 }
 </script>
 
