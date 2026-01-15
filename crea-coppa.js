@@ -3141,20 +3141,27 @@ function waitForImages(container) {
 }
 async function preparaRiepilogoFinale() {
 
-  mostraLoadingRiepilogo();   // 👀 ORA LO VEDI
+  // 1️⃣ MOSTRA LOADING
+  mostraLoadingRiepilogo();
 
+  // lascia respirare la UI
   await new Promise(r => requestAnimationFrame(r));
-  await new Promise(r => setTimeout(r, 300)); // respiro UI
+  await new Promise(r => setTimeout(r, 100));
 
+  // 2️⃣ CREA IL RIEPILOGO (inserisce TUTTO l'HTML)
+  await mostraRiepilogo();
+
+  // 3️⃣ ORA che il DOM è completo, aspetta LE IMMAGINI
   const stage = document.getElementById("coppa-stage");
-
   if (stage) {
     await waitForImages(stage);
   }
 
-  nascondiLoadingRiepilogo();
+  // 4️⃣ MICRO-DELAY per evitare flicker
+  await new Promise(r => requestAnimationFrame(r));
 
-  mostraRiepilogo(); // ✅ SOLO QUI
+  // 5️⃣ NASCONDI LOADING SOLO ORA
+  nascondiLoadingRiepilogo();
 }
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
