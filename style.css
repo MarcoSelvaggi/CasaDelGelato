@@ -4304,3 +4304,95 @@ body.step-riepilogo #step-container {
 body.step-riepilogo #instagram-nuvola{
   display: block;
 }
+
+/* ===============================
+   🍨 POPUP PRE-RIEPILOGO
+=============================== */
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 99999;
+}
+
+.popup-box {
+  background: #fff;
+  border-radius: 22px;
+  padding: 22px 20px;
+  width: min(90%, 360px);
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  text-align: center;
+
+  animation: popupIn 0.35s ease;
+}
+
+.popup-box h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #111;
+}
+
+.popup-box p {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 18px;
+}
+
+.popup-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 16px;
+  justify-content: center;
+}
+
+.popup-check input {
+  accent-color: #000;
+  cursor: pointer;
+}
+
+.popup-box .next-btn {
+  width: 100%;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 14px;
+}
+
+/* ✨ Animazione */
+@keyframes popupIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.loader {
+  width:40px;
+  height:40px;
+  border:3px solid #eee;
+  border-top:3px solid #000;
+  border-radius:50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

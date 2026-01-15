@@ -1589,21 +1589,18 @@ function nextStep() {
 
     if (tot < max.gusti) {
       const mancanti = max.gusti - tot;
-      showIslandAvvisoGusti(mancanti); // ✅ DYNAMIC ISLAND
-      return; // ⛔ STOP TOTALE
+      showIslandAvvisoGusti(mancanti);
+      return;
     }
-
-    if (tot > max.gusti) return; // sicurezza
   }
 
   /* =========================
-     🔥 STEP EXTRA → MINI RIEPILOGO / FINALE
-     (VA PRIMA DEGLI ALTRI)
+     ▶️ STEP EXTRA → APRI MINI
   ========================= */
   if (step === "extra") {
     const el = document.getElementById("riepilogo-mini");
 
-    // ▶️ PRIMO CLICK → apri mini riepilogo
+    // PRIMO CLICK → apre mini riepilogo
     if (el && !el.classList.contains("open")) {
       el.classList.remove("collapsed");
       el.classList.add("open");
@@ -1615,53 +1612,64 @@ function nextStep() {
       step = "riepilogo-mini-open";
       return;
     }
-
-    // ▶️ SECONDO CLICK → riepilogo finale
-    return mostraRiepilogo();
   }
 
   /* =========================
-     ✅ DA MINI RIEPILOGO → FINALE
+     🟡 MINI RIEPILOGO APERTO
+     → POPUP → RIEPILOGO
   ========================= */
-  if (step === "riepilogo-mini-open") {
-    return mostraRiepilogo();
+if (step === "riepilogo-mini-open") {
+
+  if (shouldShowPreRiepilogoPopup()) {
+    mostraPopupPreRiepilogo(() => {
+      preparaRiepilogoFinale();
+    });
+    return;
   }
 
+  preparaRiepilogoFinale();
+  return;
+}
+
   /* =========================
-     ➜ AVANZAMENTO STEP NORMALI
+     ➜ AVANZAMENTO NORMALE
   ========================= */
   if (step === "gusti") step = "granelle";
   else if (step === "granelle") step = "topping";
   else if (step === "topping") step = "ingredienti";
   else if (step === "ingredienti") step = "extra";
 
-  /* =========================
-     🔄 RENDER STANDARD
-  ========================= */
   titoloGustiVisibile = true;
   render();
   updateRiepilogo();
 }
 
 function nextStepFromMini() {
-  // 🔥 forza lo step corretto in base a dove sono
-  if (step === "gusti" && scelti.gusti.length === max.gusti) {
-    step = "gusti";
-  }
-  else if (step === "granelle") {
-    step = "granelle";
-  }
-  else if (step === "topping") {
-    step = "topping";
-  }
-  else if (step === "ingredienti") {
-    step = "ingredienti";
-  }
-  else if (step === "extra") {
-    step = "extra";
+
+  // chiudo il mini riepilogo
+  const el = document.getElementById("riepilogo-mini");
+  if (el) {
+    el.classList.add("collapsed");
+    el.classList.remove("open");
+    el.innerHTML = el.dataset.mini || "";
   }
 
-  nextStep();
+  if (collapseTimer) {
+    clearTimeout(collapseTimer);
+    collapseTimer = null;
+  }
+
+  step = "riepilogo-mini-open";
+
+  // 🔥 QUI 
+  if (shouldShowPreRiepilogoPopup()) {
+    mostraPopupPreRiepilogo(() => {
+      preparaRiepilogoFinale();
+    });
+    return;
+  }
+
+  preparaRiepilogoFinale();
 }
 
 function prevStep(){
@@ -1677,6 +1685,24 @@ function prevStep(){
   if (collapseTimer) {
     clearTimeout(collapseTimer);
     collapseTimer = null;
+  }
+
+  // ✅ FIX CRITICO: dal mini-riepilogo torni a EXTRA
+  if (step === "riepilogo-mini-open") {
+    step = "extra";
+    titoloGustiVisibile = true;
+    render();
+    updateRiepilogo();
+    return;
+  }
+
+  // ✅ CASO RIEPILOGO FINALE
+  if (step === "riepilogo") {
+    step = "extra";
+    titoloGustiVisibile = true;
+    render();
+    updateRiepilogo();
+    return;
   }
 
   if (step === "gusti") {
@@ -2370,7 +2396,7 @@ area.innerHTML = `
   margin-top: 6px;
   text-align: center;
 "> 
-  📣 Scorri fino in fondo per comunicarla al cameriere! 📣
+  ↓ Scorri fino in fondo per comunicarla al cameriere! ↓
 </p>
 
 
@@ -3042,6 +3068,94 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+/* ===============================
+   🍨 POPUP PRE-RIEPILOGO – LOGICA
+=============================== */
+
+function shouldShowPreRiepilogoPopup() {
+  const hideUntil = localStorage.getItem("popup_pre_riepilogo_hide_until");
+  if (!hideUntil) return true;
+
+  return Date.now() > Number(hideUntil);
+}
+
+function mostraPopupPreRiepilogo(onContinue) {
+  const popup = document.getElementById("popup-pre-riepilogo");
+  if (!popup) {
+    onContinue();
+    return;
+  }
+
+  popup.style.display = "flex";
+
+  const btn = popup.querySelector(".popup-continua");
+  const checkbox = popup.querySelector("#popup-pre-no-more");
+
+  btn.onclick = () => {
+    popup.style.display = "none";
+
+    // salva timestamp ultima visualizzazione
+    localStorage.setItem(
+      "popup_pre_riepilogo_last",
+      Date.now()
+    );
+
+    // se spuntato → nascondi per 7 giorni
+    if (checkbox && checkbox.checked) {
+      localStorage.setItem(
+        "popup_pre_riepilogo_hide_until",
+        Date.now() + 7 * 24 * 60 * 60 * 1000
+      );
+    }
+
+    // 🔥 RIPARTE IL FLUSSO
+    onContinue();
+  };
+}
+
+function mostraLoadingRiepilogo() {
+  const el = document.getElementById("loading-riepilogo");
+  if (el) el.style.display = "flex";
+}
+
+function nascondiLoadingRiepilogo() {
+  const el = document.getElementById("loading-riepilogo");
+  if (el) el.style.display = "none";
+}
+function waitForImages(container) {
+  const imgs = container.querySelectorAll("img");
+  const promises = [];
+
+  imgs.forEach(img => {
+    if (img.complete && img.naturalHeight !== 0) return;
+
+    promises.push(
+      new Promise(res => {
+        img.addEventListener("load", res, { once: true });
+        img.addEventListener("error", res, { once: true });
+      })
+    );
+  });
+
+  return Promise.all(promises);
+}
+async function preparaRiepilogoFinale() {
+
+  mostraLoadingRiepilogo();   // 👀 ORA LO VEDI
+
+  await new Promise(r => requestAnimationFrame(r));
+  await new Promise(r => setTimeout(r, 300)); // respiro UI
+
+  const stage = document.getElementById("coppa-stage");
+
+  if (stage) {
+    await waitForImages(stage);
+  }
+
+  nascondiLoadingRiepilogo();
+
+  mostraRiepilogo(); // ✅ SOLO QUI
+}
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
 // ===============================
@@ -3462,21 +3576,29 @@ document.addEventListener("DOMContentLoaded", () => {
   // se l'elemento NON esiste → NON fare nulla
   if (!riepilogo) return;
 
-  riepilogo.addEventListener("click", function(e){
-    // ⛔ Se ho cliccato il bottone AVANTI → NON toggle, lascia passare il click
+  riepilogo.addEventListener("click", function (e) {
     if (e.target.closest(".quick-next-inside")) return;
 
     if (this.classList.contains("collapsed")) {
       this.classList.remove("collapsed");
       this.classList.add("open");
       this.innerHTML = this.dataset.full || "";
+
       if (collapseTimer) clearTimeout(collapseTimer);
       autoCollapseRiepilogo();
+
     } else {
+      // 🔥 CHIUSURA MANUALE
       this.classList.add("collapsed");
       this.classList.remove("open");
       this.innerHTML = this.dataset.mini || "";
-      if(collapseTimer) {
+
+      // ✅ FIX FONDAMENTALE
+      if (step === "riepilogo-mini-open") {
+        step = "extra";
+      }
+
+      if (collapseTimer) {
         clearTimeout(collapseTimer);
         collapseTimer = null;
       }

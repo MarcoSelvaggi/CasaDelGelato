@@ -647,5 +647,48 @@ function nascondiBottomNav() {
 }
 </script>
 
+<!-- ✅ POPUP PRE-RIEPILOGO (mettilo prima di </body>) -->
+<div id="popup-pre-riepilogo" class="popup-overlay" style="display:none;">
+  <div class="popup-box">
+    <h3>👀 Ci siamo quasi!</h3>
+
+    <p style="line-height:1.5">
+      A breve potrai vedere la tua coppa.<br><br>
+      👉 Ricordati di <b>dettarla al cameriere</b><br>
+      👉 <b>Condividila sui social</b> e taggaci 📸<br>
+      👉 Se necessario, <b>aggiungila al carrello</b> per ordinarne più di una insieme
+    </p>
+
+    <label class="popup-check">
+   <input type="checkbox" id="popup-pre-no-more">
+      Non mostrare più
+    </label>
+
+<button class="popup-btn primary popup-continua">
+  Continua →
+</button>
+  </div>
+</div>
+
+<div id="loading-riepilogo" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#fff;
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+">
+  <div style="font-size:22px;font-weight:700;margin-bottom:12px">
+    🍨 Stiamo preparando la tua coppa
+  </div>
+  <div style="opacity:.6;font-size:14px">
+    Caricamento coppa..
+  </div>
+
+  <div class="loader" style="margin-top:30px"></div>
+</div>
+
 </body>
 </html>
