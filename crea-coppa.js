@@ -1620,13 +1620,18 @@ function nextStep() {
   ========================= */
 if (step === "riepilogo-mini-open") {
 
+  // 🔥 PRELOAD SUBITO (mentre il popup è visibile)
+  preloadCoppaImages();
+
+  // 🔔 POPUP SE NECESSARIO
   if (shouldShowPreRiepilogoPopup()) {
     mostraPopupPreRiepilogo(() => {
-      preparaRiepilogoFinale();
+      preparaRiepilogoFinale(); // popup → loading → riepilogo
     });
-    return;
+    return; // ⛔ STOP TOTALE QUI
   }
 
+  // 🚀 se popup NON serve
   preparaRiepilogoFinale();
   return;
 }
@@ -1646,7 +1651,7 @@ if (step === "riepilogo-mini-open") {
 
 function nextStepFromMini() {
 
-  // chiudo il mini riepilogo
+  // 1️⃣ chiudo il mini riepilogo
   const el = document.getElementById("riepilogo-mini");
   if (el) {
     el.classList.add("collapsed");
@@ -1659,16 +1664,21 @@ function nextStepFromMini() {
     collapseTimer = null;
   }
 
+  // 2️⃣ stato corretto
   step = "riepilogo-mini-open";
 
-  // 🔥 QUI 
+  // 🔥 PRELOAD SUBITO (mentre il popup è visibile)
+  preloadCoppaImages();
+
+  // 🔔 POPUP SE NECESSARIO
   if (shouldShowPreRiepilogoPopup()) {
     mostraPopupPreRiepilogo(() => {
-      preparaRiepilogoFinale();
+      preparaRiepilogoFinale(); // popup → loading → riepilogo
     });
-    return;
+    return; // ⛔ STOP TOTALE QUI
   }
 
+  // 🚀 se popup NON serve
   preparaRiepilogoFinale();
 }
 
@@ -2798,12 +2808,6 @@ console.log(
   "🖼️ COPPA CATTURATA OK:",
   coppa.coppa_img.slice(0, 80)
 );
-const nuvola = document.getElementById("instagram-nuvola");
-if (nuvola) {
-  setTimeout(() => {
-    nuvola.classList.add("show");
-  }, 20000);
-}
 // ✅ SOLO ORA salvi in cronologia (VERSIONE LEGGERA)
 let cronologiaArr = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
 
@@ -3122,49 +3126,141 @@ function nascondiLoadingRiepilogo() {
   const el = document.getElementById("loading-riepilogo");
   if (el) el.style.display = "none";
 }
-function waitForImages(container) {
-  const imgs = container.querySelectorAll("img");
-  const promises = [];
+function waitForImagesWithProgress(container, onProgress) {
+  const imgs = Array.from(container.querySelectorAll("img"));
+  const total = imgs.length;
 
-  imgs.forEach(img => {
-    if (img.complete && img.naturalHeight !== 0) return;
+  if (total === 0) {
+    onProgress?.(100);
+    return Promise.resolve();
+  }
 
-    promises.push(
-      new Promise(res => {
-        img.addEventListener("load", res, { once: true });
-        img.addEventListener("error", res, { once: true });
-      })
-    );
+  let loaded = 0;
+
+  return new Promise(resolve => {
+    imgs.forEach(img => {
+      if (img.complete && img.naturalHeight !== 0) {
+        loaded++;
+        onProgress(Math.round((loaded / total) * 100));
+        if (loaded === total) resolve();
+        return;
+      }
+
+      const done = () => {
+        loaded++;
+        onProgress(Math.round((loaded / total) * 100));
+        if (loaded === total) resolve();
+      };
+
+      img.addEventListener("load", done, { once: true });
+      img.addEventListener("error", done, { once: true });
+    });
   });
-
-  return Promise.all(promises);
 }
+function avviaTimerNuvolettaInstagram() {
+  const nuvola = document.getElementById("instagram-nuvola");
+  if (!nuvola) return;
+
+  nuvola.classList.remove("show"); // reset sicurezza
+
+  setTimeout(() => {
+    if (!window.registrazioneAperta) {
+      nuvola.classList.add("show");
+    }
+  }, 20000);
+}
+
 async function preparaRiepilogoFinale() {
 
   // 1️⃣ MOSTRA LOADING
   mostraLoadingRiepilogo();
+  setLoadingText("Caricamento coppa…");
+  setLoadingProgress(0);
 
-  // lascia respirare la UI
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 100));
 
-  // 2️⃣ CREA IL RIEPILOGO (inserisce TUTTO l'HTML)
+  // 2️⃣ CREA IL RIEPILOGO (HTML completo)
   await mostraRiepilogo();
 
-  // 3️⃣ ORA che il DOM è completo, aspetta LE IMMAGINI
+  // 3️⃣ ASPETTA LE IMMAGINI (con barra reale)
   const stage = document.getElementById("coppa-stage");
   if (stage) {
-    await waitForImages(stage);
+    await waitForImagesWithProgress(stage, pct => {
+      setLoadingProgress(pct);
+
+      // quando sei oltre ~75% cambia testo
+      if (pct >= 75) setLoadingAlmostReady();
+    });
+
+    // forzo 100% finale per sicurezza UI
+    setLoadingProgress(100);
   }
 
-  // 4️⃣ MICRO-DELAY per evitare flicker
+  // 4️⃣ MICRO-DELAY anti-flicker
   await new Promise(r => requestAnimationFrame(r));
 
-  // 5️⃣ NASCONDI LOADING SOLO ORA
+  // 5️⃣ NASCONDI LOADING
   nascondiLoadingRiepilogo();
+
+  // 6️⃣ AVVIA TIMER NUVOLA
+  avviaTimerNuvolettaInstagram();
+}
+
+function preloadCoppaImages() {
+  const urls = new Set();
+
+  // panna e coppa base (sempre)
+  urls.add("img/panna.png");
+  urls.add("img/coppa-base.png");
+
+  // gusti
+  (scelti.gusti || []).forEach(g => {
+    if (MAP_GUSTI_IMG[g]) urls.add(MAP_GUSTI_IMG[g]);
+  });
+
+  // granelle
+  (scelti.granelle || []).forEach(g => {
+    if (MAP_GRANELLE_IMG[g]) urls.add(MAP_GRANELLE_IMG[g]);
+  });
+
+  // topping
+  (scelti.topping || []).forEach(t => {
+    if (MAP_TOPPING_IMG[t]) urls.add(MAP_TOPPING_IMG[t]);
+  });
+
+  // ingredienti
+  (scelti.ingredienti || []).forEach(i => {
+    if (MAP_INGREDIENTI_IMG[i]) urls.add(MAP_INGREDIENTI_IMG[i]);
+  });
+
+  // extra
+  (scelti.extra || []).forEach(e => {
+    if (MAP_EXTRA_IMG[e]) urls.add(MAP_EXTRA_IMG[e]);
+  });
+
+  // 🔥 preload reale
+  urls.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+
+  console.log("🧊 Preload coppa immagini:", urls.size);
 }
 // ⬇️ FINE FILE — METTILO QUI ⬇️
 
+function setLoadingText(text) {
+  const el = document.getElementById("loading-text");
+  if (el) el.textContent = text;
+}
+
+function setLoadingAlmostReady() {
+  setLoadingText("Ci siamo quasi…");
+}
+function setLoadingProgress(pct) {
+  const bar = document.getElementById("loading-bar");
+  if (bar) bar.style.width = pct + "%";
+}
 // ===============================
 // 📸 SALVA COPPA COME IMMAGINE
 // ===============================

@@ -683,11 +683,27 @@ function nascondiBottomNav() {
   <div style="font-size:22px;font-weight:700;margin-bottom:12px">
     🍨 Stiamo preparando la tua coppa
   </div>
-  <div style="opacity:.6;font-size:14px">
-    Caricamento coppa..
+
+  <div id="loading-text" style="opacity:.6;font-size:14px;margin-bottom:18px">
+    Caricamento coppa…
   </div>
 
-  <div class="loader" style="margin-top:30px"></div>
+  <!-- 🔥 BARRA -->
+  <div style="
+    width:220px;
+    height:6px;
+    background:#eee;
+    border-radius:999px;
+    overflow:hidden;
+  ">
+    <div id="loading-bar" style="
+      height:100%;
+      width:0%;
+      background:#000;
+      transition:width .25s ease;
+      border-radius:999px;
+    "></div>
+  </div>
 </div>
 
 </body>
