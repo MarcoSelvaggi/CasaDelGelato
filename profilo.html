@@ -2,8 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Profilo</title>
 
 <link rel="stylesheet" href="bottom-nav.css">
@@ -11,145 +10,335 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
 <style>
-body {
-    margin: 0;
-    background: #f6f6f7;
+  body{
+    margin:0;
+    background:#f6f6f7;
     font-family: system-ui, -apple-system, sans-serif;
-    padding-bottom: 90px;
+    padding-bottom: 110px; /* spazio bottom-nav + waitbar */
+    color:#111;
+  }
+
+  /* 🔝 Barra fissa */
+#top-fixed-bar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 55px;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  padding: 0 12px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  z-index: 9999;
 }
 
-/* 🔝 Barra fissa */
-#top-fixed-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 55px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: white;
-    border-bottom: 1px solid #ddd;
-    z-index: 9999;
+
+.top-left{ justify-self: start; }
+.top-center{ justify-self: center; }
+.top-right{ justify-self: end; }
+
+  .home-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:17px;
+    font-weight:700;
+    color:#444;
+    text-decoration:none;
+  }
+
+  .home-btn img{
+    width:28px; height:28px;
+  }
+
+  #top-fixed-spacer{ height:55px; }
+
+  /* Contenuto */
+.container{
+  max-width: 480px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
 }
+  /* Sezioni profilo */
+  .profile-section{
+    margin-top: 18px;
+  }
 
-.home-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 17px;
-    color: #444;
-    text-decoration: none;
-}
-
-.home-btn img {
-    width: 28px;
-    height: 28px;
-}
-
-#top-fixed-spacer {
-    height: 65px;
-}
-
-/* Contenuto */
-.container {
-    max-width: 450px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-}
-
-h1 { margin-bottom: 10px; }
-
-.email-box {
-    background: white;
-    padding: 14px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  .section-title{
     font-size: 16px;
-    margin-bottom: 20px;
-}
+    font-weight: 800;
+    margin: 10px 4px;
+    color:#111;
+  }
 
-.btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin-top: 12px;
-    background: #ff7a00;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 17px;
-    font-weight: 600;
-    cursor: pointer;
-}
+  /* Riga azione stile “iOS” ma chiara come il tuo sito */
+  .profile-action{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
-.btn-danger {
-    background: #ff3b30;
-}
+    background:#fff;
+    padding: 14px 16px;
+    border-radius: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 
-/* 🎟️ COUPON */
-.coupon-section {
-    margin-top: 30px;
-    text-align: left;
-}
+    text-decoration:none;
+    color:#111;
+    font-size: 15px;
+    font-weight: 700;
 
-.coupon-section h2 {
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    transition: transform .12s ease, background .12s ease;
+    margin-bottom: 10px;
+  }
+
+  .profile-action:active{
+    transform: scale(0.98);
+    background:#f2f2f7;
+  }
+
+  .profile-action-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .profile-action-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .badge{
+    background:#007aff;
+    color:#fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    min-width: 24px;
+    text-align:center;
+  }
+
+  .chevron{
     font-size: 20px;
-    margin-bottom: 12px;
+    color:#bbb;
+    line-height: 1;
+  }
+
+/* AZIONI PROFILO in alto a destra */
+.profile-actions{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  justify-self: end;     /* ← va nella colonna destra */
+  margin-right: 16px;     /* ← rientro elegante stile iOS */
 }
 
-.coupon-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
+  .profile-action-btn{
+    width:34px;
+    height:34px;
+    border-radius: 50%;
+    border:none;
+    background:#f2f2f7;
+    color:#333;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: transform .12s ease, background .12s ease;
+  }
 
-.coupon {
-    background: white;
+  .profile-action-btn:active{
+    transform: scale(0.92);
+    background:#e5e5ea;
+  }
+
+  .profile-action-btn.danger{
+    background:#ffecec;
+    color:#ff3b30;
+  }
+  .profile-action-btn.danger:active{
+    background:#ffd6d6;
+  }
+
+  /* Email chip (piccolo, coerente, non invasivo) */
+  .email-chip{
+    display:none;
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background:#fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    font-size: 13px;
+    color:#555;
+  }
+  .email-chip b{ color:#111; }
+
+  /* COUPON LIST */
+  .coupon-list{
+    display:flex;
+    flex-direction:column;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .coupon{
+    background:#fff;
     border-radius: 18px;
     padding: 16px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap: 12px;
+  }
 
-.coupon.used,
-.coupon.expired {
-    opacity: 0.45;
-}
+  .coupon.used{ opacity: .5; }
 
-.coupon-title {
-    font-weight: 600;
-    font-size: 16px;
-}
-
-.coupon-desc {
-    font-size: 14px;
-    color: #666;
-    margin-top: 4px;
-}
-
-.coupon-expiry {
-    font-size: 12px;
-    color: #999;
-    margin-top: 6px;
-}
-
-.coupon button {
-    background: #000;
-    color: #fff;
-    border: none;
-    border-radius: 14px;
-    padding: 8px 14px;
+  .coupon-title{
+    font-weight: 800;
+    font-size: 15px;
+  }
+  .coupon-desc{
     font-size: 13px;
+    color:#666;
+    margin-top: 4px;
+  }
+  .coupon-expiry{
+    font-size: 12px;
+    color:#999;
+    margin-top: 6px;
+  }
+
+  .coupon button{
+    background:#111;
+    color:#fff;
+    border:none;
+    border-radius: 14px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor:pointer;
+    white-space: nowrap;
+  }
+
+  .coupon.used button{
+    background:#ccc;
+    color:#444;
+    cursor: default;
+  }
+
+  /* QR box dentro coupon */
+  .coupon-qr{
+    display:none;
+    margin-top: 10px;
+    text-align:center;
+  }
+
+  /* Messaggio vuoto */
+  .empty-msg{
+    margin-top: 18px;
+    text-align:center;
+    font-size: 14px;
+    color:#666;
+    font-weight: 700;
+  }
+
+
+
+.avatar-btn{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.coupon.used button,
-.coupon.expired button {
-    background: #ccc;
-    color: #444;
+.avatar-btn:active{ transform: scale(0.95); }
+
+.avatar-btn img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display:block;
+}
+
+/* ===== Liquid glass menu ===== */
+.glass-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9998;
+}
+
+.glass-menu{
+  position: fixed;
+  top: 62px;          /* sotto la top bar */
+  right: 12px;
+  width: 230px;
+
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 16px;
+
+  box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  padding: 8px;
+  z-index: 9999;
+
+  transform-origin: top right;
+  animation: glassIn .14s ease-out;
+}
+
+@keyframes glassIn{
+  from{ transform: scale(0.96); opacity: 0; }
+  to  { transform: scale(1);    opacity: 1; }
+}
+
+.glass-item{
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px 10px;
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+
+  display:flex;
+  align-items:center;
+  gap: 8px;
+
+  cursor: pointer;
+}
+
+.glass-item:hover{ background: rgba(0,0,0,0.06); }
+.glass-item:active{ background: rgba(0,0,0,0.10); transform: scale(0.99); }
+
+.glass-item.danger{
+  color: #ff3b30;
 }
 </style>
 </head>
@@ -158,47 +347,90 @@ h1 { margin-bottom: 10px; }
 
 <!-- 🔝 Barra -->
 <div id="top-fixed-bar">
-    <a href="index.html" class="home-btn">
-        <img src="tastohome.png" alt="home">
-        <span>Home</span>
-    </a>
+  <div class="top-left"></div>
+
+  <a href="index.html" class="home-btn top-center">
+    <img src="tastohome.png" alt="home">
+    <span>Home</span>
+  </a>
+
+  <div class="profile-actions top-right">
+    <button id="profile-avatar-btn" class="avatar-btn" aria-label="Menu profilo">
+      <img id="profile-avatar-img" src="icone/user.png" alt="">
+    </button>
+  </div>
 </div>
+
+<!-- MENU LIQUID GLASS -->
+<div id="profile-menu" class="glass-menu" style="display:none;">
+  <button class="glass-item" id="menu-change-photo">🖼️ Cambia immagine</button>
+  <button class="glass-item" id="menu-register">📝 Registrati</button>
+  <button class="glass-item" id="menu-login">👤 Accedi</button>
+  <button class="glass-item danger" id="menu-unsubscribe">✕ Disiscriviti</button>
+</div>
+
+<div id="profile-menu-backdrop" class="glass-backdrop" style="display:none;"></div>
+
 <div id="top-fixed-spacer"></div>
 
 <div class="container">
-    <h1>Profilo</h1>
+  <!-- serve al JS per non rompersi, ma resta invisibile -->
+  <div id="profile-info" style="display:none;"></div>
 
-    <div id="profile-info"></div>
+  <div id="email-chip" class="email-chip"></div>
 
-    <button class="btn" onclick="gestisciLoginLogout()">👤 Accedi / Cambia Profilo</button>
+  <!-- 🍨 COPPE -->
+  <section class="profile-section">
+    <div class="section-title">🍨 Le mie coppe</div>
 
-    <button id="btn-disiscriviti" class="btn btn-danger" onclick="disiscriviti()">
-        ❌ Disiscriviti
-    </button>
+    <a href="cronologia.html" class="profile-action">
+      <div class="profile-action-left">
+        <span>Coppe create</span>
+      </div>
+      <div class="profile-action-right">
+        <span id="coppe-count" class="badge">0</span>
+        <span class="chevron">›</span>
+      </div>
+    </a>
+  </section>
 
-    <!-- 🎟️ COUPON -->
-    <section id="coupon-section" class="coupon-section" style="display:none;">
-        <h2>🎟️ I miei Coupon</h2>
-        <div id="coupon-list" class="coupon-list"></div>
-    </section>
+  <!-- 🎟️ COUPON -->
+  <section id="coupon-section" class="profile-section" style="display:none;">
+    <div class="section-title">🎟️ I miei coupon</div>
+
+    <div class="profile-action" id="open-coupon-list">
+      <div class="profile-action-left">
+        <span>Coupon disponibili</span>
+      </div>
+      <div class="profile-action-right">
+        <span id="coupon-count" class="badge">0</span>
+        <span class="chevron">›</span>
+      </div>
+    </div>
+
+    <div id="coupon-list" class="coupon-list" style="display:none;"></div>
+  </section>
+
+  <div id="no-login" class="empty-msg" style="display:none;">
+    Nessun profilo loggato.
+  </div>
 </div>
 
 <!-- ⭐ Bottom bar -->
 <div id="bottom-nav">
-    <a href="crea-coppa.html" class="nav-item">
-        <img src="icone/crea.png">
-        <span>Crea</span>
-    </a>
-    <a href="profilo.html" class="nav-item">
-        <img src="icone/user.png">
-        <span>Profilo</span>
-    </a>
-    <a href="menu.html" class="nav-item">
-        <img src="icone/menu.png">
-        <span>Menu</span>
-    </a>
+  <a href="crea-coppa.html" class="nav-item">
+    <img src="icone/crea.png" alt="">
+    <span>Crea</span>
+  </a>
+  <a href="profilo.html" class="nav-item">
+    <img src="icone/user.png" alt="">
+    <span>Profilo</span>
+  </a>
+  <a href="menu.html" class="nav-item">
+    <img src="icone/menu.png" alt="">
+    <span>Menu</span>
+  </a>
 </div>
-
 
 <script type="module">
 import { supabase } from "./supabase.js";
@@ -206,102 +438,52 @@ import { supabase } from "./supabase.js";
 /* ===============================
    UTILS
 ================================ */
-
-function scadenzaDaCreazione(created_at) {
+function scadenzaDaCreazione(created_at){
   const d = new Date(created_at);
   return new Date(d.getFullYear(), 11, 31);
 }
 
 /* ===============================
-   PROFILO
+   CONTEGGI
 ================================ */
+async function aggiornaNumeroCoppe(email){
+  const { data, error } = await supabase
+    .from("coppe")
+    .select("id")
+    .eq("email", email)
+    .or("eliminata.is.null,eliminata.eq.false");
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const email = localStorage.getItem("user_email");
-  const logged = localStorage.getItem("userLogged") === "1";
-
-  const box = document.getElementById("profile-info");
-  const btnDis = document.getElementById("btn-disiscriviti");
-  const couponSection = document.getElementById("coupon-section");
-
-  if (!logged || !email) {
-    box.innerHTML = `<div class="email-box"><b>Nessun profilo loggato.</b></div>`;
-    btnDis.style.display = "none";
+  if (error){
+    console.error("Errore conteggio coppe:", error);
     return;
   }
 
-  box.innerHTML = `<div class="email-box"><b>Email:</b> ${email}</div>`;
-  btnDis.style.display = "block";
-  couponSection.style.display = "block";
+  const count = data ? data.length : 0;
+  const badge = document.getElementById("coppe-count");
+  if (badge) badge.textContent = count;
+}
 
-await verificaECreaCoupon(email);
-await caricaCoupon(email);
-subscribeCouponRealtime(email);
-subscribeCoppeRealtime(email); // 👈 QUESTA È LA RIGA CHE MANCAVA
-});
+async function aggiornaNumeroCoupon(email){
+  const { data, error } = await supabase
+    .from("coupon")
+    .select("id, redento")
+    .eq("email", email)
+    .eq("redento", false);
 
-function aggiornaCouponUI(coupon) {
-  const card = document.getElementById(`coupon-${coupon.codice}`);
-  if (!card) return;
-
-  // oscura
-  card.classList.add("used");
-
-  // bottone
-  const btn = card.querySelector("button");
-  if (btn) {
-    btn.innerText = "Usato";
-    btn.disabled = true;
+  if (error){
+    console.error("Errore conteggio coupon:", error);
+    return;
   }
 
-  // data utilizzo
-  if (coupon.used_at) {
-    let usedBox = card.querySelector(".coupon-used-at");
-    if (!usedBox) {
-      usedBox = document.createElement("div");
-      usedBox.className = "coupon-used-at";
-      usedBox.style = "font-size:12px;color:#888;margin-top:6px";
-      card.querySelector(".coupon-expiry").after(usedBox);
-    }
-
-    const d = new Date(coupon.used_at);
-    usedBox.innerText = `Usato il ${d.toLocaleDateString()}`;
-  }
-  // 🔒 CHIUDI E NASCONDI IL QR SE ESISTE
-const qrBox = document.getElementById(`qr-${coupon.codice}`);
-if (qrBox) {
-  qrBox.innerHTML = "";
-  qrBox.style.display = "none";
+  const count = data ? data.length : 0;
+  const badge = document.getElementById("coupon-count");
+  if (badge) badge.textContent = count;
 }
-}
-
-let couponChannel = null;
-
-function subscribeCouponRealtime(email) {
-  if (couponChannel) supabase.removeChannel(couponChannel);
-
-  couponChannel = supabase
-    .channel("coupon-realtime")
-    .on(
-      "postgres_changes",
-      { event: "UPDATE", schema: "public", table: "coupon" },
-      payload => {
-        // filtro lato client (sicuro)
-        if (payload?.new?.email !== email) return;
-
-        console.log("🔁 Coupon aggiornato realtime:", payload.new);
-        aggiornaCouponUI(payload.new);
-      }
-    )
-    .subscribe();
-}
-
 
 /* ===============================
    COUPON
 ================================ */
-
-async function caricaCoupon(email) {
+async function caricaCoupon(email){
   const { data: coupons, error } = await supabase
     .from("coupon")
     .select("*")
@@ -313,114 +495,126 @@ async function caricaCoupon(email) {
 }
 
 async function verificaECreaCoupon(email) {
+  console.log("🔎 verificaECreaCoupon chiamata per:", email);
 
-  // 1️⃣ Coppe confermate
-  const { data: coppe } = await supabase
-    .from("coppe")
-    .select("formato")
-    .eq("email", email)
-    .eq("confermata", true);
+// 1️⃣ Totale conferme (somma del campo "confermate")
+const { data: coppe, error: errCoppe } = await supabase
+  .from("coppe")
+  .select("confermate")
+  .eq("email", email)
+  .or("eliminata.is.null,eliminata.eq.false");
 
-  if (!coppe || coppe.length < 10) return;
+if (errCoppe) {
+  console.error("❌ Errore coppe:", errCoppe);
+  return;
+}
 
-  // 2️⃣ Coupon già esistenti
-  const { data: coupons } = await supabase
+const totaleConferme = (coppe || []).reduce((tot, c) => tot + Number(c.confermate || 0), 0);
+const couponDovuti = Math.floor(totaleConferme / 10);
+
+console.log("✅ Totale conferme:", totaleConferme);
+console.log("🎯 Coupon dovuti:", couponDovuti);
+
+if (couponDovuti === 0) {
+  console.log("⛔ Nessun coupon da creare");
+  return;
+}
+
+  // 2️⃣ Coupon già creati
+  const { data: coupons, error: errCoupons } = await supabase
     .from("coupon")
     .select("id")
     .eq("email", email);
 
-  const couponDovuti = Math.floor(coppe.length / 10);
-  const couponCreati = coupons ? coupons.length : 0;
+  console.log("🎟️ Coupon già creati:", coupons?.length, coupons);
 
-  // 3️⃣ Se non devo crearne altri → stop
-  if (couponCreati >= couponDovuti) return;
+  if (errCoupons || !coupons) {
+    console.error("❌ Errore coupon:", errCoupons);
+    return;
+  }
 
-  // 4️⃣ Calcolo formato più usato
-  const count = { piccola: 0, media: 0, grande: 0 };
-  coppe.forEach(c => {
-    if (count[c.formato] !== undefined) count[c.formato]++;
-  });
+  const couponCreati = coupons.length;
+  const daCreare = couponDovuti - couponCreati;
 
-  const tipo = ["piccola", "media", "grande"].reduce((a, b) =>
-    count[b] > count[a] ? b : a
-  );
+  console.log("➕ Coupon da creare:", daCreare);
 
-  // 5️⃣ Creo UN SOLO coupon
-  await supabase.from("coupon").insert({
-    email,
-    codice: "cp_" + crypto.randomUUID(),
-    tipo,
-    titolo: `Coppa ${tipo} omaggio`,
-    redento: false
-  });
+  if (daCreare <= 0) {
+    console.log("⛔ Nessun coupon mancante");
+    return;
+  }
+
+  // 3️⃣ CREA
+  for (let i = 0; i < daCreare; i++) {
+    const { error } = await supabase.from("coupon").insert({
+      email,
+      codice: "cp_" + crypto.randomUUID(),
+      tipo: "media",
+      titolo: "Coppa media omaggio",
+      redento: false
+    });
+
+    if (error) {
+      console.error("❌ ERRORE INSERT COUPON:", error);
+    } else {
+      console.log("✅ Coupon creato");
+    }
+  }
 }
 
-/* ===============================
-   RENDER
-================================ */
-
-function renderCoupons(coupons) {
+function renderCoupons(coupons){
   const list = document.getElementById("coupon-list");
   list.innerHTML = "";
+
+  if (!coupons || coupons.length === 0){
+    list.innerHTML = `<div class="empty-msg">Nessun coupon disponibile</div>`;
+    return;
+  }
 
   coupons.forEach(c => {
     const scadenza = scadenzaDaCreazione(c.created_at);
 
     const div = document.createElement("div");
-div.id = `coupon-${c.codice}`;
+    div.id = `coupon-${c.codice}`;
     div.className = "coupon" + (c.redento ? " used" : "");
 
-div.innerHTML = `
-  <div>
-    <div class="coupon-title">${c.titolo}</div>
-    <div class="coupon-desc">Coppa ${c.tipo} omaggio</div>
+    div.innerHTML = `
+      <div style="flex:1">
+        <div class="coupon-title">${c.titolo}</div>
+        <div class="coupon-desc">Coppa ${c.tipo} omaggio</div>
+        <div class="coupon-expiry">Scade il ${scadenza.toLocaleDateString()}</div>
+        ${
+          c.redento && c.used_at
+            ? `<div class="coupon-used-at" style="font-size:12px;color:#888;margin-top:6px">
+                 Usato il ${new Date(c.used_at).toLocaleDateString()}
+               </div>`
+            : ``
+        }
+        <div id="qr-${c.codice}" class="coupon-qr"></div>
+      </div>
 
-    <div class="coupon-expiry">
-      Scade il ${scadenza.toLocaleDateString()}
-    </div>
-
-    ${
-      c.redento && c.used_at
-        ? `<div class="coupon-used-at" style="font-size:12px;color:#888;margin-top:6px">
-             Usato il ${new Date(c.used_at).toLocaleDateString()}
-           </div>`
-        : ``
-    }
-  </div>
-
-  ${
-    c.redento
-      ? `<button disabled>Usato</button>`
-      : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
-  }
-
-  <div id="qr-${c.codice}" style="
-    display:none;
-    margin-top:12px;
-    text-align:center;
-  "></div>
-`;
+      ${
+        c.redento
+          ? `<button disabled>Usato</button>`
+          : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
+      }
+    `;
 
     list.appendChild(div);
   });
 }
 
-window.toggleQR = function(codice) {
+window.toggleQR = function(codice){
   const card = document.getElementById(`coupon-${codice}`);
   if (!card || card.classList.contains("used")) return;
 
   const box = document.getElementById(`qr-${codice}`);
   if (!box) return;
 
-  // toggle
-  if (box.style.display === "block") {
-    box.innerHTML = "";
-    box.style.display = "none";
-    return;
-  }
-
-  box.style.display = "block";
+  const isOpen = box.style.display === "block";
   box.innerHTML = "";
+  box.style.display = isOpen ? "none" : "block";
+
+  if (isOpen) return;
 
   const qrDiv = document.createElement("div");
   box.appendChild(qrDiv);
@@ -434,32 +628,135 @@ window.toggleQR = function(codice) {
 
   const note = document.createElement("div");
   note.style = "font-size:12px;color:#666;margin-top:6px";
-  note.innerText = "Mostra questo QR al cameriere (valido una sola volta)";
+  note.innerText = "Mostra questo QR in cassa (valido una sola volta)";
   box.appendChild(note);
 };
 
-window.gestisciLoginLogout = function () {
-  const email = localStorage.getItem("user_email");
+function aggiornaCouponUI(coupon){
+  const card = document.getElementById(`coupon-${coupon.codice}`);
+  if (!card) return;
 
-  if (!email) {
+  card.classList.add("used");
+
+  const btn = card.querySelector("button");
+  if (btn){
+    btn.innerText = "Usato";
+    btn.disabled = true;
+  }
+
+  const qrBox = document.getElementById(`qr-${coupon.codice}`);
+  if (qrBox){
+    qrBox.innerHTML = "";
+    qrBox.style.display = "none";
+  }
+
+  if (coupon.used_at){
+    let usedBox = card.querySelector(".coupon-used-at");
+    if (!usedBox){
+      usedBox = document.createElement("div");
+      usedBox.className = "coupon-used-at";
+      usedBox.style = "font-size:12px;color:#888;margin-top:6px";
+      card.querySelector(".coupon-expiry").after(usedBox);
+    }
+    usedBox.innerText = `Usato il ${new Date(coupon.used_at).toLocaleDateString()}`;
+  }
+}
+
+/* ===============================
+   REALTIME
+================================ */
+
+let couponChannel = null;
+
+function subscribeCouponRealtime(email) {
+  if (couponChannel) supabase.removeChannel(couponChannel);
+
+  couponChannel = supabase
+    .channel("coupon-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "coupon"
+      },
+      payload => {
+        // sicurezza: solo coupon dell'utente
+        if (payload?.new?.email !== email) return;
+
+        console.log("🔁 Coupon aggiornato realtime:", payload.new);
+
+        // ✅ QUI DEVONO STARE
+        aggiornaCouponUI(payload.new);
+        aggiornaNumeroCoupon(email);
+      }
+    )
+    .subscribe();
+}
+/* ===============================
+   PROFILO BOOT
+================================ */
+document.addEventListener("DOMContentLoaded", async () => {
+  const email = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+
+  const couponSection = document.getElementById("coupon-section");
+  const emailChip = document.getElementById("email-chip");
+  const noLogin = document.getElementById("no-login");
+  const couponList = document.getElementById("coupon-list");
+  const openCoupon = document.getElementById("open-coupon-list");
+
+  // toggle lista coupon
+  if (openCoupon && couponList){
+    openCoupon.onclick = () => {
+      couponList.style.display = (couponList.style.display === "block") ? "none" : "block";
+    };
+  }
+
+  if (!logged || !email){
+    noLogin.style.display = "block";
+    couponSection.style.display = "none";
+    return;
+  }
+
+  // mostra email soft
+  emailChip.style.display = "block";
+  emailChip.innerHTML = `<b>Account:</b> ${email}`;
+
+  await aggiornaNumeroCoppe(email);
+  await verificaECreaCoupon(email);
+  await aggiornaNumeroCoupon(email);
+  await caricaCoupon(email);
+
+  // mostra sezione coupon sempre (anche se 0, ma con badge 0)
+  couponSection.style.display = "block";
+
+  subscribeCouponRealtime(email);
+  subscribeCoppeRealtime(email);
+});
+
+/* ===============================
+   AZIONI TOP
+================================ */
+window.gestisciLoginLogout = function(){
+  const email = localStorage.getItem("user_email");
+  if (!email){
     location.href = "login.html";
     return;
   }
 
-  if (confirm(`Sei loggato come:\n${email}\n\nVuoi cambiare profilo?`)) {
+  if (confirm(`Sei loggato come:\n${email}\n\nVuoi cambiare profilo?`)){
     localStorage.removeItem("user_email");
     localStorage.setItem("userLogged", "0");
     location.href = "login.html";
   }
 };
 
-window.disiscriviti = async function () {
+window.disiscriviti = async function(){
   const email = localStorage.getItem("user_email");
   if (!email) return alert("Errore");
 
-  const ok = confirm(
-    "Sei sicuro di voler disiscriverti?\n\nPerderai coupon e storico."
-  );
+  const ok = confirm("Sei sicuro di voler disiscriverti?\n\nPerderai coupon e storico.");
   if (!ok) return;
 
   await supabase
@@ -471,41 +768,17 @@ window.disiscriviti = async function () {
   localStorage.setItem("userLogged", "0");
   location.href = "index.html";
 };
-
-function subscribeCoppeRealtime(email) {
-  supabase
-    .channel("coppe-realtime")
-    .on(
-      "postgres_changes",
-      {
-        event: "UPDATE",
-        schema: "public",
-        table: "coppe"
-      },
-      payload => {
-        if (payload.new.email !== email) return;
-        if (!payload.new.confermata) return;
-
-        console.log("🍨 Coppa confermata realtime");
-
-        verificaECreaCoupon(email);
-        caricaCoupon(email);
-      }
-    )
-    .subscribe();
-}
-
 </script>
+
 <script type="module">
 import { supabase } from "./supabase.js";
 
 let waitInterval = null;
 let collapseTimeout = null;
 
-function expandWaitBar() {
+function expandWaitBar(){
   const full = document.getElementById("wait-full");
   const compact = document.getElementById("wait-compact");
-
   if (!full || !compact) return;
 
   full.style.display = "inline";
@@ -515,17 +788,16 @@ function expandWaitBar() {
   collapseTimeout = setTimeout(collapseWaitBar, 5000);
 }
 
-function collapseWaitBar() {
+function collapseWaitBar(){
   const full = document.getElementById("wait-full");
   const compact = document.getElementById("wait-compact");
-
   if (!full || !compact) return;
 
   full.style.display = "none";
   compact.style.display = "inline";
 }
 
-async function loadWaitTime() {
+async function loadWaitTime(){
   const { data, error } = await supabase
     .from("wait_time")
     .select("*")
@@ -536,16 +808,14 @@ async function loadWaitTime() {
 
   const bar = document.getElementById("wait-bar");
   const txt = document.getElementById("wait-time");
-
   if (!bar || !txt) return;
 
-  // stop eventuale timer precedente
-  if (waitInterval) {
+  if (waitInterval){
     clearInterval(waitInterval);
     waitInterval = null;
   }
 
-  if (!data.active || data.minutes <= 0) {
+  if (!data.active || data.minutes <= 0){
     bar.style.display = "none";
     return;
   }
@@ -553,55 +823,82 @@ async function loadWaitTime() {
   const startTime = new Date(data.updated_at).getTime();
   const totalSeconds = data.minutes * 60;
 
-function tick() {
-  const now = Date.now();
-  const elapsed = Math.floor((now - startTime) / 1000);
-  const remaining = totalSeconds - elapsed;
+  function tick(){
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTime) / 1000);
+    const remaining = totalSeconds - elapsed;
 
-  if (remaining <= 0) {
-    bar.style.display = "none";
-    clearInterval(waitInterval);
-    waitInterval = null;
-    return;
+    if (remaining <= 0){
+      bar.style.display = "none";
+      clearInterval(waitInterval);
+      waitInterval = null;
+      return;
+    }
+
+    const min = Math.floor(remaining / 60);
+    const sec = remaining % 60;
+    const timeStr = `${min}:${sec.toString().padStart(2,"0")}`;
+
+    txt.textContent = timeStr;
+    const mmss = document.getElementById("wait-mmss");
+    if (mmss) mmss.textContent = timeStr;
+
+    bar.style.display = "flex";
+
+    if (sec === 59) expandWaitBar();
   }
 
-  const min = Math.floor(remaining / 60);
-  const sec = remaining % 60;
-  const timeStr = `${min}:${sec.toString().padStart(2, "0")}`;
-
-  // 🔢 aggiorna entrambi i testi
-  txt.textContent = timeStr;
-  document.getElementById("wait-mmss").textContent = timeStr;
-
-  bar.style.display = "flex";
-
-// ⏱️ quando inizia un nuovo minuto → riapre la barra
-if (sec === 59) {
-  expandWaitBar();
-}
-}
-  tick(); // ⏱️ avvio immediato
+  tick();
   waitInterval = setInterval(tick, 1000);
 }
 
-// 🔴 REALTIME WAIT TIME
 supabase
   .channel("wait-time-live")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "wait_time"
-    },
-    payload => {
-      console.log("🔁 wait_time aggiornato realtime:", payload);
-      loadWaitTime();
-    }
-  )
+  .on("postgres_changes", { event:"*", schema:"public", table:"wait_time" }, () => loadWaitTime())
   .subscribe();
 
 document.addEventListener("DOMContentLoaded", loadWaitTime);
+
+// ===== Menu profilo (apri/chiudi) =====
+const avatarBtn = document.getElementById("profile-avatar-btn");
+const menu = document.getElementById("profile-menu");
+const backdrop = document.getElementById("profile-menu-backdrop");
+
+function openMenu(){
+  if (!menu || !backdrop) return;
+  menu.style.display = "block";
+  backdrop.style.display = "block";
+}
+
+function closeMenu(){
+  if (!menu || !backdrop) return;
+  menu.style.display = "none";
+  backdrop.style.display = "none";
+}
+
+if (avatarBtn){
+  avatarBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = menu && menu.style.display === "block";
+    if (isOpen) closeMenu();
+    else openMenu();
+  });
+}
+
+if (backdrop){
+  backdrop.addEventListener("click", closeMenu);
+}
+
+// chiudi con ESC (desktop)
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeMenu();
+});
+
+// evita chiusura immediata cliccando nel menu
+if (menu){
+  menu.addEventListener("click", (e) => e.stopPropagation());
+}
+
 </script>
 
 <!-- ⏱️ WAIT TIME BAR -->
@@ -621,11 +918,12 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 ">
   <span id="wait-full">
-  Attesa stimata: <span id="wait-time">0</span>
-</span>
-<span id="wait-compact" style="display:none">
-  <span id="wait-mmss">0:00</span>
-</span>
+    Attesa stimata: <span id="wait-time">0</span>
+  </span>
+  <span id="wait-compact" style="display:none">
+    <span id="wait-mmss">0:00</span>
+  </span>
 </div>
+
 </body>
 </html>

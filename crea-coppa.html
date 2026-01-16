@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
    ">
    ⚠️ Allergie
 </a>
+<div id="app-blur-zone"></div>
 
 <!-- solo UNO spacer -->
 <div style="height:60px;"></div>
@@ -161,7 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
 <section id="step-container" style="display:none;">
 </section>
 
-
 <!-- FORM REGISTRAZIONE -->
 <div id="reg-box" style="display:none; padding:20px; text-align:center;">
   <h2>Registrazione</h2>
@@ -183,6 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
   </div>
 </div>
 
+</div> <!-- 🔴 CHIUSURA app-blur-zone -->
 <!-- POPUP -->
 <div id="popup-coppa">
   <div class="popup-content">
@@ -335,10 +336,20 @@ forzaCoppaNonConfermata();
 <!-- 🛒 OVERLAY CARRELLO -->
 <div id="carrello-overlay">
     <div id="carrello-box">
-        <div id="carrello-header">
-            <h3>Carrello</h3>
-            <span id="chiudi-carrello" onclick="chiudiCarrello()">✖</span>
+   <div id="carrello-header">
+    <div>
+        <h3 style="margin:0">Carrello</h3>
+
+        <!-- ⏱️ TIMER SVUOTAMENTO -->
+        <div id="carrello-timer"
+             style="font-size:12px; opacity:.6; margin-top:2px; display:none;">
+            Svuotamento automatico in:
+            <span id="carrello-countdown">--:--</span>
         </div>
+    </div>
+
+    <span id="chiudi-carrello" onclick="chiudiCarrello()">✖</span>
+</div>
 
         <div id="carrello-contenuto">
             <p style="text-align:center; opacity:0.6;">Carrello vuoto</p>
@@ -421,6 +432,9 @@ forzaCoppaNonConfermata();
         <span>Lavora Con Noi</span>
     </a>
 </div>
+
+
+
 
 <script>
   const riepilogo = document.getElementById("riepilogo-coppa");
@@ -705,6 +719,6 @@ function nascondiBottomNav() {
     "></div>
   </div>
 </div>
-
+<div id="blur-overlay"></div>
 </body>
 </html>

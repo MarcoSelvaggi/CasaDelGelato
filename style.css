@@ -935,7 +935,7 @@ line-height: 1.28;
 
 
 
-/* Shake */
+
 #riepilogo-mini.shake {
   animation: riepilogoShake 0.30s ease;
 }
@@ -4395,4 +4395,73 @@ body.step-riepilogo #instagram-nuvola{
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+#loading-bar {
+  height: 100%;
+  width: 0%;
+
+  /* 🍏 VERDE */
+  background: linear-gradient(
+    90deg,
+    #34c759,
+    #30d158
+  );
+
+  transition: width .25s ease;
+  border-radius: 999px;
+}
+
+/* ===============================
+   🌫️ BLUR BACKGROUND – MINI RIEPILOGO
+=============================== */
+
+/* contenitore che viene sfocato */
+#app-blur-zone {
+  transition: filter 0.25s ease, opacity 0.25s ease;
+}
+
+/* quando il mini riepilogo è aperto */
+body.blur-bg #app-blur-zone {
+  filter: blur(6px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* mini riepilogo SEMPRE sopra */
+#riepilogo-mini {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10001;
+  pointer-events: auto;
+}
+/* ===============================
+   🛑 OVERLAY BLOCCA CLICK SFONDO
+=============================== */
+
+#blur-overlay {
+  position: fixed;
+  inset: 0;
+  background: transparent; /* invisibile */
+  z-index: 9998;           /* sotto il mini riepilogo */
+  display: none;
+}
+
+/* ===============================
+   BLUR OVERLAY (CLICK + VISIVO)
+=============================== */
+
+#blur-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+}
+
+/* quando il blur è attivo */
+body.blur-bg #blur-overlay {
+  display: block;
 }

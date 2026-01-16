@@ -11,6 +11,7 @@ window.apriCarrello = function() {
     const overlay = document.getElementById("carrello-overlay");
     if (!overlay) return;
     overlay.style.display = "flex";
+    avviaTimerSvuotamentoCarrello();
     aggiornaCarrelloUI();
 };
 
@@ -83,3 +84,58 @@ window.aggiornaCarrelloUI = function () {
 
     updateBadgeNav();
 };
+
+/* ===============================
+   🚀 CONTROLLO SCADENZA ALL’AVVIO
+=============================== */
+document.addEventListener("DOMContentLoaded", () => {
+  avviaTimerSvuotamentoCarrello();
+});
+
+let carrelloTimerInterval = null;
+
+function avviaTimerSvuotamentoCarrello() {
+  const countdownEl = document.getElementById("carrello-countdown");
+  const timerBox = document.getElementById("carrello-timer");
+  if (!countdownEl || !timerBox) return;
+
+  const scadenza = Number(localStorage.getItem("carrello_scadenza"));
+  if (!scadenza) {
+    timerBox.style.display = "none";
+    return;
+  }
+
+  timerBox.style.display = "block";
+
+  // 🔄 stop eventuale timer precedente
+  if (carrelloTimerInterval) {
+    clearInterval(carrelloTimerInterval);
+  }
+
+  function tick() {
+    const now = Date.now();
+    const diff = scadenza - now;
+
+    if (diff <= 0) {
+      countdownEl.textContent = "00:00";
+      timerBox.style.display = "none";
+      clearInterval(carrelloTimerInterval);
+      carrelloTimerInterval = null;
+      return;
+    }
+
+    const totSec = Math.floor(diff / 1000);
+    const h = Math.floor(totSec / 3600);
+    const m = Math.floor((totSec % 3600) / 60);
+    const s = totSec % 60;
+
+    countdownEl.textContent =
+      (h > 0 ? h + ":" : "") +
+      String(m).padStart(2, "0") +
+      ":" +
+      String(s).padStart(2, "0");
+  }
+
+  tick(); // ⏱️ avvio immediato
+  carrelloTimerInterval = setInterval(tick, 1000);
+}

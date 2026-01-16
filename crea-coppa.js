@@ -16,6 +16,7 @@ let gustoInModifica = null;    // es: "VANIGLIA" (quello giallo attualmente in m
 let collapseTimer = null
 let coppaSalvata = false;
 let registrazioneAperta = false;
+let loadingFallbackTimer = null;
 
 // 🔥 SE ARRIVO DA "USA QUESTA COPPA" → NASCONDI STEP TAVOLO
 document.addEventListener("DOMContentLoaded", () => {
@@ -1275,11 +1276,11 @@ if (gustoVietato) cls += " item-allergene";
         </div>
 
        <div class="nav-buttons">
-    <button class="back-btn" onclick="prevStep()">← Indietro</button>
+    <button class="back-btn" onclick="prevStep()">Indietro</button>
 
     <button
 <button class="next-btn" onclick="nextStep()">
-  Avanti →
+  Avanti
 </button>
 </div>
     `;
@@ -1491,7 +1492,7 @@ if (step === "extra") {
     <div class="nav-buttons">
       <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
       <button class="next-btn" onclick="nextStep()">
-        ${step === "extra" ? "Conferma ✅" : "Avanti ➜"}
+        ${step === "extra" ? "Conferma" : "Avanti ➜"}
       </button>
     </div>
   `;
@@ -1605,7 +1606,7 @@ function nextStep() {
       el.classList.remove("collapsed");
       el.classList.add("open");
       el.innerHTML = el.dataset.full || "";
-
+ blurBackground();
       if (collapseTimer) clearTimeout(collapseTimer);
       collapseTimer = null;
 
@@ -1659,27 +1660,38 @@ function nextStepFromMini() {
     el.innerHTML = el.dataset.mini || "";
   }
 
+  // 🔥 FIX FONDAMENTALE → rimuove SEMPRE il blur
+  if (typeof unblurBackground === "function") {
+    unblurBackground();
+  }
+
   if (collapseTimer) {
     clearTimeout(collapseTimer);
     collapseTimer = null;
   }
 
-  // 2️⃣ stato corretto
-  step = "riepilogo-mini-open";
+  const stepDiPartenza = step;
 
-  // 🔥 PRELOAD SUBITO (mentre il popup è visibile)
-  preloadCoppaImages();
+  // ✅ SOLO SE ARRIVO DA EXTRA → popup + loading
+  if (stepDiPartenza === "extra") {
 
-  // 🔔 POPUP SE NECESSARIO
-  if (shouldShowPreRiepilogoPopup()) {
-    mostraPopupPreRiepilogo(() => {
-      preparaRiepilogoFinale(); // popup → loading → riepilogo
-    });
-    return; // ⛔ STOP TOTALE QUI
+    if (typeof preloadCoppaImages === "function") {
+      preloadCoppaImages();
+    }
+
+    if (shouldShowPreRiepilogoPopup()) {
+      mostraPopupPreRiepilogo(() => {
+        preparaRiepilogoFinale();
+      });
+      return;
+    }
+
+    preparaRiepilogoFinale();
+    return;
   }
 
-  // 🚀 se popup NON serve
-  preparaRiepilogoFinale();
+  // ✅ TUTTI GLI ALTRI STEP → avanti normale
+  nextStep();
 }
 
 function prevStep(){
@@ -2877,45 +2889,56 @@ function firmaCoppa(c) {
 
 window.aggiungiAlCarrello = function () {
 
-    let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
-    const ultima = cronologia[0];
-    if (!ultima) {
-        alert("Errore: impossibile aggiungere la coppa!");
-        return;
-    }
+    // 🔹 recupera ultima coppa dalla cronologia
+    const cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+    const ultima = cronologia[0];
 
-    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+    if (!ultima) {
+        alert("Errore: impossibile aggiungere la coppa!");
+        return;
+    }
 
-    const nuovaCoppa = {
-        formato: ultima.formato,
-        gusti: [...ultima.gusti],
-        granelle: [...ultima.granelle],
-        topping: [...ultima.topping],
-        ingredienti: [...ultima.ingredienti],
-        extra: [...ultima.extra],
-        quantita: 1
-    };
+    // 🔹 carrello attuale
+    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
 
-    const firmaNuova = firmaCoppa(nuovaCoppa);
+    // 🔹 nuova coppa
+    const nuovaCoppa = {
+        formato: ultima.formato,
+        gusti: [...ultima.gusti],
+        granelle: [...ultima.granelle],
+        topping: [...ultima.topping],
+        ingredienti: [...ultima.ingredienti],
+        extra: [...ultima.extra],
+        quantita: 1
+    };
 
-    // 🔥 CERCA COPPA IDENTICA
-    const esistente = carrello.find(c => firmaCoppa(c) === firmaNuova);
+    const firmaNuova = firmaCoppa(nuovaCoppa);
 
-    if (esistente) {
-        // 👉 stessa coppa → aumenta quantità
-        esistente.quantita += 1;
-    } else {
-        // 👉 coppa nuova → aggiungi
-        nuovaCoppa.id = crypto.randomUUID();
-        carrello.push(nuovaCoppa);
-    }
+    // 🔍 verifica se esiste già
+    const esistente = carrello.find(c => firmaCoppa(c) === firmaNuova);
 
-    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+    if (esistente) {
+        esistente.quantita += 1;
+    } else {
+        nuovaCoppa.id = crypto.randomUUID();
+        carrello.push(nuovaCoppa);
+    }
 
-    alert("🛒 Coppa aggiunta al carrello!");
-    updateBadgeNav();
+    // 💾 salva carrello
+    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+
+    // ⏱️ imposta scadenza SOLO se non esiste
+    if (!localStorage.getItem("carrello_scadenza")) {
+        localStorage.setItem(
+            "carrello_scadenza",
+            Date.now() + 2 * 60 * 60 * 1000 // 2 ore
+        );
+    }
+
+    // 🔔 UI
+    updateBadgeNav();
+    alert("🛒 Coppa aggiunta al carrello!");
 };
-
 function getCarrelloCount() {
     const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
     if (!Array.isArray(carrello)) return 0;
@@ -3030,6 +3053,13 @@ function salvaScontrinoComeImmagine() {
       console.error(err);
       alert("Errore durante la creazione dell'immagine.");
     });
+}
+
+function setLoadingDettaCoppa() {
+  const txt = document.getElementById("loading-text");
+  if (!txt) return;
+
+  txt.textContent = "Nell’attesa puoi dettare la tua coppa al cameriere 👂🍨";
 }
 
 function expandMiniRiepilogo(){
@@ -3169,14 +3199,71 @@ function avviaTimerNuvolettaInstagram() {
     }
   }, 20000);
 }
+function mostraMiniDuranteLoading() {
+  const mini = document.getElementById("riepilogo-mini");
+  if (!mini) return;
+
+  // 🔥 FORZA stato APERTO
+  mini.classList.remove("collapsed");
+  mini.classList.add("open");
+
+  // 🔥 FORZA contenuto COMPLETO
+  if (mini.dataset.full) {
+    mini.innerHTML = mini.dataset.full;
+  }
+
+  mini.style.display = "block";
+  mini.style.opacity = "1";
+  mini.style.pointerEvents = "auto";
+}
+function isLocalDev() {
+  return location.hostname === "localhost" ||
+         location.hostname === "127.0.0.1" ||
+         location.protocol === "file:";
+}
+
 
 async function preparaRiepilogoFinale() {
+resetBlurTotale();
+  // 🔥 RIPRISTINA PAGINA (NO BLUR)
+  document.body.classList.remove("blur-bg");
+
+  const miniInit = document.getElementById("riepilogo-mini");
+  if (miniInit) {
+    miniInit.classList.add("collapsed");
+    miniInit.classList.remove("open");
+  }
 
   // 1️⃣ MOSTRA LOADING
   mostraLoadingRiepilogo();
   setLoadingText("Caricamento coppa…");
   setLoadingProgress(0);
 
+  // ⏱️ FALLBACK: se il loading dura troppo → mostra mini riepilogo
+  loadingFallbackTimer = setTimeout(() => {
+    const loading = document.getElementById("loading-riepilogo");
+    if (!loading || loading.style.display === "none") return;
+
+    // 🔥 CAMBIA TESTO LOADING
+    setLoadingDettaCoppa();
+
+    const mini = document.getElementById("riepilogo-mini");
+    if (!mini) return;
+
+    if (mini.dataset.full) {
+      mini.innerHTML = mini.dataset.full;
+    }
+
+    mini.style.display = "block";
+    mini.classList.remove("collapsed");
+    mini.classList.add("open");
+    mini.style.pointerEvents = "auto";
+
+    // ✅ SEGNA che è stato aperto SOLO per il loading
+    mini.dataset.openedByLoading = "1";
+  }, 10000);
+
+  // lascia respirare la UI
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 100));
 
@@ -3185,26 +3272,56 @@ async function preparaRiepilogoFinale() {
 
   // 3️⃣ ASPETTA LE IMMAGINI (con barra reale)
   const stage = document.getElementById("coppa-stage");
-  if (stage) {
+
+  if (stage && !isLocalDev()) {
+    // ✅ PRODUZIONE
     await waitForImagesWithProgress(stage, pct => {
       setLoadingProgress(pct);
-
-      // quando sei oltre ~75% cambia testo
       if (pct >= 75) setLoadingAlmostReady();
     });
 
-    // forzo 100% finale per sicurezza UI
+    setLoadingProgress(100);
+  } else {
+    // 🧪 LOCALE
     setLoadingProgress(100);
   }
 
   // 4️⃣ MICRO-DELAY anti-flicker
   await new Promise(r => requestAnimationFrame(r));
 
-  // 5️⃣ NASCONDI LOADING
-  nascondiLoadingRiepilogo();
+  // 🧹 STOP fallback timer
+  if (loadingFallbackTimer) {
+    clearTimeout(loadingFallbackTimer);
+    loadingFallbackTimer = null;
+  }
+
+  // 🔒 richiudi mini SOLO se era aperto per il loading
+  const mini = document.getElementById("riepilogo-mini");
+  if (mini && mini.dataset.openedByLoading === "1") {
+    mini.classList.add("collapsed");
+    mini.classList.remove("open");
+    mini.dataset.openedByLoading = "";
+  }
+
+// 5️⃣ NASCONDI LOADING
+resetBlurTotale();
+nascondiLoadingRiepilogo();
 
   // 6️⃣ AVVIA TIMER NUVOLA
   avviaTimerNuvolettaInstagram();
+}
+
+function resetBlurTotale() {
+  document.body.classList.remove("blur-bg");
+
+  // sicurezza extra: rimuove blur forzato
+  document.querySelectorAll("#step-container, header").forEach(el => {
+    el.style.filter = "none";
+    el.style.opacity = "1";
+  });
+
+  const overlay = document.getElementById("blur-overlay");
+  if (overlay) overlay.style.display = "none";
 }
 
 function preloadCoppaImages() {
@@ -3248,6 +3365,50 @@ function preloadCoppaImages() {
   console.log("🧊 Preload coppa immagini:", urls.size);
 }
 // ⬇️ FINE FILE — METTILO QUI ⬇️
+
+
+
+function chiudiMiniRiepilogo() {
+  const el = document.getElementById("riepilogo-mini");
+  if (!el) return;
+
+  el.classList.add("collapsed");
+  el.classList.remove("open");
+  el.innerHTML = el.dataset.mini || "";
+
+  if (typeof unblurBackground === "function") unblurBackground();
+
+  if (window.collapseTimer) {
+    clearTimeout(window.collapseTimer);
+    window.collapseTimer = null;
+  }
+
+  // se eri nello stato “mini aperto”, torna a extra
+  if (window.step === "riepilogo-mini-open") {
+    window.step = "extra";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const overlay = document.getElementById("blur-overlay");
+  if (!overlay) return;
+
+  overlay.addEventListener("click", () => {
+    chiudiMiniRiepilogo();
+  });
+});
+
+function blurBackground() {
+  document.body.classList.add("blur-bg");
+  const ov = document.getElementById("blur-overlay");
+  if (ov) ov.style.display = "block";
+}
+
+function unblurBackground() {
+  document.body.classList.remove("blur-bg");
+  const ov = document.getElementById("blur-overlay");
+  if (ov) ov.style.display = "none";
+}
 
 function setLoadingText(text) {
   const el = document.getElementById("loading-text");
@@ -3520,6 +3681,9 @@ window.apriCarrello = function() {
     // 🔥 Mostro overlay
     overlay.style.display = "flex";
 
+       // ⏱️ AVVIA TIMER SVUOTAMENTO (QUESTA È LA RIGA CHE MANCAVA)
+    avviaTimerSvuotamentoCarrello();
+
     // 🔥 Mostro il bottone cronologia solo se registrato
     const btnCron = document.getElementById("btn-cronologia");
     if (btnCron) {
@@ -3553,7 +3717,6 @@ window.cambiaQuantita = function(id, delta) {
 
     // Salvo aggiornamento
     localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
-
     // 🔥 AGGIORNO IMMEDIATAMENTE UI e BADGE
     aggiornaCarrelloUI();
     updateBadgeNav();
@@ -3568,10 +3731,25 @@ window.chiudiCarrello = function() {
 window.svuotaCarrello = function () {
     if (!confirm("Vuoi svuotare tutto il carrello?")) return;
 
+    // 🧹 svuota carrello
     localStorage.setItem("carrelloCoppe", "[]");
 
-    updateBadgeNav();
+    // 🧹 rimuove scadenza
+    localStorage.removeItem("carrello_scadenza");
+    localStorage.removeItem("carrello_last_update");
+
+    // ⏱️ ferma e nasconde il timer
+    if (window.carrelloTimerInterval) {
+        clearInterval(window.carrelloTimerInterval);
+        window.carrelloTimerInterval = null;
+    }
+
+    const timerBox = document.getElementById("carrello-timer");
+    if (timerBox) timerBox.style.display = "none";
+
+    // 🔄 aggiorna UI
     aggiornaCarrelloUI();
+    updateBadgeNav();
 };
 
 // 🔥 Aggiorna il badge della NAV BOTTOM
@@ -3686,7 +3864,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.classList.remove("collapsed");
       this.classList.add("open");
       this.innerHTML = this.dataset.full || "";
-
+      blurBackground(); // 🔥 SFONDO SFOCATO
       if (collapseTimer) clearTimeout(collapseTimer);
       autoCollapseRiepilogo();
 
@@ -3695,7 +3873,7 @@ document.addEventListener("DOMContentLoaded", () => {
       this.classList.add("collapsed");
       this.classList.remove("open");
       this.innerHTML = this.dataset.mini || "";
-
+      unblurBackground(); // 🔥 RIPRISTINA
       // ✅ FIX FONDAMENTALE
       if (step === "riepilogo-mini-open") {
         step = "extra";

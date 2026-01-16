@@ -1119,6 +1119,56 @@
   body{
   padding-bottom: 120px; /* 🔥 spazio per search + bottom nav */
 }
+
+/* ===============================
+   CARICA ALTRE – PULSANTE PAGINAZIONE
+=============================== */
+.load-more-btn{
+  display: block;
+  margin: 24px auto 12px;
+
+  padding: 12px 20px;
+  min-width: 180px;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  color: #fff;
+  background: linear-gradient(180deg, #ff8a1f, #ff7a00);
+  border: none;
+  border-radius: 14px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  box-shadow: 0 6px 16px rgba(255,122,0,0.35);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+/* hover (desktop) */
+.load-more-btn:hover{
+  transform: scale(1.04);
+  box-shadow: 0 8px 20px rgba(255,122,0,0.45);
+}
+
+/* tap (mobile) */
+.load-more-btn:active{
+  transform: scale(0.96);
+  box-shadow: 0 4px 12px rgba(255,122,0,0.3);
+}
+
+/* stato disabilitato (opzionale) */
+.load-more-btn:disabled{
+  opacity: 0.6;
+  box-shadow: none;
+  transform: none;
+  cursor: default;
+}
+
+
     </style>
 </head>
 
@@ -1231,7 +1281,6 @@
 
 <div id="lista-coppe"></div>
 
-<a href="index.html" class="btn">Torna alla Home</a>
 
 <!-- ⭐ TUTTO IL TUO JS ORIGINALE (INTATTO) -->
 <script>
@@ -1292,10 +1341,44 @@ const prezziExtra = {
     "PANNA EXTRA": 1.80
 };
     const lista = document.getElementById("lista-coppe");
+// ===============================
+// 💤 LAZY LOAD IMMAGINI COPPA (SERIO)
+// ===============================
+let coppaImgObserver = null;
 
+function setupCoppaLazyObserver() {
+  if (coppaImgObserver) return; // già creato
+
+  coppaImgObserver = new IntersectionObserver((entries, obs) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+
+      const img = entry.target;
+      const src = img.dataset.src;
+
+      if (src) {
+        img.src = src; // ✅ SOLO ORA parte il download
+        img.removeAttribute("data-src");
+      }
+
+      obs.unobserve(img);
+    }
+  }, {
+    root: null,
+    threshold: 0.1
+  });
+}
+
+function observeCoppaImg(img) {
+  if (!img) return;
+  setupCoppaLazyObserver();
+  coppaImgObserver.observe(img);
+}
     let mostraSoloPreferiti = false;
     let termineRicerca = "";
     let criterioOrdine = "data_desc";
+    let limiteVisibili = 3;   // 🔥 quante coppe mostrare
+const STEP_CARICAMENTO = 3;
 
     function salva() { localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe)); }
 
@@ -1670,8 +1753,11 @@ async function waitAllImages(container) {
 
 
 async function renderLista() {
-    const arr = getCoppeFiltrateEOrdinate()
-                  .filter(c => !c.eliminata);   // ✅ NASCONDE LE ELIMINATE
+const arrCompleto = getCoppeFiltrateEOrdinate()
+                      .filter(c => !c.eliminata);
+
+// 🔥 mostra solo le prime N
+const arr = arrCompleto.slice(0, limiteVisibili);  // ✅ NASCONDE LE ELIMINATE
 
                       aggiornaFedelta(); // 🔥 aggiorna box fedeltà in alto
 
@@ -1762,7 +1848,7 @@ div.innerHTML = `
 ${c.coppa_img ? `
   <div class="coppa-thumb-wrapper">
 <img
-  src="${c.coppa_img}"
+  data-src="${c.coppa_img}"
   class="coppa-thumb"
   onclick="apriCoppaFullscreen('${c.coppa_img}', coppe[${idx}])"
 >
@@ -1836,8 +1922,14 @@ div.querySelector(".delete-btn").onclick = () => eliminaCoppa(idx);
     }
 };
 
-            lista.appendChild(div);
-            await waitAllImages(div);
+lista.appendChild(div);
+
+// 🔥 attiva lazy load SOLO per l'immagine di questa card
+const img = div.querySelector(".coppa-thumb");
+if (img) observeCoppaImg(img);
+
+// ⛔️ questa riga NON serve più con il lazy
+// await waitAllImages(div);
 
             // === QR CODE nella cronologia ===
 const btn = div.querySelector(".toggle-qr");
@@ -1868,13 +1960,27 @@ const qrDiv = div.querySelector(`.qr-code`);
         }
 
     } // ✅ CHIUDE IL for (const c of arr)
+// 🔽 BOTTONE "CARICA ALTRE"
+if (arrCompleto.length > limiteVisibili) {
+  const btnMore = document.createElement("button");
+  btnMore.textContent = "Carica altre";
+  btnMore.className = "load-more-btn";
+  btnMore.style.margin = "20px auto";
 
+  btnMore.onclick = () => {
+    limiteVisibili += STEP_CARICAMENTO;
+    renderLista();
+  };
+
+  lista.appendChild(btnMore);
+}
 } // ✅ CHIUDE async function renderLista()
 
-    document.getElementById("search").addEventListener("input", e => {
-        termineRicerca = e.target.value;
-        renderLista();
-    });
+document.getElementById("search").addEventListener("input", e => {
+  termineRicerca = e.target.value;
+  limiteVisibili = STEP_CARICAMENTO; // 🔥 reset
+  renderLista();
+});
 
 
 document.getElementById("toggle-preferiti").addEventListener("click", () => {
@@ -1890,12 +1996,13 @@ document.getElementById("toggle-preferiti").addEventListener("click", () => {
   if (label) {
     label.textContent = mostraSoloPreferiti ? "Mostra tutti" : "Preferiti";
   }
-
+limiteVisibili = STEP_CARICAMENTO;
   renderLista();
 });
 
 document.getElementById("ordine-select").addEventListener("change", e => {
     criterioOrdine = e.target.value;
+    limiteVisibili = STEP_CARICAMENTO;
     renderLista();
 });
 
@@ -2401,8 +2508,8 @@ window.chiudiPopupInstagram = function () {
     const y = window.scrollY;
 
     if (y > 120 && !compact) {
-      const rect = box.getBoundingClientRect();
-      spacer.style.height = rect.height + "px"; // 🔒 PRECISO
+const rect = box.getBoundingClientRect();
+spacer.style.height = rect.height + "px";
       box.classList.add("compact");
       compact = true;
     }
