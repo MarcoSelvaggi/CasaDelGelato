@@ -303,6 +303,24 @@ button:hover {
   opacity:0.9;
 }
 
+.mail-link{
+  color:#007aff;
+  font-weight:700;
+  text-decoration:none;
+}
+.mail-link:hover{ text-decoration:underline; }
+
+.mail-disabled{
+  color:#9aa0a6;
+  font-weight:700;
+  cursor:not-allowed;
+  user-select:none;
+}
+
+.mail-no{
+  font-size:12px;
+  margin-left:4px;
+}
 </style>
 </head>
 
@@ -1245,11 +1263,24 @@ box.innerHTML = `
     <div class="utente-details">
         <b>Nome:</b> ${highlight(u?.nome || "-")}<br>
         <b>Cognome:</b> ${highlight(u?.cognome || "-")}<br>
-        <b>Email:</b> 
-        <a href="mailto:${u?.email || email}" 
-           style="color:#007aff; text-decoration:none;">
-           ${highlight(u?.email || email)}
-        </a><br>
+    <b>Email:</b>
+${
+  u?.consenso_promozioni === true
+    ? `
+      <a href="mailto:${u.email}"
+         class="mail-link"
+         onclick="event.stopPropagation()">
+         ${highlight(u.email)}
+      </a>
+    `
+    : `
+      <span class="mail-disabled"
+            title="Il cliente non ha accettato comunicazioni">
+        ${highlight(u.email)} <span class="mail-no">🚫</span>
+      </span>
+    `
+}
+<br>
         <b>Registrato il:</b> ${highlight(formatDate(u?.created_at))}<br>
         ${
             u?.disiscritto 
@@ -1413,12 +1444,18 @@ ${
 // ------------------------------------------------------------
 
 window.inviaEmail_Registrati = function() {
+
+    // ✅ SOLO chi ha dato consenso
     const emails = UTENTI
-        .filter(u => u.email && !u.disiscritto)
+        .filter(u =>
+            u.email &&
+            !u.disiscritto &&
+            u.consenso_promozioni === true
+        )
         .map(u => u.email);
 
     if (!emails.length) {
-        alert("Nessun utente registrato attivo.");
+        alert("⚠️ Nessun utente ha acconsentito a ricevere comunicazioni.");
         return;
     }
 
@@ -1430,38 +1467,48 @@ window.inviaEmail_Registrati = function() {
 };
 
 window.inviaEmail_Disiscritti = function() {
+
     const emails = UTENTI
-        .filter(u => u.email && u.disiscritto)
+        .filter(u =>
+            u.email &&
+            u.disiscritto === true &&
+            u.consenso_promozioni === true
+        )
         .map(u => u.email);
 
     if (!emails.length) {
-        alert("Nessun utente disiscritto.");
+        alert("⚠️ Nessun utente disiscritto ha acconsentito a ricevere comunicazioni.");
         return;
     }
 
     const mailto =
         "mailto:?bcc=" + encodeURIComponent(emails.join(",")) +
-        "&subject=" + encodeURIComponent("Informazioni Casa del Gelato");
+        "&subject=" + encodeURIComponent("Comunicazioni Casa del Gelato");
 
     window.location.href = mailto;
 };
 
 window.inviaEmail_10Coppe = function() {
+
     const emails = UTENTI
         .filter(u => {
+            if (!u.email) return false;
+            if (u.disiscritto) return false;
+            if (u.consenso_promozioni !== true) return false;
+
             const stats = getStats(u.email);
             return stats.conf >= 10;
         })
         .map(u => u.email);
 
     if (!emails.length) {
-        alert("Nessun utente con almeno 10 coppe confermate.");
+        alert("⚠️ Nessun utente con 10+ coppe ha acconsentito a ricevere comunicazioni.");
         return;
     }
 
     const mailto =
         "mailto:?bcc=" + encodeURIComponent(emails.join(",")) +
-        "&subject=" + encodeURIComponent("Premio Fedeltà - Casa del Gelato");
+        "&subject=" + encodeURIComponent("🎁 Premio Fedeltà Casa del Gelato");
 
     window.location.href = mailto;
 };

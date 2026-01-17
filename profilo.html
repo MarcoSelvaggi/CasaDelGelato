@@ -332,13 +332,265 @@
   gap: 8px;
 
   cursor: pointer;
-}
 
+  /* ✅ AGGIUNGI QUESTE */
+  text-decoration: none;
+  outline: none;
+}
+.glass-item:visited{
+  color: #111;
+  text-decoration: none;
+}
 .glass-item:hover{ background: rgba(0,0,0,0.06); }
 .glass-item:active{ background: rgba(0,0,0,0.10); transform: scale(0.99); }
 
 .glass-item.danger{
   color: #ff3b30;
+}
+
+/* Hint login */
+.login-hint{
+  margin-top: 8px;
+  padding-left: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #777;
+}
+
+/* Card disabilitata */
+.profile-action.disabled{
+  opacity: 0.45;
+  pointer-events: none;
+}
+/* 🔘 iOS style switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background-color: #ccc;
+  border-radius: 999px;
+  transition: .2s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 2px;
+  top: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .2s;
+}
+
+.switch input:checked + .slider {
+  background-color: #34c759;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(18px);
+}
+/* 📩 Popup consensi animato */
+/* 📩 Popup consensi animato (FLUIDO) */
+#consensi-backdrop {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .32s ease;
+}
+
+#consensi-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#consensi-popup {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  right: auto;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transform: translate(-50%, -50%) scale(0.94);
+  transition: opacity .32s ease, transform .32s ease;
+}
+
+#consensi-popup.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+.consensi-title{
+  text-align: center;
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 12px; /* più aria sotto */
+}
+
+.consensi-desc{
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 18px; /* separa bene dallo switch */
+  line-height: 1.4;
+}
+#consensi-popup > div {
+  padding: 16px 18px 18px; /* prima era troppo stretto */
+}
+#consensi-popup .switch-row,
+#consensi-popup > div > div[style*="display:flex"] {
+  padding: 14px 14px;   /* prima troppo stretto */
+  margin-bottom: 18px; /* aria prima del bottone */
+}
+#chiudi-consensi{
+  margin-top: 6px;  /* prima era troppo attaccato */
+}
+/* 📩 Popup consensi centrato */
+#consensi-popup{
+  top: 40% !important;
+  left: 50% !important;
+  right: auto !important;
+
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+/* 🔔 Popup notifiche – FLUIDO */
+#notifiche-backdrop{
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .32s ease;
+}
+
+#notifiche-backdrop.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#notifiche-popup{
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  right: auto;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transform: translate(-50%, -50%) scale(0.94);
+  transition: opacity .32s ease, transform .32s ease;
+}
+
+#notifiche-popup.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* singola notifica */
+.notification-item{
+  background: rgba(0,0,0,0.05);
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.notif-badge{
+  background:#ff3b30;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  padding: 2px 8px;
+  border-radius:999px;
+  min-width: 22px;
+  text-align:center;
+  line-height: 18px;
+}
+.notification-item{
+  position: relative;
+  padding: 12px 34px 12px 14px; /* spazio a destra per pallino */
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 🔵 pallino non letta */
+.notification-item.unread::after{
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #007aff; /* Apple blue */
+}
+
+/* ===== iOS SWIPE NOTIFICA ===== */
+/* wrapper = riferimento unico */
+.notification-swipe{
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+/* 🔴 CARD ROSSA (SOTTO) */
+.notification-swipe .notif-delete{
+  position: absolute;
+  inset: 1.5px;                     /* 🔥 IDENTICA */
+  background: #ff3b30;
+  color: #fff;
+
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 18px;
+
+  border-radius: 14px;
+  z-index: 1;
+}
+
+/* ⚪ CARD NOTIFICA (SOPRA) */
+.notification-swipe .notification-item{
+  position: relative;
+  z-index: 2;
+
+  background: #f4f4f6;
+  padding: 12px 14px;
+  border-radius: 16px;
+
+  /* 🔥 micro overdraw */
+  margin: -1px;
+  transition: transform .25s ease;
+}
+
+/* stato swipe */
+.notification-swipe.swiped .notification-item{
+  transform: translateX(-90px);
+}
+/* 🖥️ Desktop: mostra Elimina solo su hover */
+@media (hover: hover) and (pointer: fine) {
+  .notification-swipe:hover .notification-item {
+    transform: translateX(-90px);
+  }
 }
 </style>
 </head>
@@ -363,11 +615,26 @@
 
 <!-- MENU LIQUID GLASS -->
 <div id="profile-menu" class="glass-menu" style="display:none;">
-  <button class="glass-item" id="menu-change-photo">🖼️ Cambia immagine</button>
-  <button class="glass-item" id="menu-register">📝 Registrati</button>
-  <button class="glass-item" id="menu-login">👤 Accedi</button>
+  <button class="glass-item" id="menu-change-photo">Cambia immagine</button>
+  <button class="glass-item" id="menu-register">Registrati</button>
+  <a href="login.html" class="glass-item">Accedi</a>
+  <button class="glass-item" id="menu-logout">Logout</button>
   <button class="glass-item danger" id="menu-unsubscribe">✕ Disiscriviti</button>
+<button class="glass-item" id="menu-notifiche">
+  🔔 Notifiche
+  <span id="notifiche-count" class="badge" style="display:none;">0</span>
+</button>
+  <button class="glass-item" id="menu-consensi">
+  Consensi comunicazioni 📩
+</button>
 </div>
+
+<input
+  id="profile-avatar-input"
+  type="file"
+  accept="image/*"
+  style="display:none"
+/>
 
 <div id="profile-menu-backdrop" class="glass-backdrop" style="display:none;"></div>
 
@@ -383,7 +650,7 @@
   <section class="profile-section">
     <div class="section-title">🍨 Le mie coppe</div>
 
-    <a href="cronologia.html" class="profile-action">
+    <a href="cronologia.html" id="coppe-card" class="profile-action">
       <div class="profile-action-left">
         <span>Coppe create</span>
       </div>
@@ -392,6 +659,9 @@
         <span class="chevron">›</span>
       </div>
     </a>
+    <div id="login-hint" class="login-hint" style="display:none;">
+  Accedi o registrati per usufruire di tutte le funzionalità
+</div>
   </section>
 
   <!-- 🎟️ COUPON -->
@@ -412,8 +682,90 @@
   </section>
 
   <div id="no-login" class="empty-msg" style="display:none;">
-    Nessun profilo loggato.
+    Nessun accesso effetuato.
   </div>
+</div>
+
+<!-- 📩 POPUP CONSENSI -->
+<div id="consensi-backdrop" class="glass-backdrop"></div>
+
+<div id="consensi-popup" class="glass-menu"
+  style="right:auto; left:50%; width:300px;">
+
+<div class="consensi-title">
+  📩 Consensi comunicazioni
+</div>
+
+<div class="consensi-desc">
+  Puoi decidere se ricevere promozioni e comunicazioni da Casa del Gelato.
+</div>
+
+    <div style="
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:rgba(0,0,0,0.05);
+      padding:10px 12px;
+      border-radius:12px;
+    ">
+      <span style="font-weight:700;font-size:14px;">
+        Ricevi comunicazioni
+      </span>
+
+      <label class="switch">
+        <input type="checkbox" id="consenso-switch">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <button id="chiudi-consensi"
+      style="
+        margin-top:14px;
+        width:100%;
+        padding:10px;
+        border-radius:12px;
+        border:none;
+        background:#111;
+        color:#fff;
+        font-weight:700;
+        cursor:pointer;
+      ">
+      Chiudi
+    </button>
+
+  </div>
+</div>
+
+<!-- 🔔 POPUP NOTIFICHE -->
+<div id="notifiche-backdrop" class="glass-backdrop"></div>
+
+<div id="notifiche-popup" class="glass-menu"
+  style="right:auto; left:50%; width:320px;">
+
+  <div class="consensi-title">
+    🔔 Notifiche
+  </div>
+
+  <div class="consensi-desc">
+    Qui trovi gli aggiornamenti sui tuoi coupon e premi.
+  </div>
+
+<div id="notifiche-list"></div>
+
+  <button id="chiudi-notifiche"
+    style="
+      margin-top:16px;
+      width:100%;
+      padding:10px;
+      border-radius:12px;
+      border:none;
+      background:#111;
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+    ">
+    Chiudi
+  </button>
 </div>
 
 <!-- ⭐ Bottom bar -->
@@ -435,13 +787,370 @@
 <script type="module">
 import { supabase } from "./supabase.js";
 
+
+
 /* ===============================
    UTILS
 ================================ */
+
+function abilitaSwipeNotifiche() {
+  document.querySelectorAll(".notification-swipe").forEach(wrapper => {
+    const item = wrapper.querySelector(".notification-item");
+
+    let startX = 0;
+    let currentX = 0;
+    let dragging = false;
+
+    item.addEventListener("touchstart", e => {
+      startX = e.touches[0].clientX;
+      dragging = true;
+      item.style.transition = "none";
+    });
+
+    item.addEventListener("touchmove", e => {
+      if (!dragging) return;
+
+      currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+
+      // solo swipe verso sinistra
+      if (diff < 0) {
+        item.style.transform = `translateX(${Math.max(diff, -110)}px)`;
+      }
+    });
+
+    item.addEventListener("touchend", () => {
+      dragging = false;
+      item.style.transition = "transform .25s ease";
+
+      // soglia swipe
+      if (currentX - startX < -60) {
+        wrapper.classList.add("swiped");
+        item.style.transform = "translateX(-90px)";
+      } else {
+        wrapper.classList.remove("swiped");
+        item.style.transform = "translateX(0)";
+      }
+    });
+  });
+}
+
+async function aggiornaBadgeNotifiche(){
+  const email = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+  const badge = document.getElementById("notifiche-count");
+
+  if (!badge || !logged || !email){
+    if (badge) badge.style.display = "none";
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("notifiche")
+    .select("id")
+    .eq("email", email)
+    .eq("letta", false);
+
+    console.log("BADGE QUERY RESULT:", data);
+
+  if (error){
+    console.error(error);
+    badge.style.display = "none";
+    return;
+  }
+
+  const n = data.length;
+
+  if (n > 0){
+    badge.textContent = n > 99 ? "99+" : n;
+    badge.style.display = "inline-block";
+  } else {
+    badge.style.display = "none";
+  }
+}
+
+
+async function caricaNotificheUtente() {
+  const email = localStorage.getItem("user_email");
+  if (!email) return;
+
+  const list = document.getElementById("notifiche-list");
+  if (!list) return;
+
+  list.innerHTML = "⏳ Caricamento…";
+
+  const { data, error } = await supabase
+    .from("notifiche")
+    .select("*")
+    .eq("email", email)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    list.innerHTML = "❌ Errore caricamento notifiche";
+    console.error(error);
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    list.innerHTML = `
+      <div class="notification-item">
+        🔕 Nessuna notifica al momento
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = "";
+
+data.forEach(n => {
+  const wrapper = document.createElement("div");
+  wrapper.className = "notification-swipe";
+  wrapper.dataset.id = n.id;
+
+  const content = document.createElement("div");
+  content.className = "notification-item";
+  if (n.letta === false) content.classList.add("unread");
+  content.textContent = n.messaggio;
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "notif-delete";
+  deleteBtn.textContent = "Elimina";
+
+wrapper.appendChild(deleteBtn); // 🔴 SOTTO (nascosto)
+wrapper.appendChild(content);   // ⚪ SOPRA (scorre)
+  list.appendChild(wrapper);
+  abilitaSwipeNotifiche();
+});
+}
+
+// ===============================
+// AVATAR PROFILO (local + leggero)
+// ===============================
+const AVATAR_KEY = "cdg_profile_avatar_v1";
+
+function setAvatarSrc(src) {
+  const img = document.getElementById("profile-avatar-img");
+  if (img) img.src = src;
+}
+
+function loadSavedAvatar() {
+  const saved = localStorage.getItem(AVATAR_KEY);
+  if (saved) setAvatarSrc(saved);
+}
+
+// Riduce e comprime l’immagine prima di salvarla (evita quota localStorage)
+async function compressImageToDataURL(file, maxSize = 256, quality = 0.82) {
+  const bitmap = await createImageBitmap(file);
+
+  let w = bitmap.width;
+  let h = bitmap.height;
+
+  const scale = Math.min(maxSize / w, maxSize / h, 1);
+  w = Math.round(w * scale);
+  h = Math.round(h * scale);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(bitmap, 0, 0, w, h);
+
+  // jpeg = molto più leggero del png
+  return canvas.toDataURL("image/jpeg", quality);
+}
+
+function setupAvatarChange() {
+  const btn = document.getElementById("menu-change-photo");
+  const input = document.getElementById("profile-avatar-input");
+
+  if (!btn || !input) return;
+
+  // click su “Cambia immagine”
+  btn.addEventListener("click", () => {
+    input.value = ""; // reset per permettere la stessa foto due volte
+    input.click();
+  });
+
+  // quando scegli una foto
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+      const dataUrl = await compressImageToDataURL(file, 256, 0.82);
+
+      // aggiorna UI subito
+      setAvatarSrc(dataUrl);
+
+      // salva
+      localStorage.setItem(AVATAR_KEY, dataUrl);
+
+      // opzionale: chiudi menu se vuoi
+      if (typeof closeMenu === "function") closeMenu();
+    } catch (e) {
+      console.error("Errore avatar:", e);
+      alert("Errore nel caricamento immagine.");
+    }
+  });
+}
+
+// Avvio
+document.addEventListener("DOMContentLoaded", () => {
+  loadSavedAvatar();
+  setupAvatarChange();
+});
+
 function scadenzaDaCreazione(created_at){
   const d = new Date(created_at);
   return new Date(d.getFullYear(), 11, 31);
 }
+
+// ===== POPUP CONSENSI =====
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("menu-consensi");
+  const popup = document.getElementById("consensi-popup");
+  const backdrop = document.getElementById("consensi-backdrop");
+  const toggle = document.getElementById("consenso-switch");
+  const closeBtn = document.getElementById("chiudi-consensi");
+
+  if (!btn || !popup || !toggle || !backdrop) return;
+
+btn.addEventListener("click", async () => {
+  // ✅ CHIUDI FORZATAMENTE MENU PROFILO (anche tra moduli)
+  const pm = document.getElementById("profile-menu");
+  const pmb = document.getElementById("profile-menu-backdrop");
+  if (pm) pm.style.display = "none";
+  if (pmb) pmb.style.display = "none";
+
+  const email = localStorage.getItem("user_email");
+  if (!email) return alert("Devi essere loggato.");
+
+  const { data, error } = await supabase
+    .from("utenti")
+    .select("consenso_promozioni")
+    .eq("email", email)
+    .single();
+
+  if (error) return alert("Errore caricamento consensi");
+
+  toggle.checked = data.consenso_promozioni === true;
+
+  backdrop.style.display = "block";
+  popup.style.display = "block";
+
+  requestAnimationFrame(() => {
+    backdrop.classList.add("show");
+    popup.classList.add("show");
+  });
+});
+
+  toggle.addEventListener("change", async () => {
+    const email = localStorage.getItem("user_email");
+    if (!email) return;
+
+    await supabase
+      .from("utenti")
+      .update({ consenso_promozioni: toggle.checked })
+      .eq("email", email);
+  });
+
+  function closeConsensi() {
+    backdrop.classList.remove("show");
+    popup.classList.remove("show");
+  }
+
+  closeBtn.addEventListener("click", closeConsensi);
+  backdrop.addEventListener("click", closeConsensi);
+});
+
+
+// ===== POPUP NOTIFICHE =====
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("menu-notifiche");
+  const popup = document.getElementById("notifiche-popup");
+  const backdrop = document.getElementById("notifiche-backdrop");
+  const closeBtn = document.getElementById("chiudi-notifiche");
+
+  if (!btn || !popup || !backdrop || !closeBtn) return;
+
+  // 🟢 APRI: solo carica e mostra (NON segna lette)
+  async function apriNotifiche(){
+    console.log("APRI NOTIFICHE");
+    if (typeof window.closeMenu === "function") window.closeMenu();
+
+    const email = localStorage.getItem("user_email");
+    if (!email) return;
+
+    await caricaNotificheUtente();
+
+    // mostra popup
+    popup.classList.remove("show");
+    backdrop.classList.remove("show");
+    requestAnimationFrame(() => {
+      backdrop.classList.add("show");
+      popup.classList.add("show");
+    });
+  }
+
+  // 🔴 CHIUDI: segna lette + badge + pallini
+  async function closeNotifiche(){
+    console.log("CHIUDI NOTIFICHE");
+    popup.classList.remove("show");
+    backdrop.classList.remove("show");
+
+    const email = localStorage.getItem("user_email");
+    if (!email) return;
+
+    await supabase
+      .from("notifiche")
+      .update({ letta: true })
+      .eq("email", email)
+      .eq("letta", false);
+
+    await aggiornaBadgeNotifiche();
+
+    document
+      .querySelectorAll(".notification-item.unread")
+      .forEach(el => el.classList.remove("unread"));
+  }
+
+  btn.addEventListener("click", apriNotifiche);
+  closeBtn.addEventListener("click", closeNotifiche);
+  backdrop.addEventListener("click", closeNotifiche);
+});
+
+// ===== DELETE NOTIFICA (SWIPE) =====
+document.addEventListener("click", async e => {
+  const btn = e.target.closest(".notif-delete");
+  if (!btn) return;
+
+  const wrapper = btn.closest(".notification-swipe");
+  if (!wrapper) return;
+
+  const id = wrapper.dataset.id;
+
+  // elimina dal DB
+  if (id){
+    await supabase
+      .from("notifiche")
+      .delete()
+      .eq("id", id);
+  }
+
+  // animazione uscita
+  wrapper.style.transition = "height .25s ease, opacity .25s ease";
+  wrapper.style.opacity = "0";
+  wrapper.style.height = wrapper.offsetHeight + "px";
+
+  requestAnimationFrame(() => {
+    wrapper.style.height = "0";
+    wrapper.style.margin = "0";
+  });
+
+  setTimeout(() => wrapper.remove(), 250);
+
+  // aggiorna badge
+  aggiornaBadgeNotifiche();
+});
 
 /* ===============================
    CONTEGGI
@@ -462,6 +1171,8 @@ async function aggiornaNumeroCoppe(email){
   const badge = document.getElementById("coppe-count");
   if (badge) badge.textContent = count;
 }
+
+
 
 async function aggiornaNumeroCoupon(email){
   const { data, error } = await supabase
@@ -494,71 +1205,95 @@ async function caricaCoupon(email){
   renderCoupons(coupons || []);
 }
 
-async function verificaECreaCoupon(email) {
-  console.log("🔎 verificaECreaCoupon chiamata per:", email);
-
-// 1️⃣ Totale conferme (somma del campo "confermate")
-const { data: coppe, error: errCoppe } = await supabase
-  .from("coppe")
-  .select("confermate")
-  .eq("email", email)
-  .or("eliminata.is.null,eliminata.eq.false");
-
-if (errCoppe) {
-  console.error("❌ Errore coppe:", errCoppe);
-  return;
-}
-
-const totaleConferme = (coppe || []).reduce((tot, c) => tot + Number(c.confermate || 0), 0);
-const couponDovuti = Math.floor(totaleConferme / 10);
-
-console.log("✅ Totale conferme:", totaleConferme);
-console.log("🎯 Coupon dovuti:", couponDovuti);
-
-if (couponDovuti === 0) {
-  console.log("⛔ Nessun coupon da creare");
-  return;
-}
-
-  // 2️⃣ Coupon già creati
-  const { data: coupons, error: errCoupons } = await supabase
-    .from("coupon")
+async function creaNotificaSeNonEsiste(email, tipo, messaggio){
+  const { data } = await supabase
+    .from("notifiche")
     .select("id")
-    .eq("email", email);
+    .eq("email", email)
+    .eq("tipo", tipo)
+    .limit(1);
 
-  console.log("🎟️ Coupon già creati:", coupons?.length, coupons);
+  if (data && data.length > 0) return;
 
-  if (errCoupons || !coupons) {
-    console.error("❌ Errore coupon:", errCoupons);
+  await supabase.from("notifiche").insert({
+    email,
+    tipo,
+    messaggio,
+    letta: false
+  });
+}
+
+async function verificaECreaCoupon(email) {
+  console.log("🚨 verificaECreaCoupon", email);
+
+  // 1️⃣ conferme già consumate
+  const { data: utente } = await supabase
+    .from("utenti")
+    .select("conferme_consumate")
+    .eq("email", email)
+    .single();
+
+  const confermeUsate = utente?.conferme_consumate || 0;
+
+  // 2️⃣ tutte le conferme reali
+  const { data: conferme } = await supabase
+    .from("conferme_coppe")
+    .select("formato")
+    .eq("email", email)
+    .order("created_at", { ascending: true });
+
+  if (!conferme || conferme.length < confermeUsate + 10) {
+    console.log("⛔ Non abbastanza conferme");
     return;
   }
 
-  const couponCreati = coupons.length;
-  const daCreare = couponDovuti - couponCreati;
+  // 3️⃣ estrai BLOCCO da 10
+  const blocco = conferme
+    .slice(confermeUsate, confermeUsate + 10)
+    .map(c => c.formato.toLowerCase());
 
-  console.log("➕ Coupon da creare:", daCreare);
+  console.log("📦 BLOCCO 10:", blocco);
 
-  if (daCreare <= 0) {
-    console.log("⛔ Nessun coupon mancante");
-    return;
-  }
+  // 4️⃣ conta formati
+  const count = { piccola: 0, media: 0, grande: 0 };
+  blocco.forEach(f => count[f]++);
 
-  // 3️⃣ CREA
-  for (let i = 0; i < daCreare; i++) {
-    const { error } = await supabase.from("coupon").insert({
-      email,
-      codice: "cp_" + crypto.randomUUID(),
-      tipo: "media",
-      titolo: "Coppa media omaggio",
-      redento: false
-    });
+  let formatoVincente = null;
+  let max = -1;
 
-    if (error) {
-      console.error("❌ ERRORE INSERT COUPON:", error);
-    } else {
-      console.log("✅ Coupon creato");
+  for (const f in count) {
+    if (count[f] > max) {
+      max = count[f];
+      formatoVincente = f;
     }
   }
+
+  console.log("🏆 FORMATO VINCENTE:", formatoVincente);
+
+  // 5️⃣ crea coupon
+  await supabase.from("coupon").insert({
+    email,
+    codice: "cp_" + crypto.randomUUID(),
+    tipo: formatoVincente,
+    titolo: `Coppa ${formatoVincente} omaggio`,
+    redento: false
+  });
+
+  // 6️⃣ segna conferme come consumate
+  await supabase
+    .from("utenti")
+    .update({ conferme_consumate: confermeUsate + 10 })
+    .eq("email", email);
+
+  // 7️⃣ notifica
+  await supabase.from("notifiche").insert({
+    email,
+    tipo: "coupon_sbloccato",
+    messaggio: `🎉 Hai sbloccato un coupon: Coppa ${formatoVincente.toUpperCase()} omaggio`,
+    letta: false
+  });
+
+  console.log("🎉 COUPON CREATO");
 }
 
 function renderCoupons(coupons){
@@ -699,7 +1434,19 @@ function subscribeCouponRealtime(email) {
 document.addEventListener("DOMContentLoaded", async () => {
   const email = localStorage.getItem("user_email");
   const logged = localStorage.getItem("userLogged") === "1";
+const coppeCard = document.getElementById("coppe-card");
+const loginHint = document.getElementById("login-hint");
 
+if (!logged && coppeCard) {
+  coppeCard.classList.add("disabled");
+
+  coppeCard.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  if (loginHint) loginHint.style.display = "block";
+}
   const couponSection = document.getElementById("coupon-section");
   const emailChip = document.getElementById("email-chip");
   const noLogin = document.getElementById("no-login");
@@ -722,7 +1469,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // mostra email soft
   emailChip.style.display = "block";
   emailChip.innerHTML = `<b>Account:</b> ${email}`;
-
+  await aggiornaBadgeNotifiche();
   await aggiornaNumeroCoppe(email);
   await verificaECreaCoupon(email);
   await aggiornaNumeroCoupon(email);
@@ -756,7 +1503,7 @@ window.disiscriviti = async function(){
   const email = localStorage.getItem("user_email");
   if (!email) return alert("Errore");
 
-  const ok = confirm("Sei sicuro di voler disiscriverti?\n\nPerderai coupon e storico.");
+  const ok = confirm("Sei sicuro di voler disiscriverti?\n\nNon avrai più accesso a coupon e storico.");
   if (!ok) return;
 
   await supabase
@@ -863,6 +1610,24 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
 const avatarBtn = document.getElementById("profile-avatar-btn");
 const menu = document.getElementById("profile-menu");
 const backdrop = document.getElementById("profile-menu-backdrop");
+// ✅ click fuori = chiudi menu
+if (backdrop) {
+  backdrop.addEventListener("click", () => {
+    closeMenu();
+  });
+}
+// ===== REGISTRATI =====
+const btnRegister = document.getElementById("menu-register");
+
+if (btnRegister) {
+  btnRegister.addEventListener("click", () => {
+    // chiudi menu
+    closeMenu();
+
+    // vai alla registrazione
+    window.location.href = "login.html?mode=register";
+  });
+}
 
 function openMenu(){
   if (!menu || !backdrop) return;
@@ -870,10 +1635,11 @@ function openMenu(){
   backdrop.style.display = "block";
 }
 
-function closeMenu(){
-  if (!menu || !backdrop) return;
-  menu.style.display = "none";
-  backdrop.style.display = "none";
+window.closeMenu = function closeMenu(){
+  const menu = document.getElementById("profile-menu");
+  const menuBackdrop = document.getElementById("profile-menu-backdrop");
+  if (menu) menu.style.display = "none";
+  if (menuBackdrop) menuBackdrop.style.display = "none";
 }
 
 if (avatarBtn){
@@ -885,9 +1651,34 @@ if (avatarBtn){
   });
 }
 
-if (backdrop){
-  backdrop.addEventListener("click", closeMenu);
-}
+
+// ===== Logout =====
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.getElementById("menu-logout");
+
+  if (!logoutBtn) {
+    console.warn("❌ Bottone logout non trovato");
+    return;
+  }
+
+  logoutBtn.addEventListener("click", () => {
+    console.log("🚪 Logout cliccato");
+
+    // chiudi menu se aperto
+    if (typeof closeMenu === "function") {
+      closeMenu();
+    }
+
+    // reset login
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_surname");
+    localStorage.setItem("userLogged", "0");
+
+    alert("Sei uscito dal tuo profilo");
+    window.location.href = "profilo.html";
+  });
+});
 
 // chiudi con ESC (desktop)
 window.addEventListener("keydown", (e) => {
@@ -898,7 +1689,15 @@ window.addEventListener("keydown", (e) => {
 if (menu){
   menu.addEventListener("click", (e) => e.stopPropagation());
 }
+// ===== Disiscriviti dal menu profilo =====
+const unsubscribeBtn = document.getElementById("menu-unsubscribe");
 
+if (unsubscribeBtn) {
+  unsubscribeBtn.addEventListener("click", () => {
+    closeMenu();       // chiude il menu glass
+    disiscriviti();    // usa la funzione ESISTENTE
+  });
+}
 </script>
 
 <!-- ⏱️ WAIT TIME BAR -->

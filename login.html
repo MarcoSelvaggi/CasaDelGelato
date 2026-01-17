@@ -59,12 +59,28 @@
         margin-top: 10px;
         cursor: pointer;
     }
+    .checkbox-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin: 14px 0 6px;
+  font-size:14px;
+  color:#555;
+  text-align:left;
+}
+
+.checkbox-row input{
+  width:18px;
+  height:18px;
+  accent-color:#ff7a00;
+  cursor:pointer;
+}
 </style>
 
 </head>
 <body>
 
- <a href="index.html" 
+ <a href="profilo.html" 
    style="
        position: absolute;
        top: 15px;
@@ -83,24 +99,77 @@
     ← Indietro
 </a>   
 
-<h1>Accedi</h1>
+<h1 id="page-title">Accedi</h1>
 
-<div class="container">
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="text" id="name" placeholder="Nome">
-    <input type="text" id="surname" placeholder="Cognome">
+<!-- 🔐 LOGIN -->
+<div class="container" id="login-box">
+    <input type="email" id="login-email" placeholder="Email" required>
+    <input type="text" id="login-name" placeholder="Nome (opzionale)">
+    <input type="text" id="login-surname" placeholder="Cognome (opzionale)">
 
     <button onclick="login()">Continua</button>
+
+    <p style="margin-top:14px;font-size:14px">
+      Non hai un account?
+      <a href="login.html?mode=register">Registrati</a>
+    </p>
 </div>
 
+<!-- 📝 REGISTRAZIONE -->
+<div class="container" id="register-box" style="display:none">
+    <input type="email" id="reg-email" placeholder="Email" required>
+    <input type="text" id="reg-name" placeholder="Nome" required>
+    <input type="text" id="reg-surname" placeholder="Cognome" required>
+    <!-- ✅ CONSENSO PROMO (OPZIONALE) -->
+    <label class="checkbox-row">
+      <input type="checkbox" id="consenso-promozioni">
+      <span>Acconsento a ricevere promozioni e comunicazioni</span>
+    </label>
+    <button onclick="register()">Registrati</button>
+
+    <p style="margin-top:14px;font-size:14px">
+      Hai già un account?
+      <a href="login.html">Accedi</a>
+    </p>
+</div>
+<!-- 🔁 SWITCH ACCEDI / REGISTRATI -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get("mode");
+
+  const loginBox = document.getElementById("login-box");
+  const registerBox = document.getElementById("register-box");
+  const title = document.getElementById("page-title");
+
+  if (!loginBox || !registerBox || !title) return;
+
+  if (mode === "register") {
+    loginBox.style.display = "none";
+    registerBox.style.display = "block";
+    title.textContent = "Registrati";
+  } else {
+    loginBox.style.display = "block";
+    registerBox.style.display = "none";
+    title.textContent = "Accedi";
+  }
+});
+</script>
 <!-- Script di login con controllo Supabase -->
 <script type="module">
 import { supabase } from "./supabase.js";
 
 window.login = async function() {
-    const email = document.getElementById("email").value.trim();
-    const name  = document.getElementById("name").value.trim();
-    const surname = document.getElementById("surname").value.trim();
+const email = document.getElementById("login-email").value.trim();
+const currentEmail = localStorage.getItem("user_email");
+const alreadyLogged = localStorage.getItem("userLogged") === "1";
+
+if (alreadyLogged && currentEmail === email) {
+    alert("✅ Accesso già effetuato con questa email.");
+    return;
+}
+const name  = document.getElementById("login-name").value.trim();
+const surname = document.getElementById("login-surname").value.trim();
 
     if (!email) {
         alert("Inserisci una email valida.");
@@ -138,6 +207,82 @@ window.login = async function() {
 
     alert("Accesso effettuato!");
     window.location.href = "index.html";
+};
+
+window.register = async function() {
+  const email = document.getElementById("reg-email").value.trim();
+  const name = document.getElementById("reg-name").value.trim();
+  const surname = document.getElementById("reg-surname").value.trim();
+  const consenso = document.getElementById("consenso-promozioni")?.checked === true;
+
+  if (!email || !name || !surname) {
+    alert("Compila tutti i campi.");
+    return;
+  }
+
+  // 1️⃣ Controlla se esiste già
+  const { data: existing, error } = await supabase
+    .from("utenti")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  // errore vero
+  if (error && error.code !== "PGRST116") {
+    alert("Errore: " + error.message);
+    return;
+  }
+
+  // 2️⃣ ESISTE ED È ATTIVO → BLOCCA
+  if (existing && existing.disiscritto === false) {
+    alert("Questa email è già registrata. Accedi.");
+    return;
+  }
+
+  // 3️⃣ ESISTE MA ERA DISISCRITTO → RIATTIVA + aggiorna consenso
+  if (existing && existing.disiscritto === true) {
+    const { error: updErr } = await supabase
+      .from("utenti")
+      .update({
+        nome: name,
+        cognome: surname,
+        disiscritto: false,
+        consenso_promozioni: consenso   // ✅ QUI
+      })
+      .eq("email", email);
+
+    if (updErr) {
+      alert("Errore riattivazione account.");
+      return;
+    }
+  }
+
+  // 4️⃣ NON ESISTE → CREA
+  if (!existing) {
+    const { error: insErr } = await supabase
+      .from("utenti")
+      .insert({
+        email,
+        nome: name,
+        cognome: surname,
+        disiscritto: false,
+        consenso_promozioni: consenso   // ✅ QUI
+      });
+
+    if (insErr) {
+      alert("Errore registrazione.");
+      return;
+    }
+  }
+
+  // 5️⃣ LOGIN AUTOMATICO
+  localStorage.setItem("user_email", email);
+  localStorage.setItem("user_name", name);
+  localStorage.setItem("user_surname", surname);
+  localStorage.setItem("userLogged", "1");
+
+  alert("Registrazione completata!");
+  window.location.href = "index.html";
 };
 </script>
 
