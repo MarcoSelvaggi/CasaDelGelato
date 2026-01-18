@@ -87,6 +87,102 @@ function mostra(msg, ok = false) {
     box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
 }
 
+async function riscattaCoupon(codice) {
+  console.log("🎟️ RISCATTO COUPON:", codice);
+
+  // 1️⃣ cerco il coupon
+  const { data: couponArr, error } = await supabase
+    .from("coupon")
+    .select("*")
+    .eq("codice", codice)
+    .limit(1);
+
+  if (error || !couponArr || !couponArr.length) {
+    mostra("❌ Coupon NON valido", false);
+    return;
+  }
+
+  const coupon = couponArr[0];
+
+  // 2️⃣ carico dati cliente (se esiste)
+  let cliente = null;
+  if (coupon.email) {
+    const { data: utente } = await supabase
+      .from("utenti")
+      .select("nome, cognome, email")
+      .eq("email", coupon.email)
+      .single();
+
+    if (utente) cliente = utente;
+  }
+
+  // 3️⃣ SE GIÀ USATO → mostro dati ma NON aggiorno
+  if (coupon.redento) {
+    mostra(`
+      ⚠️ <b>Coupon già utilizzato</b><br><br>
+
+      🎟️ <b>Tipo:</b> Coppa ${coupon.tipo.toUpperCase()}<br><br>
+
+      ${
+        cliente
+          ? `
+            👤 <b>Cliente:</b><br>
+            ${cliente.nome} ${cliente.cognome}<br>
+            📧 ${cliente.email}<br><br>
+          `
+          : `
+            👤 <b>Cliente:</b><br>
+            ${coupon.email || "Guest"}<br><br>
+          `
+      }
+
+      🕒 <b>Usato il:</b><br>
+      ${coupon.used_at
+        ? new Date(coupon.used_at).toLocaleString("it-IT")
+        : "-"}
+    `, false);
+
+    return;
+  }
+
+  // 4️⃣ segno come usato
+  const { error: errUpdate } = await supabase
+    .from("coupon")
+    .update({
+      redento: true,
+      used_at: new Date().toISOString()
+    })
+    .eq("id", coupon.id);
+
+  if (errUpdate) {
+    console.error("❌ Errore update coupon:", errUpdate);
+    mostra("❌ Errore nel riscatto coupon", false);
+    return;
+  }
+
+  // 5️⃣ conferma visiva completa
+  mostra(`
+    ✅ <b>Coupon riscattato!</b><br><br>
+
+    🎟️ <b>Tipo:</b> Coppa ${coupon.tipo.toUpperCase()} omaggio<br><br>
+
+    ${
+      cliente
+        ? `
+          👤 <b>Cliente:</b><br>
+          ${cliente.nome} ${cliente.cognome}<br>
+          📧 ${cliente.email}
+        `
+        : `
+          👤 <b>Cliente:</b><br>
+          ${coupon.email || "Guest"}
+        `
+    }
+  `, true);
+
+  console.log("✅ COUPON RISCATTATO CON SUCCESSO");
+}
+
 async function confermaCoppa( qrToken ) {
 
     // 1️⃣ CERCO la coppa nel DB
@@ -241,6 +337,33 @@ function getNextResetAt2AM() {
   return reset.getTime();
 }
 
+function estraiCodiceCoupon(raw) {
+  try {
+    // se è un URL valido
+    const u = new URL(raw);
+    const c = u.searchParams.get("coupon");
+    return c ? decodeURIComponent(c) : null;
+  } catch (e) {
+    // non è un URL -> provo regex su stringa
+    const m = String(raw).match(/coupon=([^&#]+)/i);
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+}
+
+async function gestisciScan(raw) {
+  const codice = estraiCodiceCoupon(raw);
+
+  if (codice) {
+    console.log("🎟️ SCAN COUPON:", codice);
+    // STEP 2: qui chiameremo la funzione di riscatto coupon
+    await riscattaCoupon(codice);
+    return;
+  }
+
+  console.log("🍨 SCAN COPPA:", raw);
+  await confermaCoppa(raw);
+}
+
 function ensureResetSchedule() {
   const now = Date.now();
   const resetAt = Number(localStorage.getItem(LS_KEY_RESET)) || 0;
@@ -338,7 +461,7 @@ function startScanner() {
             console.log("QR:", qrCodeMessage);
 
             // 🔥 conferma coppa
-            await confermaCoppa(qrCodeMessage);
+            await gestisciScan(qrCodeMessage);
 
             // ⏸️ fermo lo scanner
             await html5QrCode.stop();

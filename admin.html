@@ -931,11 +931,17 @@ window.apriSezioneCoupon = async function(email) {
     await syncCouponUtente(email);
 
     // 2) Prendo i coupon
-    const { data: couponFinali } = await supabase
-        .from("coupon")
-        .select("*")
-        .eq("email", email)
-        .order("created_at", { ascending: true });
+const { data: couponFinali, error: couponErr } = await supabase
+  .from("coupon")
+  .select("id, codice, tipo, redento, used_at, created_at")
+  .eq("email", email)
+  .order("created_at", { ascending: true });
+
+if (couponErr) {
+  console.error("❌ Errore caricamento coupon:", couponErr);
+  alert("Errore caricamento coupon");
+  return;
+}
 
     // 3) Costruisco l’HTML della card coupon
     let html = `
@@ -949,23 +955,49 @@ window.apriSezioneCoupon = async function(email) {
             <h3>🎁 Coupon Utente (${couponFinali.length})</h3>
     `;
 
-    couponFinali.forEach(cpn => {
-        html += `
-            <div style="margin-top:12px; padding:10px; background:white; border-radius:8px;">
-                <b>Coupon #${cpn.id}</b><br>
+couponFinali.forEach(cpn => {
 
-                <textarea id="coupon-text-${cpn.id}"
-                    style="width:100%; padding:8px; border-radius:8px; margin-top:5px;">${cpn.codice || ""}</textarea>
+    const stato = cpn.redento
+        ? `<span style="color:#d60000;font-weight:800;">🔴 USATO</span>`
+        : `<span style="color:#2e9b4f;font-weight:800;">🟢 DISPONIBILE</span>`;
 
-                <button onclick="salvaCoupon(${cpn.id})"
-                    style="margin-top:6px; padding:6px 12px; background:#007aff; color:white; border:none; border-radius:8px;">
-                    💾 Salva
-                </button>
+    const tipo = (cpn.tipo || "-").toString().toUpperCase();
+
+    const usedAt = cpn.used_at
+        ? `<div style="font-size:12px;opacity:.65;margin-top:4px;">
+             Usato il: ${new Date(cpn.used_at).toLocaleString("it-IT")}
+           </div>`
+        : "";
+
+    html += `
+        <div style="
+            margin-top:12px;
+            padding:10px;
+            background:white;
+            border-radius:8px;
+            border:1px solid #eee;
+        ">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b>Coupon #${cpn.id}</b>
+                ${stato}
             </div>
-        `;
-    });
 
-    html += `</div>`;
+            <div style="margin-top:6px; font-size:14px;">
+                🎁 Tipo coupon: <b>${tipo}</b>
+            </div>
+
+            ${usedAt}
+
+            <textarea id="coupon-text-${cpn.id}"
+                style="width:100%; padding:8px; border-radius:8px; margin-top:8px;">${cpn.codice || ""}</textarea>
+
+            <button onclick="salvaCoupon(${cpn.id})"
+                style="margin-top:6px; padding:6px 12px; background:#007aff; color:white; border:none; border-radius:8px;">
+                💾 Salva
+            </button>
+        </div>
+    `;
+});
 
     // 4) Inserisco nel box coupon
     box.innerHTML = html;
