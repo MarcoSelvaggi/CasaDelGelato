@@ -1270,14 +1270,25 @@ async function verificaECreaCoupon(email) {
 
   console.log("🏆 FORMATO VINCENTE:", formatoVincente);
 
-  // 5️⃣ crea coupon
-  await supabase.from("coupon").insert({
+// 5️⃣ crea coupon (CON LOG E CONTROLLO ERRORI)
+const { data: couponCreato, error: errCoupon } = await supabase
+  .from("coupon")
+  .insert({
     email,
     codice: "cp_" + crypto.randomUUID(),
     tipo: formatoVincente,
     titolo: `Coppa ${formatoVincente} omaggio`,
     redento: false
-  });
+  })
+  .select()
+  .single();
+
+if (errCoupon) {
+  console.error("❌ ERRORE INSERT COUPON:", errCoupon);
+  return; // ⛔ FERMIAMO TUTTO QUI
+}
+
+console.log("✅ COUPON CREATO SU SUPABASE:", couponCreato);
 
   // 6️⃣ segna conferme come consumate
   await supabase
@@ -1294,6 +1305,27 @@ async function verificaECreaCoupon(email) {
   });
 
   console.log("🎉 COUPON CREATO");
+}
+
+function subscribeConfermeRealtime(email){
+  supabase
+    .channel("conferme-coppe-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "conferme_coppe",
+        filter: `email=eq.${email}`
+      },
+      async () => {
+        console.log("🔁 Nuova conferma → ricontrollo coupon");
+        await verificaECreaCoupon(email);
+        await aggiornaNumeroCoupon(email);
+        await caricaCoupon(email);
+      }
+    )
+    .subscribe();
 }
 
 function renderCoupons(coupons){
@@ -1478,8 +1510,8 @@ if (!logged && coppeCard) {
   // mostra sezione coupon sempre (anche se 0, ma con badge 0)
   couponSection.style.display = "block";
 
-  subscribeCouponRealtime(email);
-  subscribeCoppeRealtime(email);
+ subscribeCouponRealtime(email);
+subscribeConfermeRealtime(email);
 });
 
 /* ===============================

@@ -136,19 +136,32 @@ if (confermate >= 1) {
     if (!ok) return;
 }
 
-    // 3️⃣ CONFERMO la coppa
-    await supabase
-        .from("coppe")
-        .update({ confermate: confermate + 1 })
-        .eq("id", coppa.id);
-        await supabase.from("conferme_coppe").insert({
-  email: coppa.email,
-  coppa_id: coppa.id,
-  formato: coppa.formato
-});
-        // 🔔 verifica coupon + notifiche
+// 3️⃣ CONFERMO la coppa
+const { error: errUpdate } = await supabase
+  .from("coppe")
+  .update({ confermate: confermate + 1 })
+  .eq("id", coppa.id);
+
+if (errUpdate) {
+  console.error("❌ ERRORE update coppe:", errUpdate);
+  return;
+}
+
+// 4️⃣ SALVO CONFERMA REALE (serve SOLO per i coupon)
 if (coppa.email) {
-  await verificaECreaCoupon(coppa.email);
+  const { error: errConferma } = await supabase
+    .from("conferme_coppe")
+    .insert({
+      email: coppa.email,
+      coppa_id: coppa.id,
+      formato: coppa.formato
+    });
+
+  if (errConferma) {
+    console.error("❌ ERRORE inserimento conferme_coppe:", errConferma);
+  } else {
+    console.log("✅ Conferma salvata in conferme_coppe");
+  }
 }
 
 
