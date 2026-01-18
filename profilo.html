@@ -1224,7 +1224,7 @@ async function creaNotificaSeNonEsiste(email, tipo, messaggio){
 }
 
 async function verificaECreaCoupon(email) {
-  console.log("🚨 verificaECreaCoupon", email);
+  console.log("🚨 verificaECreaCoupon START", email);
 
   // 1️⃣ conferme già consumate
   const { data: utente } = await supabase
@@ -1242,17 +1242,32 @@ async function verificaECreaCoupon(email) {
     .eq("email", email)
     .order("created_at", { ascending: true });
 
-  if (!conferme || conferme.length < confermeUsate + 10) {
-    console.log("⛔ Non abbastanza conferme");
-    return;
-  }
+ if (!conferme || conferme.length < confermeUsate + 10) {
+  console.log(
+    "⛔ BLOCCO:",
+    "conferme totali =", conferme?.length,
+    "| conferme usate =", confermeUsate
+  );
+  return;
+}
 
   // 3️⃣ estrai BLOCCO da 10
-  const blocco = conferme
-    .slice(confermeUsate, confermeUsate + 10)
-    .map(c => c.formato.toLowerCase());
+const blocco = conferme
+  .slice(confermeUsate, confermeUsate + 10)
+  .map(c => {
+    if (!c.formato) return null;
 
-  console.log("📦 BLOCCO 10:", blocco);
+    const f = c.formato.trim().toUpperCase();
+
+    if (f === "PICCOLA") return "piccola";
+    if (f === "MEDIA")   return "media";
+    if (f === "GRANDE")  return "grande";
+
+    return null;
+  })
+  .filter(Boolean);
+
+  console.log("📦 BLOCCO NORMALIZZATO:", blocco);
 
   // 4️⃣ conta formati
   const count = { piccola: 0, media: 0, grande: 0 };
