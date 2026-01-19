@@ -4578,3 +4578,9 @@ body.blur-bg #blur-overlay {
   height:26px;
   color:#111; /* eredita colore attivo/inattivo */
 }
+
+.menu-item{
+  max-width: 320px;
+  margin: 0 auto 18px;
+  padding: 18px 20px;
+}

@@ -3220,7 +3220,6 @@ function isLocalDev() {
 
 
 async function preparaRiepilogoFinale() {
-
   isLoadingCoppa = true;   // 🔒 BLOCCA MINI AVANTI
 resetBlurTotale();
   // 🔥 RIPRISTINA PAGINA (NO BLUR)
@@ -3265,37 +3264,21 @@ resetBlurTotale();
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 100));
 
-  // ⏱️ FORCE END DOPO 15 SECONDI
-let loadingForcedEnd = false;
+  // 2️⃣ CREA IL RIEPILOGO (HTML completo)
+  await mostraRiepilogo();
 
-const forceEndTimer = setTimeout(() => {
-  console.warn("⏱️ Loading forzato dopo 15s");
-  loadingForcedEnd = true;
-  setLoadingProgress(100);
-}, 15000);
-// 3️⃣ ASPETTA LE IMMAGINI (con barra reale)
-const stage = document.getElementById("coppa-stage");
+  // 3️⃣ ASPETTA LE IMMAGINI (con barra reale)
+  const stage = document.getElementById("coppa-stage");
 
-if (stage && !isLocalDev()) {
-await Promise.race([
-  waitForImagesWithProgress(stage, pct => {
-    setLoadingProgress(pct);
-    if (pct >= 75) setLoadingAlmostReady();
-  }),
-  new Promise(resolve => {
-    const check = setInterval(() => {
-      if (loadingForcedEnd) {
-        clearInterval(check);
-        resolve();
-      }
-    }, 100);
-  })
-]);
-clearTimeout(forceEndTimer);
-loadingForcedEnd = false;
+  if (stage && !isLocalDev()) {
+    // ✅ PRODUZIONE
+    await waitForImagesWithProgress(stage, pct => {
+      setLoadingProgress(pct);
+      if (pct >= 75) setLoadingAlmostReady();
+    });
 
-  setLoadingProgress(100);
-}else {
+    setLoadingProgress(100);
+  } else {
     // 🧪 LOCALE
     setLoadingProgress(100);
   }
@@ -3321,19 +3304,10 @@ loadingForcedEnd = false;
 resetBlurTotale();
 nascondiLoadingRiepilogo();
 isLoadingCoppa = false;   // 🔓 RIABILITA MINI
-// 🔐 FAILSAFE FINALE: chiude il loading in ogni caso
-setTimeout(() => {
-  const loading = document.getElementById("loading-riepilogo");
-  if (loading && loading.style.display !== "none") {
-    console.warn("⚠️ Failsafe: chiusura forzata loading");
-    resetBlurTotale();
-    nascondiLoadingRiepilogo();
-    isLoadingCoppa = false;
-  }
-}, 100);
   // 6️⃣ AVVIA TIMER NUVOLA
   avviaTimerNuvolettaInstagram();
 }
+
 
 function resetBlurTotale() {
   document.body.classList.remove("blur-bg");

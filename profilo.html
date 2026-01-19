@@ -186,23 +186,27 @@
   .email-chip b{ color:#111; }
 
   /* COUPON LIST */
-  .coupon-list{
-    display:flex;
-    flex-direction:column;
-    gap: 12px;
-    margin-top: 10px;
-  }
+.coupon-list{
+  display:flex;
+  flex-direction:column;
+  gap: 18px;        /* ⬅️ più aria tra le card */
+  margin-top: 18px; /* ⬅️ stacca dalla card "Coupon disponibili" */
+}
 
-  .coupon{
-    background:#fff;
-    border-radius: 18px;
-    padding: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap: 12px;
-  }
+.coupon{
+  background: #fff;
+  border-radius: 20px;                 /* leggermente più morbido */
+  padding: 18px 18px;                  /* ⬅️ più aria interna */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;                           /* ⬅️ più spazio tra testo e bottone */
+
+  box-shadow: 
+    0 6px 18px rgba(0,0,0,0.06);       /* ombra più “alta” */
+
+  border: 1px solid rgba(0,0,0,0.04);  /* separazione soft */
+}
 
   .coupon.used{ opacity: .5; }
 
@@ -311,10 +315,8 @@
   animation: glassIn .14s ease-out;
 }
 
-@keyframes glassIn{
-  from{ transform: scale(0.96); opacity: 0; }
-  to  { transform: scale(1);    opacity: 1; }
-}
+
+
 
 .glass-item{
   width: 100%;
@@ -346,6 +348,10 @@
 
 .glass-item.danger{
   color: #ff3b30;
+}
+@keyframes glassIn{
+  from{ transform: scale(0.96); opacity: 0; }
+  to  { transform: scale(1);    opacity: 1; }
 }
 
 /* Hint login */
@@ -632,6 +638,323 @@
 .menu-item:hover{
   background:#f2f2f7;
 }
+.menu-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px;
+}
+
+.menu-item svg.menu-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke: #111;
+  stroke-width: 1.8;
+  fill: none;
+}
+.icon-wrapper{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.menu-new-only{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge-new-left{
+  background: #ff3b30;
+  color: #fff;
+  font-size: 9px;          /* ⬅️ più piccolo */
+  font-weight: 700;
+  padding: 3px 6px;        /* ⬅️ meno padding */
+  border-radius: 999px;
+  line-height: 1;
+  letter-spacing: .3px;
+}
+/* =========================
+   👤 PROFILE HEADER CARD
+========================= */
+.profile-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+
+  background:#fff;
+  border-radius:18px;
+  padding:16px 18px;
+  margin:10px 0 22px;
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.06);
+}
+
+/* avatar tondo */
+.profile-avatar{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+
+  background-color: transparent;
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:800;
+  font-size:22px;
+  text-transform:uppercase;
+}
+.profile-avatar{
+  background-repeat: no-repeat;      /* 🔥 MANCAVA */
+  background-position: center center;
+  background-size: cover;             /* oppure: contain */
+}
+.profile-avatar{
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+/* testo */
+.profile-info{
+  display:flex;
+  flex-direction:column;
+  line-height:1.25;
+}
+
+.profile-name{
+  font-size:16px;
+  font-weight:700;
+  color:#111;
+}
+
+.profile-email{
+  font-size:13px;
+  color:#666;
+  margin-top:2px;
+}
+/* Avatar piccolo TOP RIGHT */
+#profile-avatar{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+/* 🍨 CARD COPPE CREATE – Apple style */
+.coppe-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px 18px;
+
+  text-decoration: none;
+  color:#111;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08);
+
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.coppe-card:active{
+  transform: scale(0.98);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.06);
+}
+
+.coppe-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.coppe-icon{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:22px;
+
+  background: linear-gradient(135deg,#ffb703,#fb8500);
+  color:#fff;
+
+  box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+}
+
+.coppe-text{
+  display:flex;
+  flex-direction:column;
+}
+
+.coppe-title{
+  font-size:15px;
+  font-weight:800;
+}
+
+.coppe-sub{
+  font-size:13px;
+  color:#666;
+  margin-top:2px;
+}
+
+.coppe-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.coppe-badge{
+  background:#007aff;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  padding: 4px 10px;
+  border-radius:999px;
+  min-width:26px;
+  text-align:center;
+}
+
+.coppe-chevron{
+  font-size:20px;
+  color:#bbb;
+  line-height:1;
+}
+/* 🎟️ CARD COUPON – Apple reward style */
+.coupon-card{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  background: linear-gradient(135deg,#ffffff,#f7f7f9);
+  border-radius: 18px;
+  padding: 16px 18px;
+
+  color:#111;
+  cursor:pointer;
+
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.08);
+
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.coupon-card:active{
+  transform: scale(0.98);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.06);
+}
+
+.coupon-left{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.coupon-icon{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:22px;
+
+  background: linear-gradient(135deg,#8e2de2,#4a00e0);
+  color:#fff;
+
+  box-shadow: 0 6px 14px rgba(0,0,0,0.22);
+}
+
+.coupon-text{
+  display:flex;
+  flex-direction:column;
+}
+
+.coupon-title{
+  font-size:15px;
+  font-weight:800;
+}
+
+.coupon-sub{
+  font-size:13px;
+  color:#666;
+  margin-top:2px;
+}
+
+.coupon-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.coupon-badge{
+  background:#34c759; /* Apple green */
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  padding: 4px 10px;
+  border-radius:999px;
+  min-width:26px;
+  text-align:center;
+}
+
+.coupon-chevron{
+  font-size:20px;
+  color:#bbb;
+  line-height:1;
+}
+/* 🚫 NASCONDI POPUP DI DEFAULT (ANTI FLASH) */
+.glass-menu,
+.glass-backdrop,
+#consensi-popup,
+#consensi-backdrop,
+#notifiche-popup,
+#notifiche-backdrop,
+#profile-menu,
+#profile-menu-backdrop {
+  display: none;
+}
+/* ✅ MOSTRA POPUP */
+.glass-menu.show,
+.glass-backdrop.show,
+#consensi-popup.show,
+#consensi-backdrop.show,
+#notifiche-popup.show,
+#notifiche-backdrop.show,
+#profile-menu.show,
+#profile-menu-backdrop.show {
+  display: block;
+}
+.glass-backdrop{
+  pointer-events: none;
+}
+
+.glass-backdrop.show{
+  pointer-events: auto;
+}
 </style>
 </head>
 
@@ -641,42 +964,39 @@
 <div id="top-fixed-bar">
   <div class="top-left"></div>
 
-  <a href="index.html" class="home-btn top-center">
+  <a href="home.html" class="home-btn top-center">
     <img src="tastohome.png" alt="home">
-    <span>Home</span>
   </a>
 
   <div class="profile-actions top-right">
-    <button id="profile-avatar-btn" class="avatar-btn" aria-label="Menu profilo">
-      <img id="profile-avatar-img" src="icone/user.png" alt="">
-    </button>
+<button id="profile-avatar-btn" class="avatar-btn" aria-label="Menu profilo">
+
+  <div class="profile-avatar" id="profile-avatar">
+    <span id="profile-avatar-text">?</span>
+  </div>
+
+</button>
   </div>
 </div>
 
 <!-- MENU LIQUID GLASS -->
-<div id="profile-menu" class="glass-menu" style="display:none;">
+<div id="profile-menu" class="glass-menu">
   <button class="glass-item" id="menu-change-photo">Cambia immagine</button>
   <button class="glass-item" id="menu-register">Registrati</button>
   <a href="login.html" class="glass-item">Accedi</a>
   <button class="glass-item" id="menu-logout">Logout</button>
-  <button class="glass-item danger" id="menu-unsubscribe">✕ Disiscriviti</button>
 <button class="glass-item" id="menu-notifiche">
-  🔔 Notifiche
+  Notifiche 🔔 
   <span id="notifiche-count" class="badge" style="display:none;">0</span>
 </button>
   <button class="glass-item" id="menu-consensi">
   Consensi comunicazioni 📩
 </button>
+  <button class="glass-item danger" id="menu-unsubscribe">Disiscriviti ✕</button>
 </div>
 
-<input
-  id="profile-avatar-input"
-  type="file"
-  accept="image/*"
-  style="display:none"
-/>
 
-<div id="profile-menu-backdrop" class="glass-backdrop" style="display:none;"></div>
+<div id="profile-menu-backdrop" class="glass-backdrop"></div>
 
 <div id="top-fixed-spacer"></div>
 
@@ -684,21 +1004,40 @@
   <!-- serve al JS per non rompersi, ma resta invisibile -->
   <div id="profile-info" style="display:none;"></div>
 
-  <div id="email-chip" class="email-chip"></div>
+  <!-- 👤 HEADER PROFILO -->
+<div class="profile-card">
+  <div class="profile-avatar" id="profile-card-avatar">
+    <span id="profile-card-avatar-text">?</span>
+  </div>
 
+  <div class="profile-info">
+    <div class="profile-name" id="profile-card-name">
+      Il tuo profilo
+    </div>
+    <div class="profile-email" id="profile-card-email">
+      —
+    </div>
+  </div>
+</div>
   <!-- 🍨 COPPE -->
   <section class="profile-section">
-    <div class="section-title">🍨 Le mie coppe</div>
 
-    <a href="cronologia.html" id="coppe-card" class="profile-action">
-      <div class="profile-action-left">
-        <span>Coppe create</span>
-      </div>
-      <div class="profile-action-right">
-        <span id="coppe-count" class="badge">0</span>
-        <span class="chevron">›</span>
-      </div>
-    </a>
+
+<a href="cronologia.html" id="coppe-card" class="coppe-card">
+  <div class="coppe-left">
+    <div class="coppe-icon">🍨</div>
+
+    <div class="coppe-text">
+      <div class="coppe-title">Coppe create</div>
+      <div class="coppe-sub">Visualizza lo storico delle tue coppe</div>
+    </div>
+  </div>
+
+  <div class="coppe-right">
+    <span id="coppe-count" class="coppe-badge">0</span>
+    <span class="coppe-chevron">›</span>
+  </div>
+</a>
     <div id="login-hint" class="login-hint" style="display:none;">
   Accedi o registrati per usufruire di tutte le funzionalità
 </div>
@@ -706,17 +1045,23 @@
 
   <!-- 🎟️ COUPON -->
   <section id="coupon-section" class="profile-section" style="display:none;">
-    <div class="section-title">🎟️ I miei coupon</div>
 
-    <div class="profile-action" id="open-coupon-list">
-      <div class="profile-action-left">
-        <span>Coupon disponibili</span>
-      </div>
-      <div class="profile-action-right">
-        <span id="coupon-count" class="badge">0</span>
-        <span class="chevron">›</span>
-      </div>
+
+<div class="coupon-card" id="open-coupon-list">
+  <div class="coupon-left">
+    <div class="coupon-icon">🎟️</div>
+
+    <div class="coupon-text">
+      <div class="coupon-title">Coupon disponibili</div>
+      <div class="coupon-sub">Premi e coppe omaggio</div>
     </div>
+  </div>
+
+  <div class="coupon-right">
+    <span id="coupon-count" class="coupon-badge">0</span>
+    <span class="coupon-chevron">›</span>
+  </div>
+</div>
 
     <div id="coupon-list" class="coupon-list" style="display:none;"></div>
   </section>
@@ -1022,15 +1367,24 @@ wrapper.appendChild(content);   // ⚪ SOPRA (scorre)
 // ===============================
 const AVATAR_KEY = "cdg_profile_avatar_v1";
 
-function setAvatarSrc(src) {
-  const img = document.getElementById("profile-avatar-img");
-  if (img) img.src = src;
+function setAvatarBackground(src) {
+  const topAvatar  = document.getElementById("profile-avatar");
+  const cardAvatar = document.getElementById("profile-card-avatar");
+  const topText    = document.getElementById("profile-avatar-text");
+  const cardText   = document.getElementById("profile-card-avatar-text");
+
+  [topAvatar, cardAvatar].forEach(el => {
+    if (!el) return;
+    el.style.backgroundImage = `url(${src})`;
+    el.style.backgroundSize = "cover";
+    el.style.backgroundPosition = "center";
+    el.style.backgroundRepeat = "no-repeat";
+  });
+
+  if (topText) topText.style.display = "none";
+  if (cardText) cardText.style.display = "none";
 }
 
-function loadSavedAvatar() {
-  const saved = localStorage.getItem(AVATAR_KEY);
-  if (saved) setAvatarSrc(saved);
-}
 
 // Riduce e comprime l’immagine prima di salvarla (evita quota localStorage)
 async function compressImageToDataURL(file, maxSize = 256, quality = 0.82) {
@@ -1053,46 +1407,120 @@ async function compressImageToDataURL(file, maxSize = 256, quality = 0.82) {
   return canvas.toDataURL("image/jpeg", quality);
 }
 
-function setupAvatarChange() {
-  const btn = document.getElementById("menu-change-photo");
-  const input = document.getElementById("profile-avatar-input");
+function aggiornaAvatarProfilo() {
+  const email = localStorage.getItem("user_email");
 
-  if (!btn || !input) return;
+  const topAvatar  = document.getElementById("profile-avatar");
+  const topText    = document.getElementById("profile-avatar-text");
+  const cardAvatar = document.getElementById("profile-card-avatar");
+  const cardText   = document.getElementById("profile-card-avatar-text");
 
-  // click su “Cambia immagine”
-  btn.addEventListener("click", () => {
-    input.value = ""; // reset per permettere la stessa foto due volte
-    input.click();
+  // reset vero (shorthand)
+  [topAvatar, cardAvatar].forEach(a => {
+    if (!a) return;
+    a.style.background = "none";
+    a.style.backgroundImage = "";
   });
 
-  // quando scegli una foto
+  [topText, cardText].forEach(t => {
+    if (t) t.style.display = "block";
+  });
+
+  // 1️⃣ immagine salvata
+  const savedImg = localStorage.getItem(AVATAR_KEY);
+  if (savedImg) {
+    [topAvatar, cardAvatar].forEach(a => {
+      if (!a) return;
+      a.style.background = "none";
+      a.style.backgroundImage = `url(${savedImg})`;
+      a.style.backgroundSize = "cover";
+      a.style.backgroundPosition = "center";
+    });
+
+    if (topText) topText.style.display = "none";
+    if (cardText) cardText.style.display = "none";
+    return;
+  }
+
+  // 2️⃣ sfondo nero SOLO se non c'è immagine
+  [topAvatar, cardAvatar].forEach(a => {
+    if (a) a.style.background = "#111";
+  });
+
+  // 3️⃣ iniziale
+  if (email) {
+    const lettera = email.charAt(0).toUpperCase();
+    if (topText) topText.textContent = lettera;
+    if (cardText) cardText.textContent = lettera;
+    return;
+  }
+
+  // fallback
+  if (topText) topText.textContent = "👤";
+  if (cardText) cardText.textContent = "👤";
+}
+
+function aggiornaProfileCard() {
+  const email = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+
+  const nameEl  = document.getElementById("profile-card-name");
+  const emailEl = document.getElementById("profile-card-email");
+
+  if (!nameEl || !emailEl) return;
+
+  if (!logged || !email) {
+    nameEl.textContent  = "Il tuo profilo";
+    emailEl.textContent = "Accedi o registrati";
+    return;
+  }
+
+  nameEl.textContent  = "Account";
+  emailEl.textContent = email;
+}
+
+function setupAvatarChange() {
+  const btn   = document.getElementById("menu-change-photo");
+  const input = document.getElementById("profile-avatar-input");
+
+  if (!btn || !input) {
+    console.warn("Avatar change: elementi mancanti");
+    return;
+  }
+
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // 🔥 chiudi menu PRIMA
+    if (typeof closeMenu === "function") closeMenu();
+
+    // 🔥 iOS hack: micro delay
+    setTimeout(() => {
+      input.click();
+    }, 50);
+  });
+
   input.addEventListener("change", async () => {
-    const file = input.files?.[0];
+    const file = input.files && input.files[0];
     if (!file) return;
 
     try {
       const dataUrl = await compressImageToDataURL(file, 256, 0.82);
 
-      // aggiorna UI subito
-      setAvatarSrc(dataUrl);
-
       // salva
-      localStorage.setItem(AVATAR_KEY, dataUrl);
+      localStorage.setItem("cdg_profile_avatar_v1", dataUrl);
 
-      // opzionale: chiudi menu se vuoi
-      if (typeof closeMenu === "function") closeMenu();
-    } catch (e) {
-      console.error("Errore avatar:", e);
-      alert("Errore nel caricamento immagine.");
+      // aggiorna UI
+      aggiornaAvatarProfilo();
+
+    } catch (err) {
+      console.error("Errore avatar:", err);
+      alert("Errore nel caricamento dell'immagine");
     }
   });
 }
 
-// Avvio
-document.addEventListener("DOMContentLoaded", () => {
-  loadSavedAvatar();
-  setupAvatarChange();
-});
 
 function scadenzaDaCreazione(created_at){
   const d = new Date(created_at);
@@ -1110,11 +1538,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!btn || !popup || !toggle || !backdrop) return;
 
 btn.addEventListener("click", async () => {
-  // ✅ CHIUDI FORZATAMENTE MENU PROFILO (anche tra moduli)
-  const pm = document.getElementById("profile-menu");
-  const pmb = document.getElementById("profile-menu-backdrop");
-  if (pm) pm.style.display = "none";
-  if (pmb) pmb.style.display = "none";
+  // chiudi menu profilo
+  closeMenu();
 
   const email = localStorage.getItem("user_email");
   if (!email) return alert("Devi essere loggato.");
@@ -1129,13 +1554,8 @@ btn.addEventListener("click", async () => {
 
   toggle.checked = data.consenso_promozioni === true;
 
-  backdrop.style.display = "block";
-  popup.style.display = "block";
-
-  requestAnimationFrame(() => {
-    backdrop.classList.add("show");
-    popup.classList.add("show");
-  });
+  backdrop.classList.add("show");
+  popup.classList.add("show");
 });
 
   toggle.addEventListener("change", async () => {
@@ -1155,9 +1575,7 @@ btn.addEventListener("click", async () => {
 
   closeBtn.addEventListener("click", closeConsensi);
   backdrop.addEventListener("click", closeConsensi);
-});
-
-
+}); 
 // ===== POPUP NOTIFICHE =====
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("menu-notifiche");
@@ -1576,6 +1994,11 @@ function subscribeCouponRealtime(email) {
 document.addEventListener("DOMContentLoaded", async () => {
   const email = localStorage.getItem("user_email");
   const logged = localStorage.getItem("userLogged") === "1";
+
+  // 🔥 SEMPRE, sia loggato che no
+  aggiornaProfileCard();
+  aggiornaAvatarProfilo();
+    setupAvatarChange();
 const coppeCard = document.getElementById("coppe-card");
 const loginHint = document.getElementById("login-hint");
 
@@ -1590,7 +2013,6 @@ if (!logged && coppeCard) {
   if (loginHint) loginHint.style.display = "block";
 }
   const couponSection = document.getElementById("coupon-section");
-  const emailChip = document.getElementById("email-chip");
   const noLogin = document.getElementById("no-login");
   const couponList = document.getElementById("coupon-list");
   const openCoupon = document.getElementById("open-coupon-list");
@@ -1602,15 +2024,17 @@ if (!logged && coppeCard) {
     };
   }
 
-  if (!logged || !email){
-    noLogin.style.display = "block";
-    couponSection.style.display = "none";
-    return;
-  }
+if (!logged || !email){
+  noLogin.style.display = "block";
+  couponSection.style.display = "none";
 
-  // mostra email soft
-  emailChip.style.display = "block";
-  emailChip.innerHTML = `<b>Account:</b> ${email}`;
+  // ✅ aggiorna comunque la card
+  aggiornaProfileCard();
+  aggiornaAvatarProfilo();
+
+  return;
+}
+
   await aggiornaBadgeNotifiche();
   await aggiornaNumeroCoppe(email);
   await verificaECreaCoupon(email);
@@ -1620,6 +2044,9 @@ if (!logged && coppeCard) {
   // mostra sezione coupon sempre (anche se 0, ma con badge 0)
   couponSection.style.display = "block";
 
+
+// 🔥 avatar sincronizzato con login/logout
+aggiornaAvatarProfilo();
  subscribeCouponRealtime(email);
 subscribeConfermeRealtime(email);
 });
@@ -1655,7 +2082,7 @@ window.disiscriviti = async function(){
 
   localStorage.removeItem("user_email");
   localStorage.setItem("userLogged", "0");
-  location.href = "index.html";
+  location.href = "home.html";
 };
 </script>
 
@@ -1773,26 +2200,25 @@ if (btnRegister) {
 
 function openMenu(){
   if (!menu || !backdrop) return;
-  menu.style.display = "block";
-  backdrop.style.display = "block";
+ menu.classList.add("show");
+backdrop.classList.add("show");
 }
 
 window.closeMenu = function closeMenu(){
   const menu = document.getElementById("profile-menu");
   const menuBackdrop = document.getElementById("profile-menu-backdrop");
-  if (menu) menu.style.display = "none";
-  if (menuBackdrop) menuBackdrop.style.display = "none";
-}
 
+  if (menu) menu.classList.remove("show");
+  if (menuBackdrop) menuBackdrop.classList.remove("show");
+};
 if (avatarBtn){
   avatarBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    const isOpen = menu && menu.style.display === "block";
+    const isOpen = menu && menu.classList.contains("show");
     if (isOpen) closeMenu();
     else openMenu();
   });
 }
-
 
 // ===== Logout =====
 document.addEventListener("DOMContentLoaded", () => {
@@ -1815,6 +2241,7 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("user_email");
     localStorage.removeItem("user_name");
     localStorage.removeItem("user_surname");
+    localStorage.removeItem("cdg_profile_avatar_v1");
     localStorage.setItem("userLogged", "0");
 
     alert("Sei uscito dal tuo profilo");
@@ -1906,12 +2333,81 @@ if (unsubscribeBtn) {
   transition:.25s;
   z-index:10002;
 ">
-  <a href="index.html" class="menu-item">🏠 Home</a>
-  <a href="crea-coppa.html" class="menu-item">🍨 Crea Coppa</a>
-  <a href="menu.html" class="menu-item">📋 Menu</a>
-  <a href="profilo.html" class="menu-item">👤 Profilo</a>
-  <a href="info-contatti.html" class="menu-item">ℹ️ Info & Contatti</a>
-  <a href="lavora-con-noi.html" class="menu-item">💼 Lavora con noi</a>
+<a href="crea-coppa.html" class="menu-item menu-new-only">
+  <span class="badge-new-left">NEW</span>
+  <span>Crea Coppa</span>
+</a>
+<a href="home.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 11.5L12 4l9 7.5" />
+    <path d="M5 10.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9.5" />
+  </svg>
+  <span>Home</span>
+</a>
+  <a href="menu.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="6" y="4" width="12" height="16" rx="2"
+          fill="none" stroke="currentColor" stroke-width="2"/>
+    <line x1="9" y1="9" x2="15" y2="9"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="9" y1="13" x2="15" y2="13"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="9" y1="17" x2="13" y2="17"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <span>Menu</span>
+</a>
+<a href="profilo.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+  </svg>
+  <span>Profilo</span>
+</a>
+<a href="info-contatti.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <!-- CERCHIO -->
+    <circle
+      cx="12"
+      cy="12"
+      r="9"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    />
+
+    <!-- PALLINO DELLA i -->
+    <circle
+      cx="12"
+      cy="8"
+      r="0.5"
+      fill="currentColor"
+    />
+
+    <!-- STELO DELLA i -->
+    <line
+      x1="12"
+      y1="11"
+      x2="12"
+      y2="17"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linecap="round"
+    />
+  </svg>
+  <span>Info &amp; Contatti</span>
+</a>
+<a href="lavora-con-noi.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <!-- corpo valigetta -->
+    <rect x="3" y="7" width="18" height="13" rx="2"
+          fill="none" stroke="currentColor" stroke-width="2"/>
+    <!-- manico -->
+    <path d="M9 7V5a3 3 0 0 1 6 0v2"
+          fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round"/>
+  </svg>
+  <span>Lavora con noi</span>
+</a>
 </div>
 
 <script>
@@ -1958,6 +2454,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
 </script>
+
+<input
+  id="profile-avatar-input"
+  type="file"
+  accept="image/*"
+  style="
+    position: fixed;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  "
+>
 </body>
 </html>
