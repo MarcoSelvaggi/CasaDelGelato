@@ -237,6 +237,43 @@ body.no-bottom-nav #bottom-nav {
   cursor:pointer;
   z-index:10001;
 }
+.menu-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px;
+}
+
+.menu-item svg.menu-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  stroke: #111;
+  stroke-width: 1.8;
+  fill: none;
+}
+.icon-wrapper{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.menu-new-only{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge-new-left{
+  background: #ff3b30;
+  color: #fff;
+  font-size: 9px;          /* ⬅️ più piccolo */
+  font-weight: 700;
+  padding: 3px 6px;        /* ⬅️ meno padding */
+  border-radius: 999px;
+  line-height: 1;
+  letter-spacing: .3px;
+}
 </style>
 </head>
 
@@ -244,9 +281,8 @@ body.no-bottom-nav #bottom-nav {
 <div id="top-fixed-bar">
   <button id="menu-btn" aria-label="Menu">☰</button>
 
-  <a href="index.html" class="home-btn">
+  <a href="home.html" class="home-btn">
     <img src="tastohome.png">
-    <span>Home</span>
   </a>
 </div>
 <div id="top-fixed-spacer"></div>
@@ -739,12 +775,81 @@ function unblurBackground() {
 <div id="menu-overlay"></div>
 
 <div id="menu-dropdown">
-  <a href="index.html">🏠 Home</a>
-  <a href="menu.html">📋 Menu</a>
-  <a href="crea-coppa.html">🍨 Crea la tua Coppa</a>
-  <a href="profilo.html">👤 Profilo</a>
-  <a href="info-contatti.html">ℹ️ Info & Contatti</a>
-  <a href="lavora-con-noi.html">💼 Lavora con noi</a>
+<a href="crea-coppa.html" class="menu-item menu-new-only">
+  <span class="badge-new-left">NEW</span>
+  <span>Crea Coppa</span>
+</a>
+<a href="home.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M3 11.5L12 4l9 7.5" />
+    <path d="M5 10.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9.5" />
+  </svg>
+  <span>Home</span>
+</a>
+  <a href="menu.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="6" y="4" width="12" height="16" rx="2"
+          fill="none" stroke="currentColor" stroke-width="2"/>
+    <line x1="9" y1="9" x2="15" y2="9"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="9" y1="13" x2="15" y2="13"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="9" y1="17" x2="13" y2="17"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <span>Menu</span>
+</a>
+<a href="profilo.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+  </svg>
+  <span>Profilo</span>
+</a>
+<a href="info-contatti.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <!-- CERCHIO -->
+    <circle
+      cx="12"
+      cy="12"
+      r="9"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    />
+
+    <!-- PALLINO DELLA i -->
+    <circle
+      cx="12"
+      cy="8"
+      r="0.5"
+      fill="currentColor"
+    />
+
+    <!-- STELO DELLA i -->
+    <line
+      x1="12"
+      y1="11"
+      x2="12"
+      y2="17"
+      stroke="currentColor"
+      stroke-width="2.2"
+      stroke-linecap="round"
+    />
+  </svg>
+  <span>Info &amp; Contatti</span>
+</a>
+<a href="lavora-con-noi.html" class="menu-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <!-- corpo valigetta -->
+    <rect x="3" y="7" width="18" height="13" rx="2"
+          fill="none" stroke="currentColor" stroke-width="2"/>
+    <!-- manico -->
+    <path d="M9 7V5a3 3 0 0 1 6 0v2"
+          fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round"/>
+  </svg>
+  <span>Lavora con noi</span>
+</a>
 </div>
 <script>
   const menuBtn = document.getElementById("menu-btn");
