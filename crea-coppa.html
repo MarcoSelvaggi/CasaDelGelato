@@ -53,9 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
 <div style="height:60px;"></div>
 
 <div id="top-fixed-bar">
-    <a href="index.html" class="home-btn">
+    <a href="index.html" class="home-btn" aria-label="Home">
         <img src="tastohome.png" alt="home">
-        <span>Home</span>
     </a>
 </div>
 
@@ -110,11 +109,12 @@ document.addEventListener("DOMContentLoaded", function () {
   
 
   
-  <p style="margin-top:2px; font-size:13px; color:#666; line-height:1.3;">
-    Hai allergie o intolleranze?  
-    Seleziona gli allergeni: gli ingredienti verranno filtrati automaticamente.
-  </p>
-
+<p style="margin-top:2px; font-size:13px; color:#666; line-height:1.3;">
+  <span style="font-weight:600; color:#333;">
+    Hai allergie o intolleranze?
+  </span><br>
+  Seleziona gli allergeni: gli ingredienti verranno filtrati automaticamente.
+</p>
   <!-- 🔶 Tasto Allergie direttamente sotto il testo -->
   <div style="margin-top:10px; margin-bottom:20px;">
       <a href="allergie.html"
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
               text-decoration:none;
               box-shadow:0 2px 5px rgba(0,0,0,0.20);
          ">
-          ⚠️ Seleziona allergeni
+          Seleziona allergeni
       </a>
   </div>
 

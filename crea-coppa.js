@@ -1489,7 +1489,7 @@ if (step === "extra") {
     </div>
 
     <div class="nav-buttons">
-      <button class="back-btn" onclick="prevStep()">⬅ Indietro</button>
+      <button class="back-btn" onclick="prevStep()">Indietro</button>
       <button class="next-btn" onclick="nextStep()">
         ${step === "extra" ? "Conferma" : "Avanti ➜"}
       </button>
@@ -2407,7 +2407,7 @@ console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
   // ✅ 7) Riepilogo grafico (come prima)
 area.innerHTML = `
 <div class="riepilogo-header">
-  <h2 class="riepilogo-title">Ecco la tua coppa! 🍨 </h2>
+  <h2 class="riepilogo-title">Ecco la tua coppa!</h2>
 
 <p class="riepilogo-subtitle" style="
   font-size: 14px;
@@ -3153,7 +3153,8 @@ function nascondiLoadingRiepilogo() {
   if (el) el.style.display = "none";
 }
 function waitForImagesWithProgress(container, onProgress) {
-  const imgs = Array.from(container.querySelectorAll("img"));
+  const imgs = Array.from(container.querySelectorAll("img"))
+  .filter(img => img.src && !img.src.startsWith("data:"));
   const total = imgs.length;
 
   if (total === 0) {
@@ -3264,21 +3265,23 @@ resetBlurTotale();
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 100));
 
-  // 2️⃣ CREA IL RIEPILOGO (HTML completo)
-  await mostraRiepilogo();
+// 3️⃣ ASPETTA LE IMMAGINI (MAX 4 SECONDI)
+const stage = document.getElementById("coppa-stage");
 
-  // 3️⃣ ASPETTA LE IMMAGINI (con barra reale)
-  const stage = document.getElementById("coppa-stage");
+if (stage && !isLocalDev()) {
 
-  if (stage && !isLocalDev()) {
-    // ✅ PRODUZIONE
-    await waitForImagesWithProgress(stage, pct => {
+  await Promise.race([
+    waitForImagesWithProgress(stage, pct => {
       setLoadingProgress(pct);
       if (pct >= 75) setLoadingAlmostReady();
-    });
+    }),
 
-    setLoadingProgress(100);
-  } else {
+    // 🛟 SALVAVITA: dopo 4s si va avanti comunque
+    new Promise(res => setTimeout(res, 4000))
+  ]);
+
+  setLoadingProgress(100);
+}else {
     // 🧪 LOCALE
     setLoadingProgress(100);
   }
