@@ -116,13 +116,26 @@ function avviaTimerSvuotamentoCarrello() {
     const now = Date.now();
     const diff = scadenza - now;
 
-    if (diff <= 0) {
-      countdownEl.textContent = "00:00";
-      timerBox.style.display = "none";
-      clearInterval(carrelloTimerInterval);
-      carrelloTimerInterval = null;
-      return;
-    }
+ if (diff <= 0) {
+  console.log("🗑️ Carrello scaduto → svuotamento");
+
+  // 1️⃣ svuota carrello
+  localStorage.removeItem("carrelloCoppe");
+  localStorage.removeItem("carrello_scadenza");
+
+  // 2️⃣ reset UI
+  countdownEl.textContent = "00:00";
+  timerBox.style.display = "none";
+
+  clearInterval(carrelloTimerInterval);
+  carrelloTimerInterval = null;
+
+  // 3️⃣ aggiorna interfaccia
+  aggiornaCarrelloUI();
+  updateBadgeNav();
+
+  return;
+}
 
     const totSec = Math.floor(diff / 1000);
     const h = Math.floor(totSec / 3600);

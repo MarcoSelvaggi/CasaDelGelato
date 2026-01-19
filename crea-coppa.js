@@ -17,6 +17,7 @@ let collapseTimer = null
 let coppaSalvata = false;
 let registrazioneAperta = false;
 let loadingFallbackTimer = null;
+let isLoadingCoppa = false;
 
 // 🔥 SE ARRIVO DA "USA QUESTA COPPA" → NASCONDI STEP TAVOLO
 document.addEventListener("DOMContentLoaded", () => {
@@ -1326,11 +1327,9 @@ function openMiniRiepilogoTemporaneo() {
 
         // chiudi dopo 2 secondi
         if (collapseTimer) clearTimeout(collapseTimer);
-        collapseTimer = setTimeout(() => {
-            el.classList.add("collapsed");
-            el.classList.remove("open");
-            el.innerHTML = el.dataset.mini || "";
-        }, 5000);
+     collapseTimer = setTimeout(() => {
+    chiudiMiniRiepilogo();
+}, 5000);
     });
 }
 
@@ -1792,7 +1791,7 @@ function updateRiepilogo(){
   if(step==="ingredienti") ready = scelti.ingredienti.length === max.ingredienti;
   if(step==="extra") ready = true;
 
-  const btnHtml = ready
+const btnHtml = (ready && !isLoadingCoppa)
   ? `<button class="quick-next-inside" onclick="nextStepFromMini()">Avanti ➜</button>`
   : "";
 
@@ -1830,8 +1829,7 @@ function autoCollapseRiepilogo(){
 
   if(collapseTimer) clearTimeout(collapseTimer);
 collapseTimer = setTimeout(() => {
-  el.classList.add("collapsed");
-  el.innerHTML = el.dataset.mini || "";
+  chiudiMiniRiepilogo();
 }, 5000);
 }
 // ---------------- SHARE ----------------
@@ -2927,13 +2925,11 @@ window.aggiungiAlCarrello = function () {
     // 💾 salva carrello
     localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
 
-    // ⏱️ imposta scadenza SOLO se non esiste
-    if (!localStorage.getItem("carrello_scadenza")) {
-        localStorage.setItem(
-            "carrello_scadenza",
-            Date.now() + 2 * 60 * 60 * 1000 // 2 ore
-        );
-    }
+// ⏱️ reset scadenza carrello (riparte sempre)
+localStorage.setItem(
+  "carrello_scadenza",
+  Date.now() + 2 * 60 * 60 * 1000 // 2 ore
+);
 
     // 🔔 UI
     updateBadgeNav();
@@ -3224,6 +3220,7 @@ function isLocalDev() {
 
 
 async function preparaRiepilogoFinale() {
+  isLoadingCoppa = true;   // 🔒 BLOCCA MINI AVANTI
 resetBlurTotale();
   // 🔥 RIPRISTINA PAGINA (NO BLUR)
   document.body.classList.remove("blur-bg");
@@ -3306,7 +3303,7 @@ resetBlurTotale();
 // 5️⃣ NASCONDI LOADING
 resetBlurTotale();
 nascondiLoadingRiepilogo();
-
+isLoadingCoppa = false;   // 🔓 RIABILITA MINI
   // 6️⃣ AVVIA TIMER NUVOLA
   avviaTimerNuvolettaInstagram();
 }
@@ -3717,6 +3714,15 @@ window.cambiaQuantita = function(id, delta) {
 
     // Salvo aggiornamento
     localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+    // 🧹 SE IL CARRELLO È VUOTO → RIMUOVI TIMER
+if (carrello.length === 0) {
+    localStorage.removeItem("carrello_scadenza");
+}
+// 🧹 NASCONDI SUBITO IL TIMER SE CARRELLO VUOTO
+const timerBox = document.getElementById("carrello-timer");
+if (timerBox) {
+    timerBox.style.display = "none";
+}
     // 🔥 AGGIORNO IMMEDIATAMENTE UI e BADGE
     aggiornaCarrelloUI();
     updateBadgeNav();

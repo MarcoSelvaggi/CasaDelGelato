@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Info & Contatti – Casa del Gelato</title>
+
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="bottom-nav.css">
+<script src="global.js"></script>
+
+<style>
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  margin:0;
+  background:#f6f6f7;
+  color:#111;
+  padding-bottom:90px;
+}
+
+/* TOP BAR */
+#top-fixed-bar{
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  height:55px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  z-index:9999;
+}
+.home-btn{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:17px;
+  color:#444;
+  text-decoration:none;
+}
+.home-btn img{width:28px;height:28px;}
+#top-fixed-spacer{height:55px;}
+
+/* HEADER */
+.page-header{
+  text-align:center;
+  padding:30px 16px 10px;
+}
+.page-header h1{
+  font-size:28px;
+  font-weight:800;
+  margin:0;
+}
+.page-header p{
+  margin-top:8px;
+  font-size:15px;
+  color:#666;
+}
+
+/* CARD GENERICHE */
+.section{padding:18px;text-align:center;}
+
+/* CARD LOCALE */
+.shop-card{
+  background:#fff;
+  border-radius:18px;
+  margin:16px auto;
+  max-width:360px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  overflow:hidden;
+  text-align:left;
+}
+.shop-img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+.shop-content{padding:16px;}
+.shop-content b{
+  font-size:17px;
+  display:block;
+  margin-bottom:6px;
+}
+.shop-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+.shop-actions a{
+  flex:1;
+  text-align:center;
+  padding:10px;
+  border-radius:12px;
+  font-size:14px;
+  font-weight:600;
+  text-decoration:none;
+  background:#f2f2f7;
+  color:#007aff;
+}
+.shop-actions a.primary{
+  background:#007aff;
+  color:white;
+}
+
+#whatsapp-btn{
+  position: fixed;
+  right: 18px;
+  bottom: 88px;
+
+  width: 56px;
+  height: 56px;
+
+  background-color: #25D366;
+
+  border-radius: 50%;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.28);
+
+  z-index: 9999;
+
+  /* CENTRATURA PERFETTA */
+  display: grid;
+  place-items: center;
+
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+/* ICONA */
+#whatsapp-btn::before{
+  content: "";
+  width: 30px;
+  height: 30px;
+
+  background: white;
+
+  /* SVG WhatsApp PULITO */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12.04 2C6.56 2 2.04 6.52 2.04 12c0 1.96.57 3.85 1.64 5.48L2 22l4.66-1.63A9.94 9.94 0 0 0 12.04 22c5.48 0 10-4.52 10-10s-4.52-10-10-10zm0 18.18a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-2.77.97.93-2.7-.2-.3a8.2 8.2 0 1 1 6.52 3.36zm4.63-6.14c-.25-.12-1.47-.72-1.7-.8-.23-.08-.4-.12-.57.12-.17.25-.65.8-.8.97-.15.17-.3.2-.55.08-.25-.12-1.05-.38-2-1.22-.74-.65-1.23-1.45-1.38-1.7-.15-.25-.02-.38.1-.5.1-.1.25-.3.38-.45.12-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.12-.57-1.38-.78-1.9-.2-.48-.4-.42-.57-.42h-.48c-.17 0-.45.06-.68.32-.23.25-.9.88-.9 2.15 0 1.28.93 2.52 1.05 2.7.12.17 1.82 2.78 4.4 3.9.62.27 1.1.43 1.48.55.62.2 1.18.17 1.62.1.5-.08 1.47-.6 1.68-1.18.2-.57.2-1.05.15-1.15-.06-.1-.23-.17-.48-.3z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12.04 2C6.56 2 2.04 6.52 2.04 12c0 1.96.57 3.85 1.64 5.48L2 22l4.66-1.63A9.94 9.94 0 0 0 12.04 22c5.48 0 10-4.52 10-10s-4.52-10-10-10zm0 18.18a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-2.77.97.93-2.7-.2-.3a8.2 8.2 0 1 1 6.52 3.36zm4.63-6.14c-.25-.12-1.47-.72-1.7-.8-.23-.08-.4-.12-.57.12-.17.25-.65.8-.8.97-.15.17-.3.2-.55.08-.25-.12-1.05-.38-2-1.22-.74-.65-1.23-1.45-1.38-1.7-.15-.25-.02-.38.1-.5.1-.1.25-.3.38-.45.12-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.12-.57-1.38-.78-1.9-.2-.48-.4-.42-.57-.42h-.48c-.17 0-.45.06-.68.32-.23.25-.9.88-.9 2.15 0 1.28.93 2.52 1.05 2.7.12.17 1.82 2.78 4.4 3.9.62.27 1.1.43 1.48.55.62.2 1.18.17 1.62.1.5-.08 1.47-.6 1.68-1.18.2-.57.2-1.05.15-1.15-.06-.1-.23-.17-.48-.3z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+#whatsapp-btn:hover{
+  transform: scale(1.06);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.32);
+}
+
+/* CHAT */
+.chat-btn{
+  padding:10px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  background:#f2f2f7;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+}
+.chat-btn:hover{background:#e5e5ea;}
+body.no-scroll {
+  overflow: hidden;
+  touch-action: none;
+}
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div id="top-fixed-bar">
+  <a href="index.html" class="home-btn">
+    <img src="tastohome.png">
+    <span>Home</span>
+  </a>
+</div>
+<div id="top-fixed-spacer"></div>
+
+<header class="page-header">
+  <h1>Info & Contatti</h1>
+  <p>Come raggiungerci e restare in contatto 🍨</p>
+</header>
+
+<section class="section">
+
+<!-- CONTATTI -->
+<div class="shop-card">
+  <div class="shop-content">
+    <b>📩 Contattaci</b>
+    <a href="mailto:casadelgelato.it@icloud.com">casadelgelato.it@icloud.com</a>
+    <div class="shop-actions">
+      <a href="mailto:casadelgelato.it@icloud.com?subject=Info Casa del Gelato" class="primary">Scrivici</a>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="shop-card" onclick="apriChat()">
+  <div class="shop-content">
+    <b>💬 Chat automatica</b>
+    <p style="font-size:14px;color:#666">Risposte rapide alle domande più comuni</p>
+    <div class="shop-actions">
+      <a class="primary">Apri la chat</a>
+    </div>
+  </div>
+</div>
+
+<!-- LOCALE 1 -->
+<div class="shop-card">
+  <img src="img/bibione49.jpg" class="shop-img">
+  <div class="shop-content">
+    <b>Bibione – Viale delle Costellazioni 49</b>
+    <div class="shop-actions">
+      <a href="tel:043143628">Chiama</a>
+      <a href="https://maps.google.com/?q=Viale+delle+Costellazioni+49+Bibione" target="_blank">Maps</a>
+      <a href="https://g.page/r/CYRHvgKQaZHjEBM/review" target="_blank" class="primary">Recensione</a>
+    </div>
+  </div>
+</div>
+
+<!-- LOCALE 2 -->
+<div class="shop-card">
+  <img src="img/bibione10.jpg" class="shop-img">
+  <div class="shop-content">
+    <b>Bibione – Viale delle Costellazioni 10</b>
+    <div class="shop-actions">
+      <a href="tel:0431364365">Chiama</a>
+      <a href="https://maps.google.com/?q=Viale+delle+Costellazioni+10+Bibione" target="_blank">Maps</a>
+      <a href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank" class="primary">Recensione</a>
+    </div>
+  </div>
+</div>
+
+<!-- LOCALE 3 -->
+<div class="shop-card">
+  <img src="img/lignano.jpg" class="shop-img">
+  <div class="shop-content">
+    <b>Lignano Sabbiadoro – Via Udine 1</b>
+    <div class="shop-actions">
+      <a href="tel:04311961783">Chiama</a>
+      <a href="https://maps.google.com/?q=Via+Udine+1+Lignano" target="_blank">Maps</a>
+      <a href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank" class="primary">Recensione</a>
+    </div>
+  </div>
+</div>
+
+</section>
+
+<a id="whatsapp-btn" href="https://wa.me/393403788846" target="_blank" aria-label="Chat WhatsApp"></a>
+
+<!-- CHAT POPUP -->
+<div id="chat-overlay" style="
+position:fixed; inset:0;
+background:rgba(0,0,0,0.35);
+display:none; align-items:center; justify-content:center;
+z-index:99999;">
+<div style="
+background:#fff; width:92%; max-width:360px;
+border-radius:18px; padding:16px;
+box-shadow:0 10px 30px rgba(0,0,0,0.25);">
+
+<b>Casa del Gelato</b>
+
+<div id="chat-messages" style="margin-top:12px;font-size:14px">
+👋 Seleziona il locale:
+<div style="margin-top:10px;display:grid;gap:8px">
+<button class="chat-btn" onclick="selezionaLocale('bibione49')">Bibione</button>
+<button class="chat-btn" onclick="selezionaLocale('bibione10')">Bibione 2</button>
+<button class="chat-btn" onclick="selezionaLocale('lignano')">Lignano</button>
+</div>
+</div>
+
+<div id="chat-actions" style="margin-top:14px;display:none;gap:8px">
+<button class="chat-btn" onclick="risposta('orari')">🕒 Orari</button>
+<button id="btn-coppa" class="chat-btn" onclick="apriPopupCoppa()" style="display:none">
+  🍨 Crea la tua Coppa
+</button>
+<button class="chat-btn" onclick="risposta('indirizzo')">📍 Indirizzo</button>
+<button class="chat-btn" onclick="risposta('info')">
+Info sul locale
+</button>
+<button class="chat-btn" onclick="window.location.href='lavora-con-noi.html'">Lavora con noi</button>
+</div>
+
+<div id="chat-footer" style="
+  margin-top:14px;
+  display:flex;
+  gap:10px;
+">
+  <button
+    id="btn-back"
+    class="chat-btn"
+    style="flex:1; display:none"
+    onclick="resetChat()"
+  >
+    ← Cambia locale
+  </button>
+
+  <button
+    onclick="chiudiChat()"
+    style="
+      flex:1;
+      padding:10px;
+      border:none;
+      border-radius:12px;
+      background:#111;
+      color:#fff;
+      font-weight:700;
+    "
+  >
+    Chiudi
+  </button>
+</div>
+
+</div>
+</div>
+
+<script>
+let localeSelezionato = null;
+
+const LOCALI = {
+  bibione49: {
+    nome: "Bibione – Viale delle Costellazioni 49",
+    indirizzo: "Viale delle Costellazioni 49, Bibione",
+    telefono: "043143628",
+    orari: "8:00 – 1:00",
+info: `
+
+<div style="font-size:13.5px; line-height:1.45">
+
+  <div style="margin-bottom:8px">
+    Gelateria storica nel cuore di Bibione con <b>servizio al tavolo e asporto</b>,
+    perfetta in ogni momento della giornata.
+  </div>
+
+  <div style="display:flex; gap:6px; margin-top:10px">
+    <span>☕</span>
+    <span><b>Colazioni</b> per iniziare la giornata con gusto</span>
+  </div>
+
+  <div style="display:flex; gap:6px; margin-top:10px">
+    <span>🍹</span>
+    <span><b>Aperitivi</b> da vivere in relax</span>
+  </div>
+
+  <div style="display:flex; gap:6px; margin-top:10px">
+    <span>🍦</span>
+    <span><b>Specialità con il gelato</b>, il nostro punto di forza</span>
+  </div>
+
+  <div style="display:flex; gap:6px; margin-top:12px">
+    <span>✨</span>
+    <span>
+      <b>Novità:</b> ora puoi creare la tua coppa personalizzata direttamente dal nostro sito,
+      mostrarla al cameriere e gustarla esattamente come l’hai immaginata.
+    </span>
+  </div>
+
+</div>
+`
+  },
+
+  bibione10: {
+    nome: "Bibione – Viale delle Costellazioni 10",
+    indirizzo: "Viale delle Costellazioni 10, Bibione",
+    telefono: "0431364365",
+    orari: "10:00 – 23:30",
+    info: `
+🚶‍♂️ <b>Punto asporto veloce</b><br>
+Situato di fronte al nostro <b>locale storico</b><br>
+Ideale per una pausa golosa durante la passeggiata, con <b>coppe gelato d’asporto</b> e
+<b>granite rinfrescanti</b> da gustare in ogni momento della giornata.
+    `
+  },
+
+  lignano: {
+    nome: "Lignano Sabbiadoro – Via Udine 1",
+    indirizzo: "Via Udine 1, Lignano Sabbiadoro",
+    telefono: "04311961783",
+    orari: "10:00 – 1:00",
+    info: `
+   🌴 <b>Punto asporto nel cuore di Lignano Sabbiadoro</b><br>
+La tappa ideale per rinfrescarsi durante la passeggiata, con una ricca selezione di
+<b>gusti artigianali</b>, <b>coppe gelato</b>, <b>granite con frutta fresca</b>,
+<b>gelati su stecco</b> e <b>ghiaccioli</b> perfetti in ogni momento della giornata.
+    `
+  }
+};
+
+function apriChat(){
+  resetChat(); // reset stato chat
+  document.getElementById("chat-overlay").style.display = "flex";
+  document.body.classList.add("no-scroll"); // 🔒 blocca scroll
+}
+
+function chiudiChat(){
+  document.getElementById("chat-overlay").style.display = "none";
+  document.body.classList.remove("no-scroll"); // 🔓 riattiva scroll
+  resetChat();
+}
+
+function selezionaLocale(id) {
+  localeSelezionato = id;
+
+  const l = LOCALI[id]; // 🔥 QUESTA MANCAVA
+  const box = document.getElementById("chat-messages");
+  const actions = document.getElementById("chat-actions");
+  const btnCoppa = document.getElementById("btn-coppa");
+
+  // ✅ intestazione corretta (mai undefined)
+box.innerHTML = `
+  <div style="opacity:.8;margin-bottom:10px">
+    Informazioni su <b>${l.nome}</b>
+  </div>
+
+  <div style="
+    margin-top:8px;
+    padding:14px;
+    background:#f2f2f7;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    font-size:15px;
+  ">
+    <div><b>Indirizzo</b><br>${l.indirizzo}</div>
+    <div><b>Orari</b><br>${l.orari}</div>
+    <div><b>Telefono</b><br>
+      <a href="tel:${l.telefono}">${l.telefono}</a>
+    </div>
+  </div>
+`;
+
+  actions.style.display = "grid";
+
+  // 🍨 CREA COPPA solo Bibione Costellazioni 49
+  if (btnCoppa) {
+    btnCoppa.style.display = (id === "bibione49") ? "block" : "none";
+  }
+  // mostra tasto indietro
+document.getElementById("btn-back").style.display = "block";
+}
+
+function risposta(tipo){
+  const box = document.getElementById("chat-messages");
+  const l = LOCALI[localeSelezionato];
+  if (!l) return;
+
+  // 🔗 azioni che portano fuori
+  if (tipo === "coppa") {
+    window.location.href = "crea-coppa.html";
+    return;
+  }
+
+  if (tipo === "lavoro") {
+    window.location.href = "lavora-con-noi.html";
+    return;
+  }
+
+  let contenuto = "";
+
+  if (tipo === "orari") {
+    contenuto = `
+      🕒 <b>Orari</b><br>
+      ${l.orari}
+    `;
+  }
+  if (tipo === "info") {
+  contenuto = `
+    ${l.info}
+  `;
+}
+
+  if (tipo === "indirizzo") {
+    contenuto = `
+      📍 <b>Indirizzo</b><br>
+      ${l.indirizzo}
+    `;
+  }
+
+  // 🔥 SOSTITUISCE tutto (una risposta alla volta)
+box.innerHTML = `
+  <div style="opacity:.8;margin-bottom:6px">
+    💬 Informazioni
+  </div>
+
+<div style="
+  margin-top:8px;
+  padding:10px;
+  background:#f2f2f7;
+  border-radius:10px;
+  font-size:13.5px;
+  line-height:1.45;
+">
+    ${contenuto}
+  </div>
+`;
+}
+// 🍨 apre il popup informativo
+function apriPopupCoppa() {
+  const popup = document.getElementById("coppa-popup");
+  if (!popup) return;
+
+  popup.style.display = "flex";
+  blurBackground();
+}
+
+// ❌ chiude SOLO il popup (la chat resta aperta)
+function chiudiPopupCoppa() {
+  const popup = document.getElementById("coppa-popup");
+  if (!popup) return;
+
+  popup.style.display = "none";
+  unblurBackground();
+}
+
+// 👉 vai alla pagina crea coppa
+function vaiACreaCoppa() {
+  window.location.href = "crea-coppa.html";
+}
+
+function resetChat(){
+  localeSelezionato = null;
+
+  // reset testo
+  document.getElementById("chat-messages").innerHTML = `
+    👋 Ciao! Seleziona il locale:
+    <div style="margin-top:10px;display:grid;gap:8px">
+      <button class="chat-btn" onclick="selezionaLocale('bibione49')">Bibione</button>
+      <button class="chat-btn" onclick="selezionaLocale('bibione10')">Bibione 2 Asporto</button>
+      <button class="chat-btn" onclick="selezionaLocale('lignano')">Lignano</button>
+    </div>
+  `;
+
+  // nasconde azioni
+  const actions = document.getElementById("chat-actions");
+  if (actions) actions.style.display = "none";
+
+  // nasconde bottone coppa
+  const btnCoppa = document.getElementById("btn-coppa");
+  if (btnCoppa) btnCoppa.style.display = "none";
+  document.getElementById("btn-back").style.display = "none";
+}
+
+function blurBackground() {
+  const overlay = document.getElementById("blur-overlay");
+  if (!overlay) return;
+  overlay.style.opacity = "1";
+  overlay.style.pointerEvents = "auto";
+}
+
+function unblurBackground() {
+  const overlay = document.getElementById("blur-overlay");
+  if (!overlay) return;
+  overlay.style.opacity = "0";
+  overlay.style.pointerEvents = "none";
+}
+
+</script>
+
+
+<!-- BOTTOM NAV -->
+<div id="bottom-nav">
+<a href="crea-coppa.html" class="nav-item"><img src="icone/crea.png"><span>Crea Coppa</span></a>
+<a href="profilo.html" class="nav-item"><img src="icone/user.png"><span>Profilo</span></a>
+<a href="menu.html" class="nav-item"><img src="icone/menu.png"><span>Menu</span></a>
+<a href="lavora-con-noi.html" class="nav-item"><img src="icone/job.png"><span>Lavora Con Noi</span></a>
+</div>
+
+
+<!-- 🍨 POPUP CREA COPPA -->
+<div id="coppa-popup" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:100000;
+">
+  <div style="
+    background:#fff;
+    width:92%;
+    max-width:360px;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  ">
+
+    <b style="font-size:18px">🍨 Crea la tua Coppa</b>
+
+<div style="margin-top:10px; font-size:15px; line-height:1.5; color:#444">
+  Scegli gusti, granelle, topping, ingredienti ed extra e crea la tua coppa <b>proprio come la vuoi tu</b>.
+
+  <br><br>
+  Al termine avrai un <b>riepilogo chiaro</b> da mostrare o comunicare  
+  direttamente al <b>cameriere</b>, così verrà preparata esattamente come l’hai creata.
+
+  <br><br>
+  🎁 Ogni coppa confermata ti avvicina a <b>coupon omaggio</b>  
+  e puoi anche <b>condividere la tua creazione</b> con chi vuoi.
+</div>
+
+    <div style="margin-top:16px; display:flex; gap:10px">
+      <button
+        onclick="vaiACreaCoppa()"
+        style="
+          flex:1;
+          padding:10px;
+          border:none;
+          border-radius:12px;
+          background:#007aff;
+          color:white;
+          font-weight:700;
+        "
+      >
+        Crea ora
+      </button>
+
+      <button
+        onclick="chiudiPopupCoppa()"
+        style="
+          flex:1;
+          padding:10px;
+          border:1px solid #ddd;
+          border-radius:12px;
+          background:#f2f2f7;
+          font-weight:600;
+        "
+      >
+        Chiudi
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div id="blur-overlay" style="
+  position:fixed;
+  inset:0;
+  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.15);
+  opacity:0;
+  pointer-events:none;
+  transition: opacity .25s ease;
+  z-index: 99990;
+"></div>
+
+</body>
+</html>
