@@ -3153,8 +3153,7 @@ function nascondiLoadingRiepilogo() {
   if (el) el.style.display = "none";
 }
 function waitForImagesWithProgress(container, onProgress) {
-  const imgs = Array.from(container.querySelectorAll("img"))
-  .filter(img => img.src && !img.src.startsWith("data:"));
+  const imgs = Array.from(container.querySelectorAll("img"));
   const total = imgs.length;
 
   if (total === 0) {
@@ -3221,6 +3220,7 @@ function isLocalDev() {
 
 
 async function preparaRiepilogoFinale() {
+
   isLoadingCoppa = true;   // 🔒 BLOCCA MINI AVANTI
 resetBlurTotale();
   // 🔥 RIPRISTINA PAGINA (NO BLUR)
@@ -3265,20 +3265,34 @@ resetBlurTotale();
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 100));
 
-// 3️⃣ ASPETTA LE IMMAGINI (MAX 4 SECONDI)
+  // ⏱️ FORCE END DOPO 15 SECONDI
+let loadingForcedEnd = false;
+
+const forceEndTimer = setTimeout(() => {
+  console.warn("⏱️ Loading forzato dopo 15s");
+  loadingForcedEnd = true;
+  setLoadingProgress(100);
+}, 15000);
+// 3️⃣ ASPETTA LE IMMAGINI (con barra reale)
 const stage = document.getElementById("coppa-stage");
 
 if (stage && !isLocalDev()) {
-
-  await Promise.race([
-    waitForImagesWithProgress(stage, pct => {
-      setLoadingProgress(pct);
-      if (pct >= 75) setLoadingAlmostReady();
-    }),
-
-    // 🛟 SALVAVITA: dopo 4s si va avanti comunque
-    new Promise(res => setTimeout(res, 4000))
-  ]);
+await Promise.race([
+  waitForImagesWithProgress(stage, pct => {
+    setLoadingProgress(pct);
+    if (pct >= 75) setLoadingAlmostReady();
+  }),
+  new Promise(resolve => {
+    const check = setInterval(() => {
+      if (loadingForcedEnd) {
+        clearInterval(check);
+        resolve();
+      }
+    }, 100);
+  })
+]);
+clearTimeout(forceEndTimer);
+loadingForcedEnd = false;
 
   setLoadingProgress(100);
 }else {
@@ -3307,6 +3321,16 @@ if (stage && !isLocalDev()) {
 resetBlurTotale();
 nascondiLoadingRiepilogo();
 isLoadingCoppa = false;   // 🔓 RIABILITA MINI
+// 🔐 FAILSAFE FINALE: chiude il loading in ogni caso
+setTimeout(() => {
+  const loading = document.getElementById("loading-riepilogo");
+  if (loading && loading.style.display !== "none") {
+    console.warn("⚠️ Failsafe: chiusura forzata loading");
+    resetBlurTotale();
+    nascondiLoadingRiepilogo();
+    isLoadingCoppa = false;
+  }
+}, 100);
   // 6️⃣ AVVIA TIMER NUVOLA
   avviaTimerNuvolettaInstagram();
 }
