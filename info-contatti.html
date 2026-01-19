@@ -159,13 +159,91 @@ body.no-scroll {
   overflow: hidden;
   touch-action: none;
 }
+/* quando popup coppa è aperto, sfoca anche la chat */
+.chat-blurred {
+  filter: blur(4px);
+  pointer-events: none;
+}
+body.no-bottom-nav #bottom-nav {
+  display: none;
+}
+#menu-btn{
+  position:absolute;
+  left:14px;
+  font-size:22px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:#111;
+}
+#menu-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:9998;
+}
+
+#menu-dropdown{
+  position:fixed;
+  top:55px;
+  left:12px;
+  width:220px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  padding:10px;
+  transform:translateY(-10px);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:9999;
+}
+
+#menu-dropdown a{
+  display:block;
+  padding:10px;
+  border-radius:10px;
+  text-decoration:none;
+  color:#111;
+  font-size:15px;
+}
+
+#menu-dropdown a:hover{
+  background:#f2f2f7;
+}
+/* ☰ MENU BUTTON – stile uniforme */
+#menu-btn{
+  position:fixed;
+  top:14px;
+  left:14px;
+  width:36px;
+  height:36px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background:#f2f2f7;
+  border:none;        /* ❌ bordo tolto */
+  box-shadow:none;    /* ❌ ombra tolta */
+  border-radius:10px;
+
+  font-size:20px;
+  line-height:1;
+
+  cursor:pointer;
+  z-index:10001;
+}
 </style>
 </head>
 
 <body>
-
-<!-- TOP BAR -->
 <div id="top-fixed-bar">
+  <button id="menu-btn" aria-label="Menu">☰</button>
+
   <a href="index.html" class="home-btn">
     <img src="tastohome.png">
     <span>Home</span>
@@ -252,9 +330,16 @@ background:rgba(0,0,0,0.35);
 display:none; align-items:center; justify-content:center;
 z-index:99999;">
 <div style="
-background:#fff; width:92%; max-width:360px;
-border-radius:18px; padding:16px;
-box-shadow:0 10px 30px rgba(0,0,0,0.25);">
+background:#fff;
+width:92%;
+max-width:360px;
+max-height:80vh;
+border-radius:18px;
+padding:16px;
+box-shadow:0 10px 30px rgba(0,0,0,0.25);
+display:flex;
+flex-direction:column;
+">
 
 <b>Casa del Gelato</b>
 
@@ -267,7 +352,14 @@ box-shadow:0 10px 30px rgba(0,0,0,0.25);">
 </div>
 </div>
 
-<div id="chat-actions" style="margin-top:14px;display:none;gap:8px">
+<div id="chat-actions" style="
+  margin-top:14px;
+  display:none;
+  gap:8px;
+  overflow-y:auto;
+  max-height:160px;
+  padding-right:4px;
+">
 <button class="chat-btn" onclick="risposta('orari')">🕒 Orari</button>
 <button id="btn-coppa" class="chat-btn" onclick="apriPopupCoppa()" style="display:none">
   🍨 Crea la tua Coppa
@@ -496,19 +588,27 @@ box.innerHTML = `
 // 🍨 apre il popup informativo
 function apriPopupCoppa() {
   const popup = document.getElementById("coppa-popup");
-  if (!popup) return;
+  const chat = document.getElementById("chat-overlay");
+  if (!popup || !chat) return;
 
   popup.style.display = "flex";
   blurBackground();
+
+  // 🔥 sfoca anche la chat
+  chat.classList.add("chat-blurred");
 }
 
 // ❌ chiude SOLO il popup (la chat resta aperta)
 function chiudiPopupCoppa() {
   const popup = document.getElementById("coppa-popup");
-  if (!popup) return;
+  const chat = document.getElementById("chat-overlay");
+  if (!popup || !chat) return;
 
   popup.style.display = "none";
   unblurBackground();
+
+  // 🔥 rimuove sfocatura chat
+  chat.classList.remove("chat-blurred");
 }
 
 // 👉 vai alla pagina crea coppa
@@ -555,14 +655,6 @@ function unblurBackground() {
 
 </script>
 
-
-<!-- BOTTOM NAV -->
-<div id="bottom-nav">
-<a href="crea-coppa.html" class="nav-item"><img src="icone/crea.png"><span>Crea Coppa</span></a>
-<a href="profilo.html" class="nav-item"><img src="icone/user.png"><span>Profilo</span></a>
-<a href="menu.html" class="nav-item"><img src="icone/menu.png"><span>Menu</span></a>
-<a href="lavora-con-noi.html" class="nav-item"><img src="icone/job.png"><span>Lavora Con Noi</span></a>
-</div>
 
 
 <!-- 🍨 POPUP CREA COPPA -->
@@ -642,6 +734,60 @@ function unblurBackground() {
   transition: opacity .25s ease;
   z-index: 99990;
 "></div>
+
+<!-- MENU DROPDOWN -->
+<div id="menu-overlay"></div>
+
+<div id="menu-dropdown">
+  <a href="index.html">🏠 Home</a>
+  <a href="menu.html">📋 Menu</a>
+  <a href="crea-coppa.html">🍨 Crea la tua Coppa</a>
+  <a href="profilo.html">👤 Profilo</a>
+  <a href="info-contatti.html">ℹ️ Info & Contatti</a>
+  <a href="lavora-con-noi.html">💼 Lavora con noi</a>
+</div>
+<script>
+  const menuBtn = document.getElementById("menu-btn");
+  const menu = document.getElementById("menu-dropdown");
+  const overlay = document.getElementById("menu-overlay");
+
+  function openMenu(){
+    menu.classList.add("open");
+    menu.style.opacity = "1";
+    menu.style.pointerEvents = "auto";
+    menu.style.transform = "translateY(0)";
+
+    overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
+  }
+
+  function closeMenu(){
+    menu.classList.remove("open");
+    menu.style.opacity = "0";
+    menu.style.pointerEvents = "none";
+    menu.style.transform = "translateY(-10px)";
+
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+  }
+
+  menuBtn.addEventListener("click", () => {
+    const isOpen = menu.classList.contains("open");
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  overlay.addEventListener("click", closeMenu);
+
+  // chiude con ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+
+  // chiude quando clicchi un link del menu
+  menu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", closeMenu);
+  });
+</script>
 
 </body>
 </html>

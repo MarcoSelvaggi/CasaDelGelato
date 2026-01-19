@@ -1168,7 +1168,18 @@
   cursor: default;
 }
 
-
+.menu-item{
+  display:block;
+  padding:10px 12px;
+  border-radius:10px;
+  font-weight:600;
+  font-size:14px;
+  color:#111;
+  text-decoration:none;
+}
+.menu-item:hover{
+  background:#f2f2f7;
+}
     </style>
 </head>
 
@@ -1645,7 +1656,44 @@ function formattaDataBella(iso) {
     }).replace(".", "");
 }
 
+
+async function getCouponNonUsati(email) {
+  if (!window.supabase || !email) return [];
+
+  const { data, error } = await supabase
+    .from("coupon")
+    .select("id")
+    .eq("email", email)
+    .eq("redento", false);
+
+  if (error) {
+    console.error("Errore lettura coupon:", error);
+    return [];
+  }
+
+  return data || [];
+}
+
 function aggiornaFedelta() {
+  const email = localStorage.getItem("user_email");
+  getCouponNonUsati(email).then(couponNonUsati => {
+  const couponDisponibili = couponNonUsati.length;
+
+  const msgEl = document.getElementById("fedelta-msg");
+  const btnEl = document.getElementById("btn-vedi-coupon");
+
+  if (!msgEl || !btnEl) return;
+
+  if (couponDisponibili === 0) {
+    // ❌ NESSUN COUPON DISPONIBILE → messaggio normale
+    msgEl.textContent = "Continua a creare coppe per sbloccare il coupon 🎁";
+    btnEl.style.display = "none";
+  } else {
+    // ✅ CI SONO COUPON NON USATI
+    msgEl.innerHTML = `🎉 Hai ${couponDisponibili} coupon disponibili!`;
+    btnEl.style.display = "block";
+  }
+});
   // conta SOLO coppe dell’utente già filtrate (coppe array) e NON eliminate
   const confermateTot = coppe
   .filter(c => c && !c.eliminata)
@@ -1669,19 +1717,27 @@ function aggiornaFedelta() {
   // Questo succede naturalmente perché:
   // - a 10,20,30... => progress=0 e confermateTot>0 => sbloccato
   // - a 11 => progress=1 => torna normale
-  const justUnlocked = (confermateTot >= 10 && progress === 0);
+  let justUnlocked = false;
+
+if (confermateTot >= 10 && progress === 0 && email) {
+  getCouponNonUsati(email).then(coupon => {
+    if (coupon.length > 0) {
+      justUnlocked = true;
+      document.getElementById("fedelta-msg").innerHTML =
+        `🎉 <b>Coupon sbloccato!</b><br>Rivolgiti alla cassa!`;
+    }
+  });
+}
 
   // aggiorno contatore e barra
   countEl.textContent = `${progress}/10`;
   barEl.style.width = ((progress / 10) * 100) + "%";
 
-  if (justUnlocked) {
-    msgEl.innerHTML = `🎉 <b>Coupon sbloccato!</b><br>Rivolgiti alla cassa! `;
-  } else {
-    msgEl.textContent = couponSbloccati > 0
-      ? `Hai già sbloccato ${couponSbloccati} coupon 🎁 Continua per il prossimo!`
-      : `Continua a creare coppe per sbloccare il coupon 🎁`;
-  }
+if (!justUnlocked) {
+  msgEl.textContent = couponSbloccati > 0
+    ? `Hai già sbloccato ${couponSbloccati} coupon 🎁 Continua per il prossimo!`
+    : `Continua a creare coppe per sbloccare il coupon 🎁`;
+}
 
   // bottone: lo mostro se ho almeno 1 coupon sbloccato
   if (btnEl) {
@@ -2613,5 +2669,98 @@ window._eseguiCondivisioneInstagram = async function () {
 };
 </script>
 
+<!-- ☰ MENU -->
+<button id="menu-btn" style="
+  position:fixed;
+  top:14px;
+  left:14px;
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:10px;
+  background:#f2f2f7;
+  font-size:20px;
+  z-index:10001;
+">
+☰
+</button>
+
+<div id="menu-overlay" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:10000;
+"></div>
+
+<div id="menu-dropdown" style="
+  position:fixed;
+  top:60px;
+  left:14px;
+  width:220px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  padding:10px;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-10px);
+  transition:.25s;
+  z-index:10002;
+">
+  <a href="index.html" class="menu-item">🏠 Home</a>
+  <a href="crea-coppa.html" class="menu-item">🍨 Crea Coppa</a>
+  <a href="menu.html" class="menu-item">📋 Menu</a>
+  <a href="profilo.html" class="menu-item">👤 Profilo</a>
+  <a href="info-contatti.html" class="menu-item">ℹ️ Info & Contatti</a>
+  <a href="lavora-con-noi.html" class="menu-item">💼 Lavora con noi</a>
+</div>
+<script>
+  const menuBtn = document.getElementById("menu-btn");
+  const menu = document.getElementById("menu-dropdown");
+  const overlay = document.getElementById("menu-overlay");
+
+  function openMenu(){
+    menu.classList.add("open");
+    menu.style.opacity = "1";
+    menu.style.pointerEvents = "auto";
+    menu.style.transform = "translateY(0)";
+
+    overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
+  }
+
+  function closeMenu(){
+    menu.classList.remove("open");
+    menu.style.opacity = "0";
+    menu.style.pointerEvents = "none";
+    menu.style.transform = "translateY(-10px)";
+
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+  }
+
+  if (menuBtn && menu && overlay) {
+
+    menuBtn.addEventListener("click", () => {
+      const isOpen = menu.classList.contains("open");
+      isOpen ? closeMenu() : openMenu();
+    });
+
+    overlay.addEventListener("click", closeMenu);
+
+    // ESC per chiudere
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+
+    // chiude quando clicchi un link
+    menu.querySelectorAll("a").forEach(a => {
+      a.addEventListener("click", closeMenu);
+    });
+  }
+</script>
 </body>
 </html>

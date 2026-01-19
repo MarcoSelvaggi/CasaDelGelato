@@ -407,31 +407,52 @@ forzaCoppaNonConfermata();
   </div>
 </div>
 
+
 <!-- ⭐ BOTTOM NAV BAR -->
 <div id="bottom-nav">
-   <div class="nav-item" onclick="apriCarrello()">
-        <div style="position:relative;">
-            <img src="icone/cart.png" alt="">
-            <span id="badge-nav" class="nav-badge">0</span>
-        </div>
-        <span>Carrello</span>
-    </div>
+<div class="nav-item" onclick="apriCarrello()">
+  <div class="cart-wrapper">
+    
+    <!-- 🛒 ICONA CARRELLO SVG -->
+    <svg class="cart-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.5"/>
+      <circle cx="18" cy="20" r="1.5"/>
+    </svg>
 
-    <a href="profilo.html" class="nav-item">
-        <img src="icone/user.png" alt="">
-        <span>Profilo</span>
-    </a>
+    <!-- 🔴 BADGE SEMPRE VISIBILE -->
+<span id="badge-nav" class="cart-badge"></span>
 
-    <a href="menu.html" class="nav-item">
-        <img src="icone/menu.png" alt="">
-        <span>Menu</span>
-    </a>
-
-    <a href="lavora-con-noi.html" class="nav-item">
-        <img src="icone/job.png" alt="">
-        <span>Lavora Con Noi</span>
-    </a>
+  </div>
+  <span>Carrello</span>
 </div>
+
+<a href="profilo.html" class="nav-item">
+  <div class="profile-wrapper">
+    <svg class="profile-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 12c2.761 0 5-2.239 5-5S14.761 2 12 2 7 4.239 7 7s2.239 5 5 5zm0 2c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z"/>
+    </svg>
+  </div>
+  <span>Profilo</span>
+</a>
+<a href="menu.html" class="nav-item">
+  <svg class="menu-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <rect x="6" y="4" width="12" height="16" rx="2"
+          fill="none" stroke="currentColor" stroke-width="2"/>
+    <line x1="9" y1="9" x2="15" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="9" y1="13" x2="15" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <line x1="9" y1="17" x2="13" y2="17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <span>Menu</span>
+</a>
+
+</div>
+
 
 
 
@@ -720,5 +741,7 @@ function nascondiBottomNav() {
   </div>
 </div>
 <div id="blur-overlay"></div>
+
+
 </body>
 </html>

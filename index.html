@@ -134,19 +134,18 @@ body {
     .shop-card b {font-size:16px;margin-bottom:4px;display:block;}
     .shop-card a {text-decoration:none;margin-top:4px;display:block;font-size:15px;color:#007aff;}
 
-/* WHATSAPP – spostato sopra la bottom bar */
-#whatsapp-btn {
-  position:fixed;
-  right:18px;
-  bottom:88px;          /* ⬅️ prima era 18px */
-  background:#25D366;
-  color:white;
-  padding:14px 18px;
-  border-radius:50%;
-  font-size:24px;
+/* ☰ MENU DROPDOWN */
+#menu-dropdown a{
+  display:block;
+  padding:10px;
+  border-radius:10px;
   text-decoration:none;
-  z-index:9999;
-  box-shadow:0 4px 14px rgba(0,0,0,0.25);
+  color:#111;
+  font-size:15px;
+}
+
+#menu-dropdown a:hover{
+  background:#f2f2f7;
 }
 
   </style>
@@ -185,32 +184,6 @@ body {
   <a id="start-coppa" class="btn" data-lang="create_button">🍨 INIZIA</a>
 </section>
 
-<section class="menu-section">
-  <h2 data-lang="contacts">I nostri Locali</h2>
-
-<div class="shop-card">
-  <b>Bibione - Viale delle Costellazioni 49</b>
-  <a href="tel:043143628">📞 0431 43628</a>
-  <a href="https://www.google.com/maps/place/Viale+delle+Costellazioni+49,+Bibione" target="_blank">🗺 Apri su Maps</a>
-  <a href="https://g.page/r/CYRHvgKQaZHjEBM/review" target="_blank">⭐ Scrivi una recensione</a>
-</div>
-
-<div class="shop-card">
-  <b>Bibione - Viale delle Costellazioni 10</b>
-  <a href="tel:0431364365">📞 0431 364365</a>
-  <a href="https://www.google.com/maps/place/Viale+delle+Costellazioni+10,+Bibione" target="_blank">🗺 Apri su Maps</a>
-  <a href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank">⭐ Scrivi una recensione</a>
-</div>
-
-<div class="shop-card">
-  <b>Lignano Sabbiadoro - Via Udine 1</b>
-  <a href="tel:04311961783">📞 0431 1961783</a>
-  <a href="https://www.google.com/maps/place/Via+Udine+1,+Lignano+Sabbiadoro" target="_blank">🗺 Apri su Maps</a>
-  <a href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank">⭐ Scrivi una recensione</a>
-</div>
-
-<!-- WHATSAPP -->
-<a id="whatsapp-btn" href="https://wa.me/393403788846" target="_blank">💬</a>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -437,30 +410,98 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
 </span>
 </div>
 
-<!-- 🔥 BOTTOM NAV BAR FISSA -->
-<div id="bottom-nav">
-    <a href="crea-coppa.html" class="nav-item">
-        <img src="icone/crea.png" alt="">
-        <span>Crea Coppa</span>
-    </a>
 
-    <a href="profilo.html" class="nav-item">
-        <img src="icone/user.png" alt="">
-        <span>Profilo</span>
-    </a>
-
-    <a href="menu.html" class="nav-item">
-        <img src="icone/menu.png" alt="">
-        <span>Menu</span>
-    </a>
-
-    <a href="lavora-con-noi.html" class="nav-item">
-        <img src="icone/job.png" alt="">
-        <span>Lavora Con Noi</span>
-    </a>
-</div>
 </div>
 
+<!-- ☰ MENU -->
+<button id="menu-btn" style="
+  position:fixed;
+  top:14px;
+  left:14px;
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:10px;
+  background:#f2f2f7;
+  font-size:20px;
+  z-index:10001;
+">
+☰
+</button>
 
+<div id="menu-overlay" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:10000;
+"></div>
+
+<div id="menu-dropdown" style="
+  position:fixed;
+  top:60px;
+  left:14px;
+  width:220px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  padding:10px;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-10px);
+  transition:.25s;
+  z-index:10002;
+">
+  <a href="index.html" class="menu-item">🏠 Home</a>
+  <a href="crea-coppa.html" class="menu-item">🍨 Crea Coppa</a>
+  <a href="menu.html" class="menu-item">📋 Menu</a>
+  <a href="profilo.html" class="menu-item">👤 Profilo</a>
+  <a href="info-contatti.html" class="menu-item">ℹ️ Info & Contatti</a>
+  <a href="lavora-con-noi.html" class="menu-item">💼 Lavora con noi</a>
+</div>
+<script>
+  const menuBtn = document.getElementById("menu-btn");
+  const menu = document.getElementById("menu-dropdown");
+  const overlay = document.getElementById("menu-overlay");
+
+  function openMenu(){
+    menu.classList.add("open");
+    menu.style.opacity = "1";
+    menu.style.pointerEvents = "auto";
+    menu.style.transform = "translateY(0)";
+
+    overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
+  }
+
+  function closeMenu(){
+    menu.classList.remove("open");
+    menu.style.opacity = "0";
+    menu.style.pointerEvents = "none";
+    menu.style.transform = "translateY(-10px)";
+
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+  }
+
+  menuBtn.addEventListener("click", () => {
+    const isOpen = menu.classList.contains("open");
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  overlay.addEventListener("click", closeMenu);
+
+  // chiude con ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+
+  // chiude quando clicchi un link del menu
+  menu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", closeMenu);
+  });
+</script>
 </body>
 </html>

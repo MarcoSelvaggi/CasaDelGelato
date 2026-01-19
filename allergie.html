@@ -130,7 +130,18 @@
   text-decoration: none;
   text-align: center;
 }
-
+.menu-item{
+  display:block;
+  padding:10px 12px;
+  border-radius:10px;
+  font-weight:600;
+  font-size:14px;
+  color:#111;
+  text-decoration:none;
+}
+.menu-item:hover{
+  background:#f2f2f7;
+}
   </style>
 </head>
 
@@ -373,5 +384,96 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   <span id="wait-mmss">0:00</span>
 </span>
 </div>
+
+<!-- ☰ MENU -->
+<button id="menu-btn" style="
+  position:fixed;
+  top:14px;
+  left:14px;
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:10px;
+  background:#f2f2f7;
+  font-size:20px;
+  z-index:10001;
+">
+☰
+</button>
+
+<div id="menu-overlay" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:10000;
+"></div>
+
+<div id="menu-dropdown" style="
+  position:fixed;
+  top:60px;
+  left:14px;
+  width:220px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  padding:10px;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-10px);
+  transition:.25s;
+  z-index:10002;
+">
+  <a href="index.html" class="menu-item">🏠 Home</a>
+  <a href="crea-coppa.html" class="menu-item">🍨 Crea Coppa</a>
+  <a href="menu.html" class="menu-item">📋 Menu</a>
+  <a href="profilo.html" class="menu-item">👤 Profilo</a>
+  <a href="info-contatti.html" class="menu-item">ℹ️ Info & Contatti</a>
+  <a href="lavora-con-noi.html" class="menu-item">💼 Lavora con noi</a>
+</div>
+<script>
+  const menuBtn = document.getElementById("menu-btn");
+  const menu = document.getElementById("menu-dropdown");
+  const overlay = document.getElementById("menu-overlay");
+
+  function openMenu(){
+    menu.classList.add("open");
+    menu.style.opacity = "1";
+    menu.style.pointerEvents = "auto";
+    menu.style.transform = "translateY(0)";
+
+    overlay.style.opacity = "1";
+    overlay.style.pointerEvents = "auto";
+  }
+
+  function closeMenu(){
+    menu.classList.remove("open");
+    menu.style.opacity = "0";
+    menu.style.pointerEvents = "none";
+    menu.style.transform = "translateY(-10px)";
+
+    overlay.style.opacity = "0";
+    overlay.style.pointerEvents = "none";
+  }
+
+  menuBtn.addEventListener("click", () => {
+    const isOpen = menu.classList.contains("open");
+    isOpen ? closeMenu() : openMenu();
+  });
+
+  overlay.addEventListener("click", closeMenu);
+
+  // ESC per chiudere
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
+  });
+
+  // chiude quando clicchi un link
+  menu.querySelectorAll("a").forEach(a => {
+    a.addEventListener("click", closeMenu);
+  });
+</script>
 </body>
 </html>

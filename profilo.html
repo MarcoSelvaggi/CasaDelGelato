@@ -620,7 +620,18 @@
   font-size: 15px;
 }
 
-
+.menu-item{
+  display:block;
+  padding:10px 12px;
+  border-radius:10px;
+  font-weight:600;
+  font-size:14px;
+  color:#111;
+  text-decoration:none;
+}
+.menu-item:hover{
+  background:#f2f2f7;
+}
 </style>
 </head>
 
@@ -812,21 +823,7 @@
   </button>
 </div>
 
-<!-- ⭐ Bottom bar -->
-<div id="bottom-nav">
-  <a href="crea-coppa.html" class="nav-item">
-    <img src="icone/crea.png" alt="">
-    <span>Crea</span>
-  </a>
-  <a href="profilo.html" class="nav-item">
-    <img src="icone/user.png" alt="">
-    <span>Profilo</span>
-  </a>
-  <a href="menu.html" class="nav-item">
-    <img src="icone/menu.png" alt="">
-    <span>Menu</span>
-  </a>
-</div>
+
 
 <script type="module">
 import { supabase } from "./supabase.js";
@@ -1868,6 +1865,99 @@ if (unsubscribeBtn) {
     <span id="wait-mmss">0:00</span>
   </span>
 </div>
+<!-- ☰ MENU -->
+<button id="menu-btn" style="
+  position:fixed;
+  top:14px;
+  left:14px;
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:10px;
+  background:#f2f2f7;
+  font-size:20px;
+  z-index:10001;
+">
+☰
+</button>
 
+<div id="menu-overlay" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:10000;
+"></div>
+
+<div id="menu-dropdown" style="
+  position:fixed;
+  top:60px;
+  left:14px;
+  width:220px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  padding:10px;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-10px);
+  transition:.25s;
+  z-index:10002;
+">
+  <a href="index.html" class="menu-item">🏠 Home</a>
+  <a href="crea-coppa.html" class="menu-item">🍨 Crea Coppa</a>
+  <a href="menu.html" class="menu-item">📋 Menu</a>
+  <a href="profilo.html" class="menu-item">👤 Profilo</a>
+  <a href="info-contatti.html" class="menu-item">ℹ️ Info & Contatti</a>
+  <a href="lavora-con-noi.html" class="menu-item">💼 Lavora con noi</a>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  /* ===== MENU HAMBURGER TOP SINISTRA ===== */
+
+  const burgerBtn   = document.getElementById("menu-btn");
+  const burgerMenu  = document.getElementById("menu-dropdown");
+  const burgerOv    = document.getElementById("menu-overlay");
+
+  if (!burgerBtn || !burgerMenu || !burgerOv) return;
+
+  function openBurgerMenu() {
+    burgerMenu.style.opacity = "1";
+    burgerMenu.style.pointerEvents = "auto";
+    burgerMenu.style.transform = "translateY(0)";
+    burgerOv.style.opacity = "1";
+    burgerOv.style.pointerEvents = "auto";
+  }
+
+  function closeBurgerMenu() {
+    burgerMenu.style.opacity = "0";
+    burgerMenu.style.pointerEvents = "none";
+    burgerMenu.style.transform = "translateY(-10px)";
+    burgerOv.style.opacity = "0";
+    burgerOv.style.pointerEvents = "none";
+  }
+
+  burgerBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = burgerMenu.style.pointerEvents === "auto";
+    open ? closeBurgerMenu() : openBurgerMenu();
+  });
+
+  burgerOv.addEventListener("click", closeBurgerMenu);
+
+  burgerMenu.querySelectorAll("a").forEach(a =>
+    a.addEventListener("click", closeBurgerMenu)
+  );
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeBurgerMenu();
+  });
+
+});
+</script>
 </body>
 </html>

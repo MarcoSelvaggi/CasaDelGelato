@@ -3766,9 +3766,18 @@ window.updateBadgeNav = function() {
     const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
     const totale = carrello.reduce((sum, c) => sum + (c.quantita || 1), 0);
 
-    badge.textContent = totale;
-    badge.style.display = totale > 0 ? "inline-flex" : "none";
+    if (totale > 0) {
+        badge.textContent = totale;
+        badge.style.display = "block";
+    } else {
+        badge.textContent = "";
+        badge.style.display = "none";
+    }
 };
+// 🔒 Stabilizza il badge al primo caricamento (post layout)
+window.addEventListener("load", () => {
+    updateBadgeNav();
+});
 
 window.aggiornaCarrelloUI = function() {
     const contenuto = document.getElementById("carrello-contenuto");
