@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Test candidatura</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                   "Helvetica Neue", Arial, sans-serif;
+      background: #f5f5f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .box {
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+    }
+
+    button {
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box">
+    <h1>Test candidatura</h1>
+
+    <form
+      action="https://formspree.io/f/mgooypql"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <input type="text" name="nome" placeholder="Nome e Cognome" required>
+
+      <input type="email" name="email" placeholder="Email" required>
+
+      <input type="file" name="cv" accept=".pdf">
+
+      <textarea name="messaggio" placeholder="Messaggio"></textarea>
+
+      <button type="submit">Invia</button>
+    </form>
+  </div>
+
+</body>
+</html>
