@@ -162,28 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
 <section id="step-container" style="display:none;">
 </section>
 
-<!-- FORM REGISTRAZIONE -->
-<div id="reg-box" style="display:none; padding:20px; text-align:center;">
-  <h2>Registrazione</h2>
-  <p>Compila i dati per salvare le tue coppe e sbloccare la cronologia.</p>
-
-  <input id="reg-nome" type="text" placeholder="Nome"
-    style="padding:12px; width:80%; max-width:260px; border-radius:10px; border:1px solid #ccc; margin-bottom:10px;">
-
-  <input id="reg-cognome" type="text" placeholder="Cognome"
-    style="padding:12px; width:80%; max-width:260px; border-radius:10px; border:1px solid #ccc; margin-bottom:10px;">
-
-  <input id="reg-email" type="email" placeholder="Email"
-    style="padding:12px; width:80%; max-width:260px; border-radius:10px; border:1px solid #ccc; margin-bottom:14px;">
-
-  <div style="margin-top:10px;">
-    <button class="next-btn" onclick="salvaRegistrazione()">Registrati</button>
-    <br><br>
-    <button class="back-btn" onclick="chiudiRegistrazione()">⬅ Torna indietro</button>
-  </div>
-</div>
 
 </div> <!-- 🔴 CHIUSURA app-blur-zone -->
+
 <!-- POPUP -->
 <div id="popup-coppa">
   <div class="popup-content">
@@ -238,89 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
 document.getElementById("riepilogo-mini").style.display = "none";
 </script>
 
-<script>
-// APRI MODULO
-function apriRegistrazione() {
-    localStorage.setItem("returnToRiepilogo", "1");
 
-    document.getElementById("step-size").style.display = "none";
-    document.getElementById("step-container").style.display = "none";
-    document.getElementById("step-title").style.display = "none";
-
-    document.getElementById("reg-box").style.display = "block";
-
-    // 🔥 NASCONDI NUVOLA INSTAGRAM
-    const nuvola = document.getElementById("instagram-nuvola");
-    if (nuvola) nuvola.style.display = "none";
-}
-
-// CHIUDI MODULO
-function chiudiRegistrazione() {
-    document.getElementById("reg-box").style.display = "none";
-    document.getElementById("step-container").style.display = "block";
-    document.getElementById("step-title").style.display = "block";
-
-    // 🔥 RI-MOSTRA NUVOLA INSTAGRAM
-    const nuvola = document.getElementById("instagram-nuvola");
-    if (nuvola) nuvola.style.display = "";
-}
-
-// SALVA REGISTRAZIONE (usa Supabase globale)
-async function salvaRegistrazione() {
-    const nome = document.getElementById("reg-nome").value.trim();
-    const cognome = document.getElementById("reg-cognome").value.trim();
-    const email = document.getElementById("reg-email").value.trim().toLowerCase();
-
-    if (!nome || !cognome || !email) {
-        alert("⚠️ Compila tutti i campi: Nome, Cognome, Email.");
-        return;
-    }
-
-    // 1️⃣ Manda i dati a Supabase
-    let res = await window.salvaRegistrazioneSupabase(nome, cognome, email);
-
-    if (!res.success) {
-        alert("Errore durante la registrazione: " + res.error);
-        return;
-    }
-
-// 2️⃣ Salva localmente che l'utente è registrato
-localStorage.setItem("userLogged", "1");
-localStorage.setItem("user_email", email);
-
-// 🔥 3️⃣ Collega le coppe anonime a questa email
-const guest_id = localStorage.getItem("guest_id");
-
-if (guest_id) {
-    await supabase
-        .from("coppe")
-        .update({ email: email })
-        .eq("guest_id", guest_id)
-        .is("email", null);
-}
-
-// ✅ TORNA AL RIEPILOGO SE ARRIVI DA LÌ
-if (localStorage.getItem("returnToRiepilogo") === "1") {
-    localStorage.removeItem("returnToRiepilogo");
-
-    document.getElementById("reg-box").style.display = "none";
-    document.getElementById("step-container").style.display = "block";
-    document.getElementById("step-title").style.display = "block";
-
-    // opzionale: nascondi il pulsante Registrati
-    document.querySelector(".riepilogo-registrati")?.remove();
-
-    // ☁️ ri-mostra la nuvoletta Instagram
-    const nuvola = document.getElementById("instagram-nuvola");
-    if (nuvola) nuvola.style.display = "";
-
-forzaCoppaNonConfermata();
-
-    alert("🎉 Registrazione completata! Cronologia coppe sbloccata.");
-    return; // 🔥 BLOCCA QUALSIASI REDIRECT
-}
-}
-</script>
 
 <!-- EXPORT COPPA (invisibile) -->
 <div id="coppa-export" style="
@@ -731,17 +630,73 @@ function nascondiBottomNav() {
     border-radius:999px;
     overflow:hidden;
   ">
-    <div id="loading-bar" style="
-      height:100%;
-      width:0%;
-      background:#000;
-      transition:width .25s ease;
-      border-radius:999px;
-    "></div>
+<div id="loading-bar" style="
+  height:100%;
+  width:0%;
+  background:#34c759; /* 🍏 verde Apple */
+  transition:width .25s ease;
+  border-radius:999px;
+"></div>
   </div>
 </div>
 <div id="blur-overlay"></div>
 
+<!-- 🚧 BLOCCO CREA COPPA – COMING SOON -->
+<div id="popup-coming-soon" class="popup-overlay" style="display:none;">
+  <div class="popup-box">
+    <h3>🍨 Crea la tua coppa</h3>
 
+    <p>
+      Funzione in arrivo a breve.<br><br>
+      Stiamo preparando un’esperienza speciale
+      per creare la tua coppa personalizzata ✨
+    </p>
+
+    <!-- ✅ BOTTONE TORNA ALLA HOME -->
+<div style="margin-top:12px; font-weight:600;">
+  Casa del Gelato
+</div>
+
+<button
+  class="popup-btn secondary"
+  onclick="tornaAllaHome()"
+  style="margin-top:10px;"
+>
+  ← Torna alla Home
+</button>
+  </div>
+</div>
+
+<script>
+/* ===============================
+   🚧 BLOCCO CREA COPPA
+   Cambia SOLO questa riga
+=============================== */
+const CREA_COPPA_ENABLED = true; /*metti true per sbloccare*/
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (!CREA_COPPA_ENABLED) {
+    const popup = document.getElementById("popup-coming-soon");
+    if (popup) popup.style.display = "flex";
+
+    // 🔒 blocca scroll e interazioni
+    document.body.style.overflow = "hidden";
+  }
+});
+</script>
+<script>
+function tornaAllaHome() {
+  window.location.href = "home.html";
+}
+</script>
+
+<script>
+function vaiARegistrazione() {
+  window.location.href = "login.html?mode=register";
+}
+</script>
+
+</body>
+</html>
 </body>
 </html>

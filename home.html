@@ -185,6 +185,67 @@ body {
   line-height: 1;
   letter-spacing: .3px;
 }
+/* ===============================
+   ⏱️ WAIT BAR – DIMENSIONI BLOCCATE
+=============================== */
+
+#wait-bar {
+  /* 🔒 isolamento totale */
+  all: unset;
+  box-sizing: border-box;
+
+  position: fixed;
+  bottom: 90px;
+  left: 12px;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  background: #111;
+  color: #fff;
+
+  /* 🔢 dimensioni IDENTICHE a crea coppa */
+  font-family: -apple-system, BlinkMacSystemFont,
+               "SF Pro Text", "SF Pro Display",
+               system-ui, sans-serif;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+
+  padding: 6px 12px;
+  border-radius: 11px;
+
+  z-index: 999999;
+
+  /* ❌ nessuna scala, mai */
+  transform: none !important;
+  zoom: 1 !important;
+}
+
+/* 🔒 testo interno */
+#wait-bar span {
+  all: unset;
+  font: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+
+/* testo descrittivo */
+#wait-full {
+  font-size: 11.5px;
+  font-weight: 500;
+  opacity: 0.75;
+}
+
+/* countdown */
+#wait-time,
+#wait-mmss {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
   </style>
   <link rel="stylesheet" href="bottom-nav.css">
 </head>
@@ -422,29 +483,6 @@ supabase
 document.addEventListener("DOMContentLoaded", loadWaitTime);
 </script>
 
-<!-- ⏱️ WAIT TIME BAR -->
-<div id="wait-bar" style="
-  position: fixed;
-  bottom: 90px;
-  left: 12px;
-  transform: none;
-  background: #111;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 600;
-  display: none;
-  z-index: 9999;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-">
-  <span id="wait-full">
-  Attesa stimata: <span id="wait-time">0</span>
-</span>
-<span id="wait-compact" style="display:none">
-  <span id="wait-mmss">0:00</span>
-</span>
-</div>
 
 
 </div>

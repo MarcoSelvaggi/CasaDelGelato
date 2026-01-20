@@ -2422,7 +2422,7 @@ area.innerHTML = `
 
 <button
   class="next-btn riepilogo-registrati"
-  onclick="onApriRegistrazione(); apriRegistrazione();"
+  onclick="vaiARegistrazione()"
 >
   Registrati
 </button>
@@ -3051,12 +3051,6 @@ function salvaScontrinoComeImmagine() {
     });
 }
 
-function setLoadingDettaCoppa() {
-  const txt = document.getElementById("loading-text");
-  if (!txt) return;
-
-  txt.textContent = "Nell’attesa puoi dettare la tua coppa al cameriere 👂🍨";
-}
 
 function expandMiniRiepilogo(){
   const el = document.getElementById("riepilogo-mini");
@@ -3218,11 +3212,15 @@ function isLocalDev() {
          location.protocol === "file:";
 }
 
+function timeoutPromise(ms) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve("timeout"), ms);
+  });
+}
 
 async function preparaRiepilogoFinale() {
-  isLoadingCoppa = true;   // 🔒 BLOCCA MINI AVANTI
-resetBlurTotale();
-  // 🔥 RIPRISTINA PAGINA (NO BLUR)
+  isLoadingCoppa = true;
+  resetBlurTotale();
   document.body.classList.remove("blur-bg");
 
   const miniInit = document.getElementById("riepilogo-mini");
@@ -3231,80 +3229,65 @@ resetBlurTotale();
     miniInit.classList.remove("open");
   }
 
-  // 1️⃣ MOSTRA LOADING
+  // 1️⃣ LOADING
   mostraLoadingRiepilogo();
   setLoadingText("Caricamento coppa…");
   setLoadingProgress(0);
 
-  // ⏱️ FALLBACK: se il loading dura troppo → mostra mini riepilogo
-  loadingFallbackTimer = setTimeout(() => {
-    const loading = document.getElementById("loading-riepilogo");
-    if (!loading || loading.style.display === "none") return;
+  // ⏱️ TESTO "CI SIAMO QUASI…" A -5s DAL TIMEOUT
+  const almostReadyTimer = setTimeout(() => {
+    setLoadingText("Ci siamo quasi…");
+  }, 10000); // 15s - 5s
 
-    // 🔥 CAMBIA TESTO LOADING
-    setLoadingDettaCoppa();
-
-    const mini = document.getElementById("riepilogo-mini");
-    if (!mini) return;
-
-    if (mini.dataset.full) {
-      mini.innerHTML = mini.dataset.full;
-    }
-
-    mini.style.display = "block";
-    mini.classList.remove("collapsed");
-    mini.classList.add("open");
-    mini.style.pointerEvents = "auto";
-
-    // ✅ SEGNA che è stato aperto SOLO per il loading
-    mini.dataset.openedByLoading = "1";
-  }, 10000);
-
-  // lascia respirare la UI
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 100));
 
-  // 2️⃣ CREA IL RIEPILOGO (HTML completo)
+  // 2️⃣ CREA RIEPILOGO
   await mostraRiepilogo();
 
-  // 3️⃣ ASPETTA LE IMMAGINI (con barra reale)
-  const stage = document.getElementById("coppa-stage");
+// 3️⃣ ATTENDI IMMAGINI (MAX 15s)
+const stage = document.getElementById("coppa-stage");
+if (stage) {
 
-  if (stage && !isLocalDev()) {
-    // ✅ PRODUZIONE
-    await waitForImagesWithProgress(stage, pct => {
-      setLoadingProgress(pct);
-      if (pct >= 75) setLoadingAlmostReady();
-    });
+  let fakeProgress = 0;
 
-    setLoadingProgress(100);
-  } else {
-    // 🧪 LOCALE
-    setLoadingProgress(100);
+  // 🔁 PROGRESS FAKE (per far muovere sempre la barra)
+  const fakeProgressInterval = setInterval(() => {
+    fakeProgress += 2;
+    if (fakeProgress > 90) fakeProgress = 90;
+    setLoadingProgress(fakeProgress);
+  }, 120);
+
+  // 🖼️ PROGRESS REALE IMMAGINI
+  const immaginiPromise = waitForImagesWithProgress(stage, pct => {
+    setLoadingProgress(Math.max(fakeProgress, pct));
+  });
+
+  // ⏱️ IMMAGINI O TIMEOUT
+  const result = await Promise.race([
+    immaginiPromise,
+    timeoutPromise(15000)
+  ]);
+
+  // 🛑 STOP PROGRESS FAKE
+  clearInterval(fakeProgressInterval);
+
+  if (result === "timeout") {
+    console.warn("⏱️ Timeout immagini");
   }
 
-  // 4️⃣ MICRO-DELAY anti-flicker
+  // ✅ CHIUSURA A 100%
+  setLoadingProgress(100);
+}
+
   await new Promise(r => requestAnimationFrame(r));
 
-  // 🧹 STOP fallback timer
-  if (loadingFallbackTimer) {
-    clearTimeout(loadingFallbackTimer);
-    loadingFallbackTimer = null;
-  }
+  // 4️⃣ FINE LOADING
+  resetBlurTotale();
+  nascondiLoadingRiepilogo();
+  isLoadingCoppa = false;
 
-  // 🔒 richiudi mini SOLO se era aperto per il loading
-  const mini = document.getElementById("riepilogo-mini");
-  if (mini && mini.dataset.openedByLoading === "1") {
-    mini.classList.add("collapsed");
-    mini.classList.remove("open");
-    mini.dataset.openedByLoading = "";
-  }
-
-// 5️⃣ NASCONDI LOADING
-resetBlurTotale();
-nascondiLoadingRiepilogo();
-isLoadingCoppa = false;   // 🔓 RIABILITA MINI
-  // 6️⃣ AVVIA TIMER NUVOLA
+  // 5️⃣ NUVOLA IG
   avviaTimerNuvolettaInstagram();
 }
 

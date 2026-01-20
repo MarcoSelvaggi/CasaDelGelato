@@ -137,6 +137,15 @@
       <input type="checkbox" id="consenso-promozioni">
       <span>Acconsento a ricevere promozioni e comunicazioni</span>
     </label>
+        <!-- 🔒 PRIVACY (OBBLIGATORIA) -->
+    <label class="checkbox-row">
+      <input type="checkbox" id="privacy-consent">
+      <span>
+        Accetto la
+        <a href="privacy.html" target="_blank">Privacy Policy</a>
+        e il trattamento dei dati personali
+      </span>
+    </label>
     <button onclick="register()">Registrati</button>
 
     <p style="margin-top:14px;font-size:14px">
@@ -218,7 +227,7 @@ const surname = document.getElementById("login-surname").value.trim();
     localStorage.setItem("userLogged", "1");
 
     alert("Accesso effettuato!");
-    window.location.href = "home.html";
+    window.location.href = "profilo.html";
 };
 
 window.register = async function() {
@@ -226,6 +235,12 @@ window.register = async function() {
   const name = document.getElementById("reg-name").value.trim();
   const surname = document.getElementById("reg-surname").value.trim();
   const consenso = document.getElementById("consenso-promozioni")?.checked === true;
+  const privacyAccepted = document.getElementById("privacy-consent")?.checked;
+
+  if (!privacyAccepted) {
+    alert("Devi accettare la Privacy Policy per registrarti.");
+    return;
+  }
 
   if (!email || !name || !surname) {
     alert("Compila tutti i campi.");
@@ -254,14 +269,16 @@ window.register = async function() {
   // 3️⃣ ESISTE MA ERA DISISCRITTO → RIATTIVA + aggiorna consenso
   if (existing && existing.disiscritto === true) {
     const { error: updErr } = await supabase
-      .from("utenti")
-      .update({
-        nome: name,
-        cognome: surname,
-        disiscritto: false,
-        consenso_promozioni: consenso   // ✅ QUI
-      })
-      .eq("email", email);
+  .from("utenti")
+  .update({
+    nome: name,
+    cognome: surname,
+    disiscritto: false,
+    consenso_promozioni: consenso,
+    privacy_accepted: true,
+    privacy_accepted_at: new Date().toISOString()
+  })
+  .eq("email", email);
 
     if (updErr) {
       alert("Errore riattivazione account.");
@@ -270,31 +287,48 @@ window.register = async function() {
   }
 
   // 4️⃣ NON ESISTE → CREA
-  if (!existing) {
-    const { error: insErr } = await supabase
-      .from("utenti")
-      .insert({
-        email,
-        nome: name,
-        cognome: surname,
-        disiscritto: false,
-        consenso_promozioni: consenso   // ✅ QUI
-      });
+if (!existing) {
+  const { error: insErr } = await supabase
+    .from("utenti")
+    .insert({
+      email,
+      nome: name,
+      cognome: surname,
+      disiscritto: false,
+      consenso_promozioni: consenso,
 
-    if (insErr) {
-      alert("Errore registrazione.");
-      return;
-    }
+      // 🔒 PRIVACY OBBLIGATORIA (GDPR)
+      privacy_accepted: true,
+      privacy_accepted_at: new Date().toISOString()
+    });
+
+  if (insErr) {
+    alert("Errore registrazione.");
+    return;
   }
+}
 
-  // 5️⃣ LOGIN AUTOMATICO
-  localStorage.setItem("user_email", email);
-  localStorage.setItem("user_name", name);
-  localStorage.setItem("user_surname", surname);
-  localStorage.setItem("userLogged", "1");
+// 5️⃣ LOGIN AUTOMATICO
+localStorage.setItem("user_email", email);
+localStorage.setItem("user_name", name);
+localStorage.setItem("user_surname", surname);
+localStorage.setItem("userLogged", "1");
+// 🔗 COLLEGA COPPE CREATE DA OSPITE
+const guest_id = localStorage.getItem("guest_id");
 
-  alert("Registrazione completata!");
-  window.location.href = "home.html";
+if (guest_id) {
+  const { error: linkErr } = await supabase
+    .from("coppe")
+    .update({ email: email })
+    .eq("guest_id", guest_id)
+    .is("email", null);
+
+  if (linkErr) {
+    console.error("Errore collegamento coppe guest:", linkErr);
+  }
+}
+alert("Registrazione completata!");
+window.location.href = "home.html";
 };
 
 </script>
@@ -324,7 +358,7 @@ window.register = async function() {
 </div>
 
 </div>
-utton>
+
 
 
 </body>

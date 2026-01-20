@@ -10,13 +10,19 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
 <style>
-  body{
-    margin:0;
-    background:#f6f6f7;
-    font-family: system-ui, -apple-system, sans-serif;
-    padding-bottom: 110px; /* spazio bottom-nav + waitbar */
-    color:#111;
-  }
+html, body{
+  height: 100%;
+}
+
+body{
+  margin: 0;
+  background:#f6f6f7;
+  font-family: system-ui, -apple-system, sans-serif;
+  color:#111;
+
+  display: flex;
+  flex-direction: column;
+}
 
   /* 🔝 Barra fissa */
 #top-fixed-bar{
@@ -62,9 +68,15 @@
   max-width: 480px;
   width: 100%;
   margin: 0 auto;
+
   padding: 16px;
+  padding-top: calc(16px + 55px); /* top bar */
+
   box-sizing: border-box;
+
+  flex: 1; /* ✅ SPINGE IL FOOTER IN BASSO */
 }
+
   /* Sezioni profilo */
   .profile-section{
     margin-top: 18px;
@@ -262,16 +274,25 @@
 
 
 .avatar-btn{
-  width: 36px;
-  height: 36px;
+  width: 48px;
+  height: 48px;
+
+  position: fixed;
+  top: 2px;
+  right: 14px;
+  z-index: 10050;
+
   border-radius: 50%;
   border: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.10);
+  background: rgba(255,255,255,0.75);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+
   padding: 0;
-  overflow: hidden;
+  overflow: visible; /* 🔴 FONDAMENTALE */
   cursor: pointer;
 }
 
@@ -926,17 +947,7 @@
   color:#bbb;
   line-height:1;
 }
-/* 🚫 NASCONDI POPUP DI DEFAULT (ANTI FLASH) */
-.glass-menu,
-.glass-backdrop,
-#consensi-popup,
-#consensi-backdrop,
-#notifiche-popup,
-#notifiche-backdrop,
-#profile-menu,
-#profile-menu-backdrop {
-  display: none;
-}
+
 /* ✅ MOSTRA POPUP */
 .glass-menu.show,
 .glass-backdrop.show,
@@ -955,6 +966,248 @@
 .glass-backdrop.show{
   pointer-events: auto;
 }
+/* 🔒 STATO INIZIALE – INVISIBILE (anti flash) */
+#profile-menu,
+#profile-menu-backdrop,
+#consensi-popup,
+#consensi-backdrop,
+#notifiche-popup,
+#notifiche-backdrop {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ✅ STATO VISIBILE */
+#profile-menu.show,
+#profile-menu-backdrop.show,
+#consensi-popup.show,
+#consensi-backdrop.show,
+#notifiche-popup.show,
+#notifiche-backdrop.show {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+/* ===== HEADER POPUP NOTIFICHE ===== */
+.notifiche-header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.notifiche-title{
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* bottone piccolo, non rompe layout */
+.btn-clear-notifications{
+  background: #ff3b30;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;     /* 🔥 BLOCCA IL WRAP */
+  cursor: pointer;
+}
+
+.btn-clear-notifications:active{
+  transform: scale(0.94);
+}
+/* 🎁 ICONA GIFT CARD */
+.coupon-icon.gift{
+  background: linear-gradient(135deg,#ff5f6d,#ff8f3f);
+  box-shadow: 0 8px 18px rgba(255,95,109,0.35);
+}
+
+.coupon-icon.gift svg{
+  width:22px;
+  height:22px;
+  stroke:#fff;
+  stroke-width:1.8;
+  fill:none;
+}
+/* 👤 Account card layout */
+.account-card{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+/* lato sinistro */
+.account-left{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* stats (desktop → a destra) */
+.account-stats{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px; /* più respiro */
+}
+
+/* 📊 pill stats */
+.stat-chip{
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+
+  padding: 3px 7px;        /* ⬅️ ancora più piccole */
+  border-radius: 999px;
+
+  font-size: 9.5px;        /* ⬅️ mini ma leggibile */
+  font-weight: 700;
+  line-height: 1;
+
+  letter-spacing: .1px;
+  white-space: nowrap;
+
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* 🎁 coupon disponibili */
+.stat-chip.coupon-ok{
+  background: linear-gradient(135deg, #ff5f6d, #ff8f3f);
+  color: #fff;
+}
+
+/* ✅ coupon utilizzati */
+.stat-chip.coupon-used{
+  background: #e5e5ea;
+  color: #444;
+}
+
+/* 🔔 notifiche */
+.stat-chip.notif{
+  background: #007aff;
+  color: #fff;
+}
+@media (max-width: 600px){
+  .account-card{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .account-stats{
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+}
+
+/* 👤 AVATAR PROFILO FLOATING – SOLO DIMENSIONE */
+#profile-avatar-btn{
+  width: 48px;
+  height: 48px;
+}
+/* centra e scala correttamente il contenuto avatar */
+#profile-avatar-btn > .profile-avatar{
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+}
+
+/* 👤 AVATAR PROFILO FLOATING – FUORI DALLA TOP BAR */
+#profile-avatar-btn{
+  position: fixed;
+
+  top: 2px;     /* distanza dall’alto */
+  right: 14px;   /* distanza dal bordo destro */
+
+  z-index: 10050; /* sopra top bar e contenuti */
+}
+#profile-avatar-btn{
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+}
+
+.avatar-btn{
+  position: relative; /* 🔥 fondamentale */
+}
+#profile-notif-badge{
+  position: absolute;
+
+  bottom: -2px;   /* ⬅️ basso */
+  left: -4px;     /* ⬅️ sinistra */
+
+width: 18px;
+height: 18px;
+padding: 0;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  background: #ff3b30;
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 18px;
+
+  border-radius: 999px;
+  border: none;
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  z-index: 2;
+  pointer-events: none;
+}
+/* 🔒 blocca scroll pagina quando popup aperto */
+body.no-scroll{
+  overflow: hidden;
+  touch-action: none;
+}
+.profile-footer{
+  padding: 10px 12px 14px;
+  text-align: center;
+  font-size: 12px;
+  color: #8e8e93;
+}
+.profile-footer a{
+  color:#8e8e93;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.profile-footer a:hover{
+  text-decoration:underline;
+}
+
+.footer-links{
+  margin-bottom:8px;
+}
+
+.footer-copy{
+  margin-bottom:4px;
+}
+
+.footer-version{
+  opacity:.6;
+}
 </style>
 </head>
 
@@ -969,13 +1222,18 @@
   </a>
 
   <div class="profile-actions top-right">
-<button id="profile-avatar-btn" class="avatar-btn" aria-label="Menu profilo">
 
-  <div class="profile-avatar" id="profile-avatar">
-    <span id="profile-avatar-text">?</span>
-  </div>
+    <button id="profile-avatar-btn" class="avatar-btn" aria-label="Menu profilo">
 
-</button>
+      <div class="profile-avatar" id="profile-avatar">
+        <span id="profile-avatar-text">?</span>
+      </div>
+
+      <!-- 🔴 BADGE NOTIFICHE PROFILO -->
+      <span id="profile-notif-badge" class="avatar-badge" style="display:none;">0</span>
+
+    </button>
+
   </div>
 </div>
 
@@ -992,6 +1250,7 @@
   <button class="glass-item" id="menu-consensi">
   Consensi comunicazioni 📩
 </button>
+<a href="privacy.html" class="glass-item" id="menu-privacy">Privacy &amp; Dati personali</a>
   <button class="glass-item danger" id="menu-unsubscribe">Disiscriviti ✕</button>
 </div>
 
@@ -1004,21 +1263,43 @@
   <!-- serve al JS per non rompersi, ma resta invisibile -->
   <div id="profile-info" style="display:none;"></div>
 
-  <!-- 👤 HEADER PROFILO -->
-<div class="profile-card">
-  <div class="profile-avatar" id="profile-card-avatar">
-    <span id="profile-card-avatar-text">?</span>
+<!-- 👤 HEADER PROFILO -->
+<div class="profile-card account-card">
+
+  <!-- SINISTRA -->
+  <div class="account-left">
+    <div class="profile-avatar" id="profile-card-avatar">
+      <span id="profile-card-avatar-text">?</span>
+    </div>
+
+    <div class="profile-info">
+      <div class="profile-name" id="profile-card-name">
+        Il tuo profilo
+      </div>
+      <div class="profile-email" id="profile-card-email">
+        —
+      </div>
+    </div>
   </div>
 
-  <div class="profile-info">
-    <div class="profile-name" id="profile-card-name">
-      Il tuo profilo
+  <!-- DESTRA -->
+  <div class="account-stats">
+    <div class="stat-chip coupon-ok" title="Coupon disponibili">
+      Coupon Disponibili <span id="stat-coupon-ok">0</span>
     </div>
-    <div class="profile-email" id="profile-card-email">
-      —
+
+    <div class="stat-chip coupon-used" title="Coupon utilizzati">
+      Coupon Utilizzati <span id="stat-coupon-used">0</span>
+    </div>
+
+    <div class="stat-chip notif" title="Notifiche non lette">
+      Notifiche <span id="stat-notif">0</span>
     </div>
   </div>
+
 </div>
+
+
   <!-- 🍨 COPPE -->
   <section class="profile-section">
 
@@ -1043,29 +1324,41 @@
 </div>
   </section>
 
-  <!-- 🎟️ COUPON -->
-  <section id="coupon-section" class="profile-section" style="display:none;">
 
 
-<div class="coupon-card" id="open-coupon-list">
-  <div class="coupon-left">
-    <div class="coupon-icon">🎟️</div>
+<!-- 🎟️ COUPON -->
+<section id="coupon-section" class="profile-section" style="display:none;">
 
-    <div class="coupon-text">
-      <div class="coupon-title">Coupon disponibili</div>
-      <div class="coupon-sub">Premi e coppe omaggio</div>
+  <div class="coupon-card" id="open-coupon-list">
+
+    <div class="coupon-left">
+
+      <!-- 🎁 ICONA GIFT -->
+      <div class="coupon-icon gift">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="6" width="18" height="12" rx="2"/>
+          <path d="M3 10h18"/>
+          <path d="M8 6V4a2 2 0 0 1 4 0v2"/>
+          <path d="M12 6V4a2 2 0 0 1 4 0v2"/>
+        </svg>
+      </div>
+
+      <div class="coupon-text">
+        <div class="coupon-title">Coupon disponibili</div>
+        <div class="coupon-sub">Premi e coppe omaggio</div>
+      </div>
+
     </div>
+
+    <div class="coupon-right">
+      <span id="coupon-count" class="coupon-badge">0</span>
+      <span class="coupon-chevron">›</span>
+    </div>
+
   </div>
 
-  <div class="coupon-right">
-    <span id="coupon-count" class="coupon-badge">0</span>
-    <span class="coupon-chevron">›</span>
-  </div>
-</div>
-
-    <div id="coupon-list" class="coupon-list" style="display:none;"></div>
-  </section>
-
+  <div id="coupon-list" class="coupon-list" style="display:none;"></div>
+</section>
   <div id="no-login" class="empty-msg" style="display:none;">
     Nessun accesso effetuato.
   </div>
@@ -1127,26 +1420,15 @@
 <div id="notifiche-popup" class="glass-menu"
   style="right:auto; left:50%; width:320px;">
 
-<div style="display:flex; justify-content:space-between; align-items:center;">
-  <div class="consensi-title">
-    🔔 Notifiche
-  </div>
+<div class="notifiche-header">
+  <div class="notifiche-title">Notifiche</div>
 
   <button
-    onclick="eliminaTutteNotifiche()"
-    style="
-      background:#ff3b30;
-      color:white;
-      border:none;
-      border-radius:8px;
-      padding:5px 8px;
-      font-size:12px;
-      font-weight:700;
-      cursor:pointer;
-    ">
+    class="btn-clear-notifications"
+    onclick="eliminaTutteNotifiche()">
     Svuota tutto
   </button>
-</div> 
+</div>
 
 
 
@@ -1173,7 +1455,30 @@
 <script type="module">
 import { supabase } from "./supabase.js";
 
+window.inviaNotificaTest = async function () {
+  const email = localStorage.getItem("user_email");
+  if (!email) {
+    alert("Devi essere loggato per la notifica test");
+    return;
+  }
 
+  const { error } = await supabase
+    .from("notifiche")
+    .insert({
+      email: email,
+      tipo: "test",
+      messaggio: "🔔 Questa è una notifica di prova",
+      letta: false
+    });
+
+  if (error) {
+    console.error("Errore notifica test:", error);
+    alert("Errore invio notifica");
+    return;
+  }
+
+  console.log("✅ Notifica di prova inviata");
+}
 
 /* ===============================
    UTILS
@@ -1261,13 +1566,15 @@ function abilitaSwipeNotifiche() {
   });
 }
 
-async function aggiornaBadgeNotifiche(){
+async function aggiornaStatNotificheProfilo() {
   const email = localStorage.getItem("user_email");
   const logged = localStorage.getItem("userLogged") === "1";
-  const badge = document.getElementById("notifiche-count");
 
-  if (!badge || !logged || !email){
-    if (badge) badge.style.display = "none";
+  const stat = document.getElementById("stat-notif");
+  if (!stat) return;
+
+  if (!logged || !email) {
+    stat.textContent = "0";
     return;
   }
 
@@ -1277,23 +1584,68 @@ async function aggiornaBadgeNotifiche(){
     .eq("email", email)
     .eq("letta", false);
 
-    console.log("BADGE QUERY RESULT:", data);
+  if (error) return;
+
+  stat.textContent = data.length;
+}
+
+async function aggiornaBadgeNotifiche(){
+  const email  = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+
+  const badge       = document.getElementById("notifiche-count");
+  const avatarBadge = document.getElementById("profile-notif-badge");
+  const statNotif   = document.getElementById("stat-notif");
+
+  // 🔒 se non loggato → nascondi tutto
+  if (!logged || !email){
+    if (badge) badge.style.display = "none";
+    if (avatarBadge) avatarBadge.style.display = "none";
+    if (statNotif) statNotif.style.display = "none";
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("notifiche")
+    .select("id")
+    .eq("email", email)
+    .eq("letta", false);
 
   if (error){
-    console.error(error);
-    badge.style.display = "none";
+    console.error("Errore badge notifiche:", error);
+    if (badge) badge.style.display = "none";
+    if (avatarBadge) avatarBadge.style.display = "none";
+    if (statNotif) statNotif.style.display = "none";
     return;
   }
 
   const n = data.length;
 
-  if (n > 0){
+  /* 🔔 badge menu profilo */
+  if (badge){
     badge.textContent = n > 99 ? "99+" : n;
-    badge.style.display = "inline-block";
-  } else {
-    badge.style.display = "none";
+    badge.style.display = n > 0 ? "inline-block" : "none";
+  }
+
+  /* 📊 stat nella card profilo */
+  if (statNotif){
+    statNotif.textContent = n;
+    statNotif.style.display = n > 0 ? "flex" : "none";
+  }
+
+  /* 🔴 badge sull’avatar */
+  if (avatarBadge){
+    avatarBadge.textContent = n > 99 ? "99+" : n;
+    avatarBadge.style.display = n > 0 ? "flex" : "none";
   }
 }
+
+/* 🔁 QUI, SUBITO SOTTO */
+aggiornaBadgeNotifiche();
+
+setInterval(() => {
+  aggiornaBadgeNotifiche();
+}, 15000);
 
 
 async function caricaNotificheUtente() {
@@ -1373,13 +1725,14 @@ function setAvatarBackground(src) {
   const topText    = document.getElementById("profile-avatar-text");
   const cardText   = document.getElementById("profile-card-avatar-text");
 
-  [topAvatar, cardAvatar].forEach(el => {
-    if (!el) return;
-    el.style.backgroundImage = `url(${src})`;
-    el.style.backgroundSize = "cover";
-    el.style.backgroundPosition = "center";
-    el.style.backgroundRepeat = "no-repeat";
-  });
+[topAvatar, cardAvatar].forEach(el => {
+  if (!el) return;
+  el.style.background = "none";   // 🔥 QUESTA ERA LA CHIAVE
+  el.style.backgroundImage = `url(${src})`;
+  el.style.backgroundSize = "cover";
+  el.style.backgroundPosition = "center";
+  el.style.backgroundRepeat = "no-repeat";
+});
 
   if (topText) topText.style.display = "none";
   if (cardText) cardText.style.display = "none";
@@ -1427,26 +1780,32 @@ function aggiornaAvatarProfilo() {
   });
 
   // 1️⃣ immagine salvata
-  const savedImg = localStorage.getItem(AVATAR_KEY);
-  if (savedImg) {
-    [topAvatar, cardAvatar].forEach(a => {
-      if (!a) return;
-      a.style.background = "none";
-      a.style.backgroundImage = `url(${savedImg})`;
-      a.style.backgroundSize = "cover";
-      a.style.backgroundPosition = "center";
-    });
+const logged = localStorage.getItem("userLogged") === "1";
 
-    if (topText) topText.style.display = "none";
-    if (cardText) cardText.style.display = "none";
-    return;
-  }
+// 1️⃣ immagine salvata → SOLO SE LOGGATO
+const savedImg = logged ? localStorage.getItem(AVATAR_KEY) : null;
 
-  // 2️⃣ sfondo nero SOLO se non c'è immagine
+if (savedImg) {
   [topAvatar, cardAvatar].forEach(a => {
-    if (a) a.style.background = "#111";
+    if (!a) return;
+    a.style.background = "none"; // 🔥 RESET NERO
+    a.style.backgroundImage = `url(${savedImg})`;
+    a.style.backgroundSize = "cover";
+    a.style.backgroundPosition = "center";
+    a.style.backgroundRepeat = "no-repeat";
   });
 
+  if (topText) topText.style.display = "none";
+  if (cardText) cardText.style.display = "none";
+  return;
+}
+
+// 2️⃣ sfondo BIANCO se non c'è immagine
+[topAvatar, cardAvatar].forEach(a => {
+  if (!a) return;
+  a.style.background = "#fff";
+  a.style.border = "1px solid rgba(0,0,0,0.08)"; // ⬅️ opzionale ma consigliato
+});
   // 3️⃣ iniziale
   if (email) {
     const lettera = email.charAt(0).toUpperCase();
@@ -1585,24 +1944,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!btn || !popup || !backdrop || !closeBtn) return;
 
-  // 🟢 APRI: solo carica e mostra (NON segna lette)
-  async function apriNotifiche(){
-    console.log("APRI NOTIFICHE");
-    if (typeof window.closeMenu === "function") window.closeMenu();
+// 🟢 APRI: solo carica e mostra (NON segna lette)
+async function apriNotifiche() {
+  if (typeof window.closeMenu === "function") closeMenu();
 
-    const email = localStorage.getItem("user_email");
-    if (!email) return;
+  const email = localStorage.getItem("user_email");
+  if (!email) return;
 
-    await caricaNotificheUtente();
-
-    // mostra popup
-    popup.classList.remove("show");
-    backdrop.classList.remove("show");
-    requestAnimationFrame(() => {
-      backdrop.classList.add("show");
-      popup.classList.add("show");
-    });
-  }
+  await caricaNotificheUtente();
+document.body.classList.add("no-scroll");
+  // mostra popup
+  popup.classList.remove("show");
+  backdrop.classList.remove("show");
+  requestAnimationFrame(() => {
+    backdrop.classList.add("show");
+    popup.classList.add("show");
+  });
+}
 
   // 🔴 CHIUDI: segna lette + badge + pallini
   async function closeNotifiche(){
@@ -1690,18 +2048,24 @@ async function aggiornaNumeroCoppe(email){
 async function aggiornaNumeroCoupon(email){
   const { data, error } = await supabase
     .from("coupon")
-    .select("id, redento")
-    .eq("email", email)
-    .eq("redento", false);
+    .select("redento")
+    .eq("email", email);
 
-  if (error){
-    console.error("Errore conteggio coupon:", error);
-    return;
-  }
+  if (error) return;
 
-  const count = data ? data.length : 0;
+  const disponibili = data.filter(c => !c.redento).length;
+  const usati = data.filter(c => c.redento).length;
+
+  // badge grande (già esistente)
   const badge = document.getElementById("coupon-count");
-  if (badge) badge.textContent = count;
+  if (badge) badge.textContent = disponibili;
+
+  // 🔎 micro stats account
+  const statOk = document.getElementById("stat-coupon-ok");
+  const statUsed = document.getElementById("stat-coupon-used");
+
+  if (statOk) statOk.textContent = disponibili;
+  if (statUsed) statUsed.textContent = usati;
 }
 
 /* ===============================
@@ -1995,10 +2359,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   const email = localStorage.getItem("user_email");
   const logged = localStorage.getItem("userLogged") === "1";
 
+  /* ===============================
+     👤 AVATAR → RESET SOLO SE CAMBIA EMAIL
+  =============================== */
+  if (logged && email) {
+    const lastEmail = localStorage.getItem("cdg_avatar_email");
+
+    if (lastEmail && lastEmail !== email) {
+      localStorage.removeItem("cdg_profile_avatar_v1");
+    }
+
+    localStorage.setItem("cdg_avatar_email", email);
+  }
+
   // 🔥 SEMPRE, sia loggato che no
   aggiornaProfileCard();
   aggiornaAvatarProfilo();
-    setupAvatarChange();
+  setupAvatarChange();
 const coppeCard = document.getElementById("coppe-card");
 const loginHint = document.getElementById("login-hint");
 
@@ -2036,6 +2413,7 @@ if (!logged || !email){
 }
 
   await aggiornaBadgeNotifiche();
+  await aggiornaStatNotificheProfilo();
   await aggiornaNumeroCoppe(email);
   await verificaECreaCoupon(email);
   await aggiornaNumeroCoupon(email);
@@ -2103,6 +2481,8 @@ function expandWaitBar(){
   clearTimeout(collapseTimeout);
   collapseTimeout = setTimeout(collapseWaitBar, 5000);
 }
+
+
 
 function collapseWaitBar(){
   const full = document.getElementById("wait-full");
@@ -2211,6 +2591,12 @@ window.closeMenu = function closeMenu(){
   if (menu) menu.classList.remove("show");
   if (menuBackdrop) menuBackdrop.classList.remove("show");
 };
+const privacyBtn = document.getElementById("menu-privacy");
+if (privacyBtn) {
+  privacyBtn.addEventListener("click", () => {
+    closeMenu();
+  });
+}
 if (avatarBtn){
   avatarBtn.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -2241,7 +2627,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("user_email");
     localStorage.removeItem("user_name");
     localStorage.removeItem("user_surname");
-    localStorage.removeItem("cdg_profile_avatar_v1");
     localStorage.setItem("userLogged", "0");
 
     alert("Sei uscito dal tuo profilo");
@@ -2269,29 +2654,6 @@ if (unsubscribeBtn) {
 }
 </script>
 
-<!-- ⏱️ WAIT TIME BAR -->
-<div id="wait-bar" style="
-  position: fixed;
-  bottom: 90px;
-  left: 12px;
-  transform: none;
-  background: #111;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 600;
-  display: none;
-  z-index: 9999;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-">
-  <span id="wait-full">
-    Attesa stimata: <span id="wait-time">0</span>
-  </span>
-  <span id="wait-compact" style="display:none">
-    <span id="wait-mmss">0:00</span>
-  </span>
-</div>
 <!-- ☰ MENU -->
 <button id="menu-btn" style="
   position:fixed;
@@ -2468,5 +2830,23 @@ document.addEventListener("DOMContentLoaded", () => {
     pointer-events: none;
   "
 >
+
+<footer class="profile-footer">
+  <div class="footer-links">
+    <a href="privacy.html">Privacy</a>
+    <span>•</span>
+    <a href="termini.html">Termini</a>
+    <span>•</span>
+    <a href="cookie.html">Cookie</a>
+  </div>
+
+  <div class="footer-copy">
+    © 2026 Casa del Gelato
+  </div>
+
+  <div class="footer-version">
+    Versione 1.0.0
+  </div>
+</footer>
 </body>
 </html>

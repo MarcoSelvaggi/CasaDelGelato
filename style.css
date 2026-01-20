@@ -4584,3 +4584,50 @@ body.blur-bg #blur-overlay {
   margin: 0 auto 18px;
   padding: 18px 20px;
 }
+
+
+
+/* 🚧 OVERLAY BLOCCANTE */
+.coming-soon-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 999999;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  /* 🔒 BLOCCA TUTTO */
+  pointer-events: all;
+}
+
+.coming-soon-box {
+  background: #fff;
+  padding: 22px 24px;
+  border-radius: 18px;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+/* 🔵 Bottone Torna alla Home - versione compatta */
+.popup-btn.home-btn {
+  width: auto;                 /* ⬅️ NON full width */
+  padding: 8px 14px;           /* ⬅️ più piccolo */
+  border-radius: 10px;
+  border: none;
+  background: #007aff;         /* 🔵 blu iOS */
+  color: #fff;
+  font-size: 13px;             /* ⬅️ più piccolo */
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* feedback tap */
+.popup-btn.home-btn:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
