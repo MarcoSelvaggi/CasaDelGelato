@@ -190,6 +190,39 @@
 .page-allergie .inizia-btn{
   margin-bottom: 0 !important;
 }
+/* ☰ MENU BUTTON – PROFILO (identico a HOME) */
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 14px;              /* 🔒 BLOCCATO */
+  height: 27px;           /* metà top bar */
+  display: flex;
+  align-items: center;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+
+  font-size: 22px;
+  line-height: 1;
+  color: #111;
+
+  cursor: pointer;
+  z-index: 10001;
+}
+
+#menu-btn:active{
+  opacity: .6;
+}
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
   </style>
 </head>
 
@@ -197,11 +230,16 @@
 <body class="page-allergie"></body>
 <!-- 🔝 BARRA FISSA -->
 <div id="top-fixed-bar">
+
+  <!-- ☰ MENU -->
+  <button id="menu-btn" aria-label="Menu">☰</button>
+
+  <!-- HOME -->
   <a href="home.html" class="home-btn">
     <img src="tastohome.png" alt="home">
   </a>
-</div>
 
+</div>
 <!-- 🔥 CONTENITORE CHE USA LO SCRIPT -->
 <div class="page-content"></div>
 
@@ -394,45 +432,8 @@ supabase
 document.addEventListener("DOMContentLoaded", loadWaitTime);
 </script>
 
-<!-- ⏱️ WAIT TIME BAR -->
-<div id="wait-bar" style="
-  position: fixed;
-  bottom: 90px;
-  left: 12px;
-  transform: none;
-  background: #111;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 600;
-  display: none;
-  z-index: 9999;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-">
-  <span id="wait-full">
-  Attesa stimata: <span id="wait-time">0</span>
-</span>
-<span id="wait-compact" style="display:none">
-  <span id="wait-mmss">0:00</span>
-</span>
-</div>
 
-<!-- ☰ MENU -->
-<button id="menu-btn" style="
-  position:fixed;
-  top:14px;
-  left:14px;
-  width:36px;
-  height:36px;
-  border:none;
-  border-radius:10px;
-  background:#f2f2f7;
-  font-size:20px;
-  z-index:10001;
-">
-☰
-</button>
+
 
 <div id="menu-overlay" style="
   position:fixed;

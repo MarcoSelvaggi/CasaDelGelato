@@ -175,18 +175,53 @@
   line-height: 1;
   letter-spacing: .3px;
 }
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+
+  padding: 0;
+  margin: 0;
+
+  font-size: 22px;
+  line-height: 1;
+  color: #111;
+
+  cursor: pointer;
+  z-index: 10001;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+#menu-btn:active{
+  opacity: .6;
+}
     </style>
 </head>
 
 <body>
 
 
-<!-- 🔝 BARRA FISSA CON HOME CENTRATO -->
+<!-- 🔝 BARRA FISSA -->
 <div id="top-fixed-bar">
-    <a href="home.html" class="home-btn">
-        <img src="tastohome.png" alt="home">
-    </a>
+
+  <!-- ☰ MENU -->
+  <button id="menu-btn" aria-label="Menu">☰</button>
+
+  <!-- 🏠 HOME CENTRATO -->
+  <a href="home.html" class="home-btn">
+    <img src="tastohome.png" alt="home">
+  </a>
+
 </div>
+
+<div id="top-fixed-spacer"></div>
 
 <div id="top-fixed-spacer"></div>
 
@@ -358,21 +393,7 @@ ${messaggio}
 
 
 
-<!-- ☰ MENU -->
-<button id="menu-btn" style="
-  position:fixed;
-  top:14px;
-  left:14px;
-  width:36px;
-  height:36px;
-  border:none;
-  border-radius:10px;
-  background:#f2f2f7;
-  font-size:20px;
-  z-index:10001;
-">
-☰
-</button>
+
 
 <div id="menu-overlay" style="
   position:fixed;

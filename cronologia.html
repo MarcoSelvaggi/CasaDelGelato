@@ -1217,6 +1217,31 @@
   line-height: 1;
   letter-spacing: .3px;
 }
+  /* ☰ MENU */
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+
+  font-size: 22px;
+  line-height: 1;
+  color: #111;
+
+  cursor: pointer;
+  z-index: 10001;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#menu-btn:active{
+  opacity: .6;
+}
     </style>
 </head>
 
@@ -1225,9 +1250,15 @@
 
 <!-- 🔝 BARRA FISSA -->
 <div id="top-fixed-bar">
-    <a href="home.html" class="home-btn">
-        <img src="tastohome.png" alt="home">
-    </a>
+
+  <!-- ☰ MENU -->
+  <button id="menu-btn" aria-label="Menu">☰</button>
+
+  <!-- 🏠 HOME CENTRATO -->
+  <a href="home.html" class="home-btn">
+    <img src="tastohome.png" alt="home">
+  </a>
+
 </div>
 
 <div id="top-fixed-spacer"></div>
@@ -2661,21 +2692,7 @@ window._eseguiCondivisioneInstagram = async function () {
 };
 </script>
 
-<!-- ☰ MENU -->
-<button id="menu-btn" style="
-  position:fixed;
-  top:14px;
-  left:14px;
-  width:36px;
-  height:36px;
-  border:none;
-  border-radius:10px;
-  background:#f2f2f7;
-  font-size:20px;
-  z-index:10001;
-">
-☰
-</button>
+
 
 <div id="menu-overlay" style="
   position:fixed;

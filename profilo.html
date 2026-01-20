@@ -23,18 +23,22 @@ body{
   display: flex;
   flex-direction: column;
 }
-
+:root{
+  --topbar-h: 56px;
+}
   /* 🔝 Barra fissa */
 #top-fixed-bar{
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 55px;
 
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  height: var(--topbar-h);
+  box-sizing: border-box;
+
+  display: flex;
   align-items: center;
+  justify-content: center;
 
   padding: 0 12px;
   background: #fff;
@@ -42,20 +46,25 @@ body{
   z-index: 9999;
 }
 
-
 .top-left{ justify-self: start; }
 .top-center{ justify-self: center; }
 .top-right{ justify-self: end; }
 
-  .home-btn{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-size:17px;
-    font-weight:700;
-    color:#444;
-    text-decoration:none;
-  }
+.home-btn{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 17px;
+  font-weight: 700;
+  color: #444;
+  text-decoration: none;
+}
 
   .home-btn img{
     width:28px; height:28px;
@@ -197,12 +206,12 @@ body{
   }
   .email-chip b{ color:#111; }
 
-  /* COUPON LIST */
-.coupon-list{
-  display:flex;
-  flex-direction:column;
-  gap: 18px;        /* ⬅️ più aria tra le card */
-  margin-top: 18px; /* ⬅️ stacca dalla card "Coupon disponibili" */
+/* COUPON LIST */
+#coupon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;        /* ⬅️ spazio tra le card */
+  margin-top: 18px; /* ⬅️ stacca dalla sezione sopra */
 }
 
 .coupon{
@@ -219,8 +228,28 @@ body{
 
   border: 1px solid rgba(0,0,0,0.04);  /* separazione soft */
 }
+  /* 🎟️ COUPON USATO – STATO DISABILITATO */
+.coupon.used{
+  opacity: .6;
+  filter: grayscale(0.5);
 
-  .coupon.used{ opacity: .5; }
+  background: linear-gradient(135deg,#fafafa,#f1f1f1);
+
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.04);
+}
+
+.coupon.used .coupon-title,
+.coupon.used .coupon-desc,
+.coupon.used .coupon-expiry,
+.coupon.used .coupon-used-at{
+  color:#9a9a9a;
+}
+
+.coupon.used button{
+  background:#d1d1d6;
+  color:#555;
+}
 
   .coupon-title{
     font-weight: 800;
@@ -231,11 +260,12 @@ body{
     color:#666;
     margin-top: 4px;
   }
-  .coupon-expiry{
-    font-size: 12px;
-    color:#999;
-    margin-top: 6px;
-  }
+ .coupon-expiry{
+  font-size: 12px;
+  color:#999;
+  margin-top: 6px;
+  margin-bottom: 12px; /* ⬅️ spazio prima del QR */
+}
 
   .coupon button{
     background:#111;
@@ -255,12 +285,45 @@ body{
     cursor: default;
   }
 
-  /* QR box dentro coupon */
-  .coupon-qr{
-    display:none;
-    margin-top: 10px;
-    text-align:center;
+
+  /* 📦 QR CONTAINER */
+.coupon-qr{
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+
+  transform: translateY(-6px) scale(0.96);
+  transform-origin: top center;
+
+  transition:
+    max-height .6s cubic-bezier(.22,.61,.36,1),
+    opacity .35s ease,
+    transform .45s cubic-bezier(.22,.61,.36,1);
+}
+
+/* ✅ QR VISIBILE */
+.coupon-qr.open{
+  max-height: 260px; /* spazio QR */
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* 🎞️ QR interno (canvas / img) */
+.coupon-qr.open canvas,
+.coupon-qr.open img{
+  animation: qrPop .45s cubic-bezier(.16,1,.3,1);
+}
+
+@keyframes qrPop{
+  from{
+    opacity: 0;
+    transform: scale(0.9);
   }
+  to{
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
   /* Messaggio vuoto */
   .empty-msg{
@@ -317,7 +380,7 @@ body{
 
 .glass-menu{
   position: fixed;
-  top: 62px;          /* sotto la top bar */
+  top: 62px;
   right: 12px;
   width: 230px;
 
@@ -332,12 +395,28 @@ body{
   padding: 8px;
   z-index: 9999;
 
+  opacity: 0;
+  transform:
+    translateY(-14px)
+    scale(0.94);
+
   transform-origin: top right;
-  animation: glassIn .14s ease-out;
+  pointer-events: none;
+
+  /* 🧊 TRANSIZIONE LENTA */
+  transition:
+    opacity .45s ease,
+    transform .75s cubic-bezier(.16,1,.3,1);
 }
 
+.glass-menu.show{
+  opacity: 1;
+  transform:
+    translateY(0)
+    scale(1);
 
-
+  pointer-events: auto;
+}
 
 .glass-item{
   width: 100%;
@@ -707,7 +786,7 @@ body{
   background:#fff;
   border-radius:18px;
   padding:16px 18px;
-  margin:10px 0 22px;
+  margin:4px 0 22px;
 
   box-shadow:
     0 8px 24px rgba(0,0,0,0.06);
@@ -1208,6 +1287,76 @@ body.no-scroll{
 .footer-version{
   opacity:.6;
 }
+
+/* 🎟️ ANIMAZIONE APERTURA COUPON */
+#coupon-list{
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+
+  transition:
+    max-height .75s cubic-bezier(.22,.61,.36,1), /* ⬅️ più lenta */
+    opacity .35s ease,
+    transform .35s ease;
+}
+
+/* stato aperto */
+#coupon-list.open{
+  max-height: 2000px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* entrata singole card */
+#coupon-list.open .coupon{
+  animation: couponIn .45s cubic-bezier(.22,.61,.36,1) forwards;
+}
+
+@keyframes couponIn{
+  from{
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ☰ MENU BUTTON – PROFILO (identico a HOME) */
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 14px;              /* 🔒 BLOCCATO */
+  height: 27px;           /* metà top bar */
+  display: flex;
+  align-items: center;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+
+  font-size: 22px;
+  line-height: 1;
+  color: #111;
+
+  cursor: pointer;
+  z-index: 10001;
+}
+
+#menu-btn:active{
+  opacity: .6;
+}
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
 </style>
 </head>
 
@@ -1215,26 +1364,25 @@ body.no-scroll{
 
 <!-- 🔝 Barra -->
 <div id="top-fixed-bar">
-  <div class="top-left"></div>
 
+  <!-- ☰ MENU -->
+  <button id="menu-btn" aria-label="Menu">☰</button>
+
+  <!-- HOME -->
   <a href="home.html" class="home-btn top-center">
     <img src="tastohome.png" alt="home">
   </a>
 
+  <!-- AVATAR -->
   <div class="profile-actions top-right">
-
     <button id="profile-avatar-btn" class="avatar-btn" aria-label="Menu profilo">
-
       <div class="profile-avatar" id="profile-avatar">
         <span id="profile-avatar-text">?</span>
       </div>
-
-      <!-- 🔴 BADGE NOTIFICHE PROFILO -->
-      <span id="profile-notif-badge" class="avatar-badge" style="display:none;">0</span>
-
+      <span id="profile-notif-badge" style="display:none;">0</span>
     </button>
-
   </div>
+
 </div>
 
 <!-- MENU LIQUID GLASS -->
@@ -1257,7 +1405,6 @@ body.no-scroll{
 
 <div id="profile-menu-backdrop" class="glass-backdrop"></div>
 
-<div id="top-fixed-spacer"></div>
 
 <div class="container">
   <!-- serve al JS per non rompersi, ma resta invisibile -->
@@ -1357,7 +1504,7 @@ body.no-scroll{
 
   </div>
 
-  <div id="coupon-list" class="coupon-list" style="display:none;"></div>
+ <div id="coupon-list" class="coupon-list"></div>
 </section>
   <div id="no-login" class="empty-msg" style="display:none;">
     Nessun accesso effetuato.
@@ -1913,6 +2060,8 @@ btn.addEventListener("click", async () => {
 
   toggle.checked = data.consenso_promozioni === true;
 
+  // 🔥 BLOCCA SCROLL
+  document.body.classList.add("no-scroll");
   backdrop.classList.add("show");
   popup.classList.add("show");
 });
@@ -1930,6 +2079,9 @@ btn.addEventListener("click", async () => {
   function closeConsensi() {
     backdrop.classList.remove("show");
     popup.classList.remove("show");
+
+  // 🔓 SBLOCCA SCROLL
+  document.body.classList.remove("no-scroll");
   }
 
   closeBtn.addEventListener("click", closeConsensi);
@@ -1967,7 +2119,8 @@ document.body.classList.add("no-scroll");
     console.log("CHIUDI NOTIFICHE");
     popup.classList.remove("show");
     backdrop.classList.remove("show");
-
+  // ✅ SBLOCCA SCROLL QUI
+  document.body.classList.remove("no-scroll");
     const email = localStorage.getItem("user_email");
     if (!email) return;
 
@@ -2043,7 +2196,13 @@ async function aggiornaNumeroCoppe(email){
   if (badge) badge.textContent = count;
 }
 
+function bloccaScrollPagina() {
+  document.body.classList.add("no-scroll");
+}
 
+function sbloccaScrollPagina() {
+  document.body.classList.remove("no-scroll");
+}
 
 async function aggiornaNumeroCoupon(email){
   const { data, error } = await supabase
@@ -2269,11 +2428,17 @@ window.toggleQR = function(codice){
   const box = document.getElementById(`qr-${codice}`);
   if (!box) return;
 
-  const isOpen = box.style.display === "block";
-  box.innerHTML = "";
-  box.style.display = isOpen ? "none" : "block";
+  const isOpen = box.classList.contains("open");
 
-  if (isOpen) return;
+  // chiudi
+  if (isOpen){
+    box.classList.remove("open");
+    return;
+  }
+
+  // apri
+  box.innerHTML = "";
+  box.classList.add("open");
 
   const qrDiv = document.createElement("div");
   box.appendChild(qrDiv);
@@ -2286,7 +2451,7 @@ window.toggleQR = function(codice){
   });
 
   const note = document.createElement("div");
-  note.style = "font-size:12px;color:#666;margin-top:6px";
+  note.style = "font-size:12px;color:#666;margin-top:8px;text-align:center";
   note.innerText = "Mostra questo QR in cassa (valido una sola volta)";
   box.appendChild(note);
 };
@@ -2394,13 +2559,13 @@ if (!logged && coppeCard) {
   const couponList = document.getElementById("coupon-list");
   const openCoupon = document.getElementById("open-coupon-list");
 
-  // toggle lista coupon
-  if (openCoupon && couponList){
-    openCoupon.onclick = () => {
-      couponList.style.display = (couponList.style.display === "block") ? "none" : "block";
-    };
-  }
 
+// toggle lista coupon (animato)
+if (openCoupon && couponList){
+  openCoupon.onclick = () => {
+    couponList.classList.toggle("open");
+  };
+}
 if (!logged || !email){
   noLogin.style.display = "block";
   couponSection.style.display = "none";
@@ -2654,21 +2819,7 @@ if (unsubscribeBtn) {
 }
 </script>
 
-<!-- ☰ MENU -->
-<button id="menu-btn" style="
-  position:fixed;
-  top:14px;
-  left:14px;
-  width:36px;
-  height:36px;
-  border:none;
-  border-radius:10px;
-  background:#f2f2f7;
-  font-size:20px;
-  z-index:10001;
-">
-☰
-</button>
+
 
 <div id="menu-overlay" style="
   position:fixed;
@@ -2848,5 +2999,36 @@ document.addEventListener("DOMContentLoaded", () => {
     Versione 1.0.0
   </div>
 </footer>
+
+<input 
+  type="file"
+  id="avatar-input"
+  accept="image/*"
+  style="display:none"
+/>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const changeBtn = document.getElementById("menu-change-photo");
+  const fileInput = document.getElementById("avatar-input");
+
+  if (!changeBtn || !fileInput) {
+    console.warn("❌ Bottone Cambia immagine o input non trovato");
+    return;
+  }
+
+  changeBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // chiudi menu profilo se aperto
+    if (typeof closeMenu === "function") closeMenu();
+
+    // piccolo delay per iOS
+    setTimeout(() => {
+      fileInput.click();
+    }, 50);
+  });
+});
+</script>
 </body>
 </html>

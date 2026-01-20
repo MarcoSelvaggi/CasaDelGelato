@@ -185,6 +185,8 @@ body {
   line-height: 1;
   letter-spacing: .3px;
 }
+
+
 /* ===============================
    ⏱️ WAIT BAR – DIMENSIONI BLOCCATE
 =============================== */
@@ -246,6 +248,39 @@ body {
   font-weight: 600;
   letter-spacing: 0.2px;
 }
+/* ☰ MENU BUTTON – PROFILO (identico a HOME) */
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 14px;              /* 🔒 BLOCCATO */
+  height: 27px;           /* metà top bar */
+  display: flex;
+  align-items: center;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+
+  font-size: 22px;
+  line-height: 1;
+  color: #111;
+
+  cursor: pointer;
+  z-index: 10001;
+}
+
+#menu-btn:active{
+  opacity: .6;
+}
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
   </style>
   <link rel="stylesheet" href="bottom-nav.css">
 </head>
@@ -256,9 +291,12 @@ body {
 <!-- 🔝 BARRA FISSA -->
 <div id="top-fixed-bar">
 
-    <a href="home.html" class="home-btn">
-        <img src="tastohome.png" alt="home">
-    </a>
+  <button id="menu-btn" aria-label="Menu">☰</button>
+
+  <a href="home.html" class="home-btn">
+    <img src="tastohome.png" alt="home">
+  </a>
+
 </div>
 
 <div id="top-fixed-spacer"></div>
@@ -487,21 +525,7 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
 
 </div>
 
-<!-- ☰ MENU -->
-<button id="menu-btn" style="
-  position:fixed;
-  top:14px;
-  left:14px;
-  width:36px;
-  height:36px;
-  border:none;
-  border-radius:10px;
-  background:#f2f2f7;
-  font-size:20px;
-  z-index:10001;
-">
-☰
-</button>
+
 
 <div id="menu-overlay" style="
   position:fixed;

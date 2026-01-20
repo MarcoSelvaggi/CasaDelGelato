@@ -3139,7 +3139,20 @@ function mostraPopupPreRiepilogo(onContinue) {
 
 function mostraLoadingRiepilogo() {
   const el = document.getElementById("loading-riepilogo");
-  if (el) el.style.display = "flex";
+  const bar = document.getElementById("loading-bar");
+
+  if (!el || !bar) return;
+
+  el.style.display = "flex";
+  bar.style.width = "0%";
+
+  // 🔥 repaint forzato
+  bar.getBoundingClientRect();
+
+  // primo frame visibile
+  requestAnimationFrame(() => {
+    bar.style.width = "5%";
+  });
 }
 
 function nascondiLoadingRiepilogo() {
@@ -3233,11 +3246,15 @@ async function preparaRiepilogoFinale() {
   mostraLoadingRiepilogo();
   setLoadingText("Caricamento coppa…");
   setLoadingProgress(0);
+  // ⏸️ lascia respirare Safari
+await new Promise(r => requestAnimationFrame(r));
+await new Promise(r => setTimeout(r, 80));
 
   // ⏱️ TESTO "CI SIAMO QUASI…" A -5s DAL TIMEOUT
-  const almostReadyTimer = setTimeout(() => {
-    setLoadingText("Ci siamo quasi…");
-  }, 10000); // 15s - 5s
+const almostReadyTimer = setTimeout(() => {
+  setLoadingText("Ci siamo quasi…");
+  setLoadingProgress(95); // 👈 elegante, non fermo all’80
+}, 10000);
 
   await new Promise(r => requestAnimationFrame(r));
   await new Promise(r => setTimeout(r, 100));
@@ -3271,7 +3288,11 @@ if (stage) {
 
   // 🛑 STOP PROGRESS FAKE
   clearInterval(fakeProgressInterval);
+// ✅ CHIUSURA ELEGANTE BARRA
+setLoadingProgress(100);
 
+// micro pausa per far "vedere" il completamento
+await new Promise(r => setTimeout(r, 250));
   if (result === "timeout") {
     console.warn("⏱️ Timeout immagini");
   }
@@ -3401,7 +3422,15 @@ function setLoadingAlmostReady() {
 }
 function setLoadingProgress(pct) {
   const bar = document.getElementById("loading-bar");
-  if (bar) bar.style.width = pct + "%";
+  if (!bar) return;
+
+  // forza repaint Safari
+  bar.style.width = bar.style.width;
+  bar.getBoundingClientRect();
+
+  requestAnimationFrame(() => {
+    bar.style.width = pct + "%";
+  });
 }
 // ===============================
 // 📸 SALVA COPPA COME IMMAGINE

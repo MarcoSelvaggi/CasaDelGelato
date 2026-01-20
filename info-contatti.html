@@ -21,16 +21,22 @@ body{
 
 /* TOP BAR */
 #top-fixed-bar{
-  position:fixed;
-  top:0; left:0;
-  width:100%;
-  height:55px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:#fff;
-  border-bottom:1px solid #ddd;
-  z-index:9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 16px;          /* ✅ QUESTO */
+  box-sizing: border-box;   /* 🔥 FONDAMENTALE */
+
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  z-index: 9999;
 }
 .home-btn{
   display:flex;
@@ -41,7 +47,9 @@ body{
   text-decoration:none;
 }
 .home-btn img{width:28px;height:28px;}
-#top-fixed-spacer{height:55px;}
+#top-fixed-spacer{
+  height: 55px;
+}
 
 /* HEADER */
 .page-header{
@@ -107,7 +115,7 @@ body{
 #whatsapp-btn{
   position: fixed;
   right: 18px;
-  bottom: 88px;
+  bottom: 32px;
 
   width: 56px;
   height: 56px;
@@ -188,7 +196,7 @@ body.no-bottom-nav #bottom-nav {
 
 #menu-dropdown{
   position:fixed;
-  top:55px;
+  top:60px;
   left:12px;
   width:220px;
   background:#fff;
@@ -214,35 +222,39 @@ body.no-bottom-nav #bottom-nav {
 #menu-dropdown a:hover{
   background:#f2f2f7;
 }
-/* ☰ MENU BUTTON – stile uniforme */
+/* ☰ MENU BUTTON – PROFILO (identico a HOME) */
 #menu-btn{
-  position:fixed;
-  top:14px;
-  left:14px;
-  width:36px;
-  height:36px;
+  position: absolute;
+  left: 14px;
+  top: 14px;              /* 🔒 BLOCCATO */
+  height: 27px;           /* metà top bar */
+  display: flex;
+  align-items: center;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
 
-  background:#f2f2f7;
-  border:none;        /* ❌ bordo tolto */
-  box-shadow:none;    /* ❌ ombra tolta */
-  border-radius:10px;
+  font-size: 22px;
+  line-height: 1;
+  color: #111;
 
-  font-size:20px;
-  line-height:1;
-
-  cursor:pointer;
-  z-index:10001;
+  cursor: pointer;
+  z-index: 10001;
 }
-.menu-item {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 12px;
+
+#menu-btn:active{
+  opacity: .6;
 }
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 
 .menu-item svg.menu-icon {
   width: 18px;
@@ -274,6 +286,338 @@ body.no-bottom-nav #bottom-nav {
   line-height: 1;
   letter-spacing: .3px;
 }
+body.no-scroll {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* sfocatura globale */
+body.chat-open > *:not(#chat-overlay):not(#blur-overlay) {
+  filter: blur(4px);
+}
+/* OVERLAY CHAT */
+#chat-overlay{
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0,0,0,0.35);
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity .35s ease;
+  z-index: 99999;
+}
+
+#chat-overlay.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* CARD CHAT */
+#chat-overlay > div{
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+
+  transition:
+    opacity .35s ease,
+    transform .55s cubic-bezier(.22,.61,.36,1);
+}
+
+#chat-overlay.show > div{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+/* 💬 CONTENUTO CHAT – animabile */
+#chat-messages{
+  transition:
+    opacity .25s ease,
+    transform .35s cubic-bezier(.22,.61,.36,1);
+}
+
+/* stato uscita */
+#chat-messages.fade-out{
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+/* stato entrata */
+#chat-messages.fade-in{
+  opacity: 1;
+  transform: translateY(0);
+}
+body.chat-open #coppa-popup{
+  filter: none !important;
+}
+.profile-footer{
+  padding: 10px 12px 14px;
+  text-align: center;
+  font-size: 12px;
+  color: #8e8e93;
+}
+
+.profile-footer a{
+  color:#8e8e93;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.profile-footer a:hover{
+  text-decoration:underline;
+}
+
+.footer-links{
+  margin-bottom:8px;
+}
+
+.footer-copy{
+  margin-bottom:4px;
+}
+
+.footer-version{
+  opacity:.6;
+}
+
+.social-icons{
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  gap: 8px;
+}
+
+/* BASE */
+.social-btn{
+  width: 34px;
+  height: 34px;
+
+  border-radius: 9px; /* ⬅️ Apple-style */
+  display: grid;
+  place-items: center;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,.18);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.social-btn:hover{
+  transform: scale(1.06);
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+}
+
+/* ICONA COMUNE */
+.social-btn::before{
+  content: "";
+  width: 26px;
+  height: 26px;
+  background: white;
+
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+.social-btn.instagram{
+  background: radial-gradient(
+    circle at 30% 30%,
+    #feda75,
+    #fa7e1e,
+    #d62976,
+    #962fbf,
+    #4f5bd5
+  );
+}
+
+.social-btn.instagram::before{
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm10 2c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3H7c-1.7 0-3-1.3-3-3V7c0-1.7 1.3-3 3-3h10zm-5 3.5A4.5 4.5 0 1 0 16.5 12 4.5 4.5 0 0 0 12 7.5zm0 7.4A2.9 2.9 0 1 1 14.9 12 2.9 2.9 0 0 1 12 14.9zm4.8-7.9a1.1 1.1 0 1 0-1.1-1.1 1.1 1.1 0 0 0 1.1 1.1z'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 2C4.2 2 2 4.2 2 7v10c0 2.8 2.2 5 5 5h10c2.8 0 5-2.2 5-5V7c0-2.8-2.2-5-5-5H7zm10 2c1.7 0 3 1.3 3 3v10c0 1.7-1.3 3-3 3H7c-1.7 0-3-1.3-3-3V7c0-1.7 1.3-3 3-3h10zm-5 3.5A4.5 4.5 0 1 0 16.5 12 4.5 4.5 0 0 0 12 7.5zm0 7.4A2.9 2.9 0 1 1 14.9 12 2.9 2.9 0 0 1 12 14.9zm4.8-7.9a1.1 1.1 0 1 0-1.1-1.1 1.1 1.1 0 0 0 1.1 1.1z'/%3E%3C/svg%3E");
+  
+}
+.social-btn.facebook{
+  background: #1877f2;
+}
+
+.social-btn.facebook::before{
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14 9h3V6h-3c-2.2 0-4 1.8-4 4v3H7v3h3v5h3v-5h3l1-3h-4v-3c0-.6.4-1 1-1z'/%3E%3C/svg%3E");
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M14 9h3V6h-3c-2.2 0-4 1.8-4 4v3H7v3h3v5h3v-5h3l1-3h-4v-3c0-.6.4-1 1-1z'/%3E%3C/svg%3E");
+   transform: translate(-1px, -0.5px);
+}
+/* ℹ️ INFO UTILI CARD */
+.info-card{
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  margin: 16px auto;
+  max-width: 420px;
+  overflow: hidden;
+}
+
+/* header cliccabile */
+.info-card-header{
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 16px 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  cursor: pointer;
+}
+
+.info-card-left{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.info-icon{
+  font-size: 18px;
+}
+
+.info-title{
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+}
+
+/* freccia */
+.info-arrow{
+  font-size: 22px;
+  color: #bbb;
+  transition: transform .3s ease;
+}
+
+/* contenuto (chiuso di default) */
+.info-card-content{
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+
+  transition:
+    max-height .45s cubic-bezier(.22,.61,.36,1),
+    opacity .25s ease;
+}
+
+/* aperto */
+.info-card-content.open{
+  max-height: 500px;
+  opacity: 1;
+}
+
+/* sezione interna */
+.info-section{
+  padding: 14px 18px;
+  border-top: 1px solid #eee;
+}
+
+.info-section b{
+  font-size: 14px;
+}
+
+.info-section p{
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #555;
+}
+/* 🚗 PARCHEGGI */
+.parking-card{
+  display: flex;
+  align-items: center;              /* 🔥 centro verticale */
+  justify-content: space-between;   /* testo sx / bottone dx */
+
+  background: #f7f7f9;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.parking-info{
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 🔥 allinea anche titoli a 2 righe */
+  flex: 1;
+  min-width: 0;
+}
+
+.parking-name{
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+}
+
+.parking-desc{
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.parking-btn{
+  border: none;
+  background: #007aff;
+  color: #fff;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  padding: 6px 12px;
+  border-radius: 999px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.parking-btn:active{
+  transform: scale(0.95);
+}
+/* ☀️ METEO */
+.meteo-card{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  background: #f7f7f9;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-top: 10px;
+}
+
+.meteo-icon{
+  font-size: 34px;
+  width: 42px;
+  text-align: center;
+}
+
+.meteo-info{
+  display: flex;
+  flex-direction: column;
+}
+
+.meteo-temp{
+  font-size: 22px;
+  font-weight: 800;
+  color: #111;
+}
+
+.meteo-desc{
+  font-size: 13px;
+  color: #555;
+}
+
+.meteo-city{
+  font-size: 12px;
+  color: #888;
+}
 </style>
 </head>
 
@@ -284,12 +628,29 @@ body.no-bottom-nav #bottom-nav {
   <a href="home.html" class="home-btn">
     <img src="tastohome.png">
   </a>
+
+  <!-- SOCIAL -->
+<div class="social-icons">
+  <a
+    class="social-btn instagram"
+    href="https://www.instagram.com/casadelgelato.it?igsh=MW8wZm9kbXo1czN3YQ%3D%3D&utm_source=qr"
+    target="_blank"
+    aria-label="Instagram"
+  ></a>
+
+  <a
+    class="social-btn facebook"
+    href="https://www.facebook.com/share/188DWtyF5F/?mibextid=wwXIfr"
+    target="_blank"
+    aria-label="Facebook"
+  ></a>
+</div>
 </div>
 <div id="top-fixed-spacer"></div>
 
 <header class="page-header">
   <h1>Info & Contatti</h1>
-  <p>Come raggiungerci e restare in contatto 🍨</p>
+  <p>Come raggiungerci e restare in contatto</p>
 </header>
 
 <section class="section">
@@ -305,27 +666,101 @@ body.no-bottom-nav #bottom-nav {
   </div>
 </div>
 
-<!-- CHAT -->
-<div class="shop-card" onclick="apriChat()">
-  <div class="shop-content">
-    <b>💬 Chat automatica</b>
-    <p style="font-size:14px;color:#666">Risposte rapide alle domande più comuni</p>
-    <div class="shop-actions">
-      <a class="primary">Apri la chat</a>
+<!-- ℹ️ INFO UTILI -->
+<div class="info-card">
+
+  <button class="info-card-header" onclick="toggleInfoUtili()">
+    <div class="info-card-left">
+      <span class="info-icon">ℹ️</span>
+      <span class="info-title">Info utili</span>
+    </div>
+    <span id="info-arrow" class="info-arrow">›</span>
+  </button>
+
+  <div id="info-utili-content" class="info-card-content">
+
+    <div class="info-section">
+  <b>🚗 Parcheggi consigliati</b>
+
+  <div class="parking-card">
+    <div class="parking-info">
+      <div class="parking-name">Parcheggio Piazzale Zenith</div>
+      <div class="parking-desc">A 10 minuti a piedi dal locale</div>
+    </div>
+    <button
+      class="parking-btn"
+      onclick="openMaps('https://www.google.com/maps/dir//Piazzale+Zenith,+30028+Bibione+VE/@45.63349,13.0523471,15z/data=!4m17!1m8!3m7!1s0x477b92eb82aa8d5b:0x3ddd62d33f83b460!2sPiazzale+Zenith,+30028+Bibione+VE!3b1!8m2!3d45.6335404!4d13.0627341!16s%2Fg%2F11bw3ztm9_!4m7!1m0!1m5!1m1!1s0x477b92eb82aa8d5b:0x3ddd62d33f83b460!2m2!1d13.0627341!2d45.6335404?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D')">
+      Maps
+    </button>
+  </div>
+
+  <div class="parking-card">
+    <div class="parking-info">
+      <div class="parking-name">Parcheggio Luna Park</div>
+      <div class="parking-desc">Ampio, ideale la sera</div>
+    </div>
+    <button
+      class="parking-btn"
+      onclick="openMaps('https://www.google.com/maps/place/Luna+Park+Adriatico/@45.6390796,13.0404042,15z/data=!3m1!4b1!4m6!3m5!1s0x477b93ce0ece5cb3:0x9d5a733e73b442!8m2!3d45.6390651!4d13.0506825!16s%2Fg%2F11sv_ks959?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D')">
+      Maps
+    </button>
+  </div>
+
+    <div class="parking-card">
+    <div class="parking-info">
+      <div class="parking-name">Parcheggio Corso Europa</div>
+      <div class="parking-desc">Il più comodo (non sempre disponibile)</div>
+    </div>
+    <button
+      class="parking-btn"
+      onclick="openMaps('https://www.google.com/maps/place/Corso+Europa,+Bibione+VE/@45.6347748,13.0420364,15z/data=!3m1!4b1!4m6!3m5!1s0x477b92ea329e1583:0x752c13277d90b02d!8m2!3d45.6347603!4d13.0523147!16s%2Fg%2F1tz94l4l?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D')">
+      Maps
+    </button>
+  </div>
+
+</div>
+
+<div class="info-section">
+  <b>☀️ Meteo</b>
+
+  <div class="meteo-card">
+    <div class="meteo-icon" id="meteo-icon">⏳</div>
+
+    <div class="meteo-info">
+      <div class="meteo-temp" id="meteo-temp">--°</div>
+      <div class="meteo-desc" id="meteo-desc">Caricamento...</div>
+      <div class="meteo-city">Bibione</div>
     </div>
   </div>
 </div>
+
+    <div class="info-section">
+      <b>📍 Luoghi vicini</b>
+      <p>Spiaggia, luna park, supermercati e punti di interesse.</p>
+    </div>
+
+  </div>
+
+</div>
+
 
 <!-- LOCALE 1 -->
 <div class="shop-card">
   <img src="img/bibione49.jpg" class="shop-img">
   <div class="shop-content">
     <b>Bibione – Viale delle Costellazioni 49</b>
+
     <div class="shop-actions">
       <a href="tel:043143628">Chiama</a>
       <a href="https://maps.google.com/?q=Viale+delle+Costellazioni+49+Bibione" target="_blank">Maps</a>
-      <a href="https://g.page/r/CYRHvgKQaZHjEBM/review" target="_blank" class="primary">Recensione</a>
+            <a class="chat-btn" onclick="apriChatLocale('bibione49')">Info</a>
+      <a href="https://g.page/r/CYRHvgKQaZHjEBM/review"
+         target="_blank"
+         class="primary">
+        Recensione
+      </a>
     </div>
+
   </div>
 </div>
 
@@ -334,11 +769,14 @@ body.no-bottom-nav #bottom-nav {
   <img src="img/bibione10.jpg" class="shop-img">
   <div class="shop-content">
     <b>Bibione – Viale delle Costellazioni 10</b>
-    <div class="shop-actions">
-      <a href="tel:0431364365">Chiama</a>
-      <a href="https://maps.google.com/?q=Viale+delle+Costellazioni+10+Bibione" target="_blank">Maps</a>
-      <a href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank" class="primary">Recensione</a>
-    </div>
+<div class="shop-actions">
+  <a href="tel:0431364365">Chiama</a>
+  <a href="https://maps.google.com/?q=Viale+delle+Costellazioni+10+Bibione" target="_blank">Maps</a>
+  <a onclick="apriChatLocale('bibione10')">Info</a>
+  <a href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank" class="primary">
+    Recensione
+  </a>
+</div>
   </div>
 </div>
 
@@ -347,11 +785,14 @@ body.no-bottom-nav #bottom-nav {
   <img src="img/lignano.jpg" class="shop-img">
   <div class="shop-content">
     <b>Lignano Sabbiadoro – Via Udine 1</b>
-    <div class="shop-actions">
-      <a href="tel:04311961783">Chiama</a>
-      <a href="https://maps.google.com/?q=Via+Udine+1+Lignano" target="_blank">Maps</a>
-      <a href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank" class="primary">Recensione</a>
-    </div>
+<div class="shop-actions">
+  <a href="tel:04311961783">Chiama</a>
+  <a href="https://maps.google.com/?q=Via+Udine+1+Lignano" target="_blank">Maps</a>
+  <a onclick="apriChatLocale('lignano')">Info</a>
+  <a href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank" class="primary">
+    Recensione
+  </a>
+</div>
   </div>
 </div>
 
@@ -360,11 +801,7 @@ body.no-bottom-nav #bottom-nav {
 <a id="whatsapp-btn" href="https://wa.me/393403788846" target="_blank" aria-label="Chat WhatsApp"></a>
 
 <!-- CHAT POPUP -->
-<div id="chat-overlay" style="
-position:fixed; inset:0;
-background:rgba(0,0,0,0.35);
-display:none; align-items:center; justify-content:center;
-z-index:99999;">
+<div id="chat-overlay">
 <div style="
 background:#fff;
 width:92%;
@@ -513,57 +950,79 @@ La tappa ideale per rinfrescarsi durante la passeggiata, con una ricca selezione
 };
 
 function apriChat(){
-  resetChat(); // reset stato chat
-  document.getElementById("chat-overlay").style.display = "flex";
-  document.body.classList.add("no-scroll"); // 🔒 blocca scroll
+  resetChat();
+
+  const overlay = document.getElementById("chat-overlay");
+  overlay.classList.add("show");
+
+  document.body.classList.add("no-scroll");
+  document.body.classList.add("chat-open");
 }
 
 function chiudiChat(){
-  document.getElementById("chat-overlay").style.display = "none";
-  document.body.classList.remove("no-scroll"); // 🔓 riattiva scroll
+  const overlay = document.getElementById("chat-overlay");
+  overlay.classList.remove("show");
+
+  document.body.classList.remove("no-scroll");
+  document.body.classList.remove("chat-open");
+
   resetChat();
 }
 
 function selezionaLocale(id) {
   localeSelezionato = id;
 
-  const l = LOCALI[id]; // 🔥 QUESTA MANCAVA
+  const l = LOCALI[id];
   const box = document.getElementById("chat-messages");
   const actions = document.getElementById("chat-actions");
   const btnCoppa = document.getElementById("btn-coppa");
+  const btnBack = document.getElementById("btn-back");
 
-  // ✅ intestazione corretta (mai undefined)
-box.innerHTML = `
-  <div style="opacity:.8;margin-bottom:10px">
-    Informazioni su <b>${l.nome}</b>
-  </div>
+  /* 1️⃣ anima USCITA contenuto attuale */
+  box.classList.remove("fade-in");
+  box.classList.add("fade-out");
 
-  <div style="
-    margin-top:8px;
-    padding:14px;
-    background:#f2f2f7;
-    border-radius:12px;
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-    font-size:15px;
-  ">
-    <div><b>Indirizzo</b><br>${l.indirizzo}</div>
-    <div><b>Orari</b><br>${l.orari}</div>
-    <div><b>Telefono</b><br>
-      <a href="tel:${l.telefono}">${l.telefono}</a>
-    </div>
-  </div>
-`;
+  setTimeout(() => {
 
-  actions.style.display = "grid";
+    /* 2️⃣ aggiorna contenuto DOPO fade-out */
+    box.innerHTML = `
+      <div style="opacity:.8;margin-bottom:10px">
+        Informazioni su <b>${l.nome}</b>
+      </div>
 
-  // 🍨 CREA COPPA solo Bibione Costellazioni 49
-  if (btnCoppa) {
-    btnCoppa.style.display = (id === "bibione49") ? "block" : "none";
-  }
-  // mostra tasto indietro
-document.getElementById("btn-back").style.display = "block";
+      <div style="
+        margin-top:8px;
+        padding:14px;
+        background:#f2f2f7;
+        border-radius:12px;
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        font-size:15px;
+      ">
+        <div><b>Indirizzo</b><br>${l.indirizzo}</div>
+        <div><b>Orari</b><br>${l.orari}</div>
+        <div><b>Telefono</b><br>
+          <a href="tel:${l.telefono}">${l.telefono}</a>
+        </div>
+      </div>
+    `;
+
+    /* 3️⃣ mostra azioni */
+    actions.style.display = "grid";
+    btnBack.style.display = "block";
+
+    /* 🍨 crea coppa solo Bibione 49 */
+    if (btnCoppa) {
+      btnCoppa.style.display = (id === "bibione49") ? "block" : "none";
+    }
+
+    /* 4️⃣ forza reflow + anima ENTRATA */
+    box.offsetHeight;
+    box.classList.remove("fade-out");
+    box.classList.add("fade-in");
+
+  }, 220); // ⏱️ durata uscita
 }
 
 function risposta(tipo){
@@ -655,24 +1114,38 @@ function vaiACreaCoppa() {
 function resetChat(){
   localeSelezionato = null;
 
-  // reset testo
-  document.getElementById("chat-messages").innerHTML = `
-    👋 Ciao! Seleziona il locale:
-    <div style="margin-top:10px;display:grid;gap:8px">
-      <button class="chat-btn" onclick="selezionaLocale('bibione49')">Bibione</button>
-      <button class="chat-btn" onclick="selezionaLocale('bibione10')">Bibione 2 Asporto</button>
-      <button class="chat-btn" onclick="selezionaLocale('lignano')">Lignano</button>
-    </div>
-  `;
+  const box = document.getElementById("chat-messages");
 
-  // nasconde azioni
-  const actions = document.getElementById("chat-actions");
-  if (actions) actions.style.display = "none";
+  // 1️⃣ anima uscita
+  box.classList.remove("fade-in");
+  box.classList.add("fade-out");
 
-  // nasconde bottone coppa
-  const btnCoppa = document.getElementById("btn-coppa");
-  if (btnCoppa) btnCoppa.style.display = "none";
-  document.getElementById("btn-back").style.display = "none";
+  setTimeout(() => {
+    // 2️⃣ cambia contenuto DOPO l’uscita
+    box.innerHTML = `
+      👋 Ciao! Seleziona il locale:
+      <div style="margin-top:10px;display:grid;gap:8px">
+        <button class="chat-btn" onclick="selezionaLocale('bibione49')">Bibione</button>
+        <button class="chat-btn" onclick="selezionaLocale('bibione10')">Bibione 2 Asporto</button>
+        <button class="chat-btn" onclick="selezionaLocale('lignano')">Lignano</button>
+      </div>
+    `;
+
+    // 3️⃣ reset bottoni
+    const actions = document.getElementById("chat-actions");
+    if (actions) actions.style.display = "none";
+
+    const btnCoppa = document.getElementById("btn-coppa");
+    if (btnCoppa) btnCoppa.style.display = "none";
+
+    document.getElementById("btn-back").style.display = "none";
+
+    // 4️⃣ forza reflow + anima entrata
+    box.offsetHeight;
+    box.classList.remove("fade-out");
+    box.classList.add("fade-in");
+
+  }, 220); // ⏱️ tempo uscita
 }
 
 function blurBackground() {
@@ -892,6 +1365,90 @@ function unblurBackground() {
   menu.querySelectorAll("a").forEach(a => {
     a.addEventListener("click", closeMenu);
   });
+
+  function apriChatLocale(id){
+  apriChat();               // apre la chat
+  setTimeout(() => {
+    selezionaLocale(id);    // seleziona subito il locale
+  }, 50);
+}
+</script>
+<footer class="profile-footer">
+  <div class="footer-links">
+    <a href="privacy.html">Privacy</a> ·
+    <a href="termini.html">Termini</a> ·
+    <a href="cookie.html">Cookie</a>
+  </div>
+
+  <div class="footer-copy">
+    © 2026 Casa del Gelato
+  </div>
+
+  <div class="footer-version">
+    Versione 1.0.0
+  </div>
+</footer>
+
+<script>
+function toggleInfoUtili(){
+  const box = document.getElementById("info-utili-content");
+  const arrow = document.getElementById("info-arrow");
+
+  const open = box.classList.toggle("open");
+  arrow.style.transform = open ? "rotate(90deg)" : "rotate(0deg)";
+}
+</script>
+
+<script>
+function openMaps(url){
+  window.open(url, "_blank");
+}
+</script>
+
+<script>
+/* ☀️ METEO BIBIONE */
+const METEO_API_KEY = "014d2034080edbaccb22d2d8d4e60e2a";
+const METEO_LAT = 45.6366;
+const METEO_LON = 13.0552;
+
+async function caricaMeteo(){
+  try{
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${METEO_LAT}&lon=${METEO_LON}&units=metric&lang=it&appid=${METEO_API_KEY}`
+    );
+
+    if(!res.ok) throw new Error("Errore meteo");
+
+    const data = await res.json();
+
+    const temp = Math.round(data.main.temp);
+    const desc = data.weather[0].description;
+    const code = data.weather[0].id;
+
+    document.getElementById("meteo-temp").textContent = `${temp}°`;
+    document.getElementById("meteo-desc").textContent =
+      desc.charAt(0).toUpperCase() + desc.slice(1);
+
+    document.getElementById("meteo-icon").textContent = iconaMeteo(code);
+
+  }catch(err){
+    console.warn("Meteo non disponibile", err);
+    document.getElementById("meteo-icon").textContent = "⚠️";
+    document.getElementById("meteo-desc").textContent = "Meteo non disponibile";
+  }
+}
+
+function iconaMeteo(code){
+  if(code >= 200 && code < 300) return "⛈️";
+  if(code >= 300 && code < 600) return "🌧️";
+  if(code >= 600 && code < 700) return "❄️";
+  if(code >= 700 && code < 800) return "🌫️";
+  if(code === 800) return "☀️";
+  if(code > 800) return "⛅";
+  return "🌤️";
+}
+
+document.addEventListener("DOMContentLoaded", caricaMeteo);
 </script>
 
 </body>
