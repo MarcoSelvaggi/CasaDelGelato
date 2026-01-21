@@ -364,20 +364,17 @@ async function inviaCandidatura() {
   const res = await fetch("https://casa-del-gelato-mailer-f7ds.vercel.app/api/lavora", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      locale,
-      nome: `${nome} ${cognome}`,
-      email,
-      messaggio: `
-Età: ${eta}
-Cellulare: ${cell}
-Mansione: ${mansione}
-
-${messaggio}
-      `,
-      cvBase64,
-      cvNome: file.name
-    })
+body: JSON.stringify({
+  locale,
+  nome: `${nome} ${cognome}`,
+  email,
+  eta,
+  cellulare: cell,
+  mansione,
+  messaggio,          // ⬅️ SOLO il textarea
+  cvBase64,
+  cvNome: file.name
+})
   });
 
   if (res.ok) {
