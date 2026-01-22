@@ -23,7 +23,7 @@
     const { data, error } = await supabase
       .from("utenti")
       .select("*")
-      .eq("email_token", token)
+      .eq("conferma_token", token)
       .single();
 
     if (error || !data) {
@@ -36,7 +36,7 @@
       .from("utenti")
       .update({
         email_confermata: true,
-        email_token: null
+        conferma_token: null
       })
       .eq("id", data.id);
 
