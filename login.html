@@ -180,64 +180,83 @@ document.addEventListener("DOMContentLoaded", () => {
 <script type="module">
 import { supabase } from "./supabase.js";
 
-window.login = async function() {
-const email = document.getElementById("login-email").value.trim();
-const currentEmail = localStorage.getItem("user_email");
-const alreadyLogged = localStorage.getItem("userLogged") === "1";
+window.login = async function () {
+  const email = document.getElementById("login-email").value.trim();
+  const currentEmail = localStorage.getItem("user_email");
+  const alreadyLogged = localStorage.getItem("userLogged") === "1";
 
-if (alreadyLogged && currentEmail === email) {
-    alert("✅ Accesso già effetuato con questa email.");
+  if (!email) {
+    alert("Inserisci una email valida.");
     return;
-}
-const name  = document.getElementById("login-name").value.trim();
-const surname = document.getElementById("login-surname").value.trim();
+  }
 
-    if (!email) {
-        alert("Inserisci una email valida.");
-        return;
+  // se già loggato con la stessa email
+  if (alreadyLogged && currentEmail === email) {
+    alert("✅ Accesso già effettuato con questa email.");
+    return;
+  }
+
+  const name = document.getElementById("login-name").value.trim();
+  const surname = document.getElementById("login-surname").value.trim();
+
+  // 1️⃣ Controllo se l'utente esiste
+  const { data, error } = await supabase
+    .from("utenti")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  // email non trovata
+  if (error && error.code === "PGRST116") {
+    alert("❌ Email non registrata.\nRegistrati per continuare.");
+    return;
+  }
+
+  if (error) {
+    alert("Errore Supabase: " + error.message);
+    return;
+  }
+
+  // 🔒 email NON confermata
+  if (data.email_confermata === false) {
+    alert(
+      "📧 Devi confermare la tua email prima di accedere.\n\n" +
+      "Controlla la posta (anche spam) e clicca sul link di conferma."
+    );
+    return;
+  }
+
+  // utente disiscritto
+  if (data.disiscritto === true) {
+    alert(
+      "❌ Questa email è stata disiscritta.\nRegistrati nuovamente per continuare."
+    );
+    return;
+  }
+
+  // 2️⃣ LOGIN OK
+  localStorage.setItem("user_email", data.email);
+  localStorage.setItem("user_name", name || data.nome || "");
+  localStorage.setItem("user_surname", surname || data.cognome || "");
+  localStorage.setItem("userLogged", "1");
+
+  // 🔗 COLLEGA COPPE CREATE DA OSPITE (DOPO LOGIN OK)
+  const guest_id = localStorage.getItem("guest_id");
+
+  if (guest_id) {
+    const { error: linkErr } = await supabase
+      .from("coppe")
+      .update({ email: data.email })
+      .eq("guest_id", guest_id)
+      .is("email", null);
+
+    if (linkErr) {
+      console.error("Errore collegamento coppe guest:", linkErr);
     }
+  }
 
-// 1️⃣ Controllo se l'utente esiste
-const { data, error } = await supabase
-  .from("utenti")
-  .select("*")
-  .eq("email", email)
-  .single();
-
-// ❌ Email non trovata
-if (error && error.code === "PGRST116") {
-  alert("❌ Email non registrata.\nRegistrati per continuare.");
-  return;
-}
-
-if (error) {
-  alert("Errore Supabase: " + error.message);
-  return;
-}
-
-// 🔒 EMAIL NON CONFERMATA (⬅️ QUESTO È LO STEP 3)
-if (data.email_confermata === false) {
-  alert(
-    "📧 Devi confermare la tua email prima di accedere.\n\n" +
-    "Controlla la posta (anche spam) e clicca sul link di conferma."
-  );
-  return;
-}
-
-// 2️⃣ Controllo se è disiscritto
-if (data.disiscritto === true) {
-  alert("❌ Questa email è stata disiscritta.\nRegistrati nuovamente per continuare.");
-  return;
-}
-
-    // 3️⃣ Login accettato
-    localStorage.setItem("user_email", data.email);
-    localStorage.setItem("user_name", name || data.nome || "");
-    localStorage.setItem("user_surname", surname || data.cognome || "");
-    localStorage.setItem("userLogged", "1");
-
-    alert("Accesso effettuato!");
-    window.location.href = "profilo.html";
+  alert("✅ Accesso effettuato!");
+  window.location.href = "profilo.html";
 };
 
 window.register = async function() {
@@ -337,27 +356,15 @@ if (!existing) {
   );
 }
 
-// 5️⃣ LOGIN AUTOMATICO
-localStorage.setItem("user_email", email);
-localStorage.setItem("user_name", name);
-localStorage.setItem("user_surname", surname);
-localStorage.setItem("userLogged", "1");
-// 🔗 COLLEGA COPPE CREATE DA OSPITE
-const guest_id = localStorage.getItem("guest_id");
+alert(
+  "✅ Registrazione avvenuta!\n\n" +
+  "📧 Ti abbiamo inviato una mail di conferma.\n" +
+  "Apri l’email (controlla anche spam) e clicca sul link.\n\n" +
+  "Dopo la conferma potrai accedere."
+);
 
-if (guest_id) {
-  const { error: linkErr } = await supabase
-    .from("coppe")
-    .update({ email: email })
-    .eq("guest_id", guest_id)
-    .is("email", null);
-
-  if (linkErr) {
-    console.error("Errore collegamento coppe guest:", linkErr);
-  }
-}
-alert("Registrazione completata!");
-window.location.href = "home.html";
+// (opzionale) porta subito alla schermata Accedi
+window.location.href = "login.html";
 };
 
 </script>
