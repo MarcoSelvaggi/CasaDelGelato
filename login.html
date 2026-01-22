@@ -87,6 +87,166 @@
 .menu-item:hover{
   background:#f2f2f7;
 }
+
+
+/* BACKDROP */
+.popup-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 99999;
+}
+
+/* visibile */
+.popup-backdrop.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* CARD */
+.popup-card{
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px;
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  animation: popupIn .3s ease;
+}
+
+@keyframes popupIn{
+  from{
+    transform: translateY(20px) scale(.95);
+    opacity: 0;
+  }
+  to{
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.popup-card h2{
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.popup-card p{
+  font-size: 15px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.popup-btn{
+  margin-top: 16px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 14px;
+  background: #007aff;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+/* 🔁 RESEND EMAIL */
+.resend-btn{
+  display: block;
+  margin: 10px auto 0;      /* 🔥 centrato */
+  padding: 8px 14px;        /* 🔥 più piccolo */
+  width: auto;              /* non full width */
+  
+  background: #007aff;
+  color: #fff;
+
+  border: none;
+  border-radius: 999px;     /* pill iOS */
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,122,255,0.35);
+}
+
+.resend-btn:active{
+  background: #005fcc;
+  transform: scale(0.96);
+}
+
+/* ===== PASSWORD IDENTICO AGLI ALTRI INPUT ===== */
+
+.password-wrap{
+  position: relative;
+  width: 100%;
+}
+
+/* INPUT PASSWORD = CLONE PERFETTO */
+.password-wrap input{
+  width: 97%;
+  margin: 10px 0;        /* IDENTICO agli altri */
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+  padding-right: 44px;  /* spazio occhio */
+}
+
+/* 👁️ OCCHIO */
+.toggle-password{
+  position: absolute;
+  right: 14px;              /* attaccato a destra */
+  top: 50%;
+  transform: translateY(-95%);
+  width: 20px;              /* 🔥 BLOCCA la larghezza */
+  height: 20px;             /* 🔥 BLOCCA l’altezza */
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.toggle-password svg{
+  width: 20px;
+  height: 20px;
+  stroke: #888;
+  fill: none;
+  stroke-width: 2;
+}
+/* 👁️ ICONA OCCHIO – FIX DEFINITIVO */
+.eye-icon{
+  width: 20px;
+  height: 20px;
+
+  fill: none !important;          /* ⛔ BLOCCA il nero */
+  stroke: #888;                   /* colore giusto */
+  stroke-width: 2;
+
+  display: block;
+  pointer-events: none;           /* click passa al bottone */
+}
+
+/* hover leggero */
+.toggle-password:hover .eye-icon{
+  stroke: #111;
+}
+.eye-slash{
+  stroke: #888;
+  stroke-width: 2;
+  display: none;
+}
+
+/* quando password è visibile */
+.toggle-password.show .eye-slash{
+  display: block;
+}
 </style>
 
 </head>
@@ -115,11 +275,41 @@
 
 <!-- 🔐 LOGIN -->
 <div class="container" id="login-box">
-    <input type="email" id="login-email" placeholder="Email" required>
-    <input type="text" id="login-name" placeholder="Nome (opzionale)">
-    <input type="text" id="login-surname" placeholder="Cognome (opzionale)">
+  <input type="email" id="login-email" placeholder="Email" required>
 
-    <button onclick="login()">Continua</button>
+  <!-- 🔒 Password -->
+<div class="password-wrap">
+<input
+  type="password"
+  id="login-password"
+  placeholder="Password"
+  required
+>
+
+  <button
+    type="button"
+    class="toggle-password"
+    onclick="togglePassword('login-password', this)"
+    aria-label="Mostra password"
+  >
+    <!-- 👁️ ICONA SVG CLASSICA -->
+<svg viewBox="0 0 24 24" class="eye-icon">
+  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+  <circle cx="12" cy="12" r="3"/>
+  <!-- linea sbarrata -->
+  <line x1="3" y1="3" x2="21" y2="21" class="eye-slash"/>
+</svg>
+  </button>
+</div>
+
+  <button onclick="login()">Continua</button>
+<button
+  id="resend-confirm-btn"
+  class="resend-btn"
+  style="display:none;"
+>
+  Invia di nuovo email di conferma
+</button>
 
     <p style="margin-top:14px;font-size:14px">
       Non hai un account?
@@ -129,9 +319,54 @@
 
 <!-- 📝 REGISTRAZIONE -->
 <div class="container" id="register-box" style="display:none">
-    <input type="email" id="reg-email" placeholder="Email" required>
     <input type="text" id="reg-name" placeholder="Nome" required>
     <input type="text" id="reg-surname" placeholder="Cognome" required>
+    <input type="email" id="reg-email" placeholder="Email" required>
+<div class="password-wrap">
+  <input
+    type="password"
+    id="reg-password"
+    placeholder="Password"
+    required
+  >
+
+  <button
+    type="button"
+    class="toggle-password"
+    onclick="togglePassword('reg-password', this)"
+    aria-label="Mostra password"
+  >
+    <!-- 👁️ ICONA SVG CLASSICA -->
+<svg viewBox="0 0 24 24" class="eye-icon">
+  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+  <circle cx="12" cy="12" r="3"/>
+  <!-- linea sbarrata -->
+  <line x1="3" y1="3" x2="21" y2="21" class="eye-slash"/>
+</svg>
+  </button>
+</div>
+
+<div class="password-wrap">
+  <input
+    type="password"
+    id="reg-password-confirm"
+    placeholder="Conferma password"
+    required
+  >
+
+  <button
+    type="button"
+    class="toggle-password"
+    onclick="togglePassword('reg-password-confirm', this)"
+    aria-label="Mostra password"
+  >
+    <svg viewBox="0 0 24 24" class="eye-icon">
+      <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+      <circle cx="12" cy="12" r="3"/>
+      <line x1="3" y1="3" x2="21" y2="21" class="eye-slash"/>
+    </svg>
+  </button>
+</div>
     <!-- ✅ CONSENSO PROMO (OPZIONALE) -->
     <label class="checkbox-row">
       <input type="checkbox" id="consenso-promozioni">
@@ -180,21 +415,52 @@ document.addEventListener("DOMContentLoaded", () => {
 <script type="module">
 import { supabase } from "./supabase.js";
 
+
+window.mostraPopup = function (titolo, messaggio, redirect = null) {
+  document.getElementById("popup-title").textContent = titolo;
+  document.getElementById("popup-message").textContent = messaggio;
+
+  const backdrop = document.getElementById("popup-backdrop");
+  backdrop.classList.add("show");
+
+  document.body.style.overflow = "hidden";
+
+  // salva redirect opzionale
+  backdrop.dataset.redirect = redirect || "";
+};
+
+window.chiudiPopup = function () {
+  const backdrop = document.getElementById("popup-backdrop");
+  backdrop.classList.remove("show");
+
+  document.body.style.overflow = "";
+
+  const redirect = backdrop.dataset.redirect;
+  if (redirect) {
+    window.location.href = redirect;
+  }
+};
+
 window.login = async function () {
   const email = document.getElementById("login-email").value.trim();
   const currentEmail = localStorage.getItem("user_email");
   const alreadyLogged = localStorage.getItem("userLogged") === "1";
 
-  if (!email) {
-    alert("Inserisci una email valida.");
-    return;
-  }
+if (!email) {
+  mostraPopup(
+    "Email mancante",
+    "Inserisci una email valida per poter continuare."
+  );
+  return;
+}
 
-  // se già loggato con la stessa email
-  if (alreadyLogged && currentEmail === email) {
-    alert("✅ Accesso già effettuato con questa email.");
-    return;
-  }
+if (alreadyLogged && currentEmail === email) {
+  mostraPopup(
+    "Sei già connesso",
+    "Hai già effettuato l’accesso con questa email."
+  );
+  return;
+}
 
   const name = document.getElementById("login-name").value.trim();
   const surname = document.getElementById("login-surname").value.trim();
@@ -206,33 +472,48 @@ window.login = async function () {
     .eq("email", email)
     .single();
 
-  // email non trovata
-  if (error && error.code === "PGRST116") {
-    alert("❌ Email non registrata.\nRegistrati per continuare.");
-    return;
-  }
+// email non trovata
+if (error && error.code === "PGRST116") {
+  mostraPopup(
+    "Email non registrata",
+    "Questa email non risulta registrata.\n\nCrea un account per continuare."
+  );
+  return;
+}
 
   if (error) {
     alert("Errore Supabase: " + error.message);
     return;
   }
 
-  // 🔒 email NON confermata
-  if (data.email_confermata === false) {
-    alert(
-      "📧 Devi confermare la tua email prima di accedere.\n\n" +
-      "Controlla la posta (anche spam) e clicca sul link di conferma."
-    );
-    return;
+// 🔒 email NON confermata
+if (!data.email_confermata) {
+
+  mostraPopup(
+    "Email non confermata",
+    "Per accedere devi prima confermare la tua email.\n\nControlla la posta oppure inviala di nuovo."
+  );
+
+  // ✅ mostra bottone resend
+  const resendBtn = document.getElementById("resend-confirm-btn");
+  if (resendBtn) {
+    resendBtn.style.display = "block";
+    resendBtn.dataset.email = data.email;
+    resendBtn.dataset.token = data.conferma_token;
   }
 
+  return;
+}
+
   // utente disiscritto
-  if (data.disiscritto === true) {
-    alert(
-      "❌ Questa email è stata disiscritta.\nRegistrati nuovamente per continuare."
-    );
-    return;
-  }
+if (data.disiscritto === true) {
+  mostraPopup(
+    "Account disiscritto",
+    "Questa email è stata disiscritta.Registrati nuovamente per continuare.",
+    "login.html?mode=register"
+  );
+  return;
+}
 
   // 2️⃣ LOGIN OK
   localStorage.setItem("user_email", data.email);
@@ -255,147 +536,260 @@ window.login = async function () {
     }
   }
 
-  alert("✅ Accesso effettuato!");
-  window.location.href = "profilo.html";
+mostraPopup(
+  "Accesso effettuato",
+  "Ora puoi accedere a coupon, storico e notifiche.",
+  "profilo.html"
+);
+return;
 };
 
-window.register = async function() {
+window.register = async function () {
   const email = document.getElementById("reg-email").value.trim();
   const name = document.getElementById("reg-name").value.trim();
   const surname = document.getElementById("reg-surname").value.trim();
+  const password = document.getElementById("reg-password").value;
+  const passwordConfirm = document.getElementById("reg-password-confirm").value;
+
   const consenso = document.getElementById("consenso-promozioni")?.checked === true;
   const privacyAccepted = document.getElementById("privacy-consent")?.checked;
 
+  /* 🔒 PRIVACY */
   if (!privacyAccepted) {
-    alert("Devi accettare la Privacy Policy per registrarti.");
+    mostraPopup(
+      "Privacy obbligatoria",
+      "Per registrarti devi accettare la Privacy Policy."
+    );
     return;
   }
 
-  if (!email || !name || !surname) {
-    alert("Compila tutti i campi.");
+  /* ❌ CAMPI */
+  if (!email || !name || !surname || !password || !passwordConfirm) {
+    mostraPopup(
+      "Campi mancanti",
+      "Compila tutti i campi per completare la registrazione."
+    );
     return;
   }
 
-  // 1️⃣ Controlla se esiste già
+  /* 🔐 PASSWORD */
+  if (password !== passwordConfirm) {
+    mostraPopup(
+      "Password diverse",
+      "Le password inserite non coincidono."
+    );
+    return;
+  }
+
+  if (password.length < 6) {
+    mostraPopup(
+      "Password troppo corta",
+      "La password deve contenere almeno 6 caratteri."
+    );
+    return;
+  }
+
+  /* 1️⃣ UTENTE ESISTENTE? */
   const { data: existing, error } = await supabase
     .from("utenti")
-    .select("*")
+    .select("email, email_confermata")
     .eq("email", email)
     .single();
 
-  // errore vero
   if (error && error.code !== "PGRST116") {
-    alert("Errore: " + error.message);
+    mostraPopup("Errore", "Errore durante il controllo account.");
     return;
   }
 
-  // 2️⃣ ESISTE ED È ATTIVO → BLOCCA
-  if (existing && existing.disiscritto === false) {
-    alert("Questa email è già registrata. Accedi.");
-    return;
-  }
-
-  // 3️⃣ ESISTE MA ERA DISISCRITTO → RIATTIVA + aggiorna consenso
-  if (existing && existing.disiscritto === true) {
-    const { error: updErr } = await supabase
-  .from("utenti")
-  .update({
-    nome: name,
-    cognome: surname,
-    disiscritto: false,
-    consenso_promozioni: consenso,
-    privacy_accepted: true,
-    privacy_accepted_at: new Date().toISOString()
-  })
-  .eq("email", email);
-
-    if (updErr) {
-      alert("Errore riattivazione account.");
+  if (existing) {
+    if (!existing.email_confermata) {
+      mostraPopup(
+        "Email già registrata",
+        "Questa email è già registrata ma non confermata.\nControlla la posta."
+      );
       return;
     }
+
+    mostraPopup(
+      "Email già registrata",
+      "Questa email è già registrata.\nAccedi per continuare.",
+      "login.html"
+    );
+    return;
   }
 
-// 4️⃣ NON ESISTE → CREA
-const token = crypto.randomUUID();
+  /* 2️⃣ HASH PASSWORD (API) */
+  let password_hash;
 
-if (!existing) {
+  try {
+    const res = await fetch(
+      "https://TUO-PROGETTO.vercel.app/api/hash-password",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password })
+      }
+    );
+
+    const data = await res.json();
+    password_hash = data.password_hash;
+
+    if (!password_hash) throw new Error("Hash non generato");
+
+  } catch (err) {
+    console.error(err);
+    mostraPopup(
+      "Errore sicurezza",
+      "Impossibile proteggere la password. Riprova più tardi."
+    );
+    return;
+  }
+
+  /* 3️⃣ CREA UTENTE */
+  const token = crypto.randomUUID();
+
   const { error: insErr } = await supabase
     .from("utenti")
     .insert({
       email,
       nome: name,
       cognome: surname,
+      password_hash,          // ✅ SOLO HASH
       disiscritto: false,
       consenso_promozioni: consenso,
-
       privacy_accepted: true,
       privacy_accepted_at: new Date().toISOString(),
-
-      // 🔐 CONFERMA EMAIL
       email_confermata: false,
       conferma_token: token
     });
 
-  // ❌ se insert fallisce → STOP
   if (insErr) {
-    alert("Errore registrazione.");
+    mostraPopup("Errore", "Errore durante la registrazione.");
     return;
   }
 
-  // 📧 invio email di conferma (SOLO se insert OK)
-  await fetch(
-    "https://casa-del-gelato-mailer-f7ds.vercel.app/api/conferma-email",
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        token
-      })
-    }
+  /* 4️⃣ INVIO EMAIL */
+  try {
+    await fetch(
+      "https://casa-del-gelato-mailer-f7ds.vercel.app/api/conferma-email",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token })
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+
+  mostraPopup(
+    "📧 Conferma email",
+    "Ti abbiamo inviato una mail di conferma.\nDopo la conferma potrai accedere.",
+    "login.html"
   );
-}
-
-alert(
-  "✅ Registrazione avvenuta!\n\n" +
-  "📧 Ti abbiamo inviato una mail di conferma.\n" +
-  "Apri l’email (controlla anche spam) e clicca sul link.\n\n" +
-  "Dopo la conferma potrai accedere."
-);
-
-// (opzionale) porta subito alla schermata Accedi
-window.location.href = "login.html";
 };
-
 </script>
 
 
-<!-- ⭐ BOTTOM NAV BAR -->
-<div id="bottom-nav">
-    <a href="crea-coppa.html" class="nav-item">
-        <img src="icone/crea.png" alt="">
-        <span>Crea Coppa</span>
-    </a>
 
-    <a href="profilo.html" class="nav-item">
-        <img src="icone/user.png" alt="">
-        <span>Profilo</span>
-    </a>
 
-    <a href="menu.html" class="nav-item">
-        <img src="icone/menu.png" alt="">
-        <span>Menu</span>
-    </a>
 
-    <a href="lavora-con-noi.html" class="nav-item">
-        <img src="icone/job.png" alt="">
-        <span>Lavora Con Noi</span>
-    </a>
+<!-- 🔔 POPUP GENERICO -->
+<div id="popup-backdrop" class="popup-backdrop">
+  <div class="popup-card">
+    <h2 id="popup-title">Titolo</h2>
+    <p id="popup-message">Messaggio</p>
+
+    <button class="popup-btn" onclick="chiudiPopup()">
+      OK
+    </button>
+  </div>
 </div>
 
-</div>
+<script type="module">
+import { supabase } from "./supabase.js";
 
+const resendBtn = document.getElementById("resend-confirm-btn");
 
+if (resendBtn) {
+  resendBtn.addEventListener("click", async () => {
+    const email = resendBtn.dataset.email;
+    let token = resendBtn.dataset.token;
 
+    if (!email) {
+      mostraPopup("Errore", "Email non disponibile.");
+      return;
+    }
+
+    // 🔁 se manca token → rigenera
+    if (!token) {
+      token = crypto.randomUUID();
+
+      await supabase
+        .from("utenti")
+        .update({ conferma_token: token })
+        .eq("email", email);
+    }
+
+    try {
+      await fetch(
+        "https://casa-del-gelato-mailer-f7ds.vercel.app/api/conferma-email",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, token })
+        }
+      );
+
+      mostraPopup(
+        "Email inviata",
+        "Ti abbiamo inviato nuovamente l’email di conferma.\n\nControlla anche lo spam."
+      );
+
+      resendBtn.style.display = "none";
+
+    } catch (err) {
+      console.error(err);
+      mostraPopup(
+        "Errore",
+        "Non è stato possibile inviare l’email. Riprova più tardi."
+      );
+    }
+  });
+}
+</script>
+
+<script>
+function togglePassword(inputId, btn){
+  const input = document.getElementById(inputId);
+  if (!input) return;
+
+  const svg = btn.querySelector("svg");
+  const slash = svg.querySelector(".eye-slash");
+
+  if (input.type === "password") {
+    // 👉 MOSTRO password
+    input.type = "text";
+    slash.style.display = "none";   // ❌ niente barra
+  } else {
+    // 👉 NASCONDO password
+    input.type = "password";
+    slash.style.display = "block";  // ✅ barra visibile
+  }
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".password-wrap input").forEach(input => {
+    if (input.type === "password") {
+      const btn = input.closest(".password-wrap")
+        ?.querySelector(".toggle-password");
+      const slash = btn?.querySelector(".eye-slash");
+      if (slash) slash.style.display = "block"; // 👁️ SBARRATO DI DEFAULT
+    }
+  });
+});
+</script>
 </body>
 </html>

@@ -1356,6 +1356,122 @@ body.no-scroll{
   transform: translateY(-50%);
 }
 
+/* =========================
+   🔔 POPUP AVVISO UNIVERSALE
+========================= */
+
+#ui-alert-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 10050;
+}
+
+#ui-alert{
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%,-50%) scale(.94);
+  width: 320px;
+
+  background: rgba(255,255,255,.78);
+  border-radius: 18px;
+  padding: 18px;
+
+  box-shadow: 0 18px 45px rgba(0,0,0,.25);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease;
+  z-index: 10051;
+}
+
+#ui-alert.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%,-50%) scale(1);
+}
+
+#ui-alert-backdrop.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#ui-alert-title{
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#ui-alert-message{
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+  line-height: 1.4;
+}
+
+#ui-alert-btn{
+  margin-top: 16px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+
+  background: #007aff;      /* 🔵 BLU iOS */
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: background .2s ease, transform .08s ease;
+}
+
+#ui-alert-btn:active{
+  background: #005fcc;      /* 🔵 blu più scuro */
+  transform: scale(0.97);
+}
+#chiudi-consensi,
+#chiudi-notifiche{
+  background: #007aff;
+  color: #fff;
+  border: none;
+  font-weight: 700;
+}
+
+#chiudi-consensi:active,
+#chiudi-notifiche:active{
+  background: #005fcc;
+  transform: scale(0.97);
+}
+
+.glass-backdrop,
+#profile-menu-backdrop,
+#consensi-backdrop,
+#notifiche-backdrop,
+#unsubscribe-backdrop,
+#ui-alert-backdrop {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+.glass-backdrop.show,
+#profile-menu-backdrop.show,
+#consensi-backdrop.show,
+#notifiche-backdrop.show,
+#unsubscribe-backdrop.show,
+#ui-alert-backdrop.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
 
 </style>
 </head>
@@ -1550,7 +1666,6 @@ body.no-scroll{
         padding:10px;
         border-radius:12px;
         border:none;
-        background:#111;
         color:#fff;
         font-weight:700;
         cursor:pointer;
@@ -1588,7 +1703,6 @@ body.no-scroll{
       padding:10px;
       border-radius:12px;
       border:none;
-      background:#111;
       color:#fff;
       font-weight:700;
       cursor:pointer;
@@ -1630,6 +1744,19 @@ window.inviaNotificaTest = async function () {
 /* ===============================
    UTILS
 ================================ */
+
+
+window.apriPopupDisiscrizione = function(){
+  document.body.classList.add("no-scroll");
+  document.getElementById("unsubscribe-backdrop")?.classList.add("show");
+  document.getElementById("unsubscribe-popup")?.classList.add("show");
+};
+
+window.chiudiPopupDisiscrizione = function(){
+  document.body.classList.remove("no-scroll");
+  document.getElementById("unsubscribe-backdrop")?.classList.remove("show");
+  document.getElementById("unsubscribe-popup")?.classList.remove("show");
+};
 
 window.eliminaTutteNotifiche = async function () {
   const ok = confirm("Vuoi eliminare TUTTE le notifiche?");
@@ -1994,37 +2121,62 @@ function setupAvatarChange() {
     return;
   }
 
-  btn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+btn.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
 
-    // 🔥 chiudi menu PRIMA
-    if (typeof closeMenu === "function") closeMenu();
+  // chiudi menu profilo
+  if (typeof closeMenu === "function") closeMenu();
 
-    // 🔥 iOS hack: micro delay
-    setTimeout(() => {
-      input.click();
-    }, 50);
-  });
+  const email  = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
 
-  input.addEventListener("change", async () => {
-    const file = input.files && input.files[0];
-    if (!file) return;
+  // ❌ NON LOGGATO
+  if (!logged || !email) {
+    mostraPopup(
+      "Accesso richiesto",
+      "Accedi o registrati per modificare o inserire l’immagine profilo.",
+      "login.html"
+    );
+    return;
+  }
 
-    try {
-      const dataUrl = await compressImageToDataURL(file, 256, 0.82);
+  // ✅ LOGGATO → apri picker immagine
+  setTimeout(() => {
+    input.click();
+  }, 50);
+});
 
-      // salva
-      localStorage.setItem("cdg_profile_avatar_v1", dataUrl);
+input.addEventListener("change", async () => {
+  const email  = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
 
-      // aggiorna UI
-      aggiornaAvatarProfilo();
+  // ❌ BLOCCO TOTALE SE NON LOGGATO
+  if (!logged || !email) {
+    input.value = ""; // reset input
+    mostraPopup(
+      "Accesso richiesto",
+      "Accedi o registrati per modificare o inserire l’immagine profilo.",
+      "login.html"
+    );
+    return;
+  }
 
-    } catch (err) {
-      console.error("Errore avatar:", err);
-      alert("Errore nel caricamento dell'immagine");
-    }
-  });
+  const file = input.files && input.files[0];
+  if (!file) return;
+
+  try {
+    const dataUrl = await compressImageToDataURL(file, 256, 0.82);
+    localStorage.setItem("cdg_profile_avatar_v1", dataUrl);
+    aggiornaAvatarProfilo();
+  } catch (err) {
+    console.error("Errore avatar:", err);
+    mostraPopup(
+      "Errore",
+      "Si è verificato un problema nel caricamento dell’immagine."
+    );
+  }
+});
 }
 
 
@@ -2048,7 +2200,14 @@ btn.addEventListener("click", async () => {
   closeMenu();
 
   const email = localStorage.getItem("user_email");
-  if (!email) return alert("Devi essere loggato.");
+  if (!email) {
+  mostraPopup(
+    "Accesso richiesto",
+    "Devi effettuare l’accesso per gestire i consensi.",
+    "login.html"
+  );
+  return;
+}
 
   const { data, error } = await supabase
     .from("utenti")
@@ -2101,7 +2260,14 @@ async function apriNotifiche() {
   if (typeof window.closeMenu === "function") closeMenu();
 
   const email = localStorage.getItem("user_email");
-  if (!email) return;
+ if (!email) {
+  mostraPopup(
+    "Accesso richiesto",
+    "Accedi o registrati per visualizzare le notifiche.",
+    "login.html"
+  );
+  return;
+}
 
   await caricaNotificheUtente();
 document.body.classList.add("no-scroll");
@@ -2524,6 +2690,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const email = localStorage.getItem("user_email");
   const logged = localStorage.getItem("userLogged") === "1";
 
+  // 🔒 BLOCCA INPUT AVATAR SE NON LOGGATO
+  const avatarInput = document.getElementById("profile-avatar-input");
+  if (avatarInput) {
+    avatarInput.disabled = !logged;
+  }
+
   /* ===============================
      👤 AVATAR → RESET SOLO SE CAMBIA EMAIL
   =============================== */
@@ -2547,10 +2719,16 @@ const loginHint = document.getElementById("login-hint");
 if (!logged && coppeCard) {
   coppeCard.classList.add("disabled");
 
-  coppeCard.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  });
+coppeCard.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+
+  mostraPopup(
+    "Accesso richiesto",
+    "Accedi o registrati per visualizzare lo storico delle tue coppe.",
+    "login.html"
+  );
+});
 
   if (loginHint) loginHint.style.display = "block";
 }
@@ -2611,22 +2789,7 @@ window.gestisciLoginLogout = function(){
   }
 };
 
-window.disiscriviti = async function(){
-  const email = localStorage.getItem("user_email");
-  if (!email) return alert("Errore");
 
-  const ok = confirm("Sei sicuro di voler disiscriverti?\n\nNon avrai più accesso a coupon e storico.");
-  if (!ok) return;
-
-  await supabase
-    .from("utenti")
-    .update({ disiscritto: true })
-    .eq("email", email);
-
-  localStorage.removeItem("user_email");
-  localStorage.setItem("userLogged", "0");
-  location.href = "home.html";
-};
 </script>
 
 <script type="module">
@@ -2793,9 +2956,15 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("user_name");
     localStorage.removeItem("user_surname");
     localStorage.setItem("userLogged", "0");
-
-    alert("Sei uscito dal tuo profilo");
-    window.location.href = "profilo.html";
+  const avatarInput = document.getElementById("profile-avatar-input");
+  if (avatarInput) {
+    avatarInput.disabled = true;
+  }
+mostraPopup(
+  "Logout effettuato",
+  "Sei uscito correttamente dal tuo profilo.",
+  "profilo.html"
+);
   });
 });
 
@@ -2812,10 +2981,24 @@ if (menu){
 const unsubscribeBtn = document.getElementById("menu-unsubscribe");
 
 if (unsubscribeBtn) {
-  unsubscribeBtn.addEventListener("click", () => {
-    closeMenu();       // chiude il menu glass
-    disiscriviti();    // usa la funzione ESISTENTE
-  });
+unsubscribeBtn.addEventListener("click", () => {
+  closeMenu();
+
+  const email = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+
+  // ❌ NON LOGGATO
+  if (!logged || !email) {
+    mostraPopup(
+      "Nessun accesso effettuato",
+      "Accedi o registrati per gestire il tuo account."
+    );
+    return;
+  }
+
+  // ✅ LOGGATO
+  apriPopupDisiscrizione();
+});
 }
 </script>
 
@@ -2968,6 +3151,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+
 </script>
 
 <input
@@ -3000,34 +3184,142 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 </footer>
 
-<input 
-  type="file"
-  id="avatar-input"
-  accept="image/*"
-  style="display:none"
-/>
+
+<script>
+window.mostraPopup = function(titolo, messaggio, redirect = null){
+  const backdrop = document.getElementById("ui-alert-backdrop");
+  const popup    = document.getElementById("ui-alert");
+  const titleEl  = document.getElementById("ui-alert-title");
+  const msgEl    = document.getElementById("ui-alert-message");
+  const btn      = document.getElementById("ui-alert-btn");
+
+  titleEl.textContent = titolo;
+  msgEl.innerHTML = messaggio;
+
+  document.body.classList.add("no-scroll");
+  backdrop.classList.add("show");
+  popup.classList.add("show");
+
+  btn.onclick = () => {
+    popup.classList.remove("show");
+    backdrop.classList.remove("show");
+    document.body.classList.remove("no-scroll");
+
+    if (redirect) {
+      setTimeout(() => window.location.href = redirect, 150);
+    }
+  };
+};
+</script>
+
+<script>
+window.disiscriviti = async function(){
+  const email = localStorage.getItem("user_email");
+  if (!email) return;
+
+  await supabase
+    .from("utenti")
+    .update({ disiscritto: true })
+    .eq("email", email);
+
+  localStorage.removeItem("user_email");
+  localStorage.setItem("userLogged", "0");
+
+  mostraPopup(
+    "Account disiscritto",
+    "Il tuo account è stato rimosso correttamente."
+  );
+
+  setTimeout(() => {
+    window.location.href = "home.html";
+  }, 2000);
+};
+</script>
+
+<!-- 🔔 POPUP AVVISO UNIVERSALE -->
+<div id="ui-alert-backdrop"></div>
+
+<div id="ui-alert">
+  <div id="ui-alert-title">Titolo</div>
+  <div id="ui-alert-message">Messaggio</div>
+  <button id="ui-alert-btn">OK</button>
+</div>
+
+<!-- 🔴 POPUP DISISCRIZIONE -->
+<div id="unsubscribe-backdrop" class="glass-backdrop"></div>
+
+<div id="unsubscribe-popup" class="glass-menu" style="
+  right:auto;
+  left:50%;
+  top:40%;
+  width:320px;
+  transform:translate(-50%,-50%) scale(0.94);
+">
+  <div style="
+    font-size:16px;
+    font-weight:800;
+    text-align:center;
+    margin-bottom:10px;
+    color:#ff3b30;
+  ">
+    Disiscrizione account
+  </div>
+
+  <div style="
+    font-size:14px;
+    color:#555;
+    text-align:center;
+    line-height:1.4;
+    margin-bottom:18px;
+  ">
+    Sei sicuro di voler disiscriverti?<br>
+    <b>Perderai coupon, storico e vantaggi.</b>
+  </div>
+
+  <div style="display:flex; gap:10px;">
+    <button id="unsubscribe-cancel" style="
+      flex:1;
+      padding:10px;
+      border-radius:12px;
+      border:none;
+      background:#e5e5ea;
+      color:#111;
+      font-weight:700;
+      cursor:pointer;
+    ">
+      Annulla
+    </button>
+
+    <button id="unsubscribe-confirm" style="
+      flex:1;
+      padding:10px;
+      border-radius:12px;
+      border:none;
+      background:#ff3b30;
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+    ">
+      Disiscriviti
+    </button>
+  </div>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const changeBtn = document.getElementById("menu-change-photo");
-  const fileInput = document.getElementById("avatar-input");
 
-  if (!changeBtn || !fileInput) {
-    console.warn("❌ Bottone Cambia immagine o input non trovato");
-    return;
-  }
+  document.getElementById("unsubscribe-cancel")
+    ?.addEventListener("click", chiudiPopupDisiscrizione);
 
-  changeBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  document.getElementById("unsubscribe-backdrop")
+    ?.addEventListener("click", chiudiPopupDisiscrizione);
 
-    // chiudi menu profilo se aperto
-    if (typeof closeMenu === "function") closeMenu();
+  document.getElementById("unsubscribe-confirm")
+    ?.addEventListener("click", async () => {
+      chiudiPopupDisiscrizione();
+      await disiscriviti();
+    });
 
-    // piccolo delay per iOS
-    setTimeout(() => {
-      fileInput.click();
-    }, 50);
-  });
 });
 </script>
 </body>
