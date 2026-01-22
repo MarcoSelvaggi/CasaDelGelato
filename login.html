@@ -197,28 +197,38 @@ const surname = document.getElementById("login-surname").value.trim();
         return;
     }
 
-    // 1️⃣ Controllo se l'utente esiste
-    const { data, error } = await supabase
-        .from("utenti")
-        .select("*")
-        .eq("email", email)
-        .single();
+// 1️⃣ Controllo se l'utente esiste
+const { data, error } = await supabase
+  .from("utenti")
+  .select("*")
+  .eq("email", email)
+  .single();
 
-    if (error && error.code === "PGRST116") {
-        alert("❌ Email non registrata.\nRegistrati per continuare.");
-        return;
-    }
+// ❌ Email non trovata
+if (error && error.code === "PGRST116") {
+  alert("❌ Email non registrata.\nRegistrati per continuare.");
+  return;
+}
 
-    if (error) {
-        alert("Errore Supabase: " + error.message);
-        return;
-    }
+if (error) {
+  alert("Errore Supabase: " + error.message);
+  return;
+}
 
-    // 2️⃣ Controllo se è disiscritto
-    if (data.disiscritto === true) {
-        alert("❌ Questa email è stata disiscritta.\nRegistrati nuovamente per continuare.");
-        return;
-    }
+// 🔒 EMAIL NON CONFERMATA (⬅️ QUESTO È LO STEP 3)
+if (data.email_confermata === false) {
+  alert(
+    "📧 Devi confermare la tua email prima di accedere.\n\n" +
+    "Controlla la posta (anche spam) e clicca sul link di conferma."
+  );
+  return;
+}
+
+// 2️⃣ Controllo se è disiscritto
+if (data.disiscritto === true) {
+  alert("❌ Questa email è stata disiscritta.\nRegistrati nuovamente per continuare.");
+  return;
+}
 
     // 3️⃣ Login accettato
     localStorage.setItem("user_email", data.email);
@@ -286,7 +296,9 @@ window.register = async function() {
     }
   }
 
-  // 4️⃣ NON ESISTE → CREA
+// 4️⃣ NON ESISTE → CREA
+const token = crypto.randomUUID();
+
 if (!existing) {
   const { error: insErr } = await supabase
     .from("utenti")
@@ -297,15 +309,32 @@ if (!existing) {
       disiscritto: false,
       consenso_promozioni: consenso,
 
-      // 🔒 PRIVACY OBBLIGATORIA (GDPR)
       privacy_accepted: true,
-      privacy_accepted_at: new Date().toISOString()
+      privacy_accepted_at: new Date().toISOString(),
+
+      // 🔐 CONFERMA EMAIL
+      email_confermata: false,
+      email_token: token
     });
 
+  // ❌ se insert fallisce → STOP
   if (insErr) {
     alert("Errore registrazione.");
     return;
   }
+
+  // 📧 invio email di conferma (SOLO se insert OK)
+  await fetch(
+    "https://casa-del-gelato-mailer-f7ds.vercel.app/api/conferma-email",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        token
+      })
+    }
+  );
 }
 
 // 5️⃣ LOGIN AUTOMATICO

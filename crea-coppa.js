@@ -987,7 +987,7 @@ const ALLERGENI_EXTRA = {
 
 // ---------------- PREZZI ----------------
 const prezziBase = { PICCOLA: 7.50, MEDIA: 9.00, GRANDE: 12.00 };
-const prezziExtra = { "COCCO (3pz)": 0.50, "MIX KINDER": 2.50, "PANNA EXTRA": 1.80 };
+const prezziExtra = { "COCCO (3pz)": 0.50, "MIX KINDER": 3.00, "PANNA EXTRA": 1.80 };
 
 // ---------------- UTIL ----------------
 function byId(id){ return document.getElementById(id); }

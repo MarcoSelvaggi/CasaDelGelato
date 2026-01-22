@@ -51,58 +51,155 @@
             height: 65px;
         }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+h1 {
+  text-align: center;
+  margin-top: -40px;     /* ⬅️ lo spinge verso l’alto */
+  margin-bottom: 36px;   /* ⬅️ resta ben staccato dal modulo */
+  font-size: 28px;
+  font-weight: 800;
+}
 
         /* FORM CARD */
-        .form-card {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-        }
+.form-card {
+  max-width: 520px;
+  margin: 0 auto 40px;
+  padding: 22px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08),
+    0 1px 2px rgba(0,0,0,0.04);
+}
 
-        label {
-            font-weight: 600;
-            display: block;
-            margin-top: 14px;
-            margin-bottom: 4px;
-        }
+label {
+  font-weight: 600;
+  font-size: 14px;
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  color: #111;
+}
 
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            font-size: 15px;
-        }
+/* 🍏 INPUT CASA DEL GELATO */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid #e5e5ea;
+  background: #fff;
+  font-size: 16px;
+  color: #111;
 
-        textarea {
-            height: 100px;
-            resize: vertical;
-        }
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  transition: border .2s ease, box-shadow .2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #9a9aa0;
+}
+
+/* Stato focus → BLU */
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #007aff;
+  box-shadow: 0 0 0 3px rgba(0,122,255,0.18);
+}
+
+/* Stato compilato → VERDE */
+input.filled,
+select.filled,
+textarea.filled {
+  border-color: #34c759;
+  box-shadow: 0 0 0 3px rgba(52,199,89,0.18);
+}
+
+/* select pulito */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%239a9aa0' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px;
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
 
         .disabled {
             opacity: 0.45;
             pointer-events: none;
         }
 
-        .submit-btn {
-            margin-top: 20px;
-            width: 100%;
-            padding: 12px;
-            background: #ff7a00;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.submit-btn{
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px 16px;
+  background: #007aff;            /* BLU */
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  box-shadow: 0 10px 20px rgba(0,0,0,0.10);
+  transition: transform .08s ease, opacity .2s ease, background .2s ease;
+}
+
+.submit-btn:active{
+  transform: scale(0.99);
+}
+
+.submit-btn[disabled]{
+  opacity: .65;
+  cursor: not-allowed;
+}
+
+/* spinner */
+.btn-spinner{
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  display: none;
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to { transform: rotate(360deg); }
+}
+
+/* stato loading */
+.submit-btn.loading .btn-spinner{
+  display: inline-block;
+}
+
+        .form-section {
+  background: #f6f6f7;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 18px;
+}
+
+.form-section h3 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+}
 /* 🍏 TOAST CONFERMA INVIO */
 #toast {
   position: fixed;
@@ -202,6 +299,185 @@
 #menu-btn:active{
   opacity: .6;
 }
+
+/* Testo errore */
+.error-text {
+  display: none;
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff3b30;
+}
+
+/* Campo in errore */
+input.error,
+select.error,
+textarea.error {
+  border-color: #ff3b30;
+  box-shadow: 0 0 0 3px rgba(255,59,48,0.18);
+}
+
+/* Mostra testo errore */
+label.show-error .error-text {
+  display: inline;
+}
+
+
+
+/* input in errore */
+input.error,
+select.error,
+textarea.error {
+  border-color: #ff3b30;
+  background: #fff;
+}
+
+.cv-box {
+  position: relative;
+}
+
+.cv-status {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #007aff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cv-status.success {
+  color: #34c759;
+}
+
+.cv-status.hidden {
+  display: none;
+}
+
+/* 🔄 rotellina */
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0,0,0,0.15);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+/* spinner visibile solo durante loading */
+.cv-status:not(.loading) .spinner {
+  display: none;
+}
+
+.popup-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  backdrop-filter: blur(6px);
+}
+
+.popup-overlay.hidden{
+  display: none;
+}
+
+.popup-card{
+  background: #fff;
+  border-radius: 20px;
+  padding: 26px 22px;
+  max-width: 360px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+  animation: popupIn .25s ease;
+}
+
+@keyframes popupIn{
+  from{
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to{
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.popup-icon{
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.popup-card h2{
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.popup-card p{
+  font-size: 14px;
+  color: #444;
+  line-height: 1.45;
+  margin-bottom: 20px;
+}
+
+.popup-card button{
+  background: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+/* 🔒 blocca scroll quando popup aperto */
+body.popup-open{
+  overflow: hidden;
+}
+.age-warning {
+  text-align: center;
+  margin-top: 6px;
+  margin-bottom: 28px;
+
+  color: #ff3b30;          /* rosso Apple-style */
+  font-size: 11px;
+  font-weight: 600;
+}
+.profile-footer{
+  padding: 10px 12px 14px;
+  text-align: center;
+  font-size: 12px;
+  color: #8e8e93;
+}
+
+.profile-footer a{
+  color:#8e8e93;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.profile-footer a:hover{
+  text-decoration:underline;
+}
+
+.footer-links{
+  margin-bottom:8px;
+}
+
+.footer-copy{
+  margin-bottom:4px;
+}
+
+.footer-version{
+  opacity:.6;
+}
     </style>
 </head>
 
@@ -227,53 +503,116 @@
 
 <h1>Lavora con Noi</h1>
 
+<p class="age-warning">
+  Si avvisa che, per le mansioni richieste, non si assumono minorenni.
+</p>
+
 <div class="form-card">
 
-    <!-- LOCALE -->
+  <!-- LOCALE -->
+  <div class="form-section">
+    <h3>📍 Locale</h3>
+
     <label>Per quale locale ti candidi?</label>
     <select id="locale" required>
-        <option value="">Seleziona un locale</option>
-        <option value="Casa del Gelato">Casa del Gelato</option>
-        <option value="Casa del Gelato 2 (Asporto)">Casa del Gelato 2 (Asporto)</option>
-        <option value="Casa del Gelato Lignano (Asporto)">Casa del Gelato Lignano (Asporto)</option>
+      <option value="">Seleziona un locale</option>
+      <option value="Casa del Gelato">Casa del Gelato</option>
+      <option value="Casa del Gelato 2 (Asporto)">Casa del Gelato 2 (Asporto)</option>
+      <option value="Casa del Gelato Lignano (Asporto)">Casa del Gelato Lignano (Asporto)</option>
     </select>
+  </div>
 
-    <!-- TUTTO IL RESTO BLOCCATO FINCHÉ NON SELEZIONI -->
-    <div id="form-body" class="disabled">
+  <!-- TUTTO IL RESTO BLOCCATO FINCHÉ NON SELEZIONI -->
+  <div id="form-body" class="disabled">
 
-        <label>Nome *</label>
-        <input id="nome" type="text" required>
+<div class="form-section">
+  <h3>👤 Dati personali</h3>
 
-        <label>Cognome *</label>
-        <input id="cognome" type="text" required>
+  <label>
+    Nome *
+    <span class="error-text">campo obbligatorio</span>
+  </label>
+  <input id="nome" type="text" required>
 
-        <label>Email *</label>
-        <input id="email" type="email" required>
+  <label>
+    Cognome *
+    <span class="error-text">campo obbligatorio</span>
+  </label>
+  <input id="cognome" type="text" required>
 
-        <label>Età *</label>
-        <input id="eta" type="number" min="14" required>
+  <label>
+    Email *
+    <span class="error-text">campo obbligatorio</span>
+  </label>
+  <input id="email" type="email" required>
 
-        <label>Cellulare *</label>
-        <input id="cell" type="tel" required>
+<label>
+  Età *
+  <span class="error-text">campo obbligatorio</span>
+</label>
 
-       <label>Mansione *</label>
-<select id="mansione" required>
-    <option value="">Seleziona prima un locale</option>
+<select id="eta" required>
+  <option value="">Seleziona età</option>
 </select>
 
-        <label>Carica Curriculum (PDF o immagine) *</label>
-        <input id="cv" type="file" accept=".pdf,.jpg,.jpeg,.png" required>
+  <label>
+    Cellulare *
+    <span class="error-text">campo obbligatorio</span>
+  </label>
+  <input id="cell" type="tel" required>
+</div>
 
-        <label>Messaggio aggiuntivo</label>
-        <textarea id="messaggio"></textarea>
+    <!-- POSIZIONE -->
+<div class="form-section">
+  <h3>💼 Posizione</h3>
 
-        <button class="submit-btn" onclick="inviaCandidatura()">📨 Invia candidatura</button>
+  <label>
+    Mansione *
+    <span class="error-text">campo obbligatorio</span>
+  </label>
+  <select id="mansione" required>
+    <option value="">Seleziona una mansione</option>
+  </select>
+
+<label id="cv-label">
+  Carica Curriculum (PDF o immagine) *
+  <span class="error-text">campo obbligatorio</span>
+</label>
+
+<div class="cv-box">
+  <input
+    id="cv"
+    type="file"
+    accept=".pdf,.jpg,.jpeg,.png"
+    required
+  >
+
+<div id="cv-status" class="cv-status hidden">
+    <span class="spinner"></span>
+    <span class="cv-text">Caricamento curriculum…</span>
+  </div>
+</div>
+</div>
+
+    <!-- MESSAGGIO -->
+    <div class="form-section">
+      <h3>💬 Messaggio</h3>
+
+      <label>Messaggio aggiuntivo</label>
+      <textarea id="messaggio" placeholder="Scrivi qualcosa su di te (opzionale)"></textarea>
     </div>
+
+    <!-- INVIO -->
+<button id="submit-btn" class="submit-btn" type="button" onclick="inviaCandidatura()">
+  <span class="btn-label">📨 Invia candidatura</span>
+  <span class="btn-spinner" aria-hidden="true"></span>
+</button>
+
+  </div>
 </div>
 
 <!-- 🍏 NOTIFICA -->
 <div id="toast">Candidatura inviata!</div>
-
 <script>
     // 🔓 Sblocca modulo quando selezioni locale
     document.getElementById("locale").addEventListener("change", () => {
@@ -322,15 +661,69 @@ document.getElementById("locale").addEventListener("change", () => {
         });
     }
 });
-    // 🍏 Toast notifica
-    function showToast() {
-        const t = document.getElementById("toast");
-        t.classList.add("show");
-        setTimeout(() => t.classList.remove("show"), 2500);
-    }
+function openSuccessPopup(){
+  document.getElementById("success-popup").classList.remove("hidden");
+  document.body.classList.add("popup-open"); // 🔒 blocca scroll
+}
+
+function closeSuccessPopup(){
+  document.getElementById("success-popup").classList.add("hidden");
+  document.body.classList.remove("popup-open"); // 🔓 riattiva scroll
+}
 </script>
 <script>
 async function inviaCandidatura() {
+  const btn = document.getElementById("submit-btn");
+
+  btn.classList.add("loading");
+  btn.disabled = true;
+  btn.querySelector(".btn-label").textContent = "Invio in corso…";
+
+  let hasError = false;
+
+  const requiredFields = [
+    "locale",
+    "nome",
+    "cognome",
+    "email",
+    "eta",
+    "cell",
+    "mansione"
+  ];
+
+  requiredFields.forEach(id => {
+    const field = document.getElementById(id);
+    const label = field.previousElementSibling;
+
+    if (!field.value.trim()) {
+      field.classList.add("error");
+      label.classList.add("show-error");
+      hasError = true;
+    } else {
+      field.classList.remove("error");
+      label.classList.remove("show-error");
+    }
+  });
+
+  // CV obbligatorio
+  const cv = document.getElementById("cv");
+  const cvLabel = document.getElementById("cv-label");
+
+  if (cv.files.length === 0) {
+    cv.classList.add("error");
+    cvLabel.classList.add("show-error");
+    hasError = true;
+  } else {
+    cv.classList.remove("error");
+    cvLabel.classList.remove("show-error");
+  }
+
+  if (hasError) {
+    btn.classList.remove("loading");
+    btn.disabled = false;
+    btn.querySelector(".btn-label").textContent = "📨 Invia candidatura";
+    return;
+  }
 
   const locale = document.getElementById("locale").value;
   const nome = document.getElementById("nome").value;
@@ -342,14 +735,8 @@ async function inviaCandidatura() {
   const fileInput = document.getElementById("cv");
   const messaggio = document.getElementById("messaggio").value;
 
-  if (!locale || !nome || !cognome || !email || !eta || !cell || !mansione || fileInput.files.length === 0) {
-    alert("⚠️ Compila tutti i campi obbligatori");
-    return;
-  }
-
   const file = fileInput.files[0];
 
-  // 🔁 Converti CV in Base64
   const toBase64 = file =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -359,31 +746,68 @@ async function inviaCandidatura() {
     });
 
   const cvBase64 = await toBase64(file);
+// ✅ Curriculum pronto
+const cvStatus = document.getElementById("cv-status");
+const cvText = cvStatus.querySelector(".cv-text");
 
-  // 📡 INVIO ALLA TUA API VERCEL
-  const res = await fetch("https://casa-del-gelato-mailer-f7ds.vercel.app/api/lavora", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-body: JSON.stringify({
-  locale,
-  nome: `${nome} ${cognome}`,
-  email,
-  eta,
-  cellulare: cell,
-  mansione,
-  messaggio,          // ⬅️ SOLO il textarea
-  cvBase64,
-  cvNome: file.name
-})
-  });
+cvStatus.classList.add("success");
+cvText.textContent = "Curriculum pronto";
+  const res = await fetch(
+    "https://casa-del-gelato-mailer-f7ds.vercel.app/api/lavora",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        locale,
+        nome: `${nome} ${cognome}`,
+        email,
+        eta,
+        cellulare: cell,
+        mansione,
+        messaggio,
+        cvBase64,
+        cvNome: file.name
+      })
+    }
+  );
 
-  if (res.ok) {
-    showToast();
+if (res.ok) {
+  btn.classList.remove("loading");
+  btn.classList.add("success");
+  btn.querySelector(".btn-label").textContent = "✅ Invio riuscito";
+
+  openSuccessPopup();
+
+  setTimeout(() => {
+    btn.classList.remove("success");
+    btn.disabled = false;
+    btn.querySelector(".btn-label").textContent = "📨 Invia candidatura";
+  }, 2500);
+
+    // 🧹 RESET COMPLETO FORM
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+      el.classList.remove("filled", "error");
+      el.value = "";
+    });
+
+    document.querySelectorAll("label").forEach(l => {
+      l.classList.remove("show-error");
+    });
+
+    document.getElementById("form-body").classList.add("disabled");
+
   } else {
+    // ❌ ERRORE API
+    btn.classList.remove("loading");
+    btn.disabled = false;
+    btn.querySelector(".btn-label").textContent = "📨 Invia candidatura";
     alert("❌ Errore invio candidatura");
   }
 }
 </script>
+
+
+
 <script type="module">
   import { supabase } from "./supabase.js";
 </script>
@@ -535,5 +959,105 @@ body: JSON.stringify({
     a.addEventListener("click", closeMenu);
   });
 </script>
+
+<script>
+document.querySelectorAll("input, select, textarea").forEach(el => {
+  el.addEventListener("blur", () => {
+    if (el.value.trim() !== "") {
+      el.classList.add("filled");
+    } else {
+      el.classList.remove("filled");
+    }
+  });
+
+  el.addEventListener("focus", () => {
+    el.classList.remove("filled");
+  });
+});
+</script>
+
+<script>
+  const etaSelect = document.getElementById("eta");
+
+  for (let i = 18; i <= 99; i++) {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = i + " anni";
+    etaSelect.appendChild(opt);
+  }
+</script>
+
+<script>
+const cvInput = document.getElementById("cv");
+const cvStatus = document.getElementById("cv-status");
+const cvText = cvStatus.querySelector(".cv-text");
+
+cvInput.addEventListener("change", () => {
+  if (!cvInput.files.length) return;
+
+  // 👇 MOSTRA il box
+  cvStatus.classList.remove("hidden");
+
+  // stato loading
+  cvStatus.classList.add("loading");
+  cvStatus.classList.remove("success");
+  cvText.textContent = "Caricamento curriculum…";
+
+  const reader = new FileReader();
+
+reader.onload = () => {
+  setTimeout(() => {
+    cvStatus.classList.remove("loading");
+    cvStatus.classList.add("success");
+    cvText.textContent = "Curriculum pronto";
+  }, 5000);
+};
+
+  reader.onerror = () => {
+    cvStatus.classList.remove("loading");
+    cvText.textContent = "Errore nel file ❌";
+  };
+
+  reader.readAsDataURL(cvInput.files[0]);
+});
+</script>
+
+<!-- 🍨 POPUP CONFERMA CANDIDATURA -->
+<div id="success-popup" class="popup-overlay hidden">
+  <div class="popup-card">
+    <div class="popup-icon">🍨</div>
+
+    <h2>Grazie per esserti candidato!</h2>
+
+    <p>
+      Abbiamo ricevuto correttamente la tua candidatura.<br>
+      Appena possibile la esamineremo e, se il tuo profilo sarà in linea,
+      ti contatteremo al più presto.<br><br>
+      Nel frattempo, dai un occhiata al nostro sito e ai nostri profili social per non perderti le novità e rimanere sempre aggiornato!
+    </p>
+
+    <button onclick="closeSuccessPopup()">Chiudi</button>
+  </div>
+</div>
+<!-- 🍏 FOOTER -->
+<footer class="profile-footer">
+  <div class="footer-links">
+    <a href="privacy.html">Privacy</a> ·
+    <a href="termini.html">Termini</a> ·
+    <a href="cookie.html">Cookie</a>
+  </div>
+
+  <div class="footer-copy">
+    © 2026 Casa del Gelato
+  </div>
+
+  <div class="footer-version">
+    Versione 1.0.0
+  </div>
+</footer>
+
+</body>
+</html>
+
 </body>
 </html>

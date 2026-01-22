@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu – Casa del Gelato</title>
+
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="bottom-nav.css">
+<script src="global.js"></script>
+
+<style>
+body{
+  margin:0;
+  background:#f6f6f7;
+  font-family: system-ui, -apple-system, sans-serif;
+  color:#111;
+  padding-bottom:90px;
+}
+
+/* 🔝 TOP BAR */
+#top-fixed-bar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 55px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999;
+}
+
+/* ☰ MENU BUTTON – PROFILO (identico a HOME) */
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 14px;              /* 🔒 BLOCCATO */
+  height: 27px;           /* metà top bar */
+  display: flex;
+  align-items: center;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+
+  font-size: 22px;
+  line-height: 1;
+  color: #111;
+
+  cursor: pointer;
+  z-index: 10001;
+}
+
+#menu-btn:active{
+  opacity: .6;
+}
+#menu-btn{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.home-btn img{
+  width:28px;
+  height:28px;
+}
+
+#top-fixed-spacer{
+  height: 55px;
+}
+
+/* HEADER PAGINA */
+.page-header{
+  text-align:center;
+  padding: 30px 16px 20px;
+}
+
+.page-header h1{
+  font-size:28px;
+  font-weight:800;
+  margin:0;
+}
+
+.page-header p{
+  margin-top:8px;
+  font-size:15px;
+  color:#666;
+}
+
+/* CONTENUTO (VUOTO PER ORA) */
+.page-content{
+  padding: 20px 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* FOOTER */
+.profile-footer{
+  margin-top:40px;
+  padding: 10px 12px 14px;
+  text-align: center;
+  font-size: 12px;
+  color: #8e8e93;
+}
+
+.profile-footer a{
+  color:#8e8e93;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.profile-footer a:hover{
+  text-decoration:underline;
+}
+
+.footer-links{
+  margin-bottom:8px;
+}
+
+.footer-copy{
+  margin-bottom:4px;
+}
+
+.footer-version{
+  opacity:.6;
+}
+
+/* MENU DROPDOWN */
+#menu-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:9998;
+}
+
+#menu-dropdown{
+  position:fixed;
+  top:60px;
+  left:12px;
+  width:220px;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  padding:10px;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-10px);
+  transition:.25s;
+  z-index:9999;
+}
+
+#menu-dropdown a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px;
+  border-radius:10px;
+  text-decoration:none;
+  color:#111;
+  font-size:15px;
+}
+
+#menu-dropdown a:hover{
+  background:#f2f2f7;
+}
+
+.menu-new-only{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.badge-new-left{
+  background:#ff3b30;
+  color:#fff;
+  font-size:9px;
+  font-weight:700;
+  padding:3px 6px;
+  border-radius:999px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔝 TOP BAR -->
+<div id="top-fixed-bar">
+  <button id="menu-btn" aria-label="Menu">☰</button>
+
+  <a href="home.html" class="home-btn">
+    <img src="tastohome.png" alt="Home">
+  </a>
+</div>
+
+<div id="top-fixed-spacer"></div>
+
+<!-- HEADER -->
+<header class="page-header">
+  <h1>Menu</h1>
+  <p>Il nostro menu completo (in arrivo)</p>
+</header>
+
+<!-- CONTENUTO (VUOTO PER ORA) -->
+<div class="page-content">
+  <!-- QUI INSERIREMO IL MENU PIÙ AVANTI -->
+</div>
+
+<!-- FOOTER -->
+<footer class="profile-footer">
+  <div class="footer-links">
+    <a href="privacy.html">Privacy</a> ·
+    <a href="termini.html">Termini</a> ·
+    <a href="cookie.html">Cookie</a>
+  </div>
+
+  <div class="footer-copy">
+    © 2026 Casa del Gelato
+  </div>
+
+  <div class="footer-version">
+    Versione 1.0.0
+  </div>
+</footer>
+
+<!-- MENU DROPDOWN -->
+<div id="menu-overlay"></div>
+
+<div id="menu-dropdown">
+  <a href="crea-coppa.html" class="menu-item menu-new-only">
+    <span class="badge-new-left">NEW</span>
+    <span>Crea Coppa</span>
+  </a>
+  <a href="home.html">Home</a>
+  <a href="menu.html">Menu</a>
+  <a href="profilo.html">Profilo</a>
+  <a href="info-contatti.html">Info & Contatti</a>
+  <a href="lavora-con-noi.html">Lavora con noi</a>
+</div>
+
+<script>
+const menuBtn = document.getElementById("menu-btn");
+const menu = document.getElementById("menu-dropdown");
+const overlay = document.getElementById("menu-overlay");
+
+function openMenu(){
+  menu.style.opacity = "1";
+  menu.style.pointerEvents = "auto";
+  menu.style.transform = "translateY(0)";
+  overlay.style.opacity = "1";
+  overlay.style.pointerEvents = "auto";
+}
+
+function closeMenu(){
+  menu.style.opacity = "0";
+  menu.style.pointerEvents = "none";
+  menu.style.transform = "translateY(-10px)";
+  overlay.style.opacity = "0";
+  overlay.style.pointerEvents = "none";
+}
+
+menuBtn.addEventListener("click", () => {
+  const isOpen = menu.style.pointerEvents === "auto";
+  isOpen ? closeMenu() : openMenu();
+});
+
+overlay.addEventListener("click", closeMenu);
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeMenu();
+});
+</script>
+
+</body>
+</html>
