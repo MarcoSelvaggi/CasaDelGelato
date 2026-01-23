@@ -263,6 +263,8 @@ body.no-bottom-nav #bottom-nav {
   stroke: #111;
   stroke-width: 1.8;
   fill: none;
+  display: block; 
+
 }
 .icon-wrapper{
   position: relative;
@@ -510,7 +512,7 @@ body.chat-open #coppa-popup{
 
 /* aperto */
 .info-card-content.open{
-  max-height: 500px;
+  max-height: none;   /* ⬅️ niente tagli */
   opacity: 1;
 }
 
@@ -580,10 +582,16 @@ body.chat-open #coppa-popup{
 .parking-btn:active{
   transform: scale(0.95);
 }
+.parking-card{
+  transition:
+    opacity .25s ease,
+    transform .25s ease;
+}
 /* ☀️ METEO */
 .meteo-card{
   display: flex;
   align-items: center;
+  justify-content: center;   /* 🔥 QUESTO */
   gap: 14px;
 
   background: #f7f7f9;
@@ -618,10 +626,284 @@ body.chat-open #coppa-popup{
   font-size: 12px;
   color: #888;
 }
+
+/* 📍 LUOGHI VICINI */
+.nearby-list{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.nearby-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #f7f7f9;
+  border-radius: 12px;
+  padding: 12px 14px;
+  gap: 12px;
+}
+
+.nearby-text{
+  display: flex;
+  flex-direction: column;
+}
+
+.nearby-name{
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+}
+
+.nearby-desc{
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.nearby-btn{
+  border: none;
+  background: #007aff;
+  color: #fff;
+
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nearby-btn:active{
+  transform: scale(0.95);
+}
+.poi-filters{
+  display: inline-flex;
+  gap: 0;
+
+  margin: 10px auto 16px;
+  padding: 4px;
+
+  background: #f2f2f7;
+  border-radius: 999px;
+}
+
+.poi-btn{
+  flex: none;
+  padding: 6px 14px;
+
+  border-radius: 999px;
+  border: none;
+
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+
+  cursor: pointer;
+}
+
+.poi-btn.active{
+  background: #007aff;
+  color: #fff;
+}
+.info-section > b{
+  display: block;          /* ⬅️ fondamentale */
+  margin-bottom: 8px;      /* ⬅️ spazio sotto il titolo */
+}
+
+/* SUPERMERCATI ESPANDIBILI */
+.sub-list{
+  margin-top: 8px;
+  padding-left: 14px;
+  border-left: 2px solid #e5e5ea;
+
+  display: flex;
+  flex-direction: column;   /* ⬅️ QUESTO è IL FIX */
+  gap: 6px;
+}
+
+/* ITEM FIGLIO */
+.sub-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #f7f7f9;
+  border-radius: 10px;
+  padding: 8px 12px;
+
+  text-align: left;        /* ⬅️ forza testo a sinistra */
+}
+/* TESTO */
+.sub-info{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* ⬅️ CHIAVE */
+}
+
+.sub-name{
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sub-desc{
+  font-size: 11px;
+  color: #8e8e93;
+}
+/* bottone maps uguale agli altri */
+.sub-item button{
+  border: none;
+  background: #007aff;   /* 🔵 blu iOS */
+  color: #fff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  padding: 6px 12px;
+  border-radius: 999px;
+
+  cursor: pointer;
+}
+/* SOTTO-LISTA SUPERMERCATI – CHIUSA */
+.sub-list{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+
+  transform: translateY(-6px);
+
+  /* ⏱️ CHIUSA → pronta */
+  transition:
+    max-height .25s ease,
+    opacity .15s ease,
+    transform .25s ease;
+}
+
+/* APERTA – PIÙ LENTA */
+.sub-list.open{
+  max-height: 400px;
+
+  opacity: 1;
+  transform: translateY(0);
+
+  /* 🧈 apertura più morbida */
+  transition:
+    max-height .65s cubic-bezier(.22,.61,.36,1),
+    opacity .35s ease,
+    transform .45s ease;
+}
+
+
+
+/* CARD INFO UTILI – BASE */
+.info-card{
+  transition:
+    transform .35s cubic-bezier(.22,.61,.36,1),
+    box-shadow .35s ease;
+}
+
+/* quando è aperta */
+.info-card.open{
+  transform: scale(1.015);   /* 🔥 leggero ingrandimento */
+  box-shadow: 0 10px 26px rgba(0,0,0,0.14);
+}
+
+/* CONTENUTO */
+.info-card-content{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+
+  transition:
+    max-height .45s cubic-bezier(.22,.61,.36,1),
+    opacity .25s ease;
+}
+
+.info-card-content.open{
+  opacity: 1;
+}
+
+/* 🚗 FILTRO PARCHEGGI */
+.poi-filter{
+  display: inline-flex;
+  gap: 0;
+
+  margin: 10px auto 16px;
+  padding: 4px;
+
+  background: #f2f2f7;
+  border-radius: 999px;
+}
+
+.parking-btn-filter{
+  padding: 6px 14px;        /* ⬅️ più pieni */
+  border-radius: 999px;
+  border: none;
+
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+
+  cursor: pointer;
+}
+
+.parking-btn-filter.active{
+  background: #007aff;
+  color: #fff;
+}
+
+.parking-btn-filter:active{
+  transform: scale(0.96);
+}
+/* ✅ evita animazioni al primo caricamento (flicker) */
+body.no-anim .poi-card,
+body.no-anim .parking-card {
+  transition: none !important;
+}
+
+/* ✅ POI: animazione unica, fluida, senza scatti */
+.poi-card{
+  /* resta nel layout, così non “salta” */
+  display: flex;
+  overflow: hidden;
+
+  /* stato visibile */
+  opacity: 1;
+  transform: translateY(0);
+  max-height: 140px;   /* abbastanza per una card */
+  margin-top: 10px;    /* coerente col tuo margin-top delle card */
+  pointer-events: auto;
+
+  will-change: opacity, transform, max-height;
+  transition:
+    opacity .25s ease,
+    transform .25s ease,
+    max-height .35s cubic-bezier(.22,.61,.36,1);
+}
+
+/* ✅ stato nascosto: collassa in modo morbido */
+.poi-card.poi-hide{
+  opacity: 0;
+  transform: translateY(6px);
+  max-height: 0;
+  margin-top: 0;
+  pointer-events: none;
+}
 </style>
 </head>
 
-<body>
+
+
+<body class="no-anim">
+
 <div id="top-fixed-bar">
   <button id="menu-btn" aria-label="Menu">☰</button>
 
@@ -682,68 +964,324 @@ body.chat-open #coppa-popup{
     <div class="info-section">
   <b>🚗 Parcheggi consigliati</b>
 
-  <div class="parking-card">
-    <div class="parking-info">
-      <div class="parking-name">Parcheggio Piazzale Zenith</div>
-      <div class="parking-desc">A 10 minuti a piedi dal locale</div>
-    </div>
-    <button
-      class="parking-btn"
-      onclick="openMaps('https://www.google.com/maps/dir//Piazzale+Zenith,+30028+Bibione+VE/@45.63349,13.0523471,15z/data=!4m17!1m8!3m7!1s0x477b92eb82aa8d5b:0x3ddd62d33f83b460!2sPiazzale+Zenith,+30028+Bibione+VE!3b1!8m2!3d45.6335404!4d13.0627341!16s%2Fg%2F11bw3ztm9_!4m7!1m0!1m5!1m1!1s0x477b92eb82aa8d5b:0x3ddd62d33f83b460!2m2!1d13.0627341!2d45.6335404?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D')">
-      Maps
-    </button>
-  </div>
+<div class="poi-filter">
+  <button class="parking-btn-filter active"
+          onclick="filtraParcheggi('bibione', this)">
+    Bibione
+  </button>
+  <button class="parking-btn-filter"
+          onclick="filtraParcheggi('lignano', this)">
+    Lignano
+  </button>
+</div>
 
-  <div class="parking-card">
-    <div class="parking-info">
-      <div class="parking-name">Parcheggio Luna Park</div>
-      <div class="parking-desc">Ampio, ideale la sera</div>
-    </div>
-    <button
-      class="parking-btn"
-      onclick="openMaps('https://www.google.com/maps/place/Luna+Park+Adriatico/@45.6390796,13.0404042,15z/data=!3m1!4b1!4m6!3m5!1s0x477b93ce0ece5cb3:0x9d5a733e73b442!8m2!3d45.6390651!4d13.0506825!16s%2Fg%2F11sv_ks959?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D')">
-      Maps
-    </button>
+<div class="parking-card poi-card" data-city="bibione">
+  <div class="parking-info">
+    <div class="parking-name">Parcheggio Piazzale Zenith</div>
+    <div class="parking-desc">A 10 minuti a piedi dal locale</div>
   </div>
+  <button
+    class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/dir//Piazzale+Zenith,+30028+Bibione+VE/@45.63349,13.0523471,15z')">
+    Maps
+  </button>
+</div>
 
-    <div class="parking-card">
-    <div class="parking-info">
-      <div class="parking-name">Parcheggio Corso Europa</div>
-      <div class="parking-desc">Il più comodo (non sempre disponibile)</div>
-    </div>
-    <button
-      class="parking-btn"
-      onclick="openMaps('https://www.google.com/maps/place/Corso+Europa,+Bibione+VE/@45.6347748,13.0420364,15z/data=!3m1!4b1!4m6!3m5!1s0x477b92ea329e1583:0x752c13277d90b02d!8m2!3d45.6347603!4d13.0523147!16s%2Fg%2F1tz94l4l?entry=ttu&g_ep=EgoyMDI2MDExMy4wIKXMDSoASAFQAw%3D%3D')">
-      Maps
-    </button>
+<div class="parking-card poi-card" data-city="bibione">
+  <div class="parking-info">
+    <div class="parking-name">Parcheggio Piazza Mercato</div>
+    <div class="parking-desc">Ampio, ideale la sera e vicino al Luna Park</div>
   </div>
+  <button
+    class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Piazza+Mercato,+30020+Bibione+VE')">
+    Maps
+  </button>
+</div>
+
+<div class="parking-card poi-card" data-city="bibione">
+  <div class="parking-info">
+    <div class="parking-name">Parcheggio Corso Europa</div>
+    <div class="parking-desc">Il più comodo (non sempre disponibile)</div>
+  </div>
+  <button
+    class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Corso+Europa,+Bibione+VE')">
+    Maps
+  </button>
+</div>
+
+<!-- 🚗 PARCHEGGI LIGNANO -->
+<div class="parking-card poi-card" data-city="lignano">
+  <div class="parking-info">
+    <div class="parking-name">Parcheggio Viale Europa</div>
+    <div class="parking-desc">Centrale, comodo per il centro</div>
+  </div>
+  <button
+    class="parking-btn"
+    onclick="openMaps('https://www.google.com/maps/place/Viale+Europa,+Lignano+Sabbiadoro')">
+    Maps
+  </button>
+</div>
+
+<div class="parking-card poi-card" data-city="lignano">
+  <div class="parking-info">
+    <div class="parking-name">Parcheggio Lungomare Trieste</div>
+    <div class="parking-desc">Ideale per spiaggia e passeggiata</div>
+  </div>
+  <button
+    class="parking-btn"
+    onclick="openMaps('https://www.google.com/maps/place/Lungomare+Trieste,+Lignano+Sabbiadoro')">
+    Maps
+  </button>
+</div>
+
+<div class="parking-card poi-card" data-city="lignano">
+  <div class="parking-info">
+    <div class="parking-name">Parcheggio Stadio Teghil</div>
+    <div class="parking-desc">Ampio e facile da raggiungere</div>
+  </div>
+  <button
+    class="parking-btn"
+    onclick="openMaps('https://www.google.com/maps/place/Stadio+Guido+Teghil')">
+    Maps
+  </button>
+</div>
 
 </div>
 
 <div class="info-section">
   <b>☀️ Meteo</b>
 
+  <!-- BIBIONE -->
   <div class="meteo-card">
-    <div class="meteo-icon" id="meteo-icon">⏳</div>
+    <div class="meteo-icon" id="meteo-icon-bibione">⏳</div>
 
     <div class="meteo-info">
-      <div class="meteo-temp" id="meteo-temp">--°</div>
-      <div class="meteo-desc" id="meteo-desc">Caricamento...</div>
+      <div class="meteo-temp" id="meteo-temp-bibione">--°</div>
+      <div class="meteo-desc" id="meteo-desc-bibione">Caricamento...</div>
       <div class="meteo-city">Bibione</div>
     </div>
   </div>
+
+  <!-- LIGNANO -->
+  <div class="meteo-card">
+    <div class="meteo-icon" id="meteo-icon-lignano">⏳</div>
+
+    <div class="meteo-info">
+      <div class="meteo-temp" id="meteo-temp-lignano">--°</div>
+      <div class="meteo-desc" id="meteo-desc-lignano">Caricamento...</div>
+      <div class="meteo-city">Lignano Sabbiadoro</div>
+    </div>
+  </div>
 </div>
 
-    <div class="info-section">
-      <b>📍 Luoghi vicini</b>
-      <p>Spiaggia, luna park, supermercati e punti di interesse.</p>
-    </div>
+<div class="info-section">
+  <b>📍 Punti di interesse </b>
 
+  <div class="poi-filters">
+  <button class="poi-btn active" onclick="filtraPOI('bibione', this)">Bibione</button>
+  <button class="poi-btn" onclick="filtraPOI('lignano', this)">Lignano</button>
+</div>
+
+  <div class="nearby-list">
+
+<!-- SPIAGGIA -->
+<div class="parking-card poi-card" data-city="bibione">
+  <div class="parking-info">
+    <div class="parking-name">🏖️ Spiaggia</div>
+    <div class="parking-desc">A 3 minuti a piedi</div>
+  </div>
+  <button class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Via+della+Luna,+Bibione')">
+    Maps
+  </button>
+</div>
+
+<!-- LUNA PARK -->
+<div class="parking-card poi-card" data-city="bibione">
+  <div class="parking-info">
+    <div class="parking-name">🎡 Luna Park</div>
+    <div class="parking-desc">Divertimento per grandi e piccoli</div>
+  </div>
+  <button class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Luna+Park+Adriatico')">
+    Maps
+  </button>
+</div>
+
+<div class="parking-card supermarket-card" data-city="bibione" onclick="toggleSupermercati()">
+  <div class="parking-info">
+    <div class="parking-name">🛒 Supermercati</div>
+    <div class="parking-desc">Negozi e market nelle vicinanze</div>
+  </div>
+
+  <button class="parking-btn arrow-btn" type="button">
+    ▼
+  </button>
+</div>
+
+<div id="supermercati-list" class="sub-list" data-city="bibione">
+
+  <div class="sub-item">
+    <div class="sub-info">
+      <div class="sub-name">🍉 Momoli</div>
+      <div class="sub-desc">Supermercato storico in centro</div>
+    </div>
+    <button
+      onclick="event.stopPropagation(); openMaps('https://www.google.com/maps/place/Supermercati+Momoli/@45.636332,13.0590903,17z')">
+      Maps
+    </button>
+  </div>
+
+  <div class="sub-item">
+    <div class="sub-info">
+      <div class="sub-name">🍗 Eurospar</div>
+      <div class="sub-desc">Ampio e ben fornito</div>
+    </div>
+    <button
+      onclick="event.stopPropagation(); openMaps('https://www.google.com/maps/place/EUROSPAR+Bibione/@45.6378507,13.0534622,16z')">
+      Maps
+    </button>
+  </div>
+
+  <div class="sub-item">
+    <div class="sub-info">
+      <div class="sub-name">🥖 Stella Market</div>
+      <div class="sub-desc">A 2 minuti dal nostro locale</div>
+    </div>
+    <button
+      onclick="event.stopPropagation(); openMaps('https://www.google.com/maps/place/Stella+Market/@45.6341503,13.0558641,16z')">
+      Maps
+    </button>
   </div>
 
 </div>
 
+      <!-- PRONTO SOCCORSO -->
+<div class="parking-card poi-card" data-city="bibione">
+    <div class="parking-info">
+      <div class="parking-name">🚑 Pronto Soccorso</div>
+      <div class="parking-desc">Ospedale di Bibione</div>
+    </div>
+    <button
+      class="parking-btn"
+      onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Pronto+Soccorso+Bibione/@45.6456034,13.0540578,16z/data=!3m1!4b1!4m6!3m5!1s0x477b92dbc67f221b:0xe5a46c115bae99b1!8m2!3d45.6456034!4d13.0540578!16s%2Fg%2F11c1tb66q8?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D.com/?q=Pronto+Soccorso+Bibione')">
+      Maps
+    </button>
+  </div>
 
+  <!-- FARMACIA -->
+<div class="parking-card poi-card" data-city="bibione">
+    <div class="parking-info">
+      <div class="parking-name">💊 Farmacia</div>
+      <div class="parking-desc">Farmacia Centrale Bibione</div>
+    </div>
+    <button
+      class="parking-btn"
+      onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Farmacia+Apotheke+Vizzon+Bibione/@45.6360476,13.0587078,16z/data=!3m1!4b1!4m6!3m5!1s0x477b92ea2a9e3c09:0x49423ce4703a9fdf!8m2!3d45.6360476!4d13.0612774!16s%2Fg%2F11bzs57nff?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D.com/?q=Farmacia+Centrale+Bibione')">
+      Maps
+    </button>
+  </div>
+
+  <!-- TERME -->
+ <div class="parking-card poi-card" data-city="bibione">
+    <div class="parking-info">
+      <div class="parking-name">♨️ Terme</div>
+      <div class="parking-desc">Bibione Thermae</div>
+    </div>
+    <button
+      class="parking-btn"
+      onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Terme+Bibione/@45.6345857,13.0382599,17z/data=!3m1!4b1!4m6!3m5!1s0x477b930003214b9b:0x26edeb1edf76efcf!8m2!3d45.6345857!4d13.0408295!16s%2Fg%2F11y0h67ff9?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D.com/?q=Bibione+Thermae')">
+      Maps
+    </button>
+  </div>
+
+  <!-- POLIZIA -->
+<div class="parking-card poi-card" data-city="bibione">
+    <div class="parking-info">
+      <div class="parking-name">👮 Polizia</div>
+      <div class="parking-desc">Commissariato di Bibione</div>
+    </div>
+    <button
+      class="parking-btn"
+      onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Comando+Polizia+Locale+Bibione/@45.6404887,13.051312,17z/data=!3m1!4b1!4m6!3m5!1s0x477b92c3bf8363a7:0xdceb130841b93a49!8m2!3d45.6404887!4d13.0538816!16s%2Fg%2F1ptws0s13?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D/?q=Polizia+Bibione')">
+      Maps
+    </button>
+  </div>
+
+  <!-- CARABINIERI -->
+<div class="parking-card poi-card" data-city="bibione">
+    <div class="parking-info">
+      <div class="parking-name">🚓 Carabinieri</div>
+      <div class="parking-desc">Stazione Carabinieri Bibione</div>
+    </div>
+    <button
+      class="parking-btn"
+      onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Comando+Stazione+Carabinieri+Bibione/@45.6459155,13.051378,16z/data=!3m1!4b1!4m6!3m5!1s0x477b92db9eae6477:0x659400b3fc8d2735!8m2!3d45.6459155!4d13.0539476!16s%2Fg%2F11b6jhdv0y?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D.com/?q=Carabinieri+Bibione')">
+      Maps
+    </button>
+  </div>
+
+  <div class="parking-card poi-card" data-city="lignano">
+  <div class="parking-info">
+    <div class="parking-name">🏛️ Comune</div>
+    <div class="parking-desc">Municipio di Lignano Sabbiadoro</div>
+  </div>
+  <button class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Comune+di+Lignano,+33054+Lignano+Sabbiadoro+UD/@45.6886557,13.1275758,17z/data=!3m1!4b1!4m6!3m5!1s0x477b947246c697e7:0x97d123dc54679eb8!8m2!3d45.6886557!4d13.1301454!16s%2Fg%2F11b6yhpd9r?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D/maps/place/Municipio+di+Lignano+Sabbiadoro')">
+    Maps
+  </button>
+</div>
+
+<div class="parking-card poi-card" data-city="lignano">
+  <div class="parking-info">
+    <div class="parking-name">🌊 Terrazza a Mare</div>
+    <div class="parking-desc">A 5 minuti a piedi (spiaggia)</div>
+  </div>
+  <button class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Terrazza+a+Mare/@45.6883122,13.1452884,17z/data=!3m1!4b1!4m6!3m5!1s0x477b941a43cc8e13:0x3ca3b9a88e886270!8m2!3d45.6883122!4d13.147858!16s%2Fg%2F1q625wd42?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D/maps/place/Terrazza+a+Mare+Lignano')">
+    Maps
+  </button>
+</div>
+
+<div class="parking-card poi-card" data-city="lignano">
+  <div class="parking-info">
+    <div class="parking-name">🚑 Pronto Soccorso</div>
+    <div class="parking-desc">Ospedale di Lignano</div>
+  </div>
+  <button class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Pronto+Soccorso+di+Lignano/@45.6762189,13.1116098,13.34z/data=!4m6!3m5!1s0x477b940fc967573d:0xbb156043ff1e3dfb!8m2!3d45.6818023!4d13.1204573!16s%2Fg%2F12qfp1zdl?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D/maps/search/Pronto+Soccorso+Lignano+Sabbiadoro')">
+    Maps
+  </button>
+</div>
+
+<div class="parking-card poi-card" data-city="lignano">
+  <div class="parking-info">
+    <div class="parking-name">👮 Polizia</div>
+    <div class="parking-desc">Commissariato di Lignano</div>
+  </div>
+  <button class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Polizia+Locale+Municipale/@45.6862456,13.1203999,17z/data=!3m1!4b1!4m6!3m5!1s0x477b9559847e78d5:0x14859d08db4f30ae!8m2!3d45.6862456!4d13.1229695!16s%2Fg%2F11g1ml96w8?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D.com/maps/search/Polizia+Lignano+Sabbiadoro')">
+    Maps
+  </button>
+</div>
+
+<div class="parking-card poi-card" data-city="lignano">
+  <div class="parking-info">
+    <div class="parking-name">💦 Aquasplash</div>
+    <div class="parking-desc">Parco acquatico</div>
+  </div>
+  <button class="parking-btn"
+    onclick="closeSupermercati(); openMaps('https://www.google.com/maps/place/Aquasplash+-+Parco+Acquatico/@45.6745982,13.0990964,17z/data=!3m1!4b1!4m6!3m5!1s0x477b93786af293ef:0x9bf1e3fa8ca70ea!8m2!3d45.6745982!4d13.101666!16s%2Fg%2F1vl9q9_w?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D/maps/place/Aquasplash+Lignano')">
+    Maps
+  </button>
+</div>
+
+  </div>
+</div>
+</div>
+</div>
 <!-- LOCALE 1 -->
 <div class="shop-card">
   <img src="img/bibione49.jpg" class="shop-img">
@@ -1391,11 +1929,36 @@ function unblurBackground() {
 
 <script>
 function toggleInfoUtili(){
-  const box = document.getElementById("info-utili-content");
+  const content = document.getElementById("info-utili-content");
   const arrow = document.getElementById("info-arrow");
+  const card = document.querySelector(".info-card");
 
-  const open = box.classList.toggle("open");
-  arrow.style.transform = open ? "rotate(90deg)" : "rotate(0deg)";
+  const isOpen = content.classList.contains("open");
+
+  if (isOpen) {
+    // 🔽 CHIUSURA
+    content.style.maxHeight = content.scrollHeight + "px";
+    content.offsetHeight; // force reflow
+    content.style.maxHeight = "0";
+    content.classList.remove("open");
+
+    card.classList.remove("open");
+    arrow.style.transform = "rotate(0deg)";
+  } else {
+// 🔼 APERTURA
+content.classList.add("open");
+content.style.maxHeight = content.scrollHeight + "px";
+
+card.classList.add("open");
+arrow.style.transform = "rotate(90deg)";
+
+/* 🔥 FIX: dopo l’animazione libera l’altezza */
+setTimeout(() => {
+  if (content.classList.contains("open")) {
+    content.style.maxHeight = "none";
+  }
+}, 500); // stesso tempo della transition
+}
 }
 </script>
 
@@ -1406,15 +1969,12 @@ function openMaps(url){
 </script>
 
 <script>
-/* ☀️ METEO BIBIONE */
 const METEO_API_KEY = "014d2034080edbaccb22d2d8d4e60e2a";
-const METEO_LAT = 45.6366;
-const METEO_LON = 13.0552;
 
-async function caricaMeteo(){
+async function caricaMeteo(lat, lon, suffix){
   try{
     const res = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${METEO_LAT}&lon=${METEO_LON}&units=metric&lang=it&appid=${METEO_API_KEY}`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=it&appid=${METEO_API_KEY}`
     );
 
     if(!res.ok) throw new Error("Errore meteo");
@@ -1425,16 +1985,15 @@ async function caricaMeteo(){
     const desc = data.weather[0].description;
     const code = data.weather[0].id;
 
-    document.getElementById("meteo-temp").textContent = `${temp}°`;
-    document.getElementById("meteo-desc").textContent =
+    document.getElementById(`meteo-temp-${suffix}`).textContent = `${temp}°`;
+    document.getElementById(`meteo-desc-${suffix}`).textContent =
       desc.charAt(0).toUpperCase() + desc.slice(1);
-
-    document.getElementById("meteo-icon").textContent = iconaMeteo(code);
+    document.getElementById(`meteo-icon-${suffix}`).textContent = iconaMeteo(code);
 
   }catch(err){
     console.warn("Meteo non disponibile", err);
-    document.getElementById("meteo-icon").textContent = "⚠️";
-    document.getElementById("meteo-desc").textContent = "Meteo non disponibile";
+    document.getElementById(`meteo-icon-${suffix}`).textContent = "⚠️";
+    document.getElementById(`meteo-desc-${suffix}`).textContent = "Meteo non disponibile";
   }
 }
 
@@ -1448,8 +2007,123 @@ function iconaMeteo(code){
   return "🌤️";
 }
 
-document.addEventListener("DOMContentLoaded", caricaMeteo);
+document.addEventListener("DOMContentLoaded", () => {
+  // 📍 Bibione
+  caricaMeteo(45.6366, 13.0552, "bibione");
+
+  // 📍 Lignano Sabbiadoro
+  caricaMeteo(45.6900, 13.1386, "lignano");
+});
 </script>
 
+<script>
+function filtraPOI(citta, btn){
+  closeSupermercati();
+
+  // pulsanti
+  document.querySelectorAll(".poi-btn")
+    .forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+
+  // POI
+  const cards = document.querySelectorAll(".poi-card");
+
+  cards.forEach(card => {
+    const show = card.dataset.city === citta;
+
+    if (show) {
+      card.style.display = "flex";
+      requestAnimationFrame(() => {
+        card.classList.remove("is-hidden");
+      });
+    } else {
+      card.classList.add("is-hidden");
+      setTimeout(() => {
+        card.style.display = "none";
+      }, 250);
+    }
+  });
+
+  // supermercati solo Bibione
+  const supermercati = document.querySelector(".supermarket-card");
+  const lista = document.getElementById("supermercati-list");
+
+  if (supermercati) {
+    if (citta === "bibione") {
+      supermercati.style.display = "flex";
+    } else {
+      supermercati.style.display = "none";
+      if (lista) lista.classList.remove("open");
+    }
+  }
+}
+</script>
+
+<script>
+function filtraParcheggi(citta, btn){
+  closeSupermercati();
+
+  document.querySelectorAll(".parking-btn-filter")
+    .forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+
+ document.querySelectorAll(".info-section:first-of-type .parking-card[data-city]")
+    .forEach(card => {
+      if(card.dataset.city === citta){
+        card.style.display = "flex";
+        requestAnimationFrame(() => {
+          card.style.opacity = "1";
+          card.style.transform = "translateY(0)";
+        });
+      } else {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(6px)";
+        setTimeout(() => {
+          card.style.display = "none";
+        }, 200);
+      }
+    });
+}
+</script>
+
+<script>
+let supermercatiOpen = false;
+
+function toggleSupermercati(){
+  const list = document.getElementById("supermercati-list");
+  if (!list) return;
+
+  supermercatiOpen = !supermercatiOpen;
+  list.classList.toggle("open", supermercatiOpen);
+}
+
+function closeSupermercati(){
+  const list = document.getElementById("supermercati-list");
+  if (!list) return;
+
+  supermercatiOpen = false;
+  list.classList.remove("open");
+}
+
+/* 🔒 CHIUSURA AUTOMATICA ALL’AVVIO */
+document.addEventListener("DOMContentLoaded", closeSupermercati);
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // default parcheggi
+  const p = document.querySelector(".parking-btn-filter.active");
+  if (p) filtraParcheggi("bibione", p);
+
+  // default POI
+  const poi = document.querySelector(".poi-btn.active");
+  if (poi) filtraPOI(poi.textContent.toLowerCase(), poi);
+});
+</script>
+<script>
+  window.addEventListener("load", () => {
+    document.body.classList.remove("no-anim");
+  });
+</script>
 </body>
 </html>
