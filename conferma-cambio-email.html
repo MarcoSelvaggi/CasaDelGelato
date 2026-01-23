@@ -138,14 +138,28 @@ function mostraPopup(t,m,redirect=null){
     return;
   }
 
-  if (new Date(utente.email_change_expires_at) < new Date()){
-    mostraPopup(
-      "Link scaduto",
-      "Il link di conferma è scaduto. Richiedi nuovamente il cambio email.",
-      "profilo.html"
-    );
-    return;
-  }
+// ❌ scadenza mancante o non valida
+if (!utente.email_change_expires_at) {
+  mostraPopup(
+    "Link non valido",
+    "Questo link non è più valido o è già stato utilizzato.",
+    "profilo.html"
+  );
+  return;
+}
+
+const expiresAt = new Date(utente.email_change_expires_at);
+const now = new Date();
+
+// ❌ token scaduto
+if (isNaN(expiresAt.getTime()) || expiresAt < now) {
+  mostraPopup(
+    "Link scaduto",
+    "Il link di conferma è scaduto. Richiedi nuovamente il cambio email.",
+    "profilo.html"
+  );
+  return;
+}
 
   const emailVecchia = utente.email;
   const emailNuova   = utente.new_email;
