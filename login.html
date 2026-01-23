@@ -247,6 +247,21 @@
 .toggle-password.show .eye-slash{
   display: block;
 }
+/* 🔐 INPUT POPUP PASSWORD DIMENTICATA */
+#forgot-email{
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0 4px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+#forgot-email:focus{
+  outline: none;
+  border-color: #007aff;
+  box-shadow: 0 0 0 3px rgba(0,122,255,.15);
+}
 </style>
 
 </head>
@@ -303,6 +318,17 @@
 </div>
 
   <button onclick="login()">Continua</button>
+
+  <p style="margin-top:10px;font-size:14px">
+  <a
+    href="#"
+    onclick="openForgotPassword()"
+    style="color:#007aff;text-decoration:none;font-weight:600"
+  >
+    Password dimenticata?
+  </a>
+</p>
+
 <button
   id="resend-confirm-btn"
   class="resend-btn"
@@ -462,9 +488,6 @@ if (alreadyLogged && currentEmail === email) {
   return;
 }
 
-  const name = document.getElementById("login-name").value.trim();
-  const surname = document.getElementById("login-surname").value.trim();
-
   // 1️⃣ Controllo se l'utente esiste
   const { data, error } = await supabase
     .from("utenti")
@@ -515,10 +538,43 @@ if (data.disiscritto === true) {
   return;
 }
 
+// 🔐 VERIFICA PASSWORD
+try {
+  const res = await fetch(
+    "https://casa-del-gelato-mailer-kg7f.vercel.app/api/verify-password",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        password: document.getElementById("login-password").value,
+        password_hash: data.password_hash
+      })
+    }
+  );
+
+  const result = await res.json();
+
+  if (!result.ok) {
+    mostraPopup(
+      "Password errata",
+      "La password inserita non è corretta."
+    );
+    return;
+  }
+
+} catch (err) {
+  console.error(err);
+  mostraPopup(
+    "Errore",
+    "Errore durante la verifica della password."
+  );
+  return;
+}
+
   // 2️⃣ LOGIN OK
   localStorage.setItem("user_email", data.email);
-  localStorage.setItem("user_name", name || data.nome || "");
-  localStorage.setItem("user_surname", surname || data.cognome || "");
+localStorage.setItem("user_name", data.nome || "");
+localStorage.setItem("user_surname", data.cognome || "");
   localStorage.setItem("userLogged", "1");
 
   // 🔗 COLLEGA COPPE CREATE DA OSPITE (DOPO LOGIN OK)
@@ -590,40 +646,40 @@ window.register = async function () {
   }
 
   /* 1️⃣ UTENTE ESISTENTE? */
-  const { data: existing, error } = await supabase
-    .from("utenti")
-    .select("email, email_confermata")
-    .eq("email", email)
-    .single();
+const { data: existing, error } = await supabase
+  .from("utenti")
+  .select("email, email_confermata")
+  .eq("email", email)
+  .maybeSingle();
 
-  if (error && error.code !== "PGRST116") {
-    mostraPopup("Errore", "Errore durante il controllo account.");
-    return;
-  }
+if (error) {
+  mostraPopup("Errore", "Errore durante il controllo email.");
+  return;
+}
 
-  if (existing) {
-    if (!existing.email_confermata) {
-      mostraPopup(
-        "Email già registrata",
-        "Questa email è già registrata ma non confermata.\nControlla la posta."
-      );
-      return;
-    }
-
+if (existing) {
+  if (!existing.email_confermata) {
     mostraPopup(
       "Email già registrata",
-      "Questa email è già registrata.\nAccedi per continuare.",
-      "login.html"
+      "Questa email è già registrata ma non confermata.\nControlla la posta."
     );
     return;
   }
+
+  mostraPopup(
+    "Email già registrata",
+    "Questa email è già registrata.\nAccedi per continuare.",
+    "login.html"
+  );
+  return;
+}
 
   /* 2️⃣ HASH PASSWORD (API) */
   let password_hash;
 
   try {
     const res = await fetch(
-      "https://TUO-PROGETTO.vercel.app/api/hash-password",
+      "https://casa-del-gelato-mailer-kg7f.vercel.app/api/hash-password",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -648,30 +704,38 @@ window.register = async function () {
   /* 3️⃣ CREA UTENTE */
   const token = crypto.randomUUID();
 
-  const { error: insErr } = await supabase
-    .from("utenti")
-    .insert({
-      email,
-      nome: name,
-      cognome: surname,
-      password_hash,          // ✅ SOLO HASH
-      disiscritto: false,
-      consenso_promozioni: consenso,
-      privacy_accepted: true,
-      privacy_accepted_at: new Date().toISOString(),
-      email_confermata: false,
-      conferma_token: token
-    });
+const { error: insErr } = await supabase
+  .from("utenti")
+  .insert({
+    email,
+    nome: name,
+    cognome: surname,
+    password_hash,
+    disiscritto: false,
+    consenso_promozioni: consenso,
+    privacy_accepted: true,
+    privacy_accepted_at: new Date().toISOString(),
+    email_confermata: false,
+    conferma_token: token
+  });
 
-  if (insErr) {
+if (insErr) {
+  if (insErr.message.includes("duplicate")) {
+    mostraPopup(
+      "Email già registrata",
+      "Questa email è già registrata.\nAccedi per continuare.",
+      "login.html"
+    );
+  } else {
     mostraPopup("Errore", "Errore durante la registrazione.");
-    return;
   }
+  return;
+}
 
   /* 4️⃣ INVIO EMAIL */
   try {
     await fetch(
-      "https://casa-del-gelato-mailer-f7ds.vercel.app/api/conferma-email",
+      "https://casa-del-gelato-mailer-kg7f.vercel.app/api/conferma-email",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -733,7 +797,7 @@ if (resendBtn) {
 
     try {
       await fetch(
-        "https://casa-del-gelato-mailer-f7ds.vercel.app/api/conferma-email",
+        "https://casa-del-gelato-mailer-kg7f.vercel.app/api/conferma-email",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -791,5 +855,95 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+
+<script>
+function openForgotPassword(){
+  document.getElementById("forgot-backdrop").classList.add("show");
+  document.body.style.overflow = "hidden";
+}
+
+function closeForgotPassword(){
+  document.getElementById("forgot-backdrop").classList.remove("show");
+  document.body.style.overflow = "";
+}
+
+window.inviaResetPassword = async function () {
+  const email = document.getElementById("forgot-email").value.trim();
+
+  if (!email) {
+    mostraPopup("Email mancante", "Inserisci una email valida.");
+    return;
+  }
+
+  // 1️⃣ verifica utente
+  const { data, error } = await supabase
+    .from("utenti")
+    .select("email")
+    .eq("email", email)
+    .single();
+
+  if (error) {
+    mostraPopup(
+      "Email non trovata",
+      "Questa email non risulta registrata."
+    );
+    return;
+  }
+
+  // 2️⃣ genera token
+  const token = crypto.randomUUID();
+
+await supabase
+  .from("utenti")
+  .update({
+    reset_token: token,
+    reset_token_expires_at: new Date(Date.now() + 1000 * 60 * 30).toISOString()
+  })
+  .eq("email", email);
+
+  // 3️⃣ invio email
+  await fetch(
+    "https://casa-del-gelato-mailer-kg7f.vercel.app/api/reset-password-email",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, token })
+    }
+  );
+
+  closeForgotPassword();
+
+  mostraPopup(
+    "Email inviata",
+    "Ti abbiamo inviato un link per reimpostare la password."
+  );
+};
+</script>
+<!-- 🔐 PASSWORD DIMENTICATA -->
+<div id="forgot-backdrop" class="popup-backdrop">
+  <div class="popup-card">
+    <h2>Password dimenticata</h2>
+    <p>Inserisci la tua email. Ti invieremo un link per reimpostare la password.</p>
+
+    <input
+      type="email"
+      id="forgot-email"
+      placeholder="Email"
+    >
+
+   <button class="popup-btn" onclick="inviaResetPassword()">
+      Invia link
+    </button>
+
+    <button
+      class="popup-btn"
+      style="background:#f2f2f7;color:#111;margin-top:10px"
+      onclick="closeForgotPassword()"
+    >
+      Annulla
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
