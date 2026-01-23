@@ -1,92 +1,55 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Conferma Email</title>
+  <meta charset="UTF-8">
+  <title>Conferma email - Casa del Gelato</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="font-family:system-ui;text-align:center;padding:40px">
+
+<h2 id="msg">⏳ Verifica in corso…</h2>
 
 <script type="module">
-  import { supabase } from "./supabase.js";
+import { supabase } from "./supabase.js";
 
-  async function confermaEmail() {
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+// 1️⃣ prendo token dall'URL
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
 
-    const box = document.getElementById("box");
+const msg = document.getElementById("msg");
 
-    if (!token) {
-      box.innerHTML = "❌ Link non valido.";
-      return;
-    }
+if (!token) {
+  msg.textContent = "❌ Link non valido";
+  throw new Error("Token mancante");
+}
 
-    // 1️⃣ cerca utente con token
-    const { data, error } = await supabase
-      .from("utenti")
-      .select("*")
-      .eq("conferma_token", token)
-      .single();
+// 2️⃣ cerco utente con quel token
+const { data, error } = await supabase
+  .from("utenti")
+  .select("id, email_confermata")
+  .eq("conferma_token", token)
+  .maybeSingle();
 
-    if (error || !data) {
-      box.innerHTML = "❌ Link scaduto o non valido.";
-      return;
-    }
+if (error || !data) {
+  msg.textContent = "❌ Link scaduto o non valido";
+  throw new Error("Token non trovato");
+}
 
-    // 2️⃣ conferma email
-    const { error: updErr } = await supabase
-      .from("utenti")
-      .update({
-        email_confermata: true,
-        conferma_token: null
-      })
-      .eq("id", data.id);
+// 3️⃣ confermo email
+await supabase
+  .from("utenti")
+  .update({
+    email_confermata: true,
+    conferma_token: null
+  })
+  .eq("id", data.id);
 
-    if (updErr) {
-      box.innerHTML = "❌ Errore durante la conferma.";
-      return;
-    }
+msg.textContent = "✅ Email confermata con successo! Ora puoi accedere 🎉";
 
-    // 3️⃣ successo
-    box.innerHTML = `
-      <h2>✅ Email confermata!</h2>
-      <p>Ora puoi accedere al tuo account.</p>
-      <a href="login.html">Vai al login</a>
-    `;
-  }
-
-  window.addEventListener("DOMContentLoaded", confermaEmail);
+setTimeout(() => {
+  window.location.href = "/login.html";
+}, 2500);
 </script>
 
-<style>
-  body{
-    font-family: system-ui, -apple-system, sans-serif;
-    background:#f6f6f7;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    min-height:100vh;
-    margin:0;
-  }
-  #box{
-    background:#fff;
-    padding:24px;
-    border-radius:16px;
-    box-shadow:0 10px 30px rgba(0,0,0,.12);
-    text-align:center;
-    max-width:360px;
-  }
-  a{
-    display:inline-block;
-    margin-top:16px;
-    text-decoration:none;
-    font-weight:700;
-    color:#007aff;
-  }
-</style>
-</head>
-
-<body>
-  <div id="box">
-    ⏳ Conferma in corso…
-  </div>
 </body>
 </html>
