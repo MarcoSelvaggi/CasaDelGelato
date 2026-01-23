@@ -91,6 +91,11 @@ button{
   cursor:pointer;
 }
 
+button.secondary{
+  background:#e5e5ea;
+  color:#111;
+}
+
 button:active{
   transform:scale(.97);
 }
@@ -159,22 +164,39 @@ button:active{
   <h1>Modifica profilo</h1>
   <p>Aggiorna i tuoi dati personali</p>
 
+  <!-- NOME -->
   <div class="field">
     <label>Nome</label>
     <input type="text" id="nome">
   </div>
 
+  <!-- COGNOME -->
   <div class="field">
     <label>Cognome</label>
     <input type="text" id="cognome">
   </div>
 
+  <!-- EMAIL ATTUALE -->
   <div class="field">
-    <label>Email</label>
+    <label>Email attuale</label>
     <input type="email" id="email" disabled>
   </div>
 
-  <button onclick="salvaProfilo()">Salva modifiche</button>
+  <button onclick="salvaProfilo()">
+    Salva nome e cognome
+  </button>
+
+  <hr style="margin:18px 0; border:none; border-top:1px solid #e5e5ea">
+
+  <!-- NUOVA EMAIL -->
+  <div class="field">
+    <label>Nuova email</label>
+    <input type="email" id="new-email" placeholder="Nuova email">
+  </div>
+
+  <button class="secondary" onclick="richiediCambioEmail()">
+    Cambia email
+  </button>
 
   <div class="link">
     <a href="profilo.html">← Torna al profilo</a>
@@ -194,13 +216,14 @@ button:active{
 import { supabase } from "./supabase.js";
 
 /* POPUP */
-function mostraPopup(t,m,redirect=null){
+window.mostraPopup = function(t,m,redirect=null){
   document.getElementById("popup-title").textContent = t;
-  document.getElementById("popup-message").textContent = m;
+  document.getElementById("popup-message").innerHTML = m;
   const b = document.getElementById("popup-backdrop");
   b.classList.add("show");
   b.dataset.redirect = redirect || "";
-}
+};
+
 window.chiudiPopup = function(){
   const b = document.getElementById("popup-backdrop");
   b.classList.remove("show");
@@ -225,7 +248,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("email").value = email;
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("utenti")
     .select("nome, cognome")
     .eq("email", email)
@@ -237,14 +260,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-/* SAVE */
+/* SAVE NOME / COGNOME */
 window.salvaProfilo = async function(){
   const nome = document.getElementById("nome").value.trim();
   const cognome = document.getElementById("cognome").value.trim();
   const email = localStorage.getItem("user_email");
 
   if (!nome || !cognome){
-    mostraPopup("Campi mancanti","Nome e cognome sono obbligatori.");
+    mostraPopup(
+      "Campi mancanti",
+      "Nome e cognome sono obbligatori."
+    );
     return;
   }
 
@@ -263,8 +289,68 @@ window.salvaProfilo = async function(){
 
   mostraPopup(
     "Profilo aggiornato",
-    "I tuoi dati sono stati salvati correttamente.",
-    "profilo.html"
+    "Nome e cognome sono stati aggiornati correttamente."
+  );
+};
+
+/* CAMBIO EMAIL */
+window.richiediCambioEmail = async function(){
+  const nuovaEmail = document.getElementById("new-email").value.trim();
+  const emailAttuale = localStorage.getItem("user_email");
+
+  if (!nuovaEmail){
+    mostraPopup(
+      "Email mancante",
+      "Inserisci una nuova email valida."
+    );
+    return;
+  }
+
+  if (nuovaEmail === emailAttuale){
+    mostraPopup(
+      "Email identica",
+      "La nuova email è uguale a quella attuale."
+    );
+    return;
+  }
+
+  const token = crypto.randomUUID();
+  const expires = new Date(
+    Date.now() + 1000 * 60 * 60
+  ).toISOString(); // 1 ora
+
+  const { error } = await supabase
+    .from("utenti")
+    .update({
+      new_email: nuovaEmail,
+      email_change_token: token,
+      email_change_expires_at: expires
+    })
+    .eq("email", emailAttuale);
+
+  if (error){
+    mostraPopup(
+      "Errore",
+      "Impossibile avviare il cambio email."
+    );
+    return;
+  }
+
+  await fetch(
+    "https://casa-del-gelato-mailer-kg7f.vercel.app/api/change-email",
+    {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({
+        email: nuovaEmail,
+        token
+      })
+    }
+  );
+
+  mostraPopup(
+    "Conferma email",
+    "Abbiamo inviato un link di conferma alla nuova email.<br><br>Devi confermarla per completare il cambio."
   );
 };
 </script>
