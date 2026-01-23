@@ -22,12 +22,15 @@
 
     h1 { margin-top: 12px; }
 
-    #reader {
-        width: 310px;
-        margin: 0 auto;
-        border-radius: 12px;
-        overflow: hidden;
-    }
+#reader {
+    width: 100vw;                 /* ⬅️ tutto largo */
+    height: calc(100vh - 220px);  /* ⬅️ altezza che vuoi tu */
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
+    background: #000;
+    overflow: hidden;
+}
 
     #risultato {
         margin-top:20px;
@@ -69,6 +72,10 @@
 
 <div id="reader"></div>
 
+<button id="switchCamBtn" onclick="switchCamera()" style="margin-top:14px;">
+  🔁 Cambia fotocamera
+</button>
+
 <div id="risultato" style="display:none;"></div>
 <div id="lista-scan" style="margin-top:16px;"></div>
 <a href="admin.html">
@@ -80,6 +87,8 @@
 import { supabase } from "./supabase.js";
 let scanLock = false;
 let html5QrCode = null;
+let cameras = [];
+let currentCameraIndex = 0;
 
 function mostra(msg, ok = false) {
     const box = document.getElementById("risultato");
@@ -442,16 +451,65 @@ function renderLista() {
 // chiamala all’avvio pagina
 renderLista();
 
+async function loadCameras() {
+  if (cameras.length) return cameras;
+
+  cameras = await Html5Qrcode.getCameras();
+
+  if (!cameras || !cameras.length) {
+    alert("❌ Nessuna fotocamera trovata");
+    return [];
+  }
+
+  // Preferisci la posteriore se esiste
+  const backCamIndex = cameras.findIndex(c =>
+    /back|rear|environment/i.test(c.label)
+  );
+
+  if (backCamIndex !== -1) {
+    currentCameraIndex = backCamIndex;
+  }
+
+  return cameras;
+}
+
+async function switchCamera() {
+  if (!cameras.length) return;
+
+  // passa alla prossima camera
+  currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
+
+  try {
+    if (html5QrCode && html5QrCode.isScanning) {
+      await html5QrCode.stop();
+    }
+  } catch (e) {}
+
+  scanLock = false;
+  startScanner();
+}
+
 // Avvio scanner
-function startScanner() {
+async function startScanner() {
 
     if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
     }
 
+    const cams = await loadCameras();
+    if (!cams.length) return;
+
+    const cameraId = cams[currentCameraIndex].id;
+
     html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
+        cameraId, // 👈 QUI scegliamo la camera
+        {
+  fps: 10,
+  qrbox: (w, h) => {
+    const size = Math.min(w, h) * 0.85; // ⬅️ box molto più grande
+    return { width: size, height: size };
+  }
+},
         async qrCodeMessage => {
 
             // 🔒 blocco scansioni multiple
@@ -460,7 +518,7 @@ function startScanner() {
 
             console.log("QR:", qrCodeMessage);
 
-            // 🔥 conferma coppa
+            // 🔥 gestisci scan (coupon / coppa)
             await gestisciScan(qrCodeMessage);
 
             // ⏸️ fermo lo scanner
