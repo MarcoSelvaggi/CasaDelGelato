@@ -794,14 +794,18 @@ body{
     0 8px 24px rgba(0,0,0,0.06);
 }
 
-/* avatar tondo */
+/* avatar tondo – definitivo */
 .profile-avatar{
   width:56px;
   height:56px;
   border-radius:50%;
 
-  background-color: transparent;
-  color:#fff;
+  background-color:#fff;                 /* ✅ niente nero */
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;               /* ✅ non taglia mai */
+
+  color:#111;                            /* lettera visibile se no immagine */
 
   display:flex;
   align-items:center;
@@ -810,16 +814,9 @@ body{
   font-weight:800;
   font-size:22px;
   text-transform:uppercase;
-}
-.profile-avatar{
-  background-repeat: no-repeat;      /* 🔥 MANCAVA */
-  background-position: center center;
-  background-size: cover;             /* oppure: contain */
-}
-.profile-avatar{
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+
+  overflow:hidden;                       /* 🔒 blocca sbordi */
+  border:1px solid rgba(0,0,0,0.08);     /* 💅 look pulito */
 }
 /* testo */
 .profile-info{
@@ -1996,7 +1993,7 @@ wrapper.appendChild(content);   // ⚪ SOPRA (scorre)
 // ===============================
 // AVATAR PROFILO (local + leggero)
 // ===============================
-const AVATAR_KEY = "cdg_profile_avatar_v1";
+
 
 function setAvatarBackground(src) {
   const topAvatar  = document.getElementById("profile-avatar");
@@ -2006,11 +2003,12 @@ function setAvatarBackground(src) {
 
 [topAvatar, cardAvatar].forEach(el => {
   if (!el) return;
-  el.style.background = "none";   // 🔥 QUESTA ERA LA CHIAVE
+
   el.style.backgroundImage = `url(${src})`;
-  el.style.backgroundSize = "cover";
+  el.style.backgroundSize = "contain";        // ✅ non taglia mai
   el.style.backgroundPosition = "center";
   el.style.backgroundRepeat = "no-repeat";
+  el.style.backgroundColor = "#fff";          // ✅ niente nero
 });
 
   if (topText) topText.style.display = "none";
@@ -2039,8 +2037,22 @@ async function compressImageToDataURL(file, maxSize = 256, quality = 0.82) {
   return canvas.toDataURL("image/jpeg", quality);
 }
 
-function aggiornaAvatarProfilo() {
+function dataUrlToBlob(dataUrl) {
+  const parts = dataUrl.split(',');
+  const mime = parts[0].match(/:(.*?);/)[1];
+  const binary = atob(parts[1]);
+  const len = binary.length;
+  const array = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    array[i] = binary.charCodeAt(i);
+  }
+  return new Blob([array], { type: mime });
+}
+
+async function aggiornaAvatarProfilo() {
+
   const email = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
 
   const topAvatar  = document.getElementById("profile-avatar");
   const topText    = document.getElementById("profile-avatar-text");
@@ -2050,7 +2062,7 @@ function aggiornaAvatarProfilo() {
   // reset vero (shorthand)
   [topAvatar, cardAvatar].forEach(a => {
     if (!a) return;
-    a.style.background = "none";
+    a.style.background = "#fff";
     a.style.backgroundImage = "";
   });
 
@@ -2058,26 +2070,32 @@ function aggiornaAvatarProfilo() {
     if (t) t.style.display = "block";
   });
 
-  // 1️⃣ immagine salvata
-const logged = localStorage.getItem("userLogged") === "1";
-
-// 1️⃣ immagine salvata → SOLO SE LOGGATO
-const savedImg = logged ? localStorage.getItem(AVATAR_KEY) : null;
-
-if (savedImg) {
-  [topAvatar, cardAvatar].forEach(a => {
-    if (!a) return;
-    a.style.background = "none"; // 🔥 RESET NERO
-    a.style.backgroundImage = `url(${savedImg})`;
-    a.style.backgroundSize = "cover";
-    a.style.backgroundPosition = "center";
-    a.style.backgroundRepeat = "no-repeat";
-  });
-
-  if (topText) topText.style.display = "none";
-  if (cardText) cardText.style.display = "none";
+// 🔐 se NON loggato → niente avatar remoto
+if (!logged || !email) {
   return;
 }
+// 🔹 carica avatar da Supabase
+const { data, error } = await supabase
+  .from("utenti")
+  .select("avatar_url")
+  .eq("email", email)
+  .single();
+
+if (!error && data?.avatar_url) {
+  setAvatarBackground(data.avatar_url);
+  return;
+}
+// 1️⃣ carica avatar da Supabase
+supabase
+  .from("utenti")
+  .select("avatar_url")
+  .eq("email", email)
+  .single()
+  .then(({ data }) => {
+    if (data?.avatar_url) {
+      setAvatarBackground(data.avatar_url);
+    }
+  });
 
 // 2️⃣ sfondo BIANCO se non c'è immagine
 [topAvatar, cardAvatar].forEach(a => {
@@ -2172,8 +2190,42 @@ input.addEventListener("change", async () => {
 
   try {
     const dataUrl = await compressImageToDataURL(file, 256, 0.82);
-    localStorage.setItem("cdg_profile_avatar_v1", dataUrl);
-    aggiornaAvatarProfilo();
+const email = localStorage.getItem("user_email");
+
+// nome file unico
+const fileName = `avatar_${email.replace(/[@.]/g,"_")}.jpg`;
+
+// upload su storage
+const { error: uploadError } = await supabase
+  .storage
+  .from("avatars")
+  .upload(fileName, dataUrlToBlob(dataUrl), {
+    upsert: true,
+    contentType: "image/jpeg"
+  });
+
+if (uploadError) {
+  console.error(uploadError);
+  mostraPopup("Errore", "Errore nel caricamento immagine");
+  return;
+}
+
+// url pubblico
+const { data } = supabase
+  .storage
+  .from("avatars")
+  .getPublicUrl(fileName);
+
+const avatarUrl = data.publicUrl + "?t=" + Date.now();
+
+// salva url nel profilo
+await supabase
+  .from("utenti")
+  .update({ avatar_url: avatarUrl })
+  .eq("email", email);
+
+// aggiorna UI
+setAvatarBackground(avatarUrl);
   } catch (err) {
     console.error("Errore avatar:", err);
     mostraPopup(
@@ -2704,15 +2756,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   /* ===============================
      👤 AVATAR → RESET SOLO SE CAMBIA EMAIL
   =============================== */
-  if (logged && email) {
-    const lastEmail = localStorage.getItem("cdg_avatar_email");
-
-    if (lastEmail && lastEmail !== email) {
-      localStorage.removeItem("cdg_profile_avatar_v1");
-    }
-
-    localStorage.setItem("cdg_avatar_email", email);
+if (logged && email) {
+  const lastEmail = localStorage.getItem("cdg_avatar_email");
+  if (lastEmail && lastEmail !== email) {
+    // qui NON tocchiamo più cdg_profile_avatar_v1 (non esiste più)
+    // se vuoi, in futuro possiamo anche cancellare l’avatar su storage
   }
+  localStorage.setItem("cdg_avatar_email", email);
+}
 
   // 🔥 SEMPRE, sia loggato che no
   aggiornaProfileCard();

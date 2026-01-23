@@ -5,493 +5,180 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Scanner QR - Casa del Gelato</title>
 
-<!-- Libreria per scanner QR -->
+<!-- html5-qrcode -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <!-- Supabase -->
 <script type="module" src="supabase.js"></script>
 
 <style>
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        background:#f7f7f7;
-        margin:0;
-        padding:20px;
-        text-align:center;
-    }
-
-    h1 { margin-top: 12px; }
-
-#reader {
-    width: 100vw;                 /* ⬅️ tutto largo */
-    height: calc(100vh - 220px);  /* ⬅️ altezza che vuoi tu */
-    max-width: none;
+html, body {
+    width: 100%;
+    height: 100%;
     margin: 0;
-    border-radius: 0;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f7f7f7;
+}
+
+h1 {
+    margin: 12px 0 4px;
+    text-align: center;
+}
+
+p {
+    margin: 0 0 12px;
+    text-align: center;
+    opacity: .8;
+}
+
+/* SCANNER */
+#reader {
+    width: 100vw;
+    height: calc(100vh - 220px);
     background: #000;
     overflow: hidden;
 }
 
-    #risultato {
-        margin-top:20px;
-        background:white;
-        padding:18px;
-        border-radius:12px;
-        box-shadow:0 2px 8px rgba(0,0,0,0.15);
-        font-size:17px;
-    }
+#reader video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+}
 
-    .ok {
-        color:green;
-        font-weight:bold;
-        font-size:18px;
-    }
-    .error {
-        color:#d60000;
-        font-weight:bold;
-        font-size:18px;
-    }
+/* BUTTON */
+#switchCamBtn {
+    margin: 12px auto;
+    padding: 10px 16px;
+    background: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
+}
 
-    button {
-        margin-top:20px;
-        padding:10px 16px;
-        background:#007aff;
-        border:none;
-        color:white;
-        font-size:16px;
-        border-radius:10px;
-        cursor:pointer;
-    }
+/* RISULTATO */
+#risultato {
+    display: none;
+    margin: 12px auto;
+    max-width: 520px;
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    font-size: 16px;
+}
+
+.ok {
+    color: #1e9d3e;
+    font-weight: 700;
+}
+
+.error {
+    color: #d60000;
+    font-weight: 700;
+}
 </style>
 </head>
 
 <body>
 
 <h1>📷 Scanner QR Coppe</h1>
-<p>Inquadra il QR del cliente per confermare automaticamente la coppa</p>
+<p>Inquadra il QR del cliente</p>
 
 <div id="reader"></div>
 
-<button id="switchCamBtn" onclick="switchCamera()" style="margin-top:14px;">
-  🔁 Cambia fotocamera
-</button>
+<button id="switchCamBtn">🔁 Cambia fotocamera</button>
 
-<div id="risultato" style="display:none;"></div>
-<div id="lista-scan" style="margin-top:16px;"></div>
-<a href="admin.html">
-    <button>Torna all’Admin</button>
-</a>
-
+<div id="risultato"></div>
 
 <script type="module">
 import { supabase } from "./supabase.js";
-let scanLock = false;
+
 let html5QrCode = null;
 let cameras = [];
 let currentCameraIndex = 0;
+let scanLock = false;
 
+/* ================= UI ================= */
 function mostra(msg, ok = false) {
     const box = document.getElementById("risultato");
     box.style.display = "block";
-    box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
+    box.innerHTML = `<div class="${ok ? "ok" : "error"}">${msg}</div>`;
 }
 
-async function riscattaCoupon(codice) {
-  console.log("🎟️ RISCATTO COUPON:", codice);
-
-  // 1️⃣ cerco il coupon
-  const { data: couponArr, error } = await supabase
-    .from("coupon")
-    .select("*")
-    .eq("codice", codice)
-    .limit(1);
-
-  if (error || !couponArr || !couponArr.length) {
-    mostra("❌ Coupon NON valido", false);
-    return;
-  }
-
-  const coupon = couponArr[0];
-
-  // 2️⃣ carico dati cliente (se esiste)
-  let cliente = null;
-  if (coupon.email) {
-    const { data: utente } = await supabase
-      .from("utenti")
-      .select("nome, cognome, email")
-      .eq("email", coupon.email)
-      .single();
-
-    if (utente) cliente = utente;
-  }
-
-  // 3️⃣ SE GIÀ USATO → mostro dati ma NON aggiorno
-  if (coupon.redento) {
-    mostra(`
-      ⚠️ <b>Coupon già utilizzato</b><br><br>
-
-      🎟️ <b>Tipo:</b> Coppa ${coupon.tipo.toUpperCase()}<br><br>
-
-      ${
-        cliente
-          ? `
-            👤 <b>Cliente:</b><br>
-            ${cliente.nome} ${cliente.cognome}<br>
-            📧 ${cliente.email}<br><br>
-          `
-          : `
-            👤 <b>Cliente:</b><br>
-            ${coupon.email || "Guest"}<br><br>
-          `
-      }
-
-      🕒 <b>Usato il:</b><br>
-      ${coupon.used_at
-        ? new Date(coupon.used_at).toLocaleString("it-IT")
-        : "-"}
-    `, false);
-
-    return;
-  }
-
-  // 4️⃣ segno come usato
-  const { error: errUpdate } = await supabase
-    .from("coupon")
-    .update({
-      redento: true,
-      used_at: new Date().toISOString()
-    })
-    .eq("id", coupon.id);
-
-  if (errUpdate) {
-    console.error("❌ Errore update coupon:", errUpdate);
-    mostra("❌ Errore nel riscatto coupon", false);
-    return;
-  }
-
-  // 5️⃣ conferma visiva completa
-  mostra(`
-    ✅ <b>Coupon riscattato!</b><br><br>
-
-    🎟️ <b>Tipo:</b> Coppa ${coupon.tipo.toUpperCase()} omaggio<br><br>
-
-    ${
-      cliente
-        ? `
-          👤 <b>Cliente:</b><br>
-          ${cliente.nome} ${cliente.cognome}<br>
-          📧 ${cliente.email}
-        `
-        : `
-          👤 <b>Cliente:</b><br>
-          ${coupon.email || "Guest"}
-        `
-    }
-  `, true);
-
-  console.log("✅ COUPON RISCATTATO CON SUCCESSO");
-}
-
-async function confermaCoppa( qrToken ) {
-
-    // 1️⃣ CERCO la coppa nel DB
-    const { data, error } = await supabase
-        .from("coppe")
-        .select("*")
-        .eq("qr_token", qrToken)
-        .limit(1);
-
-    if (error || !data || !data.length) {
-        mostra("❌ QR NON valido!");
+/* ================= SCAN LOGIC ================= */
+async function gestisciScan(raw) {
+    // coupon
+    if (raw.includes("coupon=")) {
+        mostra("🎟️ Coupon letto", true);
         return;
     }
 
-   const coppa = data[0];
-console.log("🎯 COPPA SCANSIONATA:", coppa);
-    let cliente = null;
+    // coppa
+    const { data } = await supabase
+        .from("coppe")
+        .select("*")
+        .eq("qr_token", raw)
+        .limit(1);
 
-if (coppa.email) {
-  const { data: utente } = await supabase
-    .from("utenti")
-    .select("nome, cognome, email")
-    .eq("email", coppa.email)
-    .limit(1);
+    if (!data || !data.length) {
+        mostra("❌ QR non valido");
+        return;
+    }
 
-  if (utente && utente.length) {
-    cliente = utente[0];
-  }
-}
-const dataCoppa = new Date(coppa.data).toLocaleString("it-IT", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit"
-});
+    const coppa = data[0];
+    const confermate = coppa.confermate || 0;
 
-const confermate = coppa.confermate || 0;
+    await supabase
+        .from("coppe")
+        .update({ confermate: confermate + 1 })
+        .eq("id", coppa.id);
 
-if (confermate >= 1) {
-    const ok = confirm(
-        `⚠️ Questa coppa è già stata confermata.\n\n` +
-        `Ne sono state ordinate più uguali?\n\n` +
-        `Confermate finora: ${confermate}`
-    );
-
-    if (!ok) return;
+    mostra(`✅ Coppa confermata<br><b>${coppa.nome}</b> (${coppa.formato})`, true);
 }
 
-// 3️⃣ CONFERMO la coppa
-const { error: errUpdate } = await supabase
-  .from("coppe")
-  .update({ confermate: confermate + 1 })
-  .eq("id", coppa.id);
-
-if (errUpdate) {
-  console.error("❌ ERRORE update coppe:", errUpdate);
-  return;
-}
-
-// 4️⃣ SALVO CONFERMA REALE (serve SOLO per i coupon)
-if (coppa.email) {
-  const { error: errConferma } = await supabase
-    .from("conferme_coppe")
-    .insert({
-      email: coppa.email,
-      coppa_id: coppa.id,
-      formato: coppa.formato
-    });
-
-  if (errConferma) {
-    console.error("❌ ERRORE inserimento conferme_coppe:", errConferma);
-  } else {
-    console.log("✅ Conferma salvata in conferme_coppe");
-  }
-}
-
-
-        // ===== SALVA NELLA LISTA GIORNALIERA =====
-const lista = loadLista();
-
-// 🔍 cerco se la coppa è già in lista
-const esistente = lista.find(x => x.id === coppa.id);
-
-if (esistente) {
-  // ✅ aggiorno solo i dati
-  esistente.confermate = confermate + 1;
-  esistente.scanned_at = new Date().toISOString();
-} else {
-  // ➕ nuova coppa
-  lista.unshift({
-    id: coppa.id,
-    nome: coppa.nome,
-    formato: coppa.formato,
-    tavolo: coppa.tavolo,
-    confermate: confermate + 1,
-    scanned_at: new Date().toISOString(),
-    data_creazione: coppa.data,
-    cliente: cliente || null
-  });
-}
-
-// massimo 100 elementi
-if (lista.length > 100) lista.length = 100;
-
-saveLista(lista);
-renderLista();
-
-// tieni massimo 100 voci (opzionale)
-if (lista.length > 100) lista.length = 100;
-
-saveLista(lista);
-renderLista();
-
-mostra(`
-  ✅ Coppa confermata!<br><br>
-
-  <b>${coppa.nome}</b><br>
-  (${coppa.formato})<br><br>
-
-  🪑 <b>Tavolo:</b> ${coppa.tavolo || "-"}<br>
-  🕒 <b>Creata il:</b> ${dataCoppa}<br><br>
-
-  ${
-    cliente
-    ? `
-      👤 <b>Cliente:</b><br>
-      ${cliente.nome} ${cliente.cognome}<br>
-      📧 ${cliente.email}
-    `
-    : `
-      👤 <b>Cliente:</b><br>
-      Guest
-    `
-  }
-`, true);
-}
-
-// ======= LISTA SCAN (persistente fino alle 02:00) =======
-const LS_KEY_LISTA = "adminScan_lista_v1";
-const LS_KEY_RESET = "adminScan_resetAt_v1";
-
-function getNextResetAt2AM() {
-  const now = new Date();
-  const reset = new Date(now);
-  reset.setHours(2, 0, 0, 0); // 02:00
-
-  // se sono già passate le 02:00 di oggi -> reset domani alle 02:00
-  if (now.getTime() >= reset.getTime()) {
-    reset.setDate(reset.getDate() + 1);
-  }
-  return reset.getTime();
-}
-
-function estraiCodiceCoupon(raw) {
-  try {
-    // se è un URL valido
-    const u = new URL(raw);
-    const c = u.searchParams.get("coupon");
-    return c ? decodeURIComponent(c) : null;
-  } catch (e) {
-    // non è un URL -> provo regex su stringa
-    const m = String(raw).match(/coupon=([^&#]+)/i);
-    return m ? decodeURIComponent(m[1]) : null;
-  }
-}
-
-async function gestisciScan(raw) {
-  const codice = estraiCodiceCoupon(raw);
-
-  if (codice) {
-    console.log("🎟️ SCAN COUPON:", codice);
-    // STEP 2: qui chiameremo la funzione di riscatto coupon
-    await riscattaCoupon(codice);
-    return;
-  }
-
-  console.log("🍨 SCAN COPPA:", raw);
-  await confermaCoppa(raw);
-}
-
-function ensureResetSchedule() {
-  const now = Date.now();
-  const resetAt = Number(localStorage.getItem(LS_KEY_RESET)) || 0;
-
-  // se non esiste, o è scaduto -> svuota lista e riprogramma
-  if (!resetAt || now >= resetAt) {
-    localStorage.setItem(LS_KEY_LISTA, JSON.stringify([]));
-    localStorage.setItem(LS_KEY_RESET, String(getNextResetAt2AM()));
-  }
-}
-
-function loadLista() {
-  ensureResetSchedule();
-  try {
-    return JSON.parse(localStorage.getItem(LS_KEY_LISTA) || "[]") || [];
-  } catch {
-    return [];
-  }
-}
-
-function saveLista(arr) {
-  localStorage.setItem(LS_KEY_LISTA, JSON.stringify(arr));
-}
-
-function formatOra(d) {
-  const dt = new Date(d);
-  return dt.toLocaleString("it-IT", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
-}
-
-function renderLista() {
-  const box = document.getElementById("lista-scan");
-  if (!box) return;
-
-  const arr = loadLista();
-  if (!arr.length) {
-    box.innerHTML = `<div style="opacity:.65; font-size:14px;">Nessuna coppa scannerizzata oggi.</div>`;
-    return;
-  }
-
-  box.innerHTML = `
-    <div style="text-align:left; max-width:520px; margin:0 auto;">
-      <h3 style="margin:0 0 10px; font-size:16px;">📌 Coppe scannerizzate (oggi)</h3>
-      ${arr.map(x => `
-        <div style="
-          background:#fff;
-          border-radius:12px;
-          padding:12px 14px;
-          margin-bottom:10px;
-          box-shadow:0 2px 8px rgba(0,0,0,0.08);
-        ">
-          <div style="display:flex; justify-content:space-between; gap:10px;">
-            <b>${x.nome || "Coppa"}</b>
-            <span style="opacity:.7; font-size:13px;">${formatOra(x.scanned_at)}</span>
-          </div>
-          <div style="margin-top:6px; font-size:14px; line-height:1.35;">
-            <div><b>Formato:</b> ${x.formato || "-"}</div>
-            <div><b>Tavolo:</b> ${x.tavolo || "-"}</div>
-            <div><b>Confermate:</b> ${x.confermate || 0}</div>
-          </div>
-          ${x.cliente ? `
-            <div style="margin-top:8px; font-size:13px; opacity:.9;">
-              <div><b>Cliente:</b> ${x.cliente.nome || "-"} ${x.cliente.cognome || ""}</div>
-              <div><b>Email:</b> ${x.cliente.email || "-"}</div>
-              <div><b>Creata:</b> ${x.data_creazione ? formatOra(x.data_creazione) : "-"}</div>
-            </div>
-          ` : ""}
-        </div>
-      `).join("")}
-      <div style="opacity:.6; font-size:12px; margin-top:6px;">
-        Reset automatico alle 02:00.
-      </div>
-    </div>
-  `;
-}
-
-// chiamala all’avvio pagina
-renderLista();
-
+/* ================= CAMERA ================= */
 async function loadCameras() {
-  if (cameras.length) return cameras;
+    if (cameras.length) return cameras;
 
-  cameras = await Html5Qrcode.getCameras();
+    cameras = await Html5Qrcode.getCameras();
+    if (!cameras.length) {
+        alert("Nessuna fotocamera trovata");
+        return [];
+    }
 
-  if (!cameras || !cameras.length) {
-    alert("❌ Nessuna fotocamera trovata");
-    return [];
-  }
+    const backIndex = cameras.findIndex(c =>
+        /back|rear|environment/i.test(c.label)
+    );
+    if (backIndex !== -1) currentCameraIndex = backIndex;
 
-  // Preferisci la posteriore se esiste
-  const backCamIndex = cameras.findIndex(c =>
-    /back|rear|environment/i.test(c.label)
-  );
+    if (cameras.length <= 1) {
+        document.getElementById("switchCamBtn")?.remove();
+    }
 
-  if (backCamIndex !== -1) {
-    currentCameraIndex = backCamIndex;
-  }
-
-  return cameras;
+    return cameras;
 }
 
 async function switchCamera() {
-  if (!cameras.length) return;
+    if (!cameras.length) return;
 
-  // passa alla prossima camera
-  currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
+    currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
 
-  try {
-    if (html5QrCode && html5QrCode.isScanning) {
-      await html5QrCode.stop();
-    }
-  } catch (e) {}
+    try {
+        if (html5QrCode?.isScanning) {
+            await html5QrCode.stop();
+        }
+    } catch {}
 
-  scanLock = false;
-  startScanner();
+    scanLock = false;
+    startScanner();
 }
 
-// Avvio scanner
+/* ================= START SCANNER ================= */
 async function startScanner() {
-
     if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
     }
@@ -502,62 +189,34 @@ async function startScanner() {
     const cameraId = cams[currentCameraIndex].id;
 
     html5QrCode.start(
-        cameraId, // 👈 QUI scegliamo la camera
+        cameraId,
         {
-  fps: 10,
-  qrbox: (w, h) => {
-    const size = Math.min(w, h) * 0.85; // ⬅️ box molto più grande
-    return { width: size, height: size };
-  }
-},
-        async qrCodeMessage => {
-
-            // 🔒 blocco scansioni multiple
+            fps: 10,
+            qrbox: (w, h) => {
+                const size = Math.min(w, h) * 0.85;
+                return { width: size, height: size };
+            }
+        },
+        async msg => {
             if (scanLock) return;
             scanLock = true;
 
-            console.log("QR:", qrCodeMessage);
-
-            // 🔥 gestisci scan (coupon / coppa)
-            await gestisciScan(qrCodeMessage);
-
-            // ⏸️ fermo lo scanner
+            await gestisciScan(msg);
             await html5QrCode.stop();
 
-            // 🔓 sblocco + riavvio stabile
             setTimeout(() => {
                 scanLock = false;
                 startScanner();
             }, 1200);
-        },
-        () => {
-            // errori lettura → ignorati
         }
     );
 }
 
+/* ================= INIT ================= */
+document.getElementById("switchCamBtn")
+    ?.addEventListener("click", switchCamera);
+
 startScanner();
-</script>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-
-  if (params.get("scan") === "1") {
-    console.log("📷 Avvio scanner automatico (Shortcut)");
-
-    // ⏱️ micro delay per sicurezza Safari
-    setTimeout(() => {
-      if (typeof startScanner === "function") {
-        startScanner();
-      } else if (typeof avviaScanner === "function") {
-        avviaScanner();
-      } else {
-        console.warn("⚠️ Funzione scanner non trovata");
-      }
-    }, 300);
-  }
-});
 </script>
 
 </body>

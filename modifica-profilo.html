@@ -155,6 +155,23 @@ button:active{
 #popup button{
   margin-top:16px;
 }
+.link-btn{
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 6px;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #007aff;      /* blu iOS */
+
+  cursor: pointer;
+  text-align: left;
+}
+
+.link-btn:active{
+  opacity: .6;
+}
 </style>
 </head>
 
@@ -181,6 +198,17 @@ button:active{
     <label>Email attuale</label>
     <input type="email" id="email" disabled>
   </div>
+
+    <!-- AZIONI ACCOUNT -->
+<div class="field" style="margin-top:-6px;">
+  <button
+    type="button"
+    class="link-btn"
+    onclick="resetPasswordDaProfilo()"
+  >
+    Hai dimenticato la password?
+  </button>
+</div>
 
   <button onclick="salvaProfilo()">
     Salva nome e cognome
@@ -214,6 +242,62 @@ button:active{
 
 <script type="module">
 import { supabase } from "./supabase.js";
+
+window.resetPasswordDaProfilo = async function(){
+  const email = localStorage.getItem("user_email");
+
+  if (!email){
+    mostraPopup(
+      "Accesso richiesto",
+      "Devi essere loggato per reimpostare la password.",
+      "login.html"
+    );
+    return;
+  }
+
+  // 1️⃣ verifica utente
+  const { data, error } = await supabase
+    .from("utenti")
+    .select("email")
+    .eq("email", email)
+    .single();
+
+  if (error){
+    mostraPopup(
+      "Errore",
+      "Impossibile avviare il reset password."
+    );
+    return;
+  }
+
+  // 2️⃣ genera token
+  const token = crypto.randomUUID();
+
+  await supabase
+    .from("utenti")
+    .update({
+      reset_token: token,
+      reset_token_expires_at: new Date(
+        Date.now() + 1000 * 60 * 30 // 30 min
+      ).toISOString()
+    })
+    .eq("email", email);
+
+  // 3️⃣ invio email (STESSA API)
+  await fetch(
+    "https://casa-del-gelato-mailer-kg7f.vercel.app/api/reset-password-email",
+    {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ email, token })
+    }
+  );
+
+  mostraPopup(
+    "Email inviata",
+    "Ti abbiamo inviato un link per reimpostare la password.<br><br>Controlla la posta."
+  );
+};
 
 /* POPUP */
 window.mostraPopup = function(t,m,redirect=null){
@@ -295,30 +379,39 @@ window.salvaProfilo = async function(){
 
 /* CAMBIO EMAIL */
 window.richiediCambioEmail = async function(){
-  const nuovaEmail = document.getElementById("new-email").value.trim();
+  const nuovaEmail   = document.getElementById("new-email").value.trim().toLowerCase();
   const emailAttuale = localStorage.getItem("user_email");
 
   if (!nuovaEmail){
-    mostraPopup(
-      "Email mancante",
-      "Inserisci una nuova email valida."
-    );
+    mostraPopup("Email mancante","Inserisci una nuova email valida.");
     return;
   }
 
   if (nuovaEmail === emailAttuale){
+    mostraPopup("Email identica","La nuova email è uguale a quella attuale.");
+    return;
+  }
+
+  // 1️⃣ CONTROLLO EMAIL GIÀ ESISTENTE
+  const { data: esistente } = await supabase
+    .from("utenti")
+    .select("email")
+    .eq("email", nuovaEmail)
+    .maybeSingle();
+
+  if (esistente){
     mostraPopup(
-      "Email identica",
-      "La nuova email è uguale a quella attuale."
+      "Email già utilizzata",
+      "Questa email è già associata a un altro account.<br><br>Usane un’altra."
     );
     return;
   }
 
+  // 2️⃣ genera token
   const token = crypto.randomUUID();
-  const expires = new Date(
-    Date.now() + 1000 * 60 * 60
-  ).toISOString(); // 1 ora
+  const expires = new Date(Date.now() + 1000 * 60 * 60).toISOString();
 
+  // 3️⃣ salva richiesta
   const { error } = await supabase
     .from("utenti")
     .update({
@@ -329,28 +422,23 @@ window.richiediCambioEmail = async function(){
     .eq("email", emailAttuale);
 
   if (error){
-    mostraPopup(
-      "Errore",
-      "Impossibile avviare il cambio email."
-    );
+    mostraPopup("Errore","Impossibile avviare il cambio email.");
     return;
   }
 
+  // 4️⃣ invio email
   await fetch(
     "https://casa-del-gelato-mailer-kg7f.vercel.app/api/change-email",
     {
       method:"POST",
       headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({
-        email: nuovaEmail,
-        token
-      })
+      body: JSON.stringify({ email: nuovaEmail, token })
     }
   );
 
   mostraPopup(
     "Conferma email",
-    "Abbiamo inviato un link di conferma alla nuova email.<br><br>Devi confermarla per completare il cambio."
+    "Abbiamo inviato un link di conferma alla nuova email.<br><br>Controlla la posta."
   );
 };
 </script>

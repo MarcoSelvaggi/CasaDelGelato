@@ -122,44 +122,24 @@ function mostraPopup(t,m,redirect=null){
     return;
   }
 
-  // 1️⃣ verifica token
-  const { data: utente, error } = await supabase
-    .from("utenti")
-    .select("email, new_email, email_change_expires_at")
-    .eq("email_change_token", token)
-    .maybeSingle();
+// 1️⃣ verifica token + scadenza (TUTTO IN UNA QUERY)
+const { data: utente, error } = await supabase
+  .from("utenti")
+  .select("email, new_email")
+  .eq("email_change_token", token)
+  .gt("email_change_expires_at", new Date().toISOString())
+  .maybeSingle();
 
-  if (!utente){
-    mostraPopup(
-      "Link non valido",
-      "Questo link è già stato utilizzato oppure non è valido.",
-      "login.html"
-    );
-    return;
-  }
-
-// ❌ scadenza mancante o non valida
-if (!utente.email_change_expires_at) {
-  mostraPopup(
-    "Link non valido",
-    "Questo link non è più valido o è già stato utilizzato.",
-    "profilo.html"
-  );
-  return;
-}
-
-const expiresAt = new Date(utente.email_change_expires_at);
-const now = new Date();
-
-// ❌ token scaduto
-if (isNaN(expiresAt.getTime()) || expiresAt < now) {
+if (!utente) {
   mostraPopup(
     "Link scaduto",
-    "Il link di conferma è scaduto. Richiedi nuovamente il cambio email.",
+    "Questo link non è valido o è già stato utilizzato.",
     "profilo.html"
   );
   return;
 }
+
+
 
   const emailVecchia = utente.email;
   const emailNuova   = utente.new_email;

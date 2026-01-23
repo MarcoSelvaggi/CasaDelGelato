@@ -798,7 +798,13 @@ if (res.ok) {
     });
 
     document.getElementById("form-body").classList.add("disabled");
+// 🧹 RESET STATO CURRICULUM
+const cvStatus = document.getElementById("cv-status");
+const cvText = cvStatus.querySelector(".cv-text");
 
+cvStatus.classList.remove("success", "loading");
+cvStatus.classList.add("hidden");
+cvText.textContent = "Caricamento curriculum…";
   } else {
     // ❌ ERRORE API
     btn.classList.remove("loading");

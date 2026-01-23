@@ -1397,6 +1397,11 @@ function rebuildSceltiGustiFromQuantities() {
 
 // ---------------- RENDER ----------------
 function render() {
+
+  // 🔥 FIX DEFINITIVO: stato UI NON renderizzabile
+  if (step === "riepilogo-mini-open") {
+    step = "extra";
+  }
   const area = byId("step-container");
   if (!area) return;
 
@@ -1510,29 +1515,28 @@ function limitEffect(step, nome){
   showIsland(step, "Limite raggiunto ❗");
 }
 
-function toggle(step, nome, el) {
+function toggle(stepParam, nome, el) {
+
+  // 🔥 se mini aperto → chiudi e torna a EXTRA
+  if (window.step === "riepilogo-mini-open") {
+    chiudiMiniRiepilogo();
+    window.step = "extra";
+    stepParam = "extra";
+  }
 
   const container = document.getElementById("riepilogo-mini");
 
-  // ---------------- EXTRA ----------------
-  if (step === "extra") {
+  if (stepParam === "extra") {
     if (scelti.extra.includes(nome)) {
       scelti.extra = scelti.extra.filter(x => x !== nome);
     } else {
       scelti.extra.push(nome);
     }
 
-    showIsland(step, nome);
+    showIsland("extra", nome);
     render();
     updateRiepilogo();
     stabilizeMiniRiepilogo();
-
-    // shake (senza aprire)
-    container.classList.remove("shake");
-    void container.offsetWidth;
-    container.classList.add("shake");
-    setTimeout(() => container.classList.remove("shake"), 350);
-
     return;
   }
 
