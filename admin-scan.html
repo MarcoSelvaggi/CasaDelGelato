@@ -481,5 +481,26 @@ function startScanner() {
 startScanner();
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("scan") === "1") {
+    console.log("📷 Avvio scanner automatico (Shortcut)");
+
+    // ⏱️ micro delay per sicurezza Safari
+    setTimeout(() => {
+      if (typeof startScanner === "function") {
+        startScanner();
+      } else if (typeof avviaScanner === "function") {
+        avviaScanner();
+      } else {
+        console.warn("⚠️ Funzione scanner non trovata");
+      }
+    }, 300);
+  }
+});
+</script>
+
 </body>
 </html>
