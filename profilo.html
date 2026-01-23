@@ -752,6 +752,8 @@ body{
   stroke: #111;
   stroke-width: 1.8;
   fill: none;
+  display: block; 
+
 }
 .icon-wrapper{
   position: relative;
@@ -1504,6 +1506,9 @@ body.no-scroll{
 <!-- MENU LIQUID GLASS -->
 <div id="profile-menu" class="glass-menu">
   <button class="glass-item" id="menu-change-photo">Cambia immagine</button>
+  <button class="glass-item" id="menu-edit-profile">
+  Modifica profilo
+</button>
   <button class="glass-item" id="menu-register">Registrati</button>
   <a href="login.html" class="glass-item">Accedi</a>
   <button class="glass-item" id="menu-logout">Logout</button>
@@ -2903,6 +2908,15 @@ if (btnRegister) {
 
     // vai alla registrazione
     window.location.href = "login.html?mode=register";
+  });
+}
+// ===== MODIFICA PROFILO =====
+const editProfileBtn = document.getElementById("menu-edit-profile");
+
+if (editProfileBtn) {
+  editProfileBtn.addEventListener("click", () => {
+    closeMenu();
+    window.location.href = "modifica-profilo.html";
   });
 }
 

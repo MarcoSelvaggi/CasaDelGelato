@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conferma cambio email</title>
+
+<script type="module">
+  import { supabase } from "./supabase.js";
+  window.supabase = supabase;
+</script>
+
+<style>
+body{
+  font-family: system-ui, -apple-system, sans-serif;
+  background:#f6f6f7;
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* POPUP */
+#popup-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+}
+
+#popup-backdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+#popup{
+  background:#fff;
+  padding:22px;
+  border-radius:18px;
+  width:90%;
+  max-width:320px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+#popup h2{
+  margin:0 0 10px;
+  font-size:18px;
+  font-weight:800;
+}
+
+#popup p{
+  font-size:14px;
+  color:#555;
+  line-height:1.4;
+}
+
+#popup button{
+  margin-top:16px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:#007aff;
+  color:#fff;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- POPUP -->
+<div id="popup-backdrop">
+  <div id="popup">
+    <h2 id="popup-title"></h2>
+    <p id="popup-message"></p>
+    <button id="popup-btn">OK</button>
+  </div>
+</div>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+/* POPUP */
+function mostraPopup(t,m,redirect=null){
+  document.getElementById("popup-title").textContent = t;
+  document.getElementById("popup-message").innerHTML = m;
+
+  const b = document.getElementById("popup-backdrop");
+  const btn = document.getElementById("popup-btn");
+
+  b.classList.add("show");
+
+  btn.onclick = () => {
+    b.classList.remove("show");
+    if (redirect){
+      setTimeout(() => location.href = redirect, 150);
+    }
+  };
+}
+
+/* MAIN */
+(async function(){
+
+  const token = new URLSearchParams(location.search).get("token");
+
+  if (!token){
+    mostraPopup(
+      "Link non valido",
+      "Token mancante o errato.",
+      "login.html"
+    );
+    return;
+  }
+
+  // 1️⃣ verifica token
+  const { data: utente, error } = await supabase
+    .from("utenti")
+    .select("email, new_email, email_change_expires_at")
+    .eq("email_change_token", token)
+    .maybeSingle();
+
+  if (!utente){
+    mostraPopup(
+      "Link non valido",
+      "Questo link è già stato utilizzato oppure non è valido.",
+      "login.html"
+    );
+    return;
+  }
+
+  if (new Date(utente.email_change_expires_at) < new Date()){
+    mostraPopup(
+      "Link scaduto",
+      "Il link di conferma è scaduto. Richiedi nuovamente il cambio email.",
+      "profilo.html"
+    );
+    return;
+  }
+
+  const emailVecchia = utente.email;
+  const emailNuova   = utente.new_email;
+
+  try {
+    // 2️⃣ aggiorna TUTTE le tabelle collegate
+    await supabase.from("coppe")
+      .update({ email: emailNuova })
+      .eq("email", emailVecchia);
+
+    await supabase.from("conferme_coppe")
+      .update({ email: emailNuova })
+      .eq("email", emailVecchia);
+
+    await supabase.from("coupon")
+      .update({ email: emailNuova })
+      .eq("email", emailVecchia);
+
+    await supabase.from("notifiche")
+      .update({ email: emailNuova })
+      .eq("email", emailVecchia);
+
+    await supabase.from("disponibilita")
+      .update({ email: emailNuova })
+      .eq("email", emailVecchia);
+
+    // 3️⃣ aggiorna UTENTE
+    await supabase
+      .from("utenti")
+      .update({
+        email: emailNuova,
+        new_email: null,
+        email_change_token: null,
+        email_change_expires_at: null
+      })
+      .eq("email", emailVecchia);
+
+  } catch (err){
+    console.error(err);
+    mostraPopup(
+      "Errore",
+      "Si è verificato un problema durante il cambio email.",
+      "profilo.html"
+    );
+    return;
+  }
+
+  // 4️⃣ logout forzato
+  localStorage.clear();
+
+  mostraPopup(
+    "Email aggiornata",
+    "La tua email è stata aggiornata correttamente.<br><br>Effettua nuovamente l’accesso.",
+    "login.html"
+  );
+
+})();
+</script>
+
+</body>
+</html>
