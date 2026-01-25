@@ -18,6 +18,9 @@ let coppaSalvata = false;
 let registrazioneAperta = false;
 let loadingFallbackTimer = null;
 let isLoadingCoppa = false;
+let _onConfirmRimuovi = null;
+let nuvolaInstagramTimer = null;
+let flussoRiepilogoAttivo = false;
 
 // 🔥 SE ARRIVO DA "USA QUESTA COPPA" → NASCONDI STEP TAVOLO
 document.addEventListener("DOMContentLoaded", () => {
@@ -1075,11 +1078,26 @@ function showIslandAvvisoGusti(mancanti) {
 
 // ---------------- FORMATO ----------------
 function showSizeScreen(){
+
+  // 🔥 BLOCCA COMPLETAMENTE LA NUVOLA "IMMAGINE PRONTA"
+  flussoRiepilogoAttivo = false;
+
+  if (nuvolaInstagramTimer) {
+    clearTimeout(nuvolaInstagramTimer);
+    nuvolaInstagramTimer = null;
+  }
+
+  if (typeof nascondiNuvolaInstagram === "function") {
+    nascondiNuvolaInstagram();
+  }
+
+  // 🔽 TUO CODICE (INTOCCATO)
   document.body.classList.remove("step-riepilogo");
+
   const header = document.querySelector("header");
-if (header) {
-  header.style.display = "none";
-}
+  if (header) {
+    header.style.display = "none";
+  }
 
   // 🔥 RESET COMPLETO PER NUOVA COPPA
   coppaSalvata = false;          // ← FONDAMENTALE
@@ -1087,11 +1105,13 @@ if (header) {
 
   byId("step-size").style.display = "block";
   byId("step-container").style.display = "none";
-// 🔥 NASCONDI SEMPRE IL TITOLO QUANDO TORNI AI FORMATI
-const title = document.getElementById("step-title");
-if (title) {
-  title.classList.add("hidden");
-}
+
+  // 🔥 NASCONDI SEMPRE IL TITOLO QUANDO TORNI AI FORMATI
+  const title = document.getElementById("step-title");
+  if (title) {
+    title.classList.add("hidden");
+  }
+
   updateRiepilogo();
 }
 
@@ -2929,16 +2949,15 @@ window.aggiungiAlCarrello = function () {
     // 💾 salva carrello
     localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
 
-// ⏱️ reset scadenza carrello (riparte sempre)
-localStorage.setItem(
-  "carrello_scadenza",
-  Date.now() + 2 * 60 * 60 * 1000 // 2 ore
-);
+    // ⏱️ RESET TIMER (riparte sempre da capo)
+    resetEAvviaTimerCarrello();
 
     // 🔔 UI
     updateBadgeNav();
-    alert("🛒 Coppa aggiunta al carrello!");
+    showToast("Coppa aggiunta al carrello!");
 };
+
+
 function getCarrelloCount() {
     const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
     if (!Array.isArray(carrello)) return 0;
@@ -3198,14 +3217,26 @@ function avviaTimerNuvolettaInstagram() {
   const nuvola = document.getElementById("instagram-nuvola");
   if (!nuvola) return;
 
-  nuvola.classList.remove("show"); // reset sicurezza
+  // 🔥 segna flusso attivo
+  flussoRiepilogoAttivo = true;
 
-  setTimeout(() => {
-    if (!window.registrazioneAperta) {
-      nuvola.classList.add("show");
-    }
+  // sicurezza
+  nuvola.classList.remove("show");
+
+  if (nuvolaInstagramTimer) {
+    clearTimeout(nuvolaInstagramTimer);
+    nuvolaInstagramTimer = null;
+  }
+
+  nuvolaInstagramTimer = setTimeout(() => {
+    // ⛔ se NON siamo più nel riepilogo → NON mostrare
+    if (!flussoRiepilogoAttivo) return;
+    if (registrazioneAperta) return;
+
+    nuvola.classList.add("show");
   }, 20000);
 }
+
 function mostraMiniDuranteLoading() {
   const mini = document.getElementById("riepilogo-mini");
   if (!mini) return;
@@ -3682,68 +3713,89 @@ function freezeArrowTextPositions(exportRoot) {
 }
 
 
-// 🛒 APRE IL CARRELLO
+// 🛒 APRE IL CARRELLO (ROBUSTO)
 window.apriCarrello = function() {
-    const overlay = document.getElementById("carrello-overlay");
+  const overlay = document.getElementById("carrello-overlay");
+  if (!overlay) return;
 
-    // 🔥 Aggiorno SUBITO la UI del carrello
-    aggiornaCarrelloUI();
+  // 🔥 reset stato (CHIAVE DEL FIX)
+  overlay.classList.remove("show");
+  overlay.style.display = "flex";
 
-    // 🔥 Aggiorno il numeretto (badge) del carrello
-    updateCarrelloBadge();
+  // 🔥 reset forzato
+  overlay.getBoundingClientRect();
 
-    // 🔥 Mostro overlay
-    overlay.style.display = "flex";
+  // 🔥 UI
+  aggiornaCarrelloUI();
+  updateCarrelloBadge();
+  updateBadgeNav();
 
-       // ⏱️ AVVIA TIMER SVUOTAMENTO (QUESTA È LA RIGA CHE MANCAVA)
-    avviaTimerSvuotamentoCarrello();
+  // 🔥 anima
+  overlay.classList.add("show");
 
-    // 🔥 Mostro il bottone cronologia solo se registrato
-    const btnCron = document.getElementById("btn-cronologia");
-    if (btnCron) {
-        const email = localStorage.getItem("user_email");
-        btnCron.style.display = email ? "inline-flex" : "none";
-        updateBadgeNav();
-    }
+  // ⏱️ timer
+  avviaTimerSvuotamentoCarrello();
+
+  // bottone cronologia
+  const btnCron = document.getElementById("btn-cronologia");
+  if (btnCron) {
+    const email = localStorage.getItem("user_email");
+    btnCron.style.display = email ? "inline-flex" : "none";
+  }
 };
 
 // 🔢 CAMBIA QUANTITÀ COPPA NEL CARRELLO
 window.cambiaQuantita = function(id, delta) {
+  let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+  const idx = carrello.findIndex(c => c.id === id);
+  if (idx === -1) return;
 
-    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
-    const idx = carrello.findIndex(c => c.id === id);
-    if (idx === -1) return;
+  const coppa = carrello[idx];
 
-    const coppa = carrello[idx];
+if (delta === -1 && (coppa.quantita || 1) === 1) {
 
-    // 👉 CASO: quantità = 1 e utente preme "-"
-    if (delta === -1 && coppa.quantita === 1) {
-        const conferma = confirm("Vuoi rimuovere questa coppa dal carrello?");
-        if (!conferma) return;
+  mostraPopupRimuovi(() => {
+    // rimuove la coppa
+    carrello.splice(idx, 1);
 
-        // Elimina la coppa
-        carrello.splice(idx, 1);
-    } else {
-        // Incremento/decremento normale
-        coppa.quantita += delta;
-        if (coppa.quantita < 1) coppa.quantita = 1;
+    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+
+    if (getTotaleCarrelloQty() === 0) {
+      stopTimerCarrello();
     }
 
-    // Salvo aggiornamento
-    localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
-    // 🧹 SE IL CARRELLO È VUOTO → RIMUOVI TIMER
-if (carrello.length === 0) {
-    localStorage.removeItem("carrello_scadenza");
-}
-// 🧹 NASCONDI SUBITO IL TIMER SE CARRELLO VUOTO
-const timerBox = document.getElementById("carrello-timer");
-if (timerBox) {
-    timerBox.style.display = "none";
-}
-    // 🔥 AGGIORNO IMMEDIATAMENTE UI e BADGE
     aggiornaCarrelloUI();
     updateBadgeNav();
-};
+
+    // se resta qualcosa → mostra timer (senza reset)
+    if (getTotaleCarrelloQty() > 0) {
+      avviaTimerSvuotamentoCarrello();
+    }
+  });
+
+  return; // ⛔ IMPORTANTISSIMO
+} else {
+    coppa.quantita = (coppa.quantita || 1) + delta;
+    if (coppa.quantita < 1) coppa.quantita = 1;
+  }
+
+localStorage.setItem("carrelloCoppe", JSON.stringify(carrello));
+
+if (getTotaleCarrelloQty() === 0) {
+  stopTimerCarrello();
+} else if (delta === +1) {
+  // 🔥 SOLO SE AUMENTA
+  resetEAvviaTimerCarrello();
+}
+
+aggiornaCarrelloUI();
+updateBadgeNav();
+
+  // ✅ se non vuoto → assicurati che si veda (senza resettarlo)
+  if (getTotaleCarrelloQty() > 0) {
+    avviaTimerSvuotamentoCarrello();
+  }
+}; 
 
 // ✖ CHIUDE IL CARRELLO
 window.chiudiCarrello = function() {
@@ -3752,27 +3804,18 @@ window.chiudiCarrello = function() {
 };
 
 window.svuotaCarrello = function () {
-    if (!confirm("Vuoi svuotare tutto il carrello?")) return;
 
-    // 🧹 svuota carrello
+  document.querySelector("#popup-rimuovi-coppa h3").textContent =
+    "Svuotare il carrello?";
+  document.querySelector("#popup-rimuovi-coppa p").textContent =
+    "Tutte le coppe verranno rimosse dal carrello.";
+
+  mostraPopupRimuovi(() => {
     localStorage.setItem("carrelloCoppe", "[]");
-
-    // 🧹 rimuove scadenza
-    localStorage.removeItem("carrello_scadenza");
-    localStorage.removeItem("carrello_last_update");
-
-    // ⏱️ ferma e nasconde il timer
-    if (window.carrelloTimerInterval) {
-        clearInterval(window.carrelloTimerInterval);
-        window.carrelloTimerInterval = null;
-    }
-
-    const timerBox = document.getElementById("carrello-timer");
-    if (timerBox) timerBox.style.display = "none";
-
-    // 🔄 aggiorna UI
+    stopTimerCarrello();
     aggiornaCarrelloUI();
     updateBadgeNav();
+  });
 };
 
 // 🔥 Aggiorna il badge della NAV BOTTOM
@@ -4068,6 +4111,12 @@ function mostraNuvolaInstagram() {
 }
 
 function apriRegistrazione() {
+  flussoRiepilogoAttivo = false;
+
+if (nuvolaInstagramTimer) {
+  clearTimeout(nuvolaInstagramTimer);
+  nuvolaInstagramTimer = null;
+}
   // 🔥 segna che veniamo dal riepilogo
   localStorage.setItem("returnToRiepilogo", "1");
 
@@ -4083,13 +4132,36 @@ function apriRegistrazione() {
 
 // CHIUDI MODULO
 function chiudiRegistrazione() {
+
+  // 🔥 ESCI DALLA REGISTRAZIONE
   document.getElementById("reg-box").style.display = "none";
   document.getElementById("step-container").style.display = "block";
   document.getElementById("step-title").style.display = "block";
 
-  // ✅ RI-MOSTRA NUVOLA quando torni al riepilogo finale
+  // 🔥 NON riattivare automaticamente il flusso
+  flussoRiepilogoAttivo = false;
+
+  // 🔥 BLOCCA QUALSIASI TIMER PENDENTE
+  if (nuvolaInstagramTimer) {
+    clearTimeout(nuvolaInstagramTimer);
+    nuvolaInstagramTimer = null;
+  }
+
+  // 🔥 NASCONDI SEMPRE LA NUVOLA
+  nascondiNuvolaInstagram();
+
+  // ✅ SOLO SE SEI DAVVERO NEL RIEPILOGO FINALE
   if (document.body.classList.contains("step-riepilogo")) {
-    mostraNuvolaInstagram();
+
+    // riattiva flusso
+    flussoRiepilogoAttivo = true;
+
+    // riavvia timer NUVOLA (20s)
+    nuvolaInstagramTimer = setTimeout(() => {
+      if (flussoRiepilogoAttivo) {
+        mostraNuvolaInstagram();
+      }
+    }, 20000);
   }
 }
 
@@ -4216,3 +4288,52 @@ async function generaCoppaInstagramStory() {
     canvas.toBlob(blob => res(blob), "image/png")
   );
 }
+
+let toastTimeout = null;
+
+function showToast(text){
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+
+  toast.textContent = text;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1200);
+}
+
+function stopTimerCarrello() {
+  const timerBox = document.getElementById("carrello-timer");
+
+  if (window.carrelloTimerInterval) {
+    clearInterval(window.carrelloTimerInterval);
+    window.carrelloTimerInterval = null;
+  }
+
+  if (timerBox) {
+    timerBox.style.display = "none";
+  }
+
+  localStorage.removeItem("carrello_scadenza");
+}
+
+function mostraPopupRimuovi(onConfirm) {
+  _onConfirmRimuovi = onConfirm;
+  document.getElementById("popup-rimuovi-coppa").style.display = "flex";
+}
+
+function chiudiPopupRimuovi() {
+  document.getElementById("popup-rimuovi-coppa").style.display = "none";
+  _onConfirmRimuovi = null;
+}
+
+document
+  .getElementById("popup-conferma-rimuovi")
+  .addEventListener("click", () => {
+    if (typeof _onConfirmRimuovi === "function") {
+      _onConfirmRimuovi();
+    }
+    chiudiPopupRimuovi();
+  });

@@ -1,3 +1,26 @@
+// 🔒 usa SEMPRE window.carrelloTimerInterval (una sola variabile globale)
+window.carrelloTimerInterval = window.carrelloTimerInterval || null;
+
+function stopTimerCarrello() {
+  const timerBox = document.getElementById("carrello-timer");
+  const countdownEl = document.getElementById("carrello-countdown");
+
+  if (window.carrelloTimerInterval) {
+    clearInterval(window.carrelloTimerInterval);
+    window.carrelloTimerInterval = null;
+  }
+
+  localStorage.removeItem("carrello_scadenza");
+
+  if (countdownEl) countdownEl.textContent = "00:00";
+  if (timerBox) timerBox.style.display = "none";
+}
+
+function getTotaleCarrelloQty() {
+  const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
+  return carrello.reduce((sum, c) => sum + (c.quantita || 1), 0);
+}
+
 // 🔥 Aggiorna badge nella bottom bar
 window.updateBadgeNav = function() {
     let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
@@ -6,24 +29,25 @@ window.updateBadgeNav = function() {
     badge.textContent = carrello.length;
 };
 
-// 🔥 Apre il carrello grafico
-window.apriCarrello = function() {
-    const overlay = document.getElementById("carrello-overlay");
-    if (!overlay) return;
-    overlay.style.display = "flex";
-    avviaTimerSvuotamentoCarrello();
-    aggiornaCarrelloUI();
-};
 
-// 🔥 Chiude carrello
+// 🔥 Chiude carrello (pulizia completa)
 window.chiudiCarrello = function() {
-    const overlay = document.getElementById("carrello-overlay");
-    if (!overlay) return;
+  const overlay = document.getElementById("carrello-overlay");
+  if (!overlay) return;
+
+  overlay.classList.remove("show");
+
+  setTimeout(() => {
     overlay.style.display = "none";
+
+    // 🔥 pulizia extra (fondamentale)
+    overlay.classList.remove("show");
+  }, 300);
 };
 
 // 🔥 Aggiorna contenuto carrello
 window.aggiornaCarrelloUI = function () {
+    let carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
     const contenuto = document.getElementById("carrello-contenuto");
     let coppeCronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
 
@@ -80,9 +104,10 @@ window.aggiornaCarrelloUI = function () {
 </div>`;
     });
 
-    contenuto.innerHTML = html;
+contenuto.innerHTML = html;
 
-    updateBadgeNav();
+updateBadgeNav();
+avviaTimerSvuotamentoCarrello();
 };
 
 /* ===============================
@@ -99,56 +124,60 @@ function avviaTimerSvuotamentoCarrello() {
   const timerBox = document.getElementById("carrello-timer");
   if (!countdownEl || !timerBox) return;
 
-  const scadenza = Number(localStorage.getItem("carrello_scadenza"));
-  if (!scadenza) {
-    timerBox.style.display = "none";
+  // ✅ se carrello vuoto → reset TOTALE
+  if (getTotaleCarrelloQty() === 0) {
+    stopTimerCarrello();
     return;
+  }
+
+  // ✅ se non esiste scadenza → creala ORA (riparte da zero)
+  let scadenza = Number(localStorage.getItem("carrello_scadenza"));
+  if (!scadenza) {
+    scadenza = Date.now() + (15 * 60 * 1000); // 15 min
+    localStorage.setItem("carrello_scadenza", scadenza);
   }
 
   timerBox.style.display = "block";
 
-  // 🔄 stop eventuale timer precedente
-  if (carrelloTimerInterval) {
-    clearInterval(carrelloTimerInterval);
-  }
+  // ✅ se interval già attivo, NON crearne un altro
+  if (window.carrelloTimerInterval) return;
 
   function tick() {
-    const now = Date.now();
-    const diff = scadenza - now;
+    const diff = scadenza - Date.now();
 
- if (diff <= 0) {
-  console.log("🗑️ Carrello scaduto → svuotamento");
-
-  // 1️⃣ svuota carrello
-  localStorage.removeItem("carrelloCoppe");
-  localStorage.removeItem("carrello_scadenza");
-
-  // 2️⃣ reset UI
-  countdownEl.textContent = "00:00";
-  timerBox.style.display = "none";
-
-  clearInterval(carrelloTimerInterval);
-  carrelloTimerInterval = null;
-
-  // 3️⃣ aggiorna interfaccia
-  aggiornaCarrelloUI();
-  updateBadgeNav();
-
-  return;
-}
+    if (diff <= 0) {
+      localStorage.removeItem("carrelloCoppe");
+      stopTimerCarrello();
+      aggiornaCarrelloUI?.();
+      updateBadgeNav?.();
+      return;
+    }
 
     const totSec = Math.floor(diff / 1000);
-    const h = Math.floor(totSec / 3600);
     const m = Math.floor((totSec % 3600) / 60);
     const s = totSec % 60;
-
-    countdownEl.textContent =
-      (h > 0 ? h + ":" : "") +
-      String(m).padStart(2, "0") +
-      ":" +
-      String(s).padStart(2, "0");
+    countdownEl.textContent = String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
   }
 
-  tick(); // ⏱️ avvio immediato
-  carrelloTimerInterval = setInterval(tick, 1000);
+  tick();
+  window.carrelloTimerInterval = setInterval(tick, 1000);
 }
+
+window.resetEAvviaTimerCarrello = function () {
+  console.log("⏱️ resetEAvviaTimerCarrello CHIAMATA");
+
+  // ferma timer esistente
+  if (window.carrelloTimerInterval) {
+    clearInterval(window.carrelloTimerInterval);
+    window.carrelloTimerInterval = null;
+  }
+
+  // reset scadenza
+localStorage.setItem(
+  "carrello_scadenza",
+  Date.now() + 15 * 60 * 1000 // ⏱️ 15 minuti
+);
+
+  // riavvia timer
+  avviaTimerSvuotamentoCarrello();
+};

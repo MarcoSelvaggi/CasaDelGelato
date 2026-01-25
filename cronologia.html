@@ -1374,21 +1374,29 @@ body.overlay-open #lista-coppe {
 }
 #coppa-overlay-close{
   position: fixed;
-  top: 65px;
-  right: 18px;
+  top: 80px;
+  right: 30px;
 
-  background: rgba(255,255,255,0.18);
-  color: white;
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;          /* ✅ sfondo bianco */
+  color: #000000;               /* ✅ X nera */
   border: none;
+  border-radius: 50%;
 
   font-size: 22px;
-  padding: 8px 14px;
-  border-radius: 999px;
+  font-weight: 700;
+  line-height: 1;
 
   cursor: pointer;
   z-index: 100000;
 
-  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25); /* 👌 visibile su tutto */
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
@@ -1397,7 +1405,7 @@ body.overlay-open #lista-coppe {
 }
 
 #coppa-overlay-close:active{
-  transform: scale(0.95);
+  transform: scale(0.94);
 }
 
 body.no-scroll{

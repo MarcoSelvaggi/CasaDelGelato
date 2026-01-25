@@ -4631,3 +4631,143 @@ body.blur-bg #blur-overlay {
   transform: scale(0.96);
   opacity: 0.9;
 }
+
+.toast{
+  position: fixed;
+  bottom: 90px;              /* sopra eventuale bottom bar */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+
+  background: rgba(30,30,30,0.9);
+  color: #fff;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  opacity: 0;
+  pointer-events: none;
+
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+
+  z-index: 999999;
+}
+
+.toast.show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.carrello-note {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #4a4a4a; /* più scura, leggibile ma non invasiva */
+  margin-top: 4px;
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+}
+
+.popup-box {
+  background: #fff;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 320px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,.2);
+}
+
+.popup-box h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+
+.popup-box p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #555;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.popup-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e5e5ea;
+}
+
+.btn-danger {
+  background: #ff3b30;
+  color: #fff;
+}
+#popup-rimuovi-coppa {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647; /* massimo possibile */
+  isolation: isolate; /* 🔥 QUESTA È LA CHIAVE */
+}
+
+/* OVERLAY */
+#carrello-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  z-index: 1000;
+
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+/* stato aperto */
+#carrello-overlay.show {
+  display: flex;
+  opacity: 1;
+}
+
+/* BOX */
+#carrello-box {
+  margin: auto;
+  width: min(420px, 92%);
+  max-height: 85vh;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+
+  transform: translateY(40px);
+  opacity: 0;
+  transition:
+    transform 0.35s cubic-bezier(.2,.8,.2,1),
+    opacity   0.25s ease;
+}
+
+/* box visibile */
+#carrello-overlay.show #carrello-box {
+  transform: translateY(0);
+  opacity: 1;
+}
