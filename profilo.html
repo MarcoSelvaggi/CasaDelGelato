@@ -2430,7 +2430,7 @@ function sbloccaScrollPagina() {
 async function aggiornaNumeroCoupon(email){
   const { data, error } = await supabase
     .from("coupon")
-    .select("redento")
+    .select("id, nome, tipo, redento")
     .eq("email", email);
 
   if (error) return;
@@ -2610,6 +2610,15 @@ function renderCoupons(coupons){
     list.innerHTML = `<div class="empty-msg">Nessun coupon disponibile</div>`;
     return;
   }
+  // 🔀 ORDINA: prima utilizzabili, poi usati
+coupons.sort((a, b) => {
+  if (a.redento === b.redento) {
+    // stesso stato → più recenti sopra
+    return new Date(b.created_at) - new Date(a.created_at);
+  }
+  // non redento (false) prima di redento (true)
+  return a.redento ? 1 : -1;
+});
 
   coupons.forEach(c => {
     const scadenza = scadenzaDaCreazione(c.created_at);
@@ -2618,27 +2627,40 @@ function renderCoupons(coupons){
     div.id = `coupon-${c.codice}`;
     div.className = "coupon" + (c.redento ? " used" : "");
 
-    div.innerHTML = `
-      <div style="flex:1">
-        <div class="coupon-title">${c.titolo}</div>
-        <div class="coupon-desc">Coppa ${c.tipo} omaggio</div>
-        <div class="coupon-expiry">Scade il ${scadenza.toLocaleDateString()}</div>
-        ${
-          c.redento && c.used_at
-            ? `<div class="coupon-used-at" style="font-size:12px;color:#888;margin-top:6px">
-                 Usato il ${new Date(c.used_at).toLocaleDateString()}
-               </div>`
-            : ``
-        }
-        <div id="qr-${c.codice}" class="coupon-qr"></div>
-      </div>
+div.innerHTML = `
+  <div style="flex:1">
+    <div class="coupon-title">${c.titolo}</div>
+    <div class="coupon-desc">Coppa ${c.tipo} omaggio</div>
 
-      ${
-        c.redento
-          ? `<button disabled>Usato</button>`
-          : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
-      }
-    `;
+    ${
+      !c.redento
+        ? `<div class="coupon-unlocked" style="font-size:12px;color:#666;margin-top:4px">
+             Sbloccato il ${new Date(c.created_at).toLocaleDateString("it-IT")}
+           </div>`
+        : ``
+    }
+
+    <div class="coupon-expiry">
+      Scade il ${scadenza.toLocaleDateString("it-IT")}
+    </div>
+
+    ${
+      c.redento && c.used_at
+        ? `<div class="coupon-used-at" style="font-size:12px;color:#888;margin-top:6px">
+             Usato il ${new Date(c.used_at).toLocaleDateString("it-IT")}
+           </div>`
+        : ``
+    }
+
+    <div id="qr-${c.codice}" class="coupon-qr"></div>
+  </div>
+
+  ${
+    c.redento
+      ? `<button disabled>Usato</button>`
+      : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
+  }
+`;
 
     list.appendChild(div);
   });
@@ -2720,24 +2742,21 @@ function subscribeCouponRealtime(email) {
 
   couponChannel = supabase
     .channel("coupon-realtime")
-    .on(
-      "postgres_changes",
-      {
-        event: "UPDATE",
-        schema: "public",
-        table: "coupon"
-      },
-      payload => {
-        // sicurezza: solo coupon dell'utente
-        if (payload?.new?.email !== email) return;
+.on(
+  "postgres_changes",
+  {
+    event: "UPDATE",
+    schema: "public",
+    table: "coupon"
+  },
+  async payload => {
+    if (payload?.new?.email !== email) return;
 
-        console.log("🔁 Coupon aggiornato realtime:", payload.new);
-
-        // ✅ QUI DEVONO STARE
-        aggiornaCouponUI(payload.new);
-        aggiornaNumeroCoupon(email);
-      }
-    )
+    // 🔁 ricarica TUTTI i coupon (così li riordina)
+    await caricaCoupon(email);
+    await aggiornaNumeroCoupon(email);
+  }
+)
     .subscribe();
 }
 /* ===============================

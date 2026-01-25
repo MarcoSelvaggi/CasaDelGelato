@@ -526,13 +526,19 @@
 }
 
 .rename-input{
-  height: 28px;              /* ⬅️ CHIAVE */
-  padding: 2px 26px 2px 6px; /* ⬅️ compatto */
-  font-size: 15px;           /* ⬅️ come titolo */
+  height: 28px;
+  padding: 2px 26px 2px 6px;
+
+  font-size: 15px;
   font-weight: 600;
-  line-height: 1;
+
+  line-height: 24px;   /* ✅ invece di 1 */
+  box-sizing: border-box;
+
   border-radius: 6px;
   border: 1px solid #ccc;
+
+  outline: none;       /* ✅ stop bordo Safari */
 }
 
 .rename-save{
@@ -790,47 +796,7 @@
   box-shadow: 0 6px 18px rgba(0,0,0,0.14);
 }
 
-/* ===============================
-   FEDELTA – BASE
-=============================== */
-#fedelta-box{
-  max-width: 520px;
-  width: 88%;
-  margin: 12px auto 0;
-  padding: 12px 14px;          /* ⬅️ ALTEZZA NORMALE */
-  background: white;
-  border-radius: 14px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 
-  transition:
-    transform 0.35s cubic-bezier(.22,.61,.36,1),
-    padding 0.25s ease,
-    border-radius 0.25s ease,
-    box-shadow 0.25s ease,
-    opacity 0.25s ease;
-
-  will-change: transform, opacity;
-}
-
-/* ===============================
-   FEDELTA – STATO COMPATTO
-=============================== */
-#fedelta-box.compact{
-  position: fixed;
-  top: 64px;
-
-  left: 12px;
-  right: 12px;
-  margin: 0 auto;
-
-  max-width: 520px;
-
-  padding: 4px 12px;      /* 🔥 RIDUZIONE SOLO QUI */
-  border-radius: 999px;
-
-  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
-  z-index: 9998;
-}
 #fedelta-box.compact .fedelta-bar-wrapper{
   margin: 0;
   padding: 0;
@@ -849,15 +815,63 @@
 }
 
 /* ===============================
-   COMPACT – NASCONDI TESTI
+   FEDELTA – COMPACT: NASCONDI TITOLO + CONTATORE
 =============================== */
-#fedelta-box.compact b,
-#fedelta-box.compact #fedelta-count,
+#fedelta-box.compact .fedelta-header,
+#fedelta-box.compact #fedelta-count{
+  display: none !important;
+}
+
+#fedelta-box{
+  max-width: 520px;
+  width: 88%;
+  margin: 12px auto 0;
+  padding: 12px 14px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  position: relative;
+
+  transition:
+    transform 0.45s cubic-bezier(.22,.61,.36,1),
+    padding 0.35s cubic-bezier(.22,.61,.36,1),
+    border-radius 0.35s cubic-bezier(.22,.61,.36,1),
+    box-shadow 0.35s cubic-bezier(.22,.61,.36,1),
+    opacity 0.25s ease;
+
+  will-change: transform;
+}
+
+#fedelta-box.compact{
+  position: fixed;
+  top: 64px;
+  left: 12px;
+  right: 12px;
+  margin: 0 auto;
+
+  max-width: 520px;
+  padding: 6px 12px;
+
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  backdrop-filter: blur(8px);
+
+  z-index: 9998;
+}
+
+
+/* NASCONDO DAVVERO IL CONTENUTO */
+#fedelta-box.compact .fedelta-header,
 #fedelta-box.compact #fedelta-msg,
 #fedelta-box.compact #btn-vedi-coupon{
-  opacity: 0;
-  transform: translateY(-4px);
-  pointer-events: none;
+  display: none;
+}
+
+/* barra senza margini */
+#fedelta-box.compact .fedelta-bar-wrapper{
+  margin: 0;
+  padding: 0;
 }
 
 /* ===============================
@@ -909,28 +923,11 @@
   transition: width 0.4s ease;
 }
 
-/* ✅ NON CAMBIARE lo stato normale: resta quello inline */
 
-/* ✅ SOLO COMPACT: override dell'inline con !important */
-#fedelta-box.compact{
-  position: fixed !important;
-  top: 64px !important;
 
-  left: 12px !important;
-  right: 12px !important;
-  margin: 0 auto !important;
-
-  max-width: 520px !important;
-
-  padding: 12px 12px !important;       /* 🔥 QUI si stringe il bianco sopra/sotto */
-  border-radius: 999px !important;
-
-  box-shadow: 0 6px 20px rgba(0,0,0,0.18) !important;
-  z-index: 9998 !important;
-}
 
 /* in compatta nascondo header/messaggio/bottone (ma la barra resta) */
-#fedelta-box.compact .fedelta-header,
+#fedelta-box.compact #fedelta-header,
 #fedelta-box.compact #fedelta-msg,
 #fedelta-box.compact #btn-vedi-coupon{
   display: none !important;
@@ -993,31 +990,9 @@
   height: 0;
 }
 
-/* normale */
-#fedelta-box{
-  max-width: 520px;
-  width: 88%;
-  margin: 12px auto 0;
-  padding: 12px 14px;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  position: relative;
-}
 
-/* compatta */
-#fedelta-box.compact{
-  position: fixed;
-  top: 64px;
-  left: 12px;
-  right: 12px;
-  margin: 0 auto;
-  max-width: 520px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
-  z-index: 9998;
-}
+
+
 #fedelta-box.compact{
   animation: fedeltaFade 0.25s ease;
 }
@@ -1243,6 +1218,202 @@
 #menu-btn:active{
   opacity: .6;
 }
+  /* 🔄 Spinner caricamento */
+.load-spinner {
+  width: 28px;
+  height: 28px;
+  margin: 12px auto 0;
+
+  border: 3px solid rgba(0,0,0,0.15);
+  border-top-color: #ff7a00;
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===============================
+   QR CODE – ANIMAZIONE MORBIDA
+=============================== */
+.qr-box{
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    max-height 0.35s cubic-bezier(.22,.61,.36,1),
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+/* stato aperto */
+.qr-box.open{
+  max-height: 220px; /* abbastanza per QR */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===============================
+   ANIMAZIONE ENTRATA CARD COPPE
+=============================== */
+.cup-card{
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s cubic-bezier(.22,.61,.36,1);
+}
+
+/* stato visibile */
+.cup-card.visible{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+body.lock-scrollbar {
+  overflow-y: scroll; /* forza scrollbar sempre presente */
+}
+
+/* 🍞 TOAST NOTIFICA */
+.toast{
+  position: fixed;
+  bottom: 90px; /* sopra bottom-nav */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+
+  background: rgba(30,30,30,0.85);
+  color: #fff;
+
+  padding: 10px 14px;
+  border-radius: 14px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  opacity: 0;
+  pointer-events: none;
+
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+
+  z-index: 999999;
+}
+
+/* stato visibile */
+.toast.show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* 🔥 FIX DEFINITIVO BARRA FEDELTA */
+#fedelta-box .fedelta-bar-wrapper {
+  width: 100% !important;
+  height: 6px !important;
+  overflow: hidden !important;
+}
+
+#fedelta-box #fedelta-bar {
+  display: block !important;
+  height: 100% !important;
+  min-width: 1px;
+  background: linear-gradient(90deg, #34c759, #30d158);
+}
+
+
+#coppa-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  opacity: 0;
+  pointer-events: none;
+
+  transition: opacity 0.35s ease;
+}
+
+#coppa-overlay.open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#coppa-overlay-img{
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+
+  transform: scale(0.96) translateY(8px);
+  opacity: 0;
+
+  transition:
+    transform 0.45s cubic-bezier(.22,.61,.36,1),
+    opacity 0.35s ease;
+}
+
+#coppa-overlay.open #coppa-overlay-img{
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+/* quando overlay aperto → nascondo UI sotto */
+body.overlay-open #search-bar-fixed,
+body.overlay-open #fedelta-box,
+body.overlay-open .controls,
+body.overlay-open #lista-coppe {
+  visibility: hidden;
+}
+#coppa-overlay-close{
+  position: fixed;
+  top: 65px;
+  right: 18px;
+
+  background: rgba(255,255,255,0.18);
+  color: white;
+  border: none;
+
+  font-size: 22px;
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  cursor: pointer;
+  z-index: 100000;
+
+  backdrop-filter: blur(6px);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+#coppa-overlay-close:hover{
+  transform: scale(1.08);
+}
+
+#coppa-overlay-close:active{
+  transform: scale(0.95);
+}
+
+body.no-scroll{
+  overflow: hidden;
+  height: 100vh;
+  touch-action: none; /* 🔥 iOS */
+}
+body.no-scroll #fedelta-box.compact {
+  opacity: 0;
+  pointer-events: none;
+}
+  body.no-scroll #search-bar-fixed {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
     </style>
 </head>
 
@@ -1453,11 +1624,15 @@ function observeCoppaImg(img) {
   setupCoppaLazyObserver();
   coppaImgObserver.observe(img);
 }
+
+    let coppaDaEliminare = null;
+    let animaLista = false;
+    let couponDisponibili = 0;
     let mostraSoloPreferiti = false;
     let termineRicerca = "";
     let criterioOrdine = "data_desc";
-    let limiteVisibili = 3;   // 🔥 quante coppe mostrare
-const STEP_CARICAMENTO = 3;
+    const PAGE_SIZE = 5;   // quante coppe per volta
+    let visibleCount = 5; // quante ne sto mostrando ora
 
     function salva() { localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe)); }
 
@@ -1470,23 +1645,55 @@ const STEP_CARICAMENTO = 3;
             .join(", ");
     }
 
-    function testoRicercaPerCoppa(c) {
-        return [
-            c.nome || "",
-            c.data || "",
-            c.formato || "",
-            ...(c.gusti || []),
-            ...(c.granelle || []),
-            ...(c.topping || []),
-            ...(c.ingredienti || []),
-            ...(c.extra || [])
-        ].join(" ").toLowerCase();
-    }
+function dataRicercabile(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+
+  // formati utili per cercare: 25/01/2026, 25-01-2026, 25 gen 2026, gennaio 2026
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = String(d.getFullYear());
+
+  const meseShort = d
+    .toLocaleDateString("it-IT", { month: "short" })
+    .replace(".", ""); // "gen." -> "gen"
+
+  const meseLong = d.toLocaleDateString("it-IT", { month: "long" });
+
+  return [
+    `${dd}/${mm}/${yyyy}`,
+    `${dd}-${mm}-${yyyy}`,
+    `${dd} ${meseShort} ${yyyy}`,
+    `${meseLong} ${yyyy}`,
+    yyyy
+  ].join(" ");
+}
+
+function testoRicercaPerCoppa(c) {
+  const testo = [
+    c.nome || "",
+    c.data || "",
+    dataRicercabile(c.data),
+    c.formato || "",
+    ...(c.gusti || []),
+    ...(c.granelle || []),
+    ...(c.topping || []),
+    ...(c.ingredienti || []),
+    ...(c.extra || [])
+  ].join(" ");
+
+  // normalizzo: minuscolo + tolgo punti/virgole doppi spazi
+  return testo
+    .toLowerCase()
+    .replace(/[.,]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
     function copiaTesto(testo) {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(testo)
-                .then(() => alert("Copiato negli appunti!"))
+                .then(() => showToast("Copiato negli appunti ✓"))
                 .catch(() => fallbackCopy(testo));
         } else {
             fallbackCopy(testo);
@@ -1507,101 +1714,165 @@ const STEP_CARICAMENTO = 3;
         return String(testo).replace(regex, "<mark>$1</mark>");
     }
 
-    async function eliminaTutteCoppe() {
-  if (!confirm("⚠️ Vuoi eliminare TUTTE le coppe?\nL’operazione non è reversibile.")) return;
+    function apriPopupConferma({ titolo, testo, onConfirm }) {
+  const popup = document.getElementById("popup-confirm");
+  const titleEl = document.getElementById("popup-confirm-title");
+  const textEl = document.getElementById("popup-confirm-text");
+  const okBtn = document.getElementById("popup-confirm-ok");
+  const cancelBtn = document.getElementById("popup-confirm-cancel");
 
-  // 🔥 Soft delete locale
-  coppe = coppe.map(c => ({
-    ...c,
-    eliminata: true,
-    data_eliminazione: new Date().toISOString()
-  }));
-
-  localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
-
-  // 🔥 Soft delete Supabase
-  if (window.supabase) {
-    const email = localStorage.getItem("user_email");
-    if (email) {
-      await supabase
-        .from("coppe")
-        .update({
-          eliminata: true,
-          data_eliminazione: new Date().toISOString()
-        })
-        .eq("email", email);
-    }
+  if (!popup) {
+    console.error("popup-confirm non trovato");
+    return;
   }
 
-  renderLista();
+  titleEl.textContent = titolo;
+  textEl.textContent = testo;
+
+  popup.style.display = "flex";
+
+  const chiudi = () => {
+    popup.style.display = "none";
+    okBtn.onclick = null;
+    cancelBtn.onclick = null;
+  };
+
+  okBtn.onclick = async () => {
+    chiudi();
+    await onConfirm();
+  };
+
+  cancelBtn.onclick = chiudi;
+}
+
+async function eliminaTutteCoppe() {
+  apriPopupConferma({
+    titolo: "Eliminare tutte le coppe?",
+    testo: "⚠️ L’operazione non è reversibile. Perderai tutti i progressi.",
+    onConfirm: async () => {
+
+      coppe = coppe.map(c => ({
+        ...c,
+        eliminata: true,
+        data_eliminazione: new Date().toLocaleString("sv-SE")
+      }));
+
+      localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
+
+      if (window.supabase) {
+        const email = localStorage.getItem("user_email");
+        if (email) {
+          await supabase
+            .from("coppe")
+            .update({
+              eliminata: true,
+              data_eliminazione: new Date().toLocaleString("sv-SE")
+            })
+            .eq("email", email);
+        }
+      }
+
+      renderLista();
+      await aggiornaFedelta();
+    }
+  });
 }
 
 async function tieniSoloPreferiti() {
-  if (!confirm("⚠️ Vuoi eliminare tutte le coppe NON preferite?")) return;
+  apriPopupConferma({
+    titolo: "Eliminare le coppe non preferite?",
+    testo: "Verranno eliminate tutte le coppe che non hai contrassegnato con ⭐",
+    onConfirm: async () => {
 
-  const now = new Date().toISOString();
+      const now = new Date().toLocaleString("sv-SE");
 
-  coppe = coppe.map(c => {
-    if (c.preferito) return c;
-    return {
-      ...c,
-      eliminata: true,
-      data_eliminazione: now
-    };
-  });
-
-  localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
-
-  // 🔥 Supabase
-  if (window.supabase) {
-    const email = localStorage.getItem("user_email");
-    if (email) {
-      await supabase
-        .from("coppe")
-        .update({
+      coppe = coppe.map(c => {
+        if (c.preferito) return c;
+        return {
+          ...c,
           eliminata: true,
           data_eliminazione: now
-        })
-        .eq("email", email)
-        .neq("preferito", true);
+        };
+      });
+
+      localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
+
+      if (window.supabase) {
+        const email = localStorage.getItem("user_email");
+        if (email) {
+          await supabase
+            .from("coppe")
+            .update({
+              eliminata: true,
+              data_eliminazione: now
+            })
+            .eq("email", email)
+            .neq("preferito", true);
+        }
+      }
+
+      renderLista();
+      await aggiornaFedelta();
+    }
+  });
+}
+
+async function eliminaCoppa(idx, confermata = false) {
+  const c = coppe[idx];
+  if (!c) return;
+
+  if (!confermata) {
+    apriPopupElimina(idx);
+    return;
+  }
+
+  // 🔥 FEDELTÀ (ok, non tocchiamo)
+  if (c.email && window.supabase) {
+    try {
+      const { data: conferme } = await supabase
+        .from("conferme_coppe")
+        .select("id")
+        .eq("email", c.email)
+        .order("id", { ascending: true });
+
+      const { data: coupon } = await supabase
+        .from("coupon")
+        .select("id")
+        .eq("email", c.email);
+
+      const confermeConsumate = (coupon?.length || 0) * 10;
+      const confermeValide = conferme.slice(confermeConsumate);
+
+      if (confermeValide.length > 0) {
+        await supabase
+          .from("conferme_coppe")
+          .update({ consumata: true })
+          .eq("id", confermeValide[0].id);
+      }
+    } catch (err) {
+      console.error("Errore fedeltà:", err);
     }
   }
 
-  renderLista();
+  // 🔥 SOFT DELETE SUPABASE
+  if (c.id && window.supabase) {
+    await supabase
+      .from("coppe")
+      .update({
+        eliminata: true,
+        data_eliminazione: new Date().toISOString()
+      })
+      .eq("id", c.id);
+  }
+
+// ✅ elimina localmente
+c.eliminata = true;
+salva();          // ⬅️ QUESTA ERA LA CHIAVE
+renderLista();
+
+await aggiornaFedelta();
+showToast("Coppa eliminata");
 }
-
-async function eliminaCoppa(idx) {
-    const c = coppe[idx];
-    if (!c) return;
-
-    if (!confirm("Vuoi eliminare questa coppa?")) return;
-
-    // 🔥 Se la coppa è su Supabase → soft delete
-    if (c.id && window.supabase) {
-        try {
-            await window.supabase
-                .from("coppe")
-                .update({
-                    eliminata: true,
-                    data_eliminazione: new Date().toISOString()
-                })
-                .eq("id", c.id);
-        } catch (err) {
-            console.error("Errore durante eliminazione su Supabase:", err);
-        }
-    }
-
-    // 🔥 Soft delete ANCHE in locale (IMPORTANTE!)
-    coppe[idx].eliminata = true;
-    coppe[idx].data_eliminazione = new Date().toISOString();
-
-    // 🔥 NON usare più splice!
-    // coppe.splice(idx, 1);  ⛔ ELIMINA DAVVERO — non vogliamo questo
-
-    salva();
-    renderLista();
-}
-
 
 async function rinominaCoppa(idx, nuovoNome) {
     const c = coppe[idx];
@@ -1614,6 +1885,7 @@ async function rinominaCoppa(idx, nuovoNome) {
     c.nome = nomePulito;
     salva();
     renderLista();
+    await aggiornaFedelta();
 
     // 2️⃣ Aggiorna anche nella cronologia salvata in localStorage
     let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
@@ -1671,13 +1943,14 @@ if (window.supabase) {
     }
 }
 
-    alert("Nome coppa aggiornato!");
+   showToast("Nome coppa aggiornato ✓");
 }
 
     function togglePreferito(idx) {
         coppe[idx].preferito = !coppe[idx].preferito;
         salva();
         renderLista();
+      
     }
 
     function usaQuestaCoppa(idx) {
@@ -1728,7 +2001,7 @@ function formattaDataBella(iso) {
 async function getCouponNonUsati(email) {
   if (!window.supabase || !email) return [];
 
-  const { data, error } = await supabase
+ const { data, error } = await window.supabase.from("coupon")
     .from("coupon")
     .select("id")
     .eq("email", email)
@@ -1742,80 +2015,230 @@ async function getCouponNonUsati(email) {
   return data || [];
 }
 
-function aggiornaFedelta() {
+window.aggiornaFedelta = async function aggiornaFedelta() {
+console.log("🚨 aggiornaFedelta chiamata", new Date().toLocaleTimeString());
   const email = localStorage.getItem("user_email");
-  getCouponNonUsati(email).then(couponNonUsati => {
-  const couponDisponibili = couponNonUsati.length;
-
-  const msgEl = document.getElementById("fedelta-msg");
-  const btnEl = document.getElementById("btn-vedi-coupon");
-
-  if (!msgEl || !btnEl) return;
-
-  if (couponDisponibili === 0) {
-    // ❌ NESSUN COUPON DISPONIBILE → messaggio normale
-    msgEl.textContent = "Continua a creare coppe per sbloccare il coupon 🎁";
-    btnEl.style.display = "none";
-  } else {
-    // ✅ CI SONO COUPON NON USATI
-    msgEl.innerHTML = `🎉 Hai ${couponDisponibili} coupon disponibili!`;
-    btnEl.style.display = "block";
-  }
-});
-  // conta SOLO coppe dell’utente già filtrate (coppe array) e NON eliminate
-  const confermateTot = coppe
-  .filter(c => c && !c.eliminata)
-  .reduce((tot, c) => tot + (c.confermate || 0), 0);
-
-  // quante volte ho completato 10
-  const couponSbloccati = Math.floor(confermateTot / 10);
-
-  // progress attuale (0..9)
-  const progress = confermateTot % 10;
 
   const countEl = document.getElementById("fedelta-count");
   const barEl   = document.getElementById("fedelta-bar");
   const msgEl   = document.getElementById("fedelta-msg");
   const btnEl   = document.getElementById("btn-vedi-coupon");
 
-  if (!countEl || !barEl || !msgEl) return;
-
-  // ✅ REGOLA: quando arrivo a 10 → reset visivo a 0/10
-  // ma messaggio "coupon sbloccato" resta FINCHÉ non arriva un'altra conferma:
-  // Questo succede naturalmente perché:
-  // - a 10,20,30... => progress=0 e confermateTot>0 => sbloccato
-  // - a 11 => progress=1 => torna normale
-  let justUnlocked = false;
-
-if (confermateTot >= 10 && progress === 0 && email) {
-  getCouponNonUsati(email).then(coupon => {
-    if (coupon.length > 0) {
-      justUnlocked = true;
-      document.getElementById("fedelta-msg").innerHTML =
-        `🎉 <b>Coupon sbloccato!</b><br>Rivolgiti alla cassa!`;
-    }
-  });
+ if (!countEl || !barEl) {
+  console.warn("⛔ Fedeltà DOM non pronto");
+  return;
 }
-
-  // aggiorno contatore e barra
-  countEl.textContent = `${progress}/10`;
-  barEl.style.width = ((progress / 10) * 100) + "%";
-
-if (!justUnlocked) {
-  msgEl.textContent = couponSbloccati > 0
-    ? `Hai già sbloccato ${couponSbloccati} coupon 🎁 Continua per il prossimo!`
-    : `Continua a creare coppe per sbloccare il coupon 🎁`;
-}
-
-  // bottone: lo mostro se ho almeno 1 coupon sbloccato
-  if (btnEl) {
-    btnEl.style.display = couponSbloccati > 0 ? "block" : "none";
-    btnEl.onclick = () => {
-      window.location.href = "profilo.html#coupon";
-    };
+console.log("🟢 aggiornaFedelta ATTIVA – DOM OK");
+  // 🔴 non loggato
+  if (!email) {
+  console.log("🟢 UTENTE OK, SUPABASE OK");
+    countEl.textContent = "0/10";
+    barEl.style.width = "0%";
+    msgEl.textContent = "Accedi per accumulare punti fedeltà 🎁";
+    btnEl.style.display = "none";
+    return;
   }
+
+  // ✅ 1️⃣ CONTEGGIO REALE DELLE CONFERME
+  const { count: confermateTot, error } = await window.supabase
+    .from("conferme_coppe")
+    .select("*", { count: "exact", head: true })
+    .eq("email", email)
+
+  if (error) {
+    console.error("Errore conteggio conferme:", error);
+    return;
+  }
+
+  // ✅ 2️⃣ COUPON
+  const { data: coupon } = await window.supabase
+    .from("coupon")
+    .select("id, redento, nome, tipo, created_at")
+    .eq("email", email)
+
+    const couponTotali = coupon.length;          
+const couponRedenti = coupon.filter(c => c.redento).length;
+const couponDisponibili = coupon.filter(c => !c.redento).length;
+const confermeConsumate = couponTotali * 10;
+const confermeValide = confermateTot - confermeConsumate;
+const progress = confermeValide % 10;
+// 🎁 CREA COUPON AUTOMATICO OGNI 10 CONFERME
+if (confermeValide >= 10 && progress === 0) {
+
+
+
+const codice = "cp_" + crypto.randomUUID();
+
+const sb = window.supabase;
+if (!sb) {
+  console.error("⛔ supabase non disponibile in aggiornaFedelta()");
+  return;
 }
 
+// 🔥 fallback sicuro
+let tipoCoupon = "media";
+
+try {
+  console.log("🧪 [COUPON] inizio calcolo formato vincente");
+
+  // 1️⃣ PRENDO LE PRIME 10 CONFERME NON CONSUMATE
+  const { data: conferme10, error: errConf } = await sb
+    .from("conferme_coppe")
+    .select("id, coppa_id")
+    .eq("email", email)
+    .eq("consumata", false)
+    .order("id", { ascending: true })
+    .limit(10);
+
+  console.log("🧾 conferme10:", conferme10);
+
+  if (errConf) throw errConf;
+  if (!conferme10 || conferme10.length !== 10) {
+    console.warn("⛔ meno di 10 conferme, uso fallback");
+  } else {
+
+    // 2️⃣ prendo i formati delle coppe coinvolte
+    const idsUnici = [...new Set(conferme10.map(c => c.coppa_id).filter(Boolean))];
+
+    console.log("🧩 coppa_id unici:", idsUnici);
+
+    if (idsUnici.length > 0) {
+      const { data: coppe, error: errCoppe } = await sb
+        .from("coppe")
+        .select("id, formato")
+        .in("id", idsUnici);
+
+      if (errCoppe) throw errCoppe;
+
+      // mappa id → formato
+      const mapFormato = new Map();
+      coppe.forEach(c => mapFormato.set(c.id, c.formato));
+
+      const normalizzaFormato = (formato) => {
+        if (!formato) return null;
+        const f = String(formato).toLowerCase();
+        if (f.includes("piccola")) return "piccola";
+        if (f.includes("media"))   return "media";
+        if (f.includes("grande"))  return "grande";
+        return null;
+      };
+
+      // 3️⃣ CONTO SULLE 10 CONFERME (NON SULLE COPPE)
+      const count = { piccola: 0, media: 0, grande: 0 };
+
+      const raw = [];
+
+      for (const conf of conferme10) {
+        const formato = normalizzaFormato(mapFormato.get(conf.coppa_id));
+        raw.push(formato);
+        if (formato) count[formato]++;
+      }
+
+      console.log("🎯 FORMATI RAW (per conferma):", raw);
+      console.log("📊 COUNT NORMALIZZATO:", count);
+
+      // 4️⃣ formato vincente
+      const vincente = Object.entries(count).sort((a, b) => b[1] - a[1]);
+      if (vincente[0][1] > 0) {
+        tipoCoupon = vincente[0][0];
+      }
+
+      console.log("🏆 FORMATO VINCENTE:", tipoCoupon);
+    }
+  }
+} catch (e) {
+  console.error("❌ ERRORE CALCOLO FORMATO VINCENTE:", e);
+}
+
+const { error: errInsert } = await sb
+  .from("coupon")
+.insert({
+  email: email,
+  codice: codice,
+  tipo: tipoCoupon,
+  titolo: `Coppa ${tipoCoupon.toUpperCase()} omaggio`,
+  redento: false,
+  created_at: new Date().toISOString()
+});
+
+if (!errInsert) {
+  console.log("🎉 COUPON CREATO");
+
+  const { data: confermeDaConsumare, error: errConf } = await sb
+    .from("conferme_coppe")
+    .select("id")
+    .eq("email", email)
+    .eq("consumata", false)
+    .order("id", { ascending: true })
+    .limit(10);
+
+  if (errConf) console.error("❌ Errore lettura conferme:", errConf);
+
+  if (confermeDaConsumare && confermeDaConsumare.length === 10) {
+    const ids = confermeDaConsumare.map(c => c.id);
+
+    const { error: errUpd } = await sb
+      .from("conferme_coppe")
+      .update({ consumata: true })
+      .in("id", ids);
+
+    if (errUpd) console.error("❌ Errore update consumata:", errUpd);
+  }
+
+  await aggiornaFedelta();
+  return; // ⬅️ 🔥 QUI. NON ALTROVE.
+}
+   }
+
+
+  // ✅ 3️⃣ UI
+  countEl.textContent = `${progress}/10`;
+  barEl.style.width = `${(progress / 10) * 100}%`;
+
+if (couponDisponibili > 0) {
+  const testo =
+    couponDisponibili === 1
+      ? "coupon disponibile"
+      : "coupon disponibili";
+
+  msgEl.innerHTML = `🎉 <b>Hai ${couponDisponibili} ${testo}!</b>`;
+  btnEl.style.display = "block";
+  btnEl.onclick = () => location.href = "profilo.html#coupon";
+} else {
+    msgEl.textContent =
+      couponTotali > 0
+        ? `Hai già sbloccato ${couponTotali} coupon 🎁 Continua per il prossimo`
+        : `Continua a creare coppe per sbloccare il coupon 🎁`;
+
+    btnEl.style.display = "none";
+  }
+
+  console.log("✅ FEDELTÀ OK:", { confermateTot, progress });
+}
+
+
+async function aggiornaStatoCoupon() {
+  const email = localStorage.getItem("user_email");
+  if (!email || !window.supabase) return;
+
+  const { data, error } = await supabase
+    .from("coupon")
+    .select("id")
+    .eq("email", email)
+    .eq("redento", false);
+
+  if (error) {
+    console.error("Errore coupon:", error);
+    return;
+  }
+
+  couponDisponibili = data.length;
+
+  const btn = document.getElementById("btn-vedi-coupon");
+  if (!btn) return;
+
+  btn.style.display = couponDisponibili > 0 ? "block" : "none";
+}
 
 function apriCoppaFullscreen(src, coppa) {
   const overlay = document.getElementById("coppa-overlay");
@@ -1824,9 +2247,11 @@ function apriCoppaFullscreen(src, coppa) {
   if (!overlay || !img) return;
 
   img.src = src;
-  overlay.style.display = "flex";
 
-  // 🔥 QUESTA È LA RIGA CHIAVE
+  overlay.offsetHeight; // reflow
+  overlay.classList.add("open");
+
+  document.body.classList.add("no-scroll"); // ✅ QUI
   window.coppaCorrente = coppa;
 }
 
@@ -1836,8 +2261,12 @@ function chiudiCoppaFullscreen() {
 
   if (!overlay || !img) return;
 
-  overlay.style.display = "none";
-  img.src = "";
+  overlay.classList.remove("open");
+  document.body.classList.remove("no-scroll"); // ✅ QUI
+
+  setTimeout(() => {
+    img.src = "";
+  }, 350);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1878,12 +2307,16 @@ async function waitAllImages(container) {
 
 async function renderLista() {
 const arrCompleto = getCoppeFiltrateEOrdinate()
-                      .filter(c => !c.eliminata);
-
+  .filter(c => !c.eliminata);
+                      
+  console.log(
+    "VISIBLE:",
+    visibleCount,
+    "TOT:",
+    arrCompleto.length
+  );
 // 🔥 mostra solo le prime N
-const arr = arrCompleto.slice(0, limiteVisibili);  // ✅ NASCONDE LE ELIMINATE
-
-                      aggiornaFedelta(); // 🔥 aggiorna box fedeltà in alto
+const arr = arrCompleto.slice(0, visibleCount);// ✅ NASCONDE LE ELIMINATE
 
 
     lista.innerHTML = "";
@@ -1980,7 +2413,9 @@ ${c.coppa_img ? `
 ` : ``}
 
 <div class="cup-content">
-<div class="small">${formattaDataBella(c.data)}</div>
+<div class="small">
+  ${evidenzia(formattaDataBella(c.data))}
+</div>
 <div class="small"><b>Formato:</b> ${evidenzia(c.formato || "")}</div>
 <div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
 <div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
@@ -2004,7 +2439,6 @@ ${c.coppa_img ? `
 </div>
 
 <div class="qr-box" id="qr-${idx}" style="
-    display:none;
     margin-top:12px;
     text-align:center;
 "></div>
@@ -2021,32 +2455,55 @@ ${c.coppa_img ? `
     </div>
 `;
 div.querySelector(".fav-btn").onclick = () => togglePreferito(idx);
-div.querySelector(".edit-btn").onclick = () => abilitaRinomina(idx);
+div.querySelector(".edit-btn").onclick = (e) => {
+  e.stopPropagation();
+  abilitaRinomina(div, idx);
+};
 div.querySelector(".delete-btn").onclick = () => eliminaCoppa(idx);
             div.querySelector(".copy-btn").onclick = () => copiaTesto(testoDaCopiare);
             div.querySelector(".use-btn").onclick = () => usaQuestaCoppa(idx);
-            div.querySelector(".show-qr-btn").onclick = () => {
-    const box = document.getElementById(`qr-${idx}`);
+div.querySelector(".show-qr-btn").onclick = () => {
+  const box = document.getElementById(`qr-${idx}`);
+  if (!box) return;
 
-    // toggle
-    box.style.display = box.style.display === "none" ? "block" : "none";
+  const isOpen = box.classList.contains("open");
 
-    // se QR già generato → non rigenerare
-    if (box.dataset.generated === "1") return;
+  // 🔁 chiusura
+  if (isOpen) {
+    box.classList.remove("open");
+    return;
+  }
 
+  // 🔽 apertura
+  box.classList.add("open");
+
+  // 🔥 genera QR SOLO la prima volta
+  if (box.dataset.generated !== "1") {
     if (window.QRCode && c.qr_token) {
-        new QRCode(box, {
-            text: c.qr_token,
-            width: 160,
-            height: 160
-        });
-        box.dataset.generated = "1";
+      new QRCode(box, {
+        text: c.qr_token,
+        width: 160,
+        height: 160
+      });
+      box.dataset.generated = "1";
     } else {
-        box.innerHTML = "<p style='color:red;'>QR non disponibile</p>";
+      box.innerHTML = "<p style='color:red;'>QR non disponibile</p>";
     }
+  }
 };
 
 lista.appendChild(div);
+
+if (animaLista) {
+  const delay = idx * 40;
+  setTimeout(() => {
+    div.classList.add("visible");
+  }, delay);
+} else {
+  // 🔥 comparsa immediata, niente animazione
+  div.classList.add("visible");
+}
+
 
 // 🔥 attiva lazy load SOLO per l'immagine di questa card
 const img = div.querySelector(".coppa-thumb");
@@ -2084,25 +2541,46 @@ const qrDiv = div.querySelector(`.qr-code`);
         }
 
     } // ✅ CHIUDE IL for (const c of arr)
+
 // 🔽 BOTTONE "CARICA ALTRE"
-if (arrCompleto.length > limiteVisibili) {
+if (arrCompleto.length > visibleCount) {
   const btnMore = document.createElement("button");
   btnMore.textContent = "Carica altre";
   btnMore.className = "load-more-btn";
   btnMore.style.margin = "20px auto";
 
-  btnMore.onclick = () => {
-    limiteVisibili += STEP_CARICAMENTO;
+btnMore.onclick = () => {
+
+  // 🔒 disabilita click multipli
+  btnMore.disabled = true;
+  btnMore.textContent = "Caricamento…";
+
+  // 🔄 spinner sotto
+  const spinner = document.createElement("div");
+  spinner.className = "load-spinner";
+  lista.appendChild(spinner);
+
+  // ⏱️ micro delay per percezione (UX)
+  setTimeout(() => {
+    visibleCount += PAGE_SIZE;
     renderLista();
-  };
+  }, 200);
+};
 
   lista.appendChild(btnMore);
 }
+  animaLista = false; // reset
 } // ✅ CHIUDE async function renderLista()
 
 document.getElementById("search").addEventListener("input", e => {
   termineRicerca = e.target.value;
-  limiteVisibili = STEP_CARICAMENTO; // 🔥 reset
+
+  // 🔥 reset paginazione
+  visibleCount = PAGE_SIZE;
+
+  // 🔥 abilito animazione SOLO per filtri/search
+  animaLista = true;
+
   renderLista();
 });
 
@@ -2112,22 +2590,22 @@ document.getElementById("toggle-preferiti").addEventListener("click", () => {
 
   const btn = document.getElementById("toggle-preferiti");
 
-  // ⭐ attiva/disattiva SOLO la classe
+  // ⭐ stato attivo
   btn.classList.toggle("attivo", mostraSoloPreferiti);
 
-  // (opzionale) cambia solo il testo, NON il bottone
-  const label = btn.querySelector(".label");
-  if (label) {
-    label.textContent = mostraSoloPreferiti ? "Mostra tutti" : "Preferiti";
-  }
-limiteVisibili = STEP_CARICAMENTO;
+  // reset paginazione
+  visibleCount = PAGE_SIZE;
+ animaLista = true; 
   renderLista();
 });
 
 document.getElementById("ordine-select").addEventListener("change", e => {
-    criterioOrdine = e.target.value;
-    limiteVisibili = STEP_CARICAMENTO;
-    renderLista();
+  criterioOrdine = e.target.value;
+
+  // reset paginazione
+  visibleCount = PAGE_SIZE;
+ animaLista = true; 
+  renderLista();
 });
 
 
@@ -2137,6 +2615,7 @@ renderLista();
 </script>
 <script type="module">
 import { supabase } from "./supabase.js";
+window.supabase = supabase;
 
 /* ------------------------------------------
    🔥 1) LEGGE COPPE UTENTE da SUPABASE
@@ -2202,35 +2681,89 @@ coppeLocali = coppeLocali.filter(c => c.email === email);
 caricaCoppeComplete().then(all => {
     coppe = all;
     renderLista();
-    aggiornaFedelta(); // 🔥 QUI, SUBITO DOPO renderLista
+
+    // 🔥 ASPETTA CHE IL DOM ESISTA
+    requestAnimationFrame(() => {
+      aggiornaFedelta();
+    });
 });
 
-// 🔴 REALTIME: aggiorna cronologia e fedeltà senza refresh
+
+// 🔴 REALTIME COPPE – UNICO E DEFINITIVO
 const emailUtente = localStorage.getItem("user_email");
 
 if (emailUtente) {
-    supabase
-        .channel("coppe-realtime-cronologia")
-        .on(
-            "postgres_changes",
-            {
-                event: "*",
-                schema: "public",
-                table: "coppe",
-                filter: `email=eq.${emailUtente}`
-            },
-            payload => {
-                console.log("🔄 Coppa aggiornata in realtime:", payload);
+  supabase
+    .channel("coppe-realtime-cronologia")
+    .on(
+      "postgres_changes",
+      {
+        event: "UPDATE",
+        schema: "public",
+        table: "coppe",
+        filter: `email=eq.${emailUtente}`
+      },
+      async payload => {
+        console.log("🔄 Realtime coppa:", payload);
 
-                // ricarica dati utente
-                caricaCoppeComplete().then(all => {
-                    coppe = all;
-                    renderLista();
-                    aggiornaFedelta();
-                });
-            }
-        )
-        .subscribe();
+        // 1️⃣ ricarico coppe aggiornate
+        coppe = await caricaCoppeComplete();
+
+        // 2️⃣ aggiorno UI
+        renderLista();
+
+        // 3️⃣ ORA la barra vede i numeri giusti
+        await aggiornaFedelta();
+      }
+    )
+    .subscribe();
+}
+
+
+// 🔔 REALTIME COUPON – AGGIORNA CARD FEDELTÀ
+const emailCoupon = localStorage.getItem("user_email");
+
+if (emailCoupon) {
+  supabase
+    .channel("realtime-coupon")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "coupon",
+        filter: `email=eq.${emailCoupon}`
+      },
+      async payload => {
+        console.log("🎁 COUPON realtime:", payload);
+
+        // 🔥 ricalcola SOLO la fedeltà (card)
+        await aggiornaFedelta();
+      }
+    )
+    .subscribe();
+}
+
+// 🔥 REALTIME FEDELTÀ – CONFERME COPPE
+const emailFedelta = localStorage.getItem("user_email");
+
+if (emailFedelta) {
+  supabase
+    .channel("realtime-fedelta")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "conferme_coppe",
+        filter: `email=eq.${emailFedelta}`
+      },
+      async payload => {
+        console.log("🎯 FEDELTÀ realtime:", payload);
+        await aggiornaFedelta();
+      }
+    )
+    .subscribe();
 }
 
 function vaiAiCoupon() {
@@ -2254,8 +2787,7 @@ import { supabase } from "./supabase.js";
 let waitInterval = null;
 let collapseTimeout = null;
 
-window.abilitaRinomina = function(idx){
-  const card = document.querySelectorAll(".cup-card")[idx];
+window.abilitaRinomina = function(card, idx){
   if (!card) return;
 
   const titleEl = card.querySelector(".cup-title b");
@@ -2263,17 +2795,14 @@ window.abilitaRinomina = function(idx){
 
   const nomeAttuale = titleEl.textContent.trim();
 
-  // wrapper
   const wrapper = document.createElement("div");
   wrapper.className = "rename-wrapper";
 
-  // input
   const input = document.createElement("input");
   input.type = "text";
   input.value = nomeAttuale;
   input.className = "rename-input";
 
-  // bottone salva ✔️
   const saveBtn = document.createElement("button");
   saveBtn.className = "rename-save";
   saveBtn.innerHTML = "✔️";
@@ -2285,12 +2814,10 @@ window.abilitaRinomina = function(idx){
   input.focus();
   input.select();
 
-  // ✔️ salva
   saveBtn.onclick = () => {
     salvaRinomina(idx, input.value, wrapper);
   };
 
-  // ENTER = salva
   input.addEventListener("keydown", e => {
     if (e.key === "Enter") {
       salvaRinomina(idx, input.value, wrapper);
@@ -2400,61 +2927,49 @@ if (sec === 59) {
   waitInterval = setInterval(tick, 1000);
 }
 
+/*
 // 🔴 REALTIME WAIT TIME
 supabase
-  .channel("wait-time-live")
+  .channel("coppe-realtime-cronologia")
   .on(
     "postgres_changes",
     {
       event: "*",
       schema: "public",
-      table: "wait_time"
+      table: "coppe",
+      filter: `email=eq.${localStorage.getItem("user_email")}`
     },
-    payload => {
-      console.log("🔁 wait_time aggiornato realtime:", payload);
-      loadWaitTime();
+    async payload => {
+      console.log("🔄 Realtime coppa:", payload);
+
+      // 🔥 aspetta che Supabase sia consistente
+      await new Promise(r => setTimeout(r, 150));
+
+      const all = await caricaCoppeComplete();
+      coppe = all;
+
+      renderLista();
+      aggiornaFedelta();
     }
   )
   .subscribe();
+*/
 
 document.addEventListener("DOMContentLoaded", loadWaitTime);
 </script>
 
 
-<div id="coppa-overlay" style="
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-">
-  <img id="coppa-overlay-img" style="
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 14px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-  ">
-<button
-  class="overlay-instagram-btn"
-  onclick="condividiSuInstagram()"
->
-  📸 Condividi su Instagram
-</button>
+<div id="coppa-overlay">
+  <img id="coppa-overlay-img">
 
-  <button id="coppa-overlay-close" style="
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(255,255,255,0.15);
-    color: white;
-    border: none;
-    font-size: 22px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    cursor: pointer;
-  ">
+  <button
+    class="overlay-instagram-btn"
+    onclick="condividiSuInstagram()"
+  >
+    📸 Condividi su Instagram
+  </button>
+
+  <button id="coppa-overlay-close">
     ✕
   </button>
 </div>
@@ -2466,11 +2981,11 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
     <p>Eliminando perderai tutti i tuoi progressi</p>
 
     <button class="popup-btn danger" id="popup-elimina-tutte">
-      🗑 Elimina tutte
+    Elimina tutte
     </button>
 
     <button class="popup-btn star" id="popup-tieni-preferiti">
-      ⭐ Tieni solo i preferiti
+    Tieni solo i preferiti
     </button>
 
     <button class="popup-btn cancel" id="popup-annulla">
@@ -2582,24 +3097,24 @@ window.chiudiPopupInstagram = function () {
   const spacer = document.getElementById("fedelta-spacer");
   if (!box || !spacer) return;
 
-  let compact = false;
+let compact = false;
 
-  window.addEventListener("scroll", () => {
-    const y = window.scrollY;
+window.addEventListener("scroll", () => {
+  const y = window.scrollY;
 
-    if (y > 120 && !compact) {
-const rect = box.getBoundingClientRect();
-spacer.style.height = rect.height + "px";
-      box.classList.add("compact");
-      compact = true;
-    }
+  if (y > 120 && !compact) {
+    const rect = box.getBoundingClientRect();
+    spacer.style.height = rect.height + "px";
+    box.classList.add("compact");
+    compact = true;
+  }
 
-    if (y < 60 && compact) {
-      box.classList.remove("compact");
-      spacer.style.height = "0px";
-      compact = false;
-    }
-  }, { passive: true });
+  if (y < 60 && compact) {
+    box.classList.remove("compact");
+    spacer.style.height = "0px";
+    compact = false;
+  }
+});
 })();
 </script>
 
@@ -2841,5 +3356,87 @@ window._eseguiCondivisioneInstagram = async function () {
     });
   }
 </script>
+
+<div id="toast" class="toast">Copiato negli appunti ✓</div>
+
+<script>
+/* ========= TOAST ========= */
+
+let toastTimeout = null;
+
+function showToast(text){
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+
+  toast.textContent = text;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 1000);
+}
+</script>
+
+
+<!-- 🗑️ POPUP ELIMINA SINGOLA COPPA -->
+<div id="popup-delete-single" class="popup-overlay" style="display:none;">
+  <div class="popup-card">
+    <h3>Eliminare questa coppa?</h3>
+    <p>Questa azione non può essere annullata.</p>
+
+    <button id="confirm-delete-single" class="popup-btn danger">
+      Elimina
+    </button>
+
+    <button id="cancel-delete-single" class="popup-btn cancel">
+      Annulla
+    </button>
+  </div>
+</div>
+
+
+<script>
+function apriPopupElimina(idx){
+  coppaDaEliminare = idx;
+  document.getElementById("popup-delete-single").style.display = "flex";
+}
+
+function chiudiPopupElimina(){
+  coppaDaEliminare = null;
+  document.getElementById("popup-delete-single").style.display = "none";
+}
+</script>
+
+<script>
+
+// === POPUP ELIMINA – BIND BOTTONI ===
+document.getElementById("cancel-delete-single").onclick =
+  chiudiPopupElimina;
+
+document.getElementById("confirm-delete-single").onclick = async () => {
+  if (coppaDaEliminare !== null) {
+    await eliminaCoppa(coppaDaEliminare, true);
+  }
+  chiudiPopupElimina();
+};
+</script>
+
+
+<div id="popup-confirm" class="popup-overlay" style="display:none;">
+  <div class="popup-card">
+    <h3 id="popup-confirm-title">Conferma</h3>
+    <p id="popup-confirm-text"></p>
+
+    <button class="popup-btn danger" id="popup-confirm-ok">
+      Conferma
+    </button>
+
+    <button class="popup-btn cancel" id="popup-confirm-cancel">
+      Annulla
+    </button>
+  </div>
+</div>
+
 </body>
 </html>
