@@ -313,7 +313,692 @@ body {
   opacity:.6;
 }
 
+/* ===============================
+   🍎 HERO APPLE STYLE
+=============================== */
+
+.hero{
+  position: relative;
+  height: 60vh;
+  overflow: hidden;
+  background: #000;
+}
+
+.hero-img{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  transform: scale(1.08);
+  transition: transform 1.2s ease;
+}
+
+.hero-content{
+  position: relative;
+  z-index: 2;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* ✅ invece di center */
+  justify-content: flex-start;
+
+  padding-top: 28vh;   /* ⬅️ QUI controlli l’altezza */
+  padding-left: 20px;
+  padding-right: 20px;
+
+  text-align: center;
+  color: #fff;
+}
+
+.hero-content h1{
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.hero-content p{
+  font-size: 18px;
+  opacity: 0.85;
+  margin-bottom: 28px;
+}
+
+.hero-btn{
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 14px;
+
+  background: #ff7a00;
+  color: #fff;
+  text-decoration: none;
+
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+/* overlay scuro stile Apple */
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.45),
+    rgba(0,0,0,0.55)
+  );
+}
+/* ===============================
+   🍏 REVEAL ON SCROLL (APPLE)
+=============================== */
+
+.reveal{
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.9s cubic-bezier(.22,.61,.36,1);
+}
+
+.reveal.in-view{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ===============================
+   🍎 EXPERIENCE SECTION
+=============================== */
+
+.experience{
+  position: relative;
+  height: 100vh;
+  background: #f6f6f7;
+}
+
+.experience-inner{
+  position: relative;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding-bottom: 160px; /* spazio fisso per CTA + pill */
+  box-sizing: border-box;
+
+  overflow: hidden;
+}
+
+.exp-step{
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;   /* ⬅️ NON center */
+
+  text-align: center;
+  padding-top: 80px;            /* ⬅️ distanza dall’alto */
+  padding-left: 20px;
+  padding-right: 20px;
+
+  opacity: 0;
+  transform: translateX(60px);
+}
+
+.exp-step.active{
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.exp-step h2{
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.exp-step p{
+  font-size: 18px;
+  color: #444;
+  max-width: 420px;
+}
+
+/* ===============================
+   🍏 EXPERIENCE INDICATOR (APPLE)
+=============================== */
+
+.exp-indicator{
+  position: absolute;
+  bottom: 60px;          /* distanza dal fondo */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.exp-bar{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  background: rgba(0,0,0,0.06);
+  backdrop-filter: blur(8px);
+}
+
+/* pallini */
+.exp-bar span{
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #bbb;
+  opacity: .5;
+  position: relative;
+  overflow: hidden;
+}
+
+.exp-bar span::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:#111;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.exp-bar span.active{
+  width: 26px;
+  border-radius: 999px;
+  opacity: 1;
+}
+
+.exp-bar span.active::after{
+  animation: progress 5s linear forwards;
+}
+
+@keyframes progress{
+  from{ transform: scaleX(0); }
+  to{ transform: scaleX(1); }
+}
+
+.exp-cta{
+  padding: 8px 16px;          /* piccolo */
+  font-size: 13px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  background: #007aff;
+  color: #fff;
+
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(0,122,255,.35);
+
+  text-decoration: none !important;
+  white-space: nowrap;
+
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.exp-cta:hover{
+  transform: scale(1.04);
+  box-shadow: 0 10px 26px rgba(0,122,255,.45);
+}
+
+.exp-cta:active{
+  transform: scale(0.96);
+}
+
+/* 🔒 mai stile link */
+.exp-cta,
+.exp-cta:link,
+.exp-cta:visited,
+.exp-cta:hover,
+.exp-cta:active,
+.exp-cta:focus{
+  color:#fff !important;
+  text-decoration:none !important;
+}
+
+/* 🔒 STRUTTURA BLOCCATA EXPERIENCE */
+.experience-inner{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* SLIDE PRENDONO SPAZIO */
+.exp-slides{
+  order: 1;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🔥 PULSANTE SEMPRE DOPO IMMAGINE */
+.exp-cta{
+  order: 2;
+  position: static !important;
+
+  margin: 10px 0 12px 0;   /* leggermente più compatto */
+  padding: 6px 14px;       /* ⬅️ PIÙ PICCOLO */
+  font-size: 12.5px;       /* ⬅️ leggermente ridotto */
+  font-weight: 600;
+
+  background: #007aff;
+  color: #fff;
+
+  border-radius: 999px;
+  text-decoration: none !important;
+  box-shadow: 0 3px 10px rgba(0,122,255,.32);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  white-space: nowrap;
+}
+
+/* PILL SEMPRE SOTTO */
+.exp-indicator{
+  order: 3;
+  margin-bottom: 40px;
+}
+/* ===== SPAZIATURE STEP (SOLO DISTANZE) ===== */
+
+/* ✅ avvicina sottotitolo al titolo */
+.exp-step h2{
+  margin-bottom: 12px;   /* distanza titolo → sottotitolo */
+}
+
+.exp-step p{
+  margin-bottom: 80px;   /* distanza sottotitolo → immagine */
+}
+
+
+/* ===============================
+   🍎 IMAGE CARD – BACKGROUND
+=============================== */
+
+.exp-image{
+  /* ❌ NIENTE absolute */
+  position: relative;
+
+  width: 100%;
+  max-width: 420px;
+
+  height: 435px;        /* altezza card */
+  margin-top: -120px;    /* ⬅️ cresce SOLO verso l’alto */
+  margin-bottom: 12px;  /* distanza dal bottone */
+
+  border-radius: 24px;
+  overflow: hidden;
+
+  box-shadow:
+    0 12px 32px rgba(0,0,0,0.12),
+    0 2px 6px rgba(0,0,0,0.08);
+
+  z-index: 1;           /* dietro testi e bottone */
+}
+
+.exp-image img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.exp-step h2{
+  margin-bottom: 6px;   /* titolo ↔ sottotitolo */
+}
+
+.exp-step p{
+  margin-bottom: 12px;  /* sottotitolo ↔ immagine */
+}
+/* Testi sopra la card */
+.exp-step h2,
+.exp-step p{
+  position: relative;
+  z-index: 3;
+}
+
+/* Bottone sopra la card */
+.exp-cta{
+  position: relative;
+  z-index: 3;
+  margin-top: 220px;   /* ⬅️ lo “appoggi” sopra l’immagine */
+}
+/* 📱 MOBILE FIX – pill più vicino al bottone */
+@media (max-width: 768px){
+
+  .exp-indicator{
+    position: static;          /* ⬅️ rientra nel flusso */
+    margin-top: 14px;          /* distanza dal bottone */
+    margin-bottom: 20px;       /* respiro sotto */
+    transform: none;
+  }
+
+  .experience-inner{
+    padding-bottom: 300px;      /* meno spazio inutile */
+  }
+}
+.hero-after-coppa{
+  height: 60vh;
+  background: #000;
+}
+
+.hero-after-coppa .hero-content{
+  padding-top: 28vh;
+}
+
+.hero-after-coppa .hero-subtitle{
+  font-size: 18px;
+  color: #fff;
+  opacity: .9;
+  max-width: 420px;
+}
+.hero-after-coppa{
+  margin-top: -240px;   /* prova -60 / -80 / -100 */
+}
+
+/* ===============================
+   🍎 HERO – LAVORA CON NOI
+=============================== */
+
+.hero-lavora{
+  height: 60vh;
+}
+
+.hero-lavora .hero-content{
+  padding-top: 36vh;   /* leggermente più su */
+}
+
+.hero-lavora .hero-sub{
+  font-size: 18px;
+  opacity: .9;
+  margin-bottom: 20px;
+}
+
+/* bottone variante */
+.hero-btn-outline{
+  background: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+  box-shadow: none;
+}
+
+.hero-btn-outline:hover{
+  background: #fff;
+  color: #000;
+}
+.hero-lavora{
+  margin-top: 120px;   /* regola qui la distanza tra le due hero */
+}
+.hero-info{
+  margin-top: 120px;   /* stacco netto dalla hero Lavora con noi */
+}
+
+/* ⬆️ SCROLL TO TOP BUTTON */
+#scroll-top-btn{
+  position: fixed;
+  right: 16px;
+  bottom: 110px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+  background: #007aff; /* 🔵 BLU iOS */
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  box-shadow: 0 8px 24px rgba(0,122,255,.45); /* ombra blu */
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+
+  transition: 
+    opacity .25s ease,
+    transform .25s ease;
+
+  z-index: 9999;
+}
+#scroll-top-btn:active{
+  transform: scale(.92);
+  background: #0066d6;
+}
+
+#scroll-top-btn.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+#scroll-top-btn:active{
+  transform: scale(.92);
+}
+
+/* ➕ PLUS MENU HERO */
+#menu-plus-btn{
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+  background: #007aff;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 10px 28px rgba(0,122,255,.45);
+
+  z-index: 5;
+}
+
+#menu-plus-btn:active{
+  transform: scale(.92);
+  background: #0066d6;
+}
+
+/* ===============================
+   🍨 MENU SLIDES – COLLASSATE
+=============================== */
+
+#menu-slides{
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-40px);
+  pointer-events: none;
+
+  transition:
+    max-height .6s cubic-bezier(.22,.61,.36,1),
+    opacity .35s ease,
+    transform .6s cubic-bezier(.22,.61,.36,1);
+}
+
+/* 🔓 APERTE */
+#menu-slides.open{
+  max-height: 1200px;   /* abbastanza per tutte le slide */
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* CREA COPPA → resta fullscreen */
+.experience:not([data-type="menu"]){
+  height: 100vh;
+}
+
+
+/* MENU SLIDES: stato chiuso */
+#menu-slides:not(.open) .exp-slides{
+  display: none;
+}
+/* ===============================
+   ✅ MENU: CTA + PILL come CREA COPPA
+=============================== */
+.experience[data-type="menu"] .exp-cta{
+  position: static !important;
+  margin-top: 10px !important;   /* 🔥 annulla il 220px */
+}
+
+.experience[data-type="menu"] .exp-indicator{
+  position: static !important;   /* 🔥 non più absolute */
+  transform: none !important;
+  margin-top: 14px;
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   ✅ MENU SLIDES – SPAZIO SOLO QUANDO APERTE
+=============================== */
+
+/* stato chiuso → IDENTICO a prima */
+.experience-menu{
+  margin-bottom: 0;
+}
+
+/* ➕ PLUS INFO HERO */
+#info-plus-btn{
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+  background: #007aff;
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+
+  border: none;
+  cursor: pointer;
+
+  box-shadow: 0 10px 28px rgba(0,122,255,.45);
+  z-index: 5;
+}
+
+#info-plus-btn:active{
+  transform: scale(.92);
+  background: #0066d6;
+}
+/* ===============================
+   ℹ️ INFO SLIDES – COLLASSATE
+=============================== */
+
+#info-slides{
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-40px);
+  pointer-events: none;
+
+  transition:
+    max-height .6s cubic-bezier(.22,.61,.36,1),
+    opacity .35s ease,
+    transform .6s cubic-bezier(.22,.61,.36,1);
+}
+
+/* 🔓 APERTE */
+#info-slides.open{
+  max-height: 1200px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+/* ===============================
+   🖥️ DESKTOP FIX – PRESERVA SLIDE
+=============================== */
+@media (min-width: 769px){
+
+  /* NON tocchiamo height né padding globali */
+  
+  /* CTA: meno “spinta” verso il basso */
+  .experience .exp-cta{
+    margin-top: 120px !important; /* era 220 → troppo */
+  }
+
+  /* pill: resta visiva ma non rompe layout */
+  .experience .exp-indicator{
+    position: absolute;           /* come da design originale */
+    bottom: 32px;                 /* più alto = meno overlap */
+    transform: translateX(-50%);
+  }
+
+}
+/* ===============================
+   🖥️ DESKTOP – SPAZIO TRA HERO (CORRETTO)
+=============================== */
+@media (min-width: 769px){
+
+  /* distanza tra: hero menu -> hero lavora, e lavora -> info */
+  .hero-lavora{
+    margin-top: 160px;
+  }
+
+  .hero-info{
+    margin-top: 160px;
+  }
+
+  /* opzionale: se vuoi anche stacco tra exp "coppa" e hero menu */
+  .hero-after-coppa{
+    margin-top: 160px;
+  }
+}
+/* ===============================
+   🖥️ DESKTOP – SPAZIO TRA MENU → LAVORA
+=============================== */
+@media (min-width: 769px){
+  .hero-lavora{
+    margin-top: 300px; /* 🔧 regola QUI lo spazio */
+  }
+}
+/* ===============================
+   📱🖥️ SPAZIO HERO INFO → FOOTER
+=============================== */
+.hero-info{
+  margin-bottom: 120px; /* 🔧 regola qui lo stacco */
+}
   </style>
+
   <link rel="stylesheet" href="bottom-nav.css">
 </head>
 
@@ -334,6 +1019,10 @@ body {
 <div id="top-fixed-spacer"></div>
 
 
+<button id="scroll-top-btn" aria-label="Torna su">
+  ↑
+</button>
+
 <!-- LANGUAGE -->
 <div id="lang-toggle">🇮🇹 ▾</div>
 <div id="lang-menu">
@@ -342,15 +1031,228 @@ body {
   <button class="lang-btn" data-lang="de">Deutsch</button>
 </div>
 
-<header><h1 data-lang="title">Casa del Gelato</h1></header>
 
+<section class="hero">
+  <img src="img/hero-gelato.jpg" class="hero-img" alt="Gelato artigianale">
 
-<section class="menu-section">
-  <h2 data-lang="create_cup_title">Crea la tua Coppa</h2>
-  <p data-lang="create_cup_subtitle">Personalizza la tua coppa come la vuoi tu</p>
-  <a id="start-coppa" class="btn" data-lang="create_button">🍨 INIZIA</a>
+  <div class="hero-content reveal">
+    <p data-lang="create_cup_subtitle">
+      Crea la tua coppa. Vivi l’esperienza.
+    </p>
+
+  </div>
+</section> 
+
+<section class="experience">
+  <div class="experience-inner">
+
+    <!-- SLIDE AREA -->
+    <div class="exp-slides">
+
+      <div class="exp-step active">
+        <h2>Scegli il formato</h2>
+        <p>Piccola, media o grande.</p>
+        <div class="exp-image">
+          <img src="img/exp-formato.jpg">
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <h2>Scegli i gusti</h2>
+        <p>I tuoi gusti preferiti.</p>
+        <div class="exp-image">
+          <img src="img/exp-formato.jpg">
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <h2>Personalizzala</h2>
+        <p>Rendi unica la tua coppa.</p>
+        <div class="exp-image">
+          <img src="img/exp-formato.jpg">
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <h2>Goditela</h2>
+        <p>Comunica la coppa al cameriere.</p>
+        <div class="exp-image">
+          <img src="img/exp-formato.jpg">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA FISSO -->
+    <a href="crea-coppa.html" class="exp-cta">
+      Crea la tua coppa
+    </a>
+
+    <!-- PILL -->
+    <div class="exp-indicator">
+      <div class="exp-bar">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+  </div>
 </section>
 
+<section class="hero hero-after-coppa">
+  <img src="img/hero-menu.jpg" class="hero-img" alt="Menu Casa del Gelato">
+
+  <div class="hero-content reveal">
+    <p class="hero-subtitle">
+      Scopri tutti i nostri gusti e ingredienti.
+    </p>
+  </div>
+  <button id="menu-plus-btn" aria-label="Apri menu">
+  +
+</button>
+</section>
+
+<section id="menu-slides"
+         class="experience experience-menu"
+         data-type="menu">
+
+  <div class="experience-inner">
+
+    <!-- SLIDES -->
+    <div class="exp-slides">
+
+      <div class="exp-step active">
+        <h2>Coppe</h2>
+        <p>Scopri tutte le nostre coppe.</p>
+        <div class="exp-image">
+          <img src="img/menu-coppe.jpg">
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <h2>Coni</h2>
+        <p>Croccanti e artigianali.</p>
+        <div class="exp-image">
+          <img src="img/menu-coni.jpg">
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <h2>Vaschette</h2>
+        <p>Porta il gelato a casa.</p>
+        <div class="exp-image">
+          <img src="img/menu-vaschette.jpg">
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <h2>Torte gelato</h2>
+        <p>Per ogni occasione.</p>
+        <div class="exp-image">
+          <img src="img/menu-torte.jpg">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA -->
+    <a href="menu.html" class="exp-cta">
+      Vai al menu
+    </a>
+
+    <!-- PILL -->
+    <div class="exp-indicator">
+      <div class="exp-bar">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="hero hero-after-menu hero-lavora">
+  <img src="img/hero-lavora.jpg" class="hero-img" alt="Lavora con noi">
+
+  <div class="hero-content reveal">
+    <p class="hero-sub">
+      Entra a far parte del team Casa del Gelato
+    </p>
+
+    <a href="lavora-con-noi.html" class="hero-btn hero-btn-outline">
+      Lavora con noi
+    </a>
+  </div>
+</section>
+
+<section class="hero hero-info">
+  <img src="img/hero-info.jpg" class="hero-img" alt="Info e contatti">
+
+  <div class="hero-content">
+    <p>Info e contatti</p>
+    <p>Orari, indirizzi e tutto quello che ti serve.</p>
+
+    <a href="info-contatti.html" class="hero-btn hero-btn-outline">
+      Info & Contatti
+    </a>
+  </div>
+  <button id="info-plus-btn" aria-label="Apri info">
+  +
+</button>
+</section>
+
+<section id="info-slides"
+         class="experience experience-info"
+         data-type="info">
+
+  <div class="experience-inner">
+
+    <div class="exp-slides">
+
+      <div class="exp-step active">
+        <h2>Orari</h2>
+        <p>I nostri orari di apertura.</p>
+        <div class="exp-image">
+          <img src="img/info-orari.jpg">
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <h2>Dove siamo</h2>
+        <p>Vieni a trovarci.</p>
+        <div class="exp-image">
+          <img src="img/info-mappa.jpg">
+        </div>
+      </div>
+
+      <div class="exp-step">
+        <h2>Contatti</h2>
+        <p>Scrivici o chiamaci.</p>
+        <div class="exp-image">
+          <img src="img/info-contatti.jpg">
+        </div>
+      </div>
+
+    </div>
+
+    <a href="info-contatti.html" class="exp-cta">
+      Vai a Info & Contatti
+    </a>
+
+    <div class="exp-indicator">
+      <div class="exp-bar">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -719,6 +1621,488 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
     Versione 1.0.0
   </div>
 </footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("in-view");
+    }
+  });
+}, { threshold: 0.4 });
+
+document.querySelectorAll(".reveal").forEach(el => {
+  observer.observe(el);
+});
+</script>
+
+
+
+
+<script>
+(() => {
+  const btn = document.getElementById("scroll-top-btn");
+
+  function checkScroll(){
+    const scrollY = window.scrollY;
+    const docH = document.documentElement.scrollHeight;
+    const winH = window.innerHeight;
+
+    // mostra SOLO quando sei quasi in fondo
+    if (scrollY + winH > docH - 300){
+      btn.classList.add("show");
+    } else {
+      btn.classList.remove("show");
+    }
+  }
+
+  window.addEventListener("scroll", checkScroll, { passive: true });
+
+  btn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+})();
+</script>
+
+<script>
+(() => {
+  const btn = document.getElementById("menu-plus-btn");
+  const slides = document.getElementById("menu-slides");
+
+  if (!btn || !slides) return;
+
+  let open = false;
+
+  btn.addEventListener("click", () => {
+    open = !open;
+
+    slides.classList.toggle("open", open);
+    btn.textContent = open ? "×" : "+";
+
+    if (open) {
+
+      /* 🔥 riduce spazio SOLO quando aperto */
+      slides.style.marginBottom = "-360px";
+
+      /* 🔁 RESET SLIDE + PILL (come CREA COPPA) */
+      const steps = slides.querySelectorAll(".exp-step");
+      const dots  = slides.querySelectorAll(".exp-bar span");
+
+      steps.forEach(s => s.classList.remove("active"));
+      dots.forEach(d => d.classList.remove("active"));
+
+      if (steps[0]) steps[0].classList.add("active");
+      if (dots[0])  dots[0].classList.add("active");
+
+      /* 📍 scroll controllato */
+      slides.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    } else {
+
+      /* 🔙 ripristino PERFETTO (zero overlap) */
+      slides.style.marginBottom = "";
+
+    }
+  });
+})();
+</script>
+
+<script>
+function initSwipeExperience(section) {
+  if (!section) return;
+
+  const slidesWrap = section.querySelector('.exp-slides');
+  const steps = [...section.querySelectorAll('.exp-step')];
+  const dots  = [...section.querySelectorAll('.exp-bar span')];
+
+  let index = 0;
+  let startX = 0;
+
+  function show(i){
+    steps.forEach((s, idx) =>
+      s.classList.toggle("active", idx === i)
+    );
+
+    dots.forEach((d, idx) => {
+      d.classList.toggle("active", idx === i);
+      d.style.animation = "none";
+      d.offsetHeight;
+      if (idx === i) d.style.animation = "";
+    });
+  }
+
+  function next(){
+    index = (index + 1) % steps.length;
+    show(index);
+  }
+
+  function prev(){
+    index = (index - 1 + steps.length) % steps.length;
+    show(index);
+  }
+
+  /* 📱 TOUCH */
+  slidesWrap.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+
+  slidesWrap.addEventListener("touchend", e => {
+    const diff = e.changedTouches[0].clientX - startX;
+    if (Math.abs(diff) > 50){
+      diff < 0 ? next() : prev();
+    }
+  });
+
+  /* 🖱️ MOUSE */
+  slidesWrap.addEventListener("mousedown", e => {
+    startX = e.clientX;
+  });
+
+  window.addEventListener("mouseup", e => {
+    const diff = e.clientX - startX;
+    if (Math.abs(diff) > 50){
+      diff < 0 ? next() : prev();
+    }
+  });
+}
+</script>
+
+<script>
+(() => {
+  const section = document.querySelector('.experience:not([data-type="menu"])');
+  if (!section) return;
+
+  const slidesWrap = section.querySelector('.exp-slides');
+  const steps = [...section.querySelectorAll('.exp-step')];
+  const dots  = [...section.querySelectorAll('.exp-bar span')];
+
+  let index = 0;
+  let startX = 0;
+  let timer = null;
+  let inView = false;
+  const DELAY = 5000;
+
+  function show(i){
+    steps.forEach((s, idx) =>
+      s.classList.toggle("active", idx === i)
+    );
+
+    dots.forEach((d, idx) => {
+      d.classList.toggle("active", idx === i);
+      d.style.animation = "none";
+      d.offsetHeight;
+      if (idx === i) d.style.animation = "";
+    });
+  }
+
+  function next(){
+    index = (index + 1) % steps.length;
+    show(index);
+  }
+
+  function prev(){
+    index = (index - 1 + steps.length) % steps.length;
+    show(index);
+  }
+
+  function start(){
+    stop();
+    timer = setInterval(next, DELAY);
+  }
+
+  function stop(){
+    clearInterval(timer);
+    timer = null;
+  }
+
+  // stato iniziale
+  show(0);
+  start();
+  // 👀 quando rientri sulla sezione → riparte da "Scegli il formato"
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!inView) {
+          inView = true;
+          index = 0;
+          show(0);
+          start();
+        }
+      } else {
+        inView = false;
+        stop();
+      }
+    });
+  }, { threshold: 0.6 });
+
+  io.observe(section);
+  /* 📱 TOUCH */
+  slidesWrap.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+
+  slidesWrap.addEventListener("touchend", e => {
+    const diff = e.changedTouches[0].clientX - startX;
+    if (Math.abs(diff) > 50){
+      diff < 0 ? next() : prev();
+      start(); // 🔁 riparte autoplay
+    }
+  });
+
+  /* 🖱️ MOUSE */
+  slidesWrap.addEventListener("mousedown", e => {
+    startX = e.clientX;
+  });
+
+  window.addEventListener("mouseup", e => {
+    const diff = e.clientX - startX;
+    if (Math.abs(diff) > 50){
+      diff < 0 ? next() : prev();
+      start(); // 🔁 riparte autoplay
+    }
+  });
+
+})();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  initSwipeExperience(
+    document.querySelector('.experience:not([data-type="menu"])')
+  );
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  initSwipeExperience(
+    document.querySelector('.experience[data-type="menu"]')
+  );
+});
+</script>
+
+<script>
+(() => {
+  const section = document.querySelector('.experience[data-type="menu"]');
+  if (!section) return;
+
+  const slidesWrap = section.querySelector('.exp-slides');
+  const steps = [...section.querySelectorAll('.exp-step')];
+  const dots  = [...section.querySelectorAll('.exp-bar span')];
+
+  let index = 0;
+  let startX = 0;
+  let timer = null;
+  const DELAY = 5000;
+
+  function show(i){
+    steps.forEach((s, idx) =>
+      s.classList.toggle("active", idx === i)
+    );
+
+    dots.forEach((d, idx) => {
+      d.classList.toggle("active", idx === i);
+      d.style.animation = "none";
+      d.offsetHeight;
+      if (idx === i) d.style.animation = "";
+    });
+  }
+
+  function next(){
+    index = (index + 1) % steps.length;
+    show(index);
+  }
+
+  function prev(){
+    index = (index - 1 + steps.length) % steps.length;
+    show(index);
+  }
+
+  function start(){
+    stop();
+    timer = setInterval(next, DELAY);
+  }
+
+  function stop(){
+    clearInterval(timer);
+    timer = null;
+  }
+
+  /* 🔁 RESET quando il menu viene aperto */
+  const menuBtn = document.getElementById("menu-plus-btn");
+  menuBtn.addEventListener("click", () => {
+    setTimeout(() => {
+      index = 0;
+      show(0);
+      start();
+    }, 300); // attende apertura animazione
+  });
+
+  /* 📱 TOUCH */
+  slidesWrap.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+
+  slidesWrap.addEventListener("touchend", e => {
+    const diff = e.changedTouches[0].clientX - startX;
+    if (Math.abs(diff) > 50){
+      diff < 0 ? next() : prev();
+      start(); // 🔁 riparte autoplay
+    }
+  });
+
+  /* 🖱️ MOUSE */
+  slidesWrap.addEventListener("mousedown", e => {
+    startX = e.clientX;
+  });
+
+  window.addEventListener("mouseup", e => {
+    const diff = e.clientX - startX;
+    if (Math.abs(diff) > 50){
+      diff < 0 ? next() : prev();
+      start();
+    }
+  });
+
+})();
+</script>
+
+<script>
+(() => {
+  const btn = document.getElementById("info-plus-btn");
+  const slides = document.getElementById("info-slides");
+
+  if (!btn || !slides) return;
+
+  let open = false;
+
+  btn.addEventListener("click", () => {
+    open = !open;
+
+    slides.classList.toggle("open", open);
+    btn.textContent = open ? "×" : "+";
+
+    if (open){
+      // reset prima slide INFO
+      slides.querySelectorAll(".exp-step").forEach(s => s.classList.remove("active"));
+      slides.querySelectorAll(".exp-bar span").forEach(d => d.classList.remove("active"));
+
+      const first = slides.querySelector(".exp-step");
+      const dot   = slides.querySelector(".exp-bar span");
+
+      if (first) first.classList.add("active");
+      if (dot) dot.classList.add("active");
+
+      slides.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  });
+})();
+</script>
+
+<script>
+(() => {
+  const section = document.querySelector('.experience[data-type="info"]');
+  if (!section) return;
+
+  const slidesWrap = section.querySelector('.exp-slides');
+  const steps = [...section.querySelectorAll('.exp-step')];
+  const dots  = [...section.querySelectorAll('.exp-bar span')];
+
+  let index = 0;
+  let startX = 0;
+  let timer = null;
+  let inView = false;
+  const DELAY = 5000;
+
+  function show(i){
+    steps.forEach((s, idx) =>
+      s.classList.toggle("active", idx === i)
+    );
+
+    dots.forEach((d, idx) => {
+      d.classList.toggle("active", idx === i);
+      d.style.animation = "none";
+      d.offsetHeight;
+      if (idx === i) d.style.animation = "";
+    });
+  }
+
+  function next(){
+    index = (index + 1) % steps.length;
+    show(index);
+  }
+
+  function prev(){
+    index = (index - 1 + steps.length) % steps.length;
+    show(index);
+  }
+
+  function start(){
+    stop();
+    timer = setInterval(next, DELAY);
+  }
+
+  function stop(){
+    clearInterval(timer);
+    timer = null;
+  }
+
+  // stato iniziale
+  show(0);
+
+  // 👀 entra / esce viewport
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !inView){
+        inView = true;
+        index = 0;
+        show(0);
+        start();
+      } else if (!entry.isIntersecting){
+        inView = false;
+        stop();
+      }
+    });
+  }, { threshold: 0.6 });
+
+  io.observe(section);
+
+  /* 📱 TOUCH */
+  slidesWrap.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+
+  slidesWrap.addEventListener("touchend", e => {
+    const diff = e.changedTouches[0].clientX - startX;
+    if (Math.abs(diff) > 50){
+      diff < 0 ? next() : prev();
+      start(); // 🔁 riparte autoplay
+    }
+  });
+
+  /* 🖱️ MOUSE */
+  slidesWrap.addEventListener("mousedown", e => {
+    startX = e.clientX;
+  });
+
+  window.addEventListener("mouseup", e => {
+    const diff = e.clientX - startX;
+    if (Math.abs(diff) > 50){
+      diff < 0 ? next() : prev();
+      start();
+    }
+  });
+
+})();
+</script>
 
 </body>
 </html>
