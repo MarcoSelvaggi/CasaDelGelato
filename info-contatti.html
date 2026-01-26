@@ -465,10 +465,10 @@ body.chat-open #coppa-popup{
   border-radius: 16px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   margin: 16px auto;
-  max-width: 420px;
+  max-width: 360px;          /* ⬅️ PIÙ STRETTA */
+  width: calc(100% - 32px);  /* ⬅️ margini laterali fissi */
   overflow: hidden;
 }
-
 /* header cliccabile */
 .info-card-header{
   width: 100%;
@@ -959,6 +959,33 @@ body.no-anim .parking-group{
 body.no-anim .poi-group{
   transition: none !important;
 }
+.shop-img-slider{
+  display: flex;
+  overflow-x: scroll;              /* 🔴 deve essere scroll */
+  width: 100%;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.shop-img-slider::-webkit-scrollbar{
+  display: none;
+}
+
+.shop-img-slider .shop-img{
+  flex: 0 0 100%;
+  width: 100%;
+  max-width: 100%;
+  scroll-snap-align: start;
+}
+.shop-img-slider{
+  display: flex;
+  overflow-x: scroll;
+  width: 100%;
+  height: 180px;              /* ⬅️ FONDAMENTALE */
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
 </style>
 </head>
 
@@ -1087,11 +1114,11 @@ body.no-anim .poi-group{
 
     <div class="parking-card">
       <div class="parking-info">
-        <div class="parking-name">Parcheggio Viale Europa</div>
+        <div class="parking-name">Parcheggio Viale dei Platani</div>
         <div class="parking-desc">Centrale, comodo per il centro</div>
       </div>
       <button class="parking-btn"
-        onclick="openMaps('https://www.google.com/maps/place/Viale+Europa,+Lignano+Sabbiadoro')">
+        onclick="openMaps('https://www.google.com/maps/place/Viale+dei+Platani,+73,+33054+Lignano+Sabbiadoro+UD/@45.6904539,13.1347081,16z/data=!3m1!4b1!4m6!3m5!1s0x477b940d600ab777:0x573dc7255faca1eb!8m2!3d45.6904539!4d13.1372777!16s%2Fg%2F11c2hb96sr?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoASAFQAw%3D%3D.com/maps/place/Viale+Europa,+Lignano+Sabbiadoro')">
         Maps
       </button>
     </div>
@@ -1099,21 +1126,21 @@ body.no-anim .poi-group{
     <div class="parking-card">
       <div class="parking-info">
         <div class="parking-name">Parcheggio Lungomare Trieste</div>
-        <div class="parking-desc">Ideale per spiaggia e passeggiata</div>
+        <div class="parking-desc">Fronte spiaggia, a 3 minuti </div>
       </div>
       <button class="parking-btn"
-        onclick="openMaps('https://www.google.com/maps/place/Lungomare+Trieste,+Lignano+Sabbiadoro')">
+        onclick="openMaps('https://www.google.com/maps/place/Lungomare+Trieste,+33054+Lignano+Sabbiadoro+UD/@45.6857313,13.1373992,16z/data=!3m1!4b1!4m6!3m5!1s0x477b940ebc69bc13:0x74ed426d7158361e!8m2!3d45.6857313!4d13.1399688!16s%2Fg%2F1tql3m6h?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoASAFQAw%3D%3D/maps/place/Lungomare+Trieste,+Lignano+Sabbiadoro')">
         Maps
       </button>
     </div>
 
     <div class="parking-card">
       <div class="parking-info">
-        <div class="parking-name">Parcheggio Stadio Teghil</div>
-        <div class="parking-desc">Ampio e facile da raggiungere</div>
+        <div class="parking-name">Parcheggio su strada, Via Latisana</div>
+        <div class="parking-desc">Facile da raggiungere, a 2 minuti</div>
       </div>
       <button class="parking-btn"
-        onclick="openMaps('https://www.google.com/maps/place/Stadio+Guido+Teghil')">
+        onclick="openMaps('https://www.google.com/maps/place/Via+Latisana,+29,+33054+Lignano+Sabbiadoro+UD/@45.6891104,13.1359026,16.09z/data=!4m6!3m5!1s0x477b9410ebaa311b:0x8f21d497e40fd0f9!8m2!3d45.6920325!4d13.1457273!16s%2Fg%2F11c2gdc_qx?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoASAFQAw%3D%3D/maps/place/Stadio+Guido+Teghil')">
         Maps
       </button>
     </div>
@@ -1341,6 +1368,17 @@ body.no-anim .poi-group{
     </button>
   </div>
 
+  <div class="parking-card poi-card">
+  <div class="parking-info">
+    <div class="parking-name">🛒 Supermercato Eurospar</div>
+    <div class="parking-desc">Supermercato Eurospar di Lignano</div>
+  </div>
+  <button class="parking-btn"
+    onclick="openMaps('https://www.google.com/maps/place/Supermercato+Eurospar+Lignano/@45.6873436,13.1324108,17z/data=!3m1!4b1!4m6!3m5!1s0x477b940ce3057537:0xbc7a6228881b65bd!8m2!3d45.6873436!4d13.1349804!16s%2Fg%2F11b8t75f8s?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoASAFQAw%3D%3D/place/Eurospar+Lignano+Sabbiadoro')">
+    Maps
+  </button>
+</div>
+
 </div>
 </div> <!-- poi-group lignano -->
 </div> <!-- poi-wrapper -->
@@ -1351,13 +1389,19 @@ body.no-anim .poi-group{
 
 <!-- LOCALE 1 -->
 <div class="shop-card">
-  <img src="img/bibione49.jpg" class="shop-img">
+  <div class="shop-img-slider">
+  <img src="img/latinlover-card.jpg" class="shop-img">
+  <img src="img/fantasia-card.jpg" class="shop-img">
+  <img src="img/julep-card.jpg" class="shop-img">
+  <img src="img/brioches-card.jpg" class="shop-img">
+  <img src="img/torte-card.jpg" class="shop-img">
+</div>
   <div class="shop-content">
     <b>Bibione – Viale delle Costellazioni 49</b>
 
     <div class="shop-actions">
       <a href="tel:043143628">Chiama</a>
-      <a href="https://maps.google.com/?q=Viale+delle+Costellazioni+49+Bibione" target="_blank">Maps</a>
+      <a href="https://www.google.com/maps/place/Casa+del+Gelato/@45.636008,13.055741,16z/data=!3m1!4b1!4m6!3m5!1s0x477b92ea07421221:0xe391699002be4784!8m2!3d45.636008!4d13.0583106!16s%2Fg%2F11c1knfsdv?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Maps</a>
             <a class="chat-btn" onclick="apriChatLocale('bibione49')">Info</a>
       <a href="https://g.page/r/CYRHvgKQaZHjEBM/review"
          target="_blank"
@@ -1376,7 +1420,7 @@ body.no-anim .poi-group{
     <b>Bibione – Viale delle Costellazioni 10</b>
 <div class="shop-actions">
   <a href="tel:0431364365">Chiama</a>
-  <a href="https://maps.google.com/?q=Viale+delle+Costellazioni+10+Bibione" target="_blank">Maps</a>
+  <a href="https://www.google.com/maps/place/Casa+Del+Gelato+2/@45.636209,13.0584217,21z/data=!4m14!1m7!3m6!1s0x477b92ea07421221:0xe391699002be4784!2sCasa+del+Gelato!8m2!3d45.636008!4d13.0583106!16s%2Fg%2F11c1knfsdv!3m5!1s0x477b92e9877c0911:0xe7a50ebf046f072b!8m2!3d45.6362294!4d13.0585103!16s%2Fg%2F11bvt66r_s?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Maps</a>
   <a onclick="apriChatLocale('bibione10')">Info</a>
   <a href="https://g.page/r/CSsHbwS_DqXnEBM/review" target="_blank" class="primary">
     Recensione
@@ -1392,7 +1436,7 @@ body.no-anim .poi-group{
     <b>Lignano Sabbiadoro – Via Udine 1</b>
 <div class="shop-actions">
   <a href="tel:04311961783">Chiama</a>
-  <a href="https://maps.google.com/?q=Via+Udine+1+Lignano" target="_blank">Maps</a>
+  <a href="https://www.google.com/maps/place/Casa+del+Gelato/@45.6907281,13.1454696,18z/data=!3m1!4b1!4m6!3m5!1s0x477b95d654c5d7a7:0xfa6ef4e26cb41dea!8m2!3d45.6907281!4d13.1454696!16s%2Fg%2F11jj66plr9?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoASAFQAw%3D%3D" target="_blank">Maps</a>
   <a onclick="apriChatLocale('lignano')">Info</a>
   <a href="https://g.page/r/CeodtGzi9G76EBM/review" target="_blank" class="primary">
     Recensione
@@ -1491,6 +1535,10 @@ const LOCALI = {
     indirizzo: "Viale delle Costellazioni 49, Bibione",
     telefono: "043143628",
     orari: "8:00 – 1:00",
+      wifi: {
+    nome: "Free Wi-Fi",
+    password: "Casadelgelato"
+  },
 info: `
 
 <div style="font-size:13.5px; line-height:1.45">
@@ -1590,28 +1638,38 @@ function selezionaLocale(id) {
   setTimeout(() => {
 
     /* 2️⃣ aggiorna contenuto DOPO fade-out */
-    box.innerHTML = `
-      <div style="opacity:.8;margin-bottom:10px">
-        Informazioni su <b>${l.nome}</b>
-      </div>
+box.innerHTML = `
+  <div style="opacity:.8;margin-bottom:10px">
+    Informazioni su <b>${l.nome}</b>
+  </div>
 
-      <div style="
-        margin-top:8px;
-        padding:14px;
-        background:#f2f2f7;
-        border-radius:12px;
-        display:flex;
-        flex-direction:column;
-        gap:10px;
-        font-size:15px;
-      ">
-        <div><b>Indirizzo</b><br>${l.indirizzo}</div>
-        <div><b>Orari</b><br>${l.orari}</div>
-        <div><b>Telefono</b><br>
-          <a href="tel:${l.telefono}">${l.telefono}</a>
-        </div>
+  <div style="
+    margin-top:8px;
+    padding:14px;
+    background:#f2f2f7;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    font-size:15px;
+  ">
+    <div><b>Indirizzo</b><br>${l.indirizzo}</div>
+
+    <div><b>Orari</b><br>${l.orari}</div>
+
+    <div>
+      <b>Telefono</b><br>
+      <a href="tel:${l.telefono}">${l.telefono}</a>
+    </div>
+
+    ${l.wifi ? `
+      <div style="font-size:14px">
+        <b>${l.wifi.nome}</b><br>
+        Password: <span style="font-weight:600">${l.wifi.password}</span>
       </div>
-    `;
+    ` : ""}
+  </div>
+`;
 
     /* 3️⃣ mostra azioni */
     actions.style.display = "grid";
@@ -2223,6 +2281,61 @@ document.addEventListener("DOMContentLoaded", () => {
   // sblocca animazioni
   requestAnimationFrame(() => {
     document.body.classList.remove("no-anim");
+  });
+});
+</script>
+
+<script>
+window.addEventListener("load", () => {
+  document.querySelectorAll(".shop-img-slider").forEach(slider => {
+    const slides = slider.querySelectorAll(".shop-img");
+    if (slides.length <= 1) return;
+
+    const slideWidth = slider.clientWidth;
+
+    // 🔁 clona la prima slide e mettila in fondo
+    const firstClone = slides[0].cloneNode(true);
+    slider.appendChild(firstClone);
+
+    let index = 0;
+    let isResetting = false;
+
+    const autoScroll = () => {
+      if (isResetting) return;
+
+      index++;
+      slider.scrollTo({
+        left: index * slideWidth,
+        behavior: "smooth"
+      });
+
+      // 🧠 quando arrivi alla CLONE (ultima)
+      if (index === slides.length) {
+        isResetting = true;
+
+        // aspetta che finisca l'animazione
+        setTimeout(() => {
+          slider.scrollTo({
+            left: 0,
+            behavior: "auto" // 👈 reset INVISIBILE
+          });
+          index = 0;
+          isResetting = false;
+        }, 700); // ⏱️ durata animazione smooth
+      }
+    };
+
+    const timer = setInterval(autoScroll, 6000); // ⏱️ lento
+
+    // 🛑 stop se l’utente interagisce
+    const stop = () => clearInterval(timer);
+    slider.addEventListener("touchstart", stop, { once: true });
+    slider.addEventListener("mousedown", stop, { once: true });
+
+    // sicurezza su resize
+    window.addEventListener("resize", () => {
+      slider.scrollTo({ left: index * slider.clientWidth, behavior: "auto" });
+    });
   });
 });
 </script>
