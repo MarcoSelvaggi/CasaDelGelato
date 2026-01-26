@@ -1569,6 +1569,16 @@ function dedupCoppe(lista) {
         if (map.has(key)) {
             const existing = map.get(key);
 
+            // ⭐ FUSIONE STATO LOCALE (NON DEVE ANDARE PERSO)
+if (existing.preferito || c.preferito) {
+    existing.preferito = true;
+}
+
+// ✏️ mantieni nome personalizzato locale
+if (!existing.nome && c.nome) {
+    existing.nome = c.nome;
+}
+
             // ✅ 1) preferisci SEMPRE quella con immagine
             if (!existing.coppa_img && c.coppa_img) {
                 map.set(key, c);
