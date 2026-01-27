@@ -230,361 +230,56 @@ body{
   border-radius:999px;
 }
 
-/* ☕ MENU CAFFETTERIA */
-.menu-category{
-  margin-top: 20px;
-}
-
-.category-title{
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 16px;
-  text-align: center;
-}
-
-/* GRID 3 PER RIGA */
-.product-grid{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-}
-
-/* CARD */
-.product-card{
-  position: relative;
-  background: #fff;
-  border-radius: 16px;
-  padding: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
-  text-align: center;
-}
-
-/* IMMAGINE */
-.product-img{
-  width: 100%;
-  height: 90px;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.product-img img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* INFO */
-.product-info h3{
-  font-size: 13px;
-  margin: 0;
-  font-weight: 700;
-}
-
-.product-info p{
-  font-size: 11px;
-  color: #666;
-  margin: 4px 0;
-}
-
-.price{
-  font-size: 13px;
-  font-weight: 800;
-}
-
-/* TOGGLE IMMAGINE */
-.img-toggle{
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  border: none;
-  background: rgba(0,0,0,0.6);
-  color: #fff;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-
-
-/* RESPONSIVE */
-@media (max-width: 768px){
-  .product-grid{
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* 📱 MOBILE → 2 CARD AFFIANCATE */
-@media (max-width: 768px){
-  .product-grid{
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ===== CATEGORIA COLLAPSABILE ===== */
-
-.menu-category{
-  margin-top: 24px;
-}
-
-.category-toggle{
-  width: 100%;
-  background: #fff;
-  border: none;
-  border-radius: 14px;
-  padding: 14px 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  font-size: 18px;
-  font-weight: 800;
-  cursor: pointer;
-
-  box-shadow: 0 6px 18px rgba(0,0,0,.08);
-}
-
-.category-toggle:active{
-  transform: scale(.98);
-}
-
-.category-toggle .chevron{
-  font-size: 18px;
-  transition: transform .3s ease;
-}
-
-/* contenuto */
-.category-content{
-  overflow: hidden;
-  max-height: 0;
-  transition: max-height .4s ease, opacity .3s ease;
-  opacity: 0;
-}
-
-.category-content.open{
-  opacity: 1;
-  max-height: 5000px; /* grande abbastanza per tutti i prodotti */
-}
-
-/* rotazione freccia */
-.category-toggle.open .chevron{
-  transform: rotate(180deg);
-}
-/* spazio tra titolo categoria e prodotti */
-.category-content{
-  padding-top: 14px;
-}
-
-
-
-
-/* 🍩 COLAZIONI */
-.colazioni-separator{
-  grid-column: 1 / -1;
-  margin: 10px 0 6px;
-  text-align: center;
-}
-
-.colazioni-separator h3{
-  font-size: 16px;
-  font-weight: 800;
-  color: #111;
-  background: #f2f2f7;
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 999px;
-}
-
-/* ⭐ PROMO */
-.colazioni-separator.promo h3{
-  background: #fff3cd;
-  color: #8a6d1d;
-}
-
-/* 🔍 SEARCH BAR */
-.menu-search{
-  margin: 10px 0 24px;
-}
-
-.menu-search input{
-  width: 100%;
-  padding: 14px 16px;
-  border-radius: 14px;
-  border: 1px solid #ddd;
-  font-size: 15px;
-  background: #fff;
-  outline: none;
-}
-
-.menu-search input:focus{
-  border-color: #111;
-}
-
-.menu-filters{
-  display:flex;
-  gap:10px;
-  margin:16px 0;
-  flex-wrap:wrap;
-}
-
-
-.filter-bestseller{
-  flex:1;
-  height: 44px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  background: #fff;
-  border-radius: 12px;
-
-  font-size: 14px;
-  font-weight: 600;
-  color: #111;
-
-  cursor: pointer;
-  user-select: none;
-
-  box-shadow: 0 0 0 0.5px rgba(0,0,0,.15);
-}
-
-.filter-bestseller .icon{
-  font-size: 14px;
-  line-height: 1;
-}
-
-.filter-bestseller .text{
-  line-height: 1;
-}
-
-.filter-bestseller input{
-  display: none;
-}
-
-.filter-bestseller input{
-  display: none;
-}
-
-.filter-bestseller:has(input:checked){
-  background: #fffbeb;
-  box-shadow: inset 0 0 0 1px rgba(255,204,0,.5);
-}
-
-.menu-bottom-bar .menu-search{
-  margin-bottom: 10px;
-}
-
-.menu-bottom-bar .menu-filters{
-  gap:8px;
-}
-/* 🔎 BARRA RICERCA + FILTRI FISSI IN BASSO */
-.menu-bottom-bar{
-  position: fixed;
-  bottom: env(safe-area-inset-bottom);
-  left: 50%;
-  transform: translateX(-50%);
-
-  width: calc(100% - 24px);
-  max-width: 600px;
-
-  padding: 12px;
-  border-radius: 20px 20px 0 0;
-
-  background: rgba(255,255,255,.92);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-
-  box-shadow: 0 -6px 24px rgba(0,0,0,.12);
-  z-index: 1000;
-}
-
-/* spazio sotto il contenuto per non coprire le card */
-.page-content{
-  padding-bottom: 150px; /* altezza barra */
-}
-/* ricerca */
-.menu-bottom-bar .menu-search{
-  margin-bottom: 8px;
-}
-.menu-bottom-bar .menu-search input{
-  width:100%;
-  padding:14px 18px;
-  border-radius: 16px;
-  border: none;
-  font-size:16px;
-  background:#f2f2f7;
-  outline:none;
-  box-shadow: inset 0 0 0 0.5px rgba(0,0,0,.15);
-}
-
-.menu-bottom-bar .menu-search input::placeholder{
-  color:#8e8e93;
-}
-
-.menu-bottom-bar input{
-  width:100%;
-  padding:14px 16px;
-  border-radius:14px;
-  border:1px solid #ddd;
-  font-size:15px;
-  background:#fff;
-}
-
-/* filtri */
-.menu-bottom-bar .menu-filters{
+/* ☕ BAR + 🍨 GELATO – CATEGORIE ORIZZONTALI */
+.bar-tabs,
+.gelato-tabs{
   display: flex;
   gap: 8px;
+  overflow-x: auto;
+
   padding: 6px;
+  margin: 8px 0 0;
+
   background: #f2f2f7;
   border-radius: 14px;
+
+  scrollbar-width: none;
 }
 
-#no-results{
-  display:none;
-  text-align:center;
-  margin:30px 0;
-  font-size:16px;
-  color:#8e8e93;
-  font-weight:600;
+.bar-tabs::-webkit-scrollbar,
+.gelato-tabs::-webkit-scrollbar{
+  display: none;
 }
-.menu-bottom-bar select{
-  appearance: none;
-  -webkit-appearance: none;
 
-  flex:1;
-  padding: 12px 14px;
+.bar-tab,
+.gelato-tab{
+  flex: 0 0 auto;
+  padding: 10px 14px;
+
   border-radius: 12px;
   border: none;
+  background: transparent;
 
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  color: #666;
+
+  white-space: nowrap;
+  cursor: pointer;
+
+  transition: all .25s ease;
+}
+
+.bar-tab.active,
+.gelato-tab.active{
   background: #fff;
-
-  box-shadow: 0 0 0 0.5px rgba(0,0,0,.15);
-}
-.menu-bottom-bar .menu-search input{
-  height: 46px;
-  border-radius: 14px;
-  font-size: 16px;
-  background: #f2f2f7;
+  color: #111;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
 }
 
-/* 🧱 distacco forte tra categorie principali */
-.category-separator{
-  margin-top: 25px;
-}
-
-.menu-category{
-  margin-bottom: 22px;
-}
-
+/* 🔁 SWITCH BAR / GELATO */
 .menu-switch{
-  margin-top: 16px;
+  margin-top: 12px;
   display: inline-flex;
   background: #f2f2f7;
   border-radius: 14px;
@@ -594,11 +289,13 @@ body{
 .menu-tab{
   border: none;
   background: transparent;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 10px;
+
   font-size: 14px;
   font-weight: 700;
   color: #666;
+
   cursor: pointer;
   transition: all .25s ease;
 }
@@ -607,6 +304,106 @@ body{
   background: #fff;
   color: #111;
   box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+/* ✅ BAR (e riusabile per qualsiasi sezione) — GRID + CARD */
+.product-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px){
+  .product-grid{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.product-card{
+  background: #fff;
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  text-align: center;
+}
+
+.product-img{
+  width: 100%;
+  height: 90px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: #f6f6f7;
+}
+
+.product-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.product-info h3{
+  font-size: 13px;
+  margin: 0;
+  font-weight: 800;
+  color: #111;
+}
+
+.product-info p{
+  font-size: 11px;
+  color: #666;
+  margin: 4px 0 6px;
+  line-height: 1.25;
+}
+
+.product-info .price{
+  font-size: 13px;
+  font-weight: 900;
+  color: #111;
+}
+/* ⭐ SEPARATORE PROMO COLAZIONI */
+.colazioni-separator{
+  grid-column: 1 / -1;          /* prende tutta la riga */
+  margin: 14px 0 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.colazioni-separator h3{
+  font-size: 15px;
+  font-weight: 800;
+  color: #111;
+
+  background: #f2f2f7;
+  padding: 8px 16px;
+  border-radius: 999px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* versione PROMO */
+.colazioni-separator.promo h3{
+  background: #fff3cd;
+  color: #8a6d1d;
+}
+
+.info-warning{
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+
+  background: #fff1f0;
+  border: 1px solid #ff3b30;
+  border-radius: 14px;
+
+  color: #b42318;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
 }
 </style>
 </head>
@@ -627,223 +424,174 @@ body{
 <!-- HEADER -->
 <header class="page-header">
   <h1>Menu</h1>
-<div class="menu-switch">
-  <button class="menu-tab active" data-menu="bar">
-    ☕ Bar / Caffetteria
-  </button>
-  <button class="menu-tab" data-menu="gelato">
-    🍨 Gelato
-  </button>
+ <div class="menu-switch">
+  <button class="menu-tab active" data-section="bar">☕ Bar</button>
+  <button class="menu-tab" data-section="gelato">🍨 Gelato</button>
 </div>
 </header>
 
-<!-- CONTENUTO -->
 <div class="page-content">
 
-  <!-- 🔍 RICERCA MENU -->
-<div class="menu-bottom-bar">
+  <!-- ☕ SEZIONE BAR -->
+  <div id="menu-bar">
 
-  <div class="menu-search">
-    <input
-      type="search"
-      id="menu-search"
-      placeholder="Cerca nel menu…"
-    >
-  </div>
-
-  <div class="menu-filters">
-    <select id="filter-price">
-      <option value="">Prezzo</option>
-      <option value="asc">Prezzo ↑</option>
-      <option value="desc">Prezzo ↓</option>
-    </select>
-
-<select id="filter-category">
-  <option value="">Categoria</option>
-
-  <!-- Caffetteria -->
-  <option value="caffetteria">Caffetteria</option>
-  <option value="colazioni">Colazioni</option>
-  <option value="promo">Promo Colazioni</option>
-
-  <!-- Altre categorie -->
-  <option value="bibite">Bibite</option>
-  <option value="superalcolici">Superalcolici</option>
-  <option value="cocktails">Cocktails</option>
-
-  <option value="aperitivi">Aperitivi</option>
-  <option value="snacks">Snacks</option>
-
-  <option value="birre">Birre</option>
-  <option value="vini">Vini</option>
-</select>
-
-<label class="filter-bestseller">
-  <input type="checkbox" id="filter-best">
-  <span class="icon">⭐</span>
-  <span class="text">Best seller</span>
-</label>
-  </div>
-
+<div class="bar-tabs">
+  <button class="bar-tab active" data-bar="all">Tutto</button>
+  <button class="bar-tab" data-bar="caffetteria">Caffetteria</button>
+  <button class="bar-tab" data-bar="colazioni">Colazioni</button>
+  <button class="bar-tab" data-bar="bibite">Bibite</button>
+  <button class="bar-tab" data-bar="aperitivi">Aperitivi</button>
+  <button class="bar-tab" data-bar="cocktails">Cocktails</button>
+  <button class="bar-tab" data-bar="superalcolici">Superalcolici</button>
+  <button class="bar-tab" data-bar="birre">Birre</button>
+  <button class="bar-tab" data-bar="vini">Vini</button>
+  <button class="bar-tab" data-bar="snacks">Snacks</button>
 </div>
 
-<div id="no-results">
-  Nessun prodotto trovato
-</div>
+  <!-- CARD CAFFETTERIA -->
+<div class="product-grid" id="bar-products">
 
-<div id="menu-bar"></div>
-<section class="menu-category">
+  <div class="product-card"
+    data-price="1.60"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-espresso.jpg" alt="Caffè Espresso">
+    </div>
+    <div class="product-info">
+      <h3>Caffè Espresso</h3>
+      <p>Espresso classico</p>
+      <span class="price">€ 1,60</span>
+    </div>
+  </div>
 
-  <button class="category-toggle" aria-expanded="true">
-    ☕ Caffetteria
-    <span class="chevron">⌄</span>
-  </button>
+  <div class="product-card"
+    data-price="1.80"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-decaffeinato.jpg" alt="Caffè Decaffeinato">
+    </div>
+    <div class="product-info">
+      <h3>Caffè Decaffeinato</h3>
+      <p>Senza caffeina</p>
+      <span class="price">€ 1,80</span>
+    </div>
+  </div>
 
-  <div class="category-content open">
-    <div class="product-grid">
+  <div class="product-card"
+    data-price="2.00"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-orzo.jpg" alt="Caffè d'Orzo">
+    </div>
+    <div class="product-info">
+      <h3>Caffè d'Orzo</h3>
+      <p>Alternativa naturale</p>
+      <span class="price">€ 2,00</span>
+    </div>
+  </div>
 
-    <!-- PRODOTTO -->
-<div class="product-card" 
-data-price="1.60" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-espresso.jpg" alt="Caffè Espresso">
+  <div class="product-card"
+    data-price="2.80"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-panna.jpg" alt="Caffè con panna">
+    </div>
+    <div class="product-info">
+      <h3>Caffè con panna</h3>
+      <p>Con panna montata</p>
+      <span class="price">€ 2,80</span>
+    </div>
   </div>
-  <div class="product-info">
-    <h3>Caffè Espresso</h3>
-    <p>Espresso classico</p>
-    <span class="price">€ 1,60</span>
-  </div>
-</div>
 
-<div class="product-card" 
-data-price="1.80" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-decaffeinato.jpg" alt="Caffè Decaffeinato">
+  <div class="product-card"
+    data-price="3.00"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-gelato.jpg" alt="Caffè con gelato">
+    </div>
+    <div class="product-info">
+      <h3>Caffè con gelato</h3>
+      <p>Con 1 pallina di gelato</p>
+      <span class="price">€ 3,00</span>
+    </div>
   </div>
-  <div class="product-info">
-    <h3>Caffè Decaffeinato</h3>
-    <p>Senza caffeina</p>
-    <span class="price">€ 1,80</span>
-  </div>
-</div>
 
-<div class="product-card" 
-data-price="2.00" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-orzo.jpg" alt="Caffè d'Orzo">
+  <div class="product-card"
+    data-price="2.50"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-americano.jpg" alt="Caffè Americano">
+    </div>
+    <div class="product-info">
+      <h3>Caffè Americano</h3>
+      <p>Americano</p>
+      <span class="price">€ 2,50</span>
+    </div>
   </div>
-  <div class="product-info">
-    <h3>Caffè d'Orzo</h3>
-    <p>Alternativa naturale</p>
-    <span class="price">€ 2,00</span>
-  </div>
-</div>
 
-<div class="product-card" 
-data-price="2.80" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-panna.jpg" alt="Caffè con panna">
+  <div class="product-card"
+    data-price="2.00"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-ginseng.jpg" alt="Caffè Ginseng">
+    </div>
+    <div class="product-info">
+      <h3>Caffè Ginseng</h3>
+      <p>Bevanda al ginseng</p>
+      <span class="price">€ 2,00</span>
+    </div>
   </div>
-  <div class="product-info">
-    <h3>Caffè con panna</h3>
-    <p>Con panna montata</p>
-    <span class="price">€ 2,80</span>
-  </div>
-</div>
 
-<div class="product-card" 
-data-price="3.00"
- data-category="caffetteria" 
- data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-gelato.jpg" alt="Caffè con gelato">
+  <div class="product-card"
+    data-price="2.50"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-corretto.jpg" alt="Caffè Corretto">
+    </div>
+    <div class="product-info">
+      <h3>Caffè Corretto *</h3>
+      <p>Espresso con liquore</p>
+      <span class="price">€ 2,50</span>
+    </div>
   </div>
-  <div class="product-info">
-    <h3>Caffè con gelato</h3>
-    <p>Con 1 pallina di gelato</p>
-    <span class="price">€ 3,00</span>
-  </div>
-</div>
 
-<div class="product-card" 
-data-price="2.50" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-americano.jpg" alt="Caffè Americano">
+  <div class="product-card"
+    data-price="3.50"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/caffe-shakerato.jpg" alt="Caffè Shakerato">
+    </div>
+    <div class="product-info">
+      <h3>Caffè Shakerato</h3>
+      <p>Caffè freddo shakerato</p>
+      <span class="price">€ 3,50</span>
+    </div>
   </div>
-  <div class="product-info">
-    <h3>Caffè Americano</h3>
-    <p>americano</p>
-    <span class="price">€ 2,50</span>
-  </div>
-</div>
 
-<div class="product-card" 
-data-price="2.00" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-ginseng.jpg" alt="Caffè Ginseng">
+  <div class="product-card"
+    data-price="2.00"
+    data-category="caffetteria"
+    data-best="false">
+    <div class="product-img">
+      <img src="img/macchiatone.jpg" alt="Macchiatone">
+    </div>
+    <div class="product-info">
+      <h3>Macchiatone</h3>
+      <p>Espresso macchiato abbondante</p>
+      <span class="price">€ 2,00</span>
+    </div>
   </div>
-  <div class="product-info">
-    <h3>Caffè Ginseng</h3>
-    <p>Bevanda al ginseng</p>
-    <span class="price">€ 2,00</span>
-  </div>
-</div>
 
-<div class="product-card" 
-data-price="2.50" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-corretto.jpg" alt="Caffè Corretto">
-  </div>
-  <div class="product-info">
-    <h3>Caffè Corretto *</h3>
-    <p>Espresso con liquore</p>
-    <span class="price">€ 2,50</span>
-  </div>
-</div>
-
-<div class="product-card" 
-data-price="3.50" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/caffe-shakerato.jpg" alt="Caffè Shakerato">
-  </div>
-  <div class="product-info">
-    <h3>Caffè Shakerato</h3>
-    <p>Caffè freddo shakerato</p>
-    <span class="price">€ 3,50</span>
-  </div>
-</div>
-
-<div class="product-card" 
-data-price="2.00" 
-data-category="caffetteria" 
-data-best="false">
-  <div class="product-img">
-    <img src="img/macchiatone.jpg" alt="Macchiatone">
-  </div>
-  <div class="product-info">
-    <h3>Macchiatone</h3>
-    <p>Espresso macchiato abbondante</p>
-    <span class="price">€ 2,00</span>
-  </div>
-</div>
-
-<div class="product-card" 
+  <div class="product-card" 
 data-price="2.50" 
 data-category="caffetteria" 
 data-best="false">
@@ -969,14 +717,13 @@ data-best="false">
   </div>
 </div>
 
-<!-- 🥐 COLAZIONI -->
-<div class="colazioni-separator">
-  <h3>🍩 Colazioni</h3>
-</div>
 
-<div class="product-card" 
-data-price="2.00" 
-data-category="colazioni" 
+<!-- 🥐 COLAZIONI -->
+
+
+<div class="product-card"
+data-price="2.00"
+data-category="colazioni"
 data-best="false">
   <div class="product-img">
     <img src="img/brioche.jpg" alt="Brioche">
@@ -988,10 +735,9 @@ data-best="false">
   </div>
 </div>
 
-
-<div class="product-card" 
-data-price="5.00" 
-data-category="colazioni" 
+<div class="product-card"
+data-price="5.00"
+data-category="colazioni"
 data-best="false">
   <div class="product-img">
     <img src="img/torte-dolci.jpg" alt="Torte e dolci">
@@ -1003,10 +749,9 @@ data-best="false">
   </div>
 </div>
 
-
-<div class="product-card" 
-data-price="3.00" 
-data-category="colazioni" 
+<div class="product-card"
+data-price="3.00"
+data-category="colazioni"
 data-best="false">
   <div class="product-img">
     <img src="img/torte-dolci.jpg" alt="Thè e Camomilla">
@@ -1019,14 +764,15 @@ data-best="false">
 </div>
 
 <!-- ⭐ PROMO COLAZIONI -->
-<div class="colazioni-separator promo">
-  <h3>⭐ Promo Colazioni</h3>
+<div class="colazioni-separator promo" data-only="colazioni">
+  <h3>Promo Colazioni</h3>
 </div>
 
-<div class="product-card" 
+<div class="product-card"
 data-price="8.00"
- data-category="promo" 
- data-best="true">
+data-category="colazioni"
+data-subcategory="promo"
+data-best="true">
   <div class="product-img">
     <img src="img/promo-cappuccino-brioche-spremuta.jpg" alt="Colazione Italiana">
   </div>
@@ -1037,10 +783,11 @@ data-price="8.00"
   </div>
 </div>
 
-<div class="product-card" 
+<div class="product-card"
 data-price="3.50"
- data-category="promo" 
- data-best="false">
+data-category="colazioni"
+data-subcategory="promo"
+data-best="false">
   <div class="product-img">
     <img src="img/promo-cappuccino-biscotto.jpg" alt="Cappuccino Biscotto">
   </div>
@@ -1051,10 +798,11 @@ data-price="3.50"
   </div>
 </div>
 
-<div class="product-card" 
+<div class="product-card"
 data-price="3.00"
- data-category="promo" 
- data-best="false">
+data-category="colazioni"
+data-subcategory="promo"
+data-best="false">
   <div class="product-img">
     <img src="img/promo-espresso-biscotto.jpg" alt="Espresso Biscotto">
   </div>
@@ -1065,10 +813,11 @@ data-price="3.00"
   </div>
 </div>
 
-<div class="product-card" 
+<div class="product-card"
 data-price="2.50"
- data-category="promo" 
- data-best="true">
+data-category="colazioni"
+data-subcategory="promo"
+data-best="true">
   <div class="product-img">
     <img src="img/Brioches-Farcita-al-Pistacchio.jpg" alt="Brioches Pistacchio">
   </div>
@@ -1079,10 +828,11 @@ data-price="2.50"
   </div>
 </div>
 
-<div class="product-card" 
+<div class="product-card"
 data-price="2.50"
- data-category="promo" 
- data-best="false">
+data-category="colazioni"
+data-subcategory="promo"
+data-best="false">
   <div class="product-img">
     <img src="img/Brioches-Farcita-alle-Fragole.jpg" alt="Brioches Fragole">
   </div>
@@ -1093,10 +843,11 @@ data-price="2.50"
   </div>
 </div>
 
-<div class="product-card" 
+<div class="product-card"
 data-price="2.50"
- data-category="promo" 
- data-best="true">
+data-category="colazioni"
+data-subcategory="promo"
+data-best="true">
   <div class="product-img">
     <img src="img/Brioches-Farcita-alla-Nutella.jpg" alt="Brioches Nutella">
   </div>
@@ -1107,10 +858,11 @@ data-price="2.50"
   </div>
 </div>
 
-<div class="product-card" 
+<div class="product-card"
 data-price="2.50"
- data-category="promo" 
- data-best="false">
+data-category="colazioni"
+data-subcategory="promo"
+data-best="false">
   <div class="product-img">
     <img src="img/Brioches-Farcita-Bosco.jpg" alt="Brioches Bosco">
   </div>
@@ -1121,10 +873,11 @@ data-price="2.50"
   </div>
 </div>
 
-<div class="product-card" 
+<div class="product-card"
 data-price="6.50"
- data-category="promo" 
- data-best="false">
+data-category="colazioni"
+data-subcategory="promo"
+data-best="false">
   <div class="product-img">
     <img src="img/promo-domenica.jpg" alt="Promo Domenica">
   </div>
@@ -1134,22 +887,8 @@ data-price="6.50"
     <span class="price">€ 6,50</span>
   </div>
 </div>
-</section>
 
-<section class="menu-category">
-
-  <button class="category-toggle" aria-expanded="false">
-    🥤 Bibite
-    <span class="chevron">⌄</span>
-  </button>
-
-  <div class="category-content">
-    <div class="product-grid">
-
-<div class="colazioni-separator">
-  <h3>🥤 Bibite</h3>
-</div>
-
+  <!-- BIBITE -->
 <div class="product-card" data-price="3.80" data-category="bibite" data-best="false">
    <div class="product-img">
     <img src="img/bibite/coca-cola.jpg" alt="Coca-Cola">
@@ -1304,10 +1043,10 @@ data-price="6.50"
   </div>
 </div>
 
-
-<div class="colazioni-separator">
+<div class="colazioni-separator bibite-separator" data-only="bibite">
   <h3>🍊 Spremute</h3>
 </div>
+
 
 <div class="product-card" data-price="5.00" data-category="bibite" data-best="true">
  <div class="product-img">
@@ -1331,7 +1070,7 @@ data-price="6.50"
   </div>
 </div>
 
-<div class="colazioni-separator">
+<div class="colazioni-separator bibite-separator" data-only="bibite">
   <h3>🍎 Succhi e Frullati</h3>
 </div>
 
@@ -1357,207 +1096,84 @@ data-price="6.50"
   </div>
 </div>
 
-    </div> <!-- .product-grid -->
-  </div>   <!-- .category-content -->
-</section>
+      <div class="product-card" data-price="3.80" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/gingerino.jpg" alt="Gingerino"></div>
+        <div class="product-info"><h3>Gingerino</h3><span class="price">€ 3,80</span></div>
+      </div>
 
-<section class="menu-category category-separator">
+      <div class="product-card" data-price="3.80" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/sanbitter.jpg" alt="Sanbittèr"></div>
+        <div class="product-info"><h3>Sanbittèr</h3><span class="price">€ 3,80</span></div>
+      </div>
 
-  <button class="category-toggle" aria-expanded="false">
-    🥃 Superalcolici
-    <span class="chevron">⌄</span>
-  </button>
+      <div class="product-card" data-price="3.80" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/crodino.jpg" alt="Crodino"></div>
+        <div class="product-info"><h3>Crodino</h3><span class="price">€ 3,80</span></div>
+      </div>
 
-  <div class="category-content">
-    <div class="product-grid">
+      <div class="product-card" data-price="4.80" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/campari-soda.jpg" alt="Campari Soda"></div>
+        <div class="product-info"><h3>Campari Soda *</h3><span class="price">€ 4,80</span></div>
+      </div>
 
-<div class="colazioni-separator">
-  <h3>🍃 Amari & Liquori</h3>
+      <div class="product-card" data-price="8.00" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/americano.jpg" alt="Americano"></div>
+        <div class="product-info">
+          <h3>Americano *</h3>
+          <p>Campari, Vermouth Rosso, Soda</p>
+          <span class="price">€ 8,00</span>
+        </div>
+      </div>
+
+      <div class="product-card" data-price="8.00" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/negroni.jpg" alt="Negroni"></div>
+        <div class="product-info">
+          <h3>Negroni *</h3>
+          <p>Campari, Vermouth Rosso, Gin</p>
+          <span class="price">€ 8,00</span>
+        </div>
+      </div>
+
+      <div class="product-card" data-price="8.00" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/negroni-sbagliato.jpg" alt="Negroni Sbagliato"></div>
+        <div class="product-info"><h3>Negroni Sbagliato *</h3><span class="price">€ 8,00</span></div>
+      </div>
+
+      <div class="product-card" data-price="8.00" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/campari-orange.jpg" alt="Campari Orange"></div>
+        <div class="product-info">
+          <h3>Campari Orange *</h3>
+          <p>Campari Soda, Succo d’Arancia</p>
+          <span class="price">€ 8,00</span>
+        </div>
+      </div>
+
+      <!-- 🥂 SPRITZ SPECIAL -->
+    <div class="colazioni-separator aperitivi-separator" data-only="aperitivi">
+  <h3>🥂 Spritz Special</h3>
 </div>
 
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/amaro.jpg" alt="Averna"></div>
-  <div class="product-info"><h3>Averna</h3><span class="price">€ 4,50</span></div>
-</div>
+      <div class="product-card" data-price="5.50" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/aperol-spritz.jpg" alt="Aperol Spritz"></div>
+        <div class="product-info"><h3>APEROL SPRITZ *</h3><span class="price">€ 5,50</span></div>
+      </div>
 
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/amaro.jpg" alt="Montenegro"></div>
-  <div class="product-info"><h3>Montenegro</h3><span class="price">€ 4,50</span></div>
-</div>
+      <div class="product-card" data-price="5.50" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/bitter-spritz.jpg" alt="Bitter Spritz"></div>
+        <div class="product-info"><h3>BITTER SPRITZ *</h3><span class="price">€ 5,50</span></div>
+      </div>
 
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/fernet.jpg" alt="Fernet Branca"></div>
-  <div class="product-info"><h3>Fernet Branca</h3><span class="price">€ 4,50</span></div>
-</div>
+      <div class="product-card" data-price="5.50" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/hugo.jpg" alt="Hugo"></div>
+        <div class="product-info"><h3>HUGO *</h3><span class="price">€ 5,50</span></div>
+      </div>
 
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/fernet.jpg" alt="Fernet Menta"></div>
-  <div class="product-info"><h3>Fernet Menta</h3><span class="price">€ 4,50</span></div>
-</div>
+      <div class="product-card" data-price="5.50" data-category="aperitivi" data-best="false">
+        <div class="product-img"><img src="img/aperitivi/royal-spritz.jpg" alt="Royal Spritz"></div>
+        <div class="product-info"><h3>ROYAL SPRITZ *</h3><span class="price">€ 5,50</span></div>
+      </div>
 
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/jagermeister.jpg" alt="Jägermeister"></div>
-  <div class="product-info"><h3>Jägermeister</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/Ramazzotti.jpg" alt="Ramazzotti"></div>
-  <div class="product-info"><h3>Ramazzotti</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/amarettodisaronno.jpg" alt="Amaretto di Saronno"></div>
-  <div class="product-info"><h3>Amaretto di Saronno</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/baileys.jpg" alt="Baileys"></div>
-  <div class="product-info"><h3>Baileys</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/grandmarnier.jpg" alt="Grand Marnier"></div>
-  <div class="product-info"><h3>Grand Marnier</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/cointreau.jpg" alt="Cointreau"></div>
-  <div class="product-info"><h3>Cointreau</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/sambuca.jpg" alt="Sambuca"></div>
-  <div class="product-info"><h3>Sambuca</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.00" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/limoncello.jpg" alt="Limoncello"></div>
-  <div class="product-info"><h3>Limoncello</h3><span class="price">€ 4,00</span></div>
-</div>
-
-<div class="product-card" data-price="4.00" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/amaro.jpg" alt="Amaro del Capo"></div>
-  <div class="product-info"><h3>Amaro del Capo</h3><span class="price">€ 4,00</span></div>
-</div>
-
-<div class="colazioni-separator">
-  <h3>🍸 Brandy & Cognac</h3>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/stravecchio.jpg" alt="Stravecchio"></div>
-  <div class="product-info"><h3>Stravecchio</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/vecchiaromagna.jpg" alt="Vecchia Romagna"></div>
-  <div class="product-info"><h3>Vecchia Romagna</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="5.20" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/cardenalmendoza.jpg" alt="Cardenal Mendoza"></div>
-  <div class="product-info"><h3>Cardenal Mendoza</h3><span class="price">€ 5,20</span></div>
-</div>
-
-<div class="colazioni-separator">
-  <h3>🍇 Grappe & Distillati</h3>
-</div>
-
-<div class="product-card" data-price="5.00" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/grappa.jpg" alt="Grappa Storica"></div>
-  <div class="product-info"><h3>Storica</h3><span class="price">€ 5,00</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/grappa.jpg" alt="Nardini"></div>
-  <div class="product-info"><h3>Nardini</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="5.00" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/grappa.jpg" alt="Nardini Riserva"></div>
-  <div class="product-info"><h3>Nardini Riserva</h3><span class="price">€ 5,00</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/acquavite.jpg" alt="Prime Uve"></div>
-  <div class="product-info"><h3>Prime Uve</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="colazioni-separator">
-  <h3>🥃 Whisky</h3>
-</div>
-
-<div class="product-card" data-price="4.80" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/whisky.jpg" alt="Glen Grant"></div>
-  <div class="product-info"><h3>Glen Grant</h3><span class="price">€ 4,80</span></div>
-</div>
-
-<div class="product-card" data-price="5.60" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/whisky.jpg" alt="Chivas Regal"></div>
-  <div class="product-info"><h3>Chivas Regal 12 anni</h3><span class="price">€ 5,60</span></div>
-</div>
-
-<div class="product-card" data-price="5.00" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/whisky.jpg" alt="Jack Daniel’s"></div>
-  <div class="product-info"><h3>Jack Daniel’s</h3><span class="price">€ 5,00</span></div>
-</div>
-
-<div class="colazioni-separator">
-  <h3>🍸 Gin · Vodka · Rum</h3>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/gin.jpg" alt="Gordon’s"></div>
-  <div class="product-info"><h3>Gordon’s</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/gin.jpg" alt="Tanqueray"></div>
-  <div class="product-info"><h3>Tanqueray</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/rum.jpg" alt="Havana Club 7"></div>
-  <div class="product-info"><h3>Havana Club 7</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="5.00" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/rum.jpg" alt="Pampero"></div>
-  <div class="product-info"><h3>Pampero Anniversario</h3><span class="price">€ 5,00</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/bacardi.jpg" alt="Bacardi"></div>
-  <div class="product-info"><h3>Bacardi</h3><span class="price">€ 4,50</span></div>
-</div>
-
-<div class="product-card" data-price="6.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/rum.jpg" alt="Zacapa"></div>
-  <div class="product-info"><h3>Zacapa 15 anni</h3><span class="price">€ 6,50</span></div>
-</div>
-
-<div class="product-card" data-price="4.50" data-category="superalcolici">
-  <div class="product-img"><img src="img/superalcolici/vodka.jpg" alt="Absolut"></div>
-  <div class="product-info"><h3>Absolut</h3><span class="price">€ 4,50</span></div>
-</div>
-    </div> <!-- .product-grid -->
-  </div>   <!-- .category-content -->
-</section> <!-- ✅ CHIUDE SUPERALCOLICI -->
-
-<section class="menu-category">
-
-  <button class="category-toggle" aria-expanded="false">
-    🍹 Cocktails
-    <span class="chevron">⌄</span>
-  </button>
-
-  <div class="category-content">
-    <div class="product-grid">
-
-  <!-- 🍸 COCKTAILS CON ALCOL -->
-  <div class="colazioni-separator">
-    <h3>🍸 Cocktails con Alcol</h3>
-  </div>
+       <!-- COCKTAILS -->
 
   <div class="product-card" data-price="9.50" data-category="cocktails" data-best="false">
     <div class="product-img">
@@ -1659,9 +1275,9 @@ data-price="6.50"
   </div>
 
   <!-- 🧃 COCKTAILS ANALCOLICI -->
-  <div class="colazioni-separator">
-    <h3>🧃 Cocktails Analcolici</h3>
-  </div>
+<div class="colazioni-separator cocktail-separator" data-only="cocktails">
+  <h3>Cocktails Analcolici</h3>
+</div>
 
   <div class="product-card" data-price="8.50" data-category="cocktails" data-best="false">
     <div class="product-img">
@@ -1697,9 +1313,9 @@ data-price="6.50"
   </div>
 
   <!-- 🍺 COMBINADOS -->
-  <div class="colazioni-separator">
-    <h3>🍺 Combinados</h3>
-  </div>
+<div class="colazioni-separator cocktail-separator" data-only="cocktails">
+  <h3>Combinados</h3>
+</div>
 
   <div class="product-card" data-price="8.00" data-category="cocktails" data-best="false">
     <div class="product-img">
@@ -1745,25 +1361,161 @@ data-price="6.50"
     </div>
   </div>
 
-    </div> <!-- .product-grid -->
-  </div>   <!-- .category-content -->
-</section> <!-- ✅ CHIUDE COCKTAILS -->
+<!--  SUPERALCOLICI -->
+  <div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/amaro.jpg" alt="Averna"></div>
+  <div class="product-info"><h3>Averna</h3><span class="price">€ 4,50</span></div>
+</div>
 
-<section class="menu-category category-separator">
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/amaro.jpg" alt="Montenegro"></div>
+  <div class="product-info"><h3>Montenegro</h3><span class="price">€ 4,50</span></div>
+</div>
 
-  <button class="category-toggle" aria-expanded="false">
-    🍺 🍷 Birre & Vini
-    <span class="chevron">⌄</span>
-  </button>
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/fernet.jpg" alt="Fernet Branca"></div>
+  <div class="product-info"><h3>Fernet Branca</h3><span class="price">€ 4,50</span></div>
+</div>
 
-  <div class="category-content">
-    <div class="product-grid">
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/fernet.jpg" alt="Fernet Menta"></div>
+  <div class="product-info"><h3>Fernet Menta</h3><span class="price">€ 4,50</span></div>
+</div>
 
-      <div class="colazioni-separator">
-        <h3>🍺 Alla spina</h3>
-      </div>
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/jagermeister.jpg" alt="Jägermeister"></div>
+  <div class="product-info"><h3>Jägermeister</h3><span class="price">€ 4,50</span></div>
+</div>
 
-      <div class="product-card" data-price="3.50" data-category="birre" data-best="false">
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/Ramazzotti.jpg" alt="Ramazzotti"></div>
+  <div class="product-info"><h3>Ramazzotti</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/amarettodisaronno.jpg" alt="Amaretto di Saronno"></div>
+  <div class="product-info"><h3>Amaretto di Saronno</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/baileys.jpg" alt="Baileys"></div>
+  <div class="product-info"><h3>Baileys</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/grandmarnier.jpg" alt="Grand Marnier"></div>
+  <div class="product-info"><h3>Grand Marnier</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/cointreau.jpg" alt="Cointreau"></div>
+  <div class="product-info"><h3>Cointreau</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/sambuca.jpg" alt="Sambuca"></div>
+  <div class="product-info"><h3>Sambuca</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.00" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/limoncello.jpg" alt="Limoncello"></div>
+  <div class="product-info"><h3>Limoncello</h3><span class="price">€ 4,00</span></div>
+</div>
+
+<div class="product-card" data-price="4.00" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/amaro.jpg" alt="Amaro del Capo"></div>
+  <div class="product-info"><h3>Amaro del Capo</h3><span class="price">€ 4,00</span></div>
+</div>
+
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/stravecchio.jpg" alt="Stravecchio"></div>
+  <div class="product-info"><h3>Stravecchio</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/vecchiaromagna.jpg" alt="Vecchia Romagna"></div>
+  <div class="product-info"><h3>Vecchia Romagna</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="5.20" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/cardenalmendoza.jpg" alt="Cardenal Mendoza"></div>
+  <div class="product-info"><h3>Cardenal Mendoza</h3><span class="price">€ 5,20</span></div>
+</div>
+
+<div class="product-card" data-price="5.00" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/grappa.jpg" alt="Grappa Storica"></div>
+  <div class="product-info"><h3>Storica</h3><span class="price">€ 5,00</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/grappa.jpg" alt="Nardini"></div>
+  <div class="product-info"><h3>Nardini</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="5.00" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/grappa.jpg" alt="Nardini Riserva"></div>
+  <div class="product-info"><h3>Nardini Riserva</h3><span class="price">€ 5,00</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/acquavite.jpg" alt="Prime Uve"></div>
+  <div class="product-info"><h3>Prime Uve</h3><span class="price">€ 4,50</span></div>
+</div>
+
+
+<div class="product-card" data-price="4.80" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/whisky.jpg" alt="Glen Grant"></div>
+  <div class="product-info"><h3>Glen Grant</h3><span class="price">€ 4,80</span></div>
+</div>
+
+<div class="product-card" data-price="5.60" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/whisky.jpg" alt="Chivas Regal"></div>
+  <div class="product-info"><h3>Chivas Regal 12 anni</h3><span class="price">€ 5,60</span></div>
+</div>
+
+<div class="product-card" data-price="5.00" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/whisky.jpg" alt="Jack Daniel’s"></div>
+  <div class="product-info"><h3>Jack Daniel’s</h3><span class="price">€ 5,00</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/gin.jpg" alt="Gordon’s"></div>
+  <div class="product-info"><h3>Gordon’s</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/gin.jpg" alt="Tanqueray"></div>
+  <div class="product-info"><h3>Tanqueray</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/rum.jpg" alt="Havana Club 7"></div>
+  <div class="product-info"><h3>Havana Club 7</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="5.00" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/rum.jpg" alt="Pampero"></div>
+  <div class="product-info"><h3>Pampero Anniversario</h3><span class="price">€ 5,00</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/bacardi.jpg" alt="Bacardi"></div>
+  <div class="product-info"><h3>Bacardi</h3><span class="price">€ 4,50</span></div>
+</div>
+
+<div class="product-card" data-price="6.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/rum.jpg" alt="Zacapa"></div>
+  <div class="product-info"><h3>Zacapa 15 anni</h3><span class="price">€ 6,50</span></div>
+</div>
+
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+  <div class="product-img"><img src="img/superalcolici/vodka.jpg" alt="Absolut"></div>
+  <div class="product-info"><h3>Absolut</h3><span class="price">€ 4,50</span></div>
+</div>
+
+  <!-- BIRRE E VINI -->
+<div class="product-card" data-price="3.50" data-category="birre" data-best="false">
         <div class="product-img">
           <img src="img/birre/birra-spina.jpg" alt="Birra piccola">
         </div>
@@ -1794,10 +1546,6 @@ data-price="6.50"
           <p>1 L</p>
           <span class="price">€ 10,00</span>
         </div>
-      </div>
-
-      <div class="colazioni-separator">
-        <h3>🍾 In bottiglia</h3>
       </div>
 
       <div class="product-card" data-price="5.00" data-category="birre" data-best="false">
@@ -1833,9 +1581,6 @@ data-price="6.50"
         </div>
       </div>
 
-       <div class="colazioni-separator">
-        <h3>🍷 Vini </h3>
-      </div>
 
             <div class="product-card" data-price="2.50" data-category="vini" data-best="false">
         <div class="product-img">
@@ -1881,123 +1626,9 @@ data-price="6.50"
         </div>
       </div>
 
-    </div>
-  </div>
+  <!--SNACK -->
 
-</section>
-
-<section class="menu-category category-separator">
-
-  <button class="category-toggle" aria-expanded="false">
-    🍸 Aperitivi
-    <span class="chevron">⌄</span>
-  </button>
-
-  <div class="category-content">
-    <div class="product-grid">
-
-      <!-- 🍸 APERITIVI -->
-      <div class="colazioni-separator">
-        <h3>🍸 Aperitivi</h3>
-      </div>
-
-      <div class="product-card" data-price="3.80" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/gingerino.jpg" alt="Gingerino"></div>
-        <div class="product-info"><h3>Gingerino</h3><span class="price">€ 3,80</span></div>
-      </div>
-
-      <div class="product-card" data-price="3.80" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/sanbitter.jpg" alt="Sanbittèr"></div>
-        <div class="product-info"><h3>Sanbittèr</h3><span class="price">€ 3,80</span></div>
-      </div>
-
-      <div class="product-card" data-price="3.80" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/crodino.jpg" alt="Crodino"></div>
-        <div class="product-info"><h3>Crodino</h3><span class="price">€ 3,80</span></div>
-      </div>
-
-      <div class="product-card" data-price="4.80" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/campari-soda.jpg" alt="Campari Soda"></div>
-        <div class="product-info"><h3>Campari Soda *</h3><span class="price">€ 4,80</span></div>
-      </div>
-
-      <div class="product-card" data-price="8.00" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/americano.jpg" alt="Americano"></div>
-        <div class="product-info">
-          <h3>Americano *</h3>
-          <p>Campari, Vermouth Rosso, Soda</p>
-          <span class="price">€ 8,00</span>
-        </div>
-      </div>
-
-      <div class="product-card" data-price="8.00" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/negroni.jpg" alt="Negroni"></div>
-        <div class="product-info">
-          <h3>Negroni *</h3>
-          <p>Campari, Vermouth Rosso, Gin</p>
-          <span class="price">€ 8,00</span>
-        </div>
-      </div>
-
-      <div class="product-card" data-price="8.00" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/negroni-sbagliato.jpg" alt="Negroni Sbagliato"></div>
-        <div class="product-info"><h3>Negroni Sbagliato *</h3><span class="price">€ 8,00</span></div>
-      </div>
-
-      <div class="product-card" data-price="8.00" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/campari-orange.jpg" alt="Campari Orange"></div>
-        <div class="product-info">
-          <h3>Campari Orange *</h3>
-          <p>Campari Soda, Succo d’Arancia</p>
-          <span class="price">€ 8,00</span>
-        </div>
-      </div>
-
-      <!-- 🥂 SPRITZ SPECIAL -->
-      <div class="colazioni-separator">
-        <h3>🥂 Spritz Special</h3>
-      </div>
-
-      <div class="product-card" data-price="5.50" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/aperol-spritz.jpg" alt="Aperol Spritz"></div>
-        <div class="product-info"><h3>APEROL SPRITZ *</h3><span class="price">€ 5,50</span></div>
-      </div>
-
-      <div class="product-card" data-price="5.50" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/bitter-spritz.jpg" alt="Bitter Spritz"></div>
-        <div class="product-info"><h3>BITTER SPRITZ *</h3><span class="price">€ 5,50</span></div>
-      </div>
-
-      <div class="product-card" data-price="5.50" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/hugo.jpg" alt="Hugo"></div>
-        <div class="product-info"><h3>HUGO *</h3><span class="price">€ 5,50</span></div>
-      </div>
-
-      <div class="product-card" data-price="5.50" data-category="aperitivi" data-best="false">
-        <div class="product-img"><img src="img/aperitivi/royal-spritz.jpg" alt="Royal Spritz"></div>
-        <div class="product-info"><h3>ROYAL SPRITZ *</h3><span class="price">€ 5,50</span></div>
-      </div>
-
-    </div>
-  </div>
-
-</section>
-
-<section class="menu-category category-separator">
-
-  <button class="category-toggle" aria-expanded="false">
-    🥪 Snacks
-    <span class="chevron">⌄</span>
-  </button>
-
-  <div class="category-content">
-    <div class="product-grid">
-
-      <div class="colazioni-separator">
-        <h3>🥪 Snacks</h3>
-      </div>
-
-      <div class="product-card" data-price="7.50" data-category="snacks" data-best="true">
+<div class="product-card" data-price="7.50" data-category="snacks" data-best="true">
         <div class="product-img"><img src="img/snacks/tirolese.jpg" alt="Tirolese"></div>
         <div class="product-info">
           <h3>Tirolese</h3>
@@ -2033,19 +1664,376 @@ data-price="6.50"
         </div>
       </div>
 
+
+
+</div>
+
+  </div>
+
+  <!-- 🍨 SEZIONE GELATO -->
+<div id="menu-gelato" style="display:none">
+
+  <!-- 🍨 CATEGORIE GELATO -->
+<div class="gelato-tabs">
+  <button class="gelato-tab active" data-gelato="all">Tutte</button>
+  <button class="gelato-tab" data-gelato="tavolo">Porzioni al tavolo</button>
+  <button class="gelato-tab" data-gelato="crema">Coppe crema</button>
+  <button class="gelato-tab" data-gelato="frutta">Coppe frutta</button>
+  <button class="gelato-tab" data-gelato="yogurt">Coppe yogurt</button>
+  <button class="gelato-tab" data-gelato="bimbi">Per i più piccoli</button>
+</div>
+<!-- 🍨 PORZIONI AL TAVOLO -->
+ <div class="info-warning">
+  Non è consentito consumare il gelato da passeggio al tavolo
+</div>
+<div class="product-grid">
+
+  <div class="product-card"
+       data-price="4.50"
+       data-category="tavolo"
+       data-best="false">
+
+    <div class="product-img">
+      <img src="img/gelato/porzione-piccola.jpg" alt="Porzione Piccola">
+    </div>
+
+    <div class="product-info">
+      <h3>Porzione Piccola</h3>
+      <p>2 palline di gelato</p>
+      <span class="price">€ 4,50</span>
     </div>
   </div>
-</section>
 
 
-</div> <!-- ✅ CHIUDE .page-content -->
-  </div>   <!-- chiude menu bar -->
+  <div class="product-card"
+       data-price="6.50"
+       data-category="tavolo"
+       data-best="true">
 
-  <div id="menu-gelato" style="display:none; padding: 40px 0; text-align:center;">
-  <h2 style="font-size:22px;font-weight:800;">🍨 Menu Gelato</h2>
-  <p style="color:#8e8e93;margin-top:8px;">
-    In arrivo ✨
-  </p>
+    <div class="product-img">
+      <img src="img/gelato/porzione-media.jpg" alt="Porzione Media">
+    </div>
+
+    <div class="product-info">
+      <h3>Porzione Media</h3>
+      <p>3 palline di gelato</p>
+      <span class="price">€ 6,50</span>
+    </div>
+  </div>
+
+
+  <div class="product-card"
+       data-price="8.00"
+       data-category="tavolo"
+       data-best="true">
+
+    <div class="product-img">
+      <img src="img/gelato/porzione-grande.jpg" alt="Porzione Grande">
+    </div>
+
+    <div class="product-info">
+      <h3>Porzione Grande</h3>
+      <p>4 palline di gelato</p>
+      <span class="price">€ 8,00</span>
+    </div>
+  </div>
+
+
+  <div class="product-card"
+       data-price="1.80"
+       data-category="tavolo"
+       data-best="false">
+
+    <div class="product-img">
+      <img src="img/gelato/panna-montata.jpg" alt="Panna Montata">
+    </div>
+
+    <div class="product-info">
+      <h3>Panna Montata</h3>
+      <p>Aggiunta extra</p>
+      <span class="price">€ 1,80</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- 🍨 COPPE CREMA -->
+
+<div class="product-card" data-price="9.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/pistacchio.jpg" alt="Coppa Pistacchio">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Pistacchio</h3>
+    <p>Pistacchio e vaniglia, panna, granella e salsa al pistacchio</p>
+    <span class="price">€ 9,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/nafta.jpg" alt="Coppa Nafta">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Nafta</h3>
+    <p>Gelato alle creme, amarene, panna e sciroppo di amarena</p>
+    <span class="price">€ 9,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/after-eight.jpg" alt="After Eight Cup">
+  </div>
+  <div class="product-info">
+    <h3>After Eight Cup</h3>
+    <p>Stracciatella e menta, After Eight, panna e salsa al cioccolato</p>
+    <span class="price">€ 9,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="20.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/latin-lover.jpg" alt="Latin Lover Cup">
+  </div>
+  <div class="product-info">
+    <h3>Latin Lover Cup*</h3>
+    <p>Coppa per 2 persone con gelato alle creme, cioccolatini, frutta secca, panna, liquori e salse</p>
+    <span class="price">€ 20,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/cabana.jpg" alt="Coppa Cabana">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Cabana*</h3>
+    <p>Vaniglia, stracciatella e nocciola, granella croccante, panna e salse miste</p>
+    <span class="price">€ 9,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/cioccolato.jpg" alt="Coppa Cioccolato">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Cioccolato</h3>
+    <p>Vaniglia e cioccolato, panna, cioccolatini e salsa al cioccolato</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/spaghetti-boscaiola.jpg" alt="Spaghetti Boscaiola">
+  </div>
+  <div class="product-info">
+    <h3>Spaghetti Boscaiola</h3>
+    <p>Vaniglia, frutti di bosco e salsa ai frutti di bosco</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/spaghetti-fantasia.jpg" alt="Spaghetti Fantasia">
+  </div>
+  <div class="product-info">
+    <h3>Spaghetti Fantasia*</h3>
+    <p>Vaniglia e nocciola, frutta secca, amaretti, caramello e liquore all'uovo</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/spaghetti-classico.jpg" alt="Spaghetti Classico">
+  </div>
+  <div class="product-info">
+    <h3>Spaghetti Classico</h3>
+    <p>Vaniglia, salsa di fragole e cocco rapè</p>
+    <span class="price">€ 8,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/nocciola.jpg" alt="Coppa Nocciola">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Nocciola</h3>
+    <p>Vaniglia e nocciola, panna, granella e salsa di nocciola</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/cookies.jpg" alt="Cookies Cup">
+  </div>
+  <div class="product-info">
+    <h3>Cookies Cup</h3>
+    <p>Gelato al biscotto, panna e salsa al caramello</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/croccantino.jpg" alt="Croccantino Cup">
+  </div>
+  <div class="product-info">
+    <h3>Croccantino Cup*</h3>
+    <p>Gelato alle creme, panna, granella croccante e caramello</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/stracciatella.jpg" alt="Coppa Stracciatella">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Stracciatella</h3>
+    <p>Stracciatella, panna e salsa al cioccolato</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/amaretto.jpg" alt="Coppa Amaretto">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Amaretto*</h3>
+    <p>Gelato alle creme, amaretti, panna e liquore all’amaretto</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/rocher.jpg" alt="Coppa Rocher">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Rocher</h3>
+    <p>Gelato alle creme, panna, cioccolatini, caramello e granella di nocciole</p>
+    <span class="price">€ 9,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/malaga.jpg" alt="Coppa Malaga">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Malaga*</h3>
+    <p>Gelato alle creme, panna, uvetta e liquore Malaga</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/tiramisu.jpg" alt="Tiramisù Cup">
+  </div>
+  <div class="product-info">
+    <h3>Tiramisù Cup*</h3>
+    <p>Gelato al tiramisù, tiramisù, panna, cacao e salsa al cioccolato</p>
+    <span class="price">€ 9,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/zabaione.jpg" alt="Zabaione Cup">
+  </div>
+  <div class="product-info">
+    <h3>Zabaione Cup*</h3>
+    <p>Gelato alle creme, panna, liquore all’uovo e cacao</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/mandorla.jpg" alt="Coppa Mandorla">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Mandorla</h3>
+    <p>Gelato alle creme, panna, mandorle pralinate e caramello</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/tartufo.jpg" alt="Tartufo">
+  </div>
+  <div class="product-info">
+    <h3>Tartufo</h3>
+    <p>Gelato al tartufo, panna, granella di nocciole e cioccolato</p>
+    <span class="price">€ 8,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/pizza-margherita.jpg" alt="Pizza Margherita">
+  </div>
+  <div class="product-info">
+    <h3>Pizza Margherita</h3>
+    <p>Fiordilatte, banana, fragole fresche e salsa di fragole</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/pizza-golosa.jpg" alt="Pizza Golosa">
+  </div>
+  <div class="product-info">
+    <h3>Pizza Golosa</h3>
+    <p>Tartufo, cioccolatini, frutta secca, panna e salsa al cioccolato</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/mokkachica.jpg" alt="Mokkachica">
+  </div>
+  <div class="product-info">
+    <h3>Mokkachica*</h3>
+    <p>Gelato al caffè e fiordilatte, panna e liquore al caffè</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/eiscaffe.jpg" alt="Eis Caffè">
+  </div>
+  <div class="product-info">
+    <h3>Eis Caffè</h3>
+    <p>Gelato al caffè con panna</p>
+    <span class="price">€ 8,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.00" data-category="crema">
+  <div class="product-img">
+    <img src="img/gelato/coppe/eiscioccolato.jpg" alt="Eis Cioccolato">
+  </div>
+  <div class="product-info">
+    <h3>Eis Cioccolato</h3>
+    <p>Gelato al cioccolato con panna</p>
+    <span class="price">€ 8,00</span>
+  </div>
+</div>
+  <!-- qui poi metteremo le card gelato -->
 </div>
 
 <!-- FOOTER -->
@@ -2200,175 +2188,116 @@ document.addEventListener("keydown", e => {
 });
 </script>
 
-
 <script>
-document.querySelectorAll(".category-toggle").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const content = btn.nextElementSibling;
-
-    const isOpen = content.classList.contains("open");
-
-    content.classList.toggle("open", !isOpen);
-    btn.classList.toggle("open", !isOpen);
-    btn.setAttribute("aria-expanded", String(!isOpen));
+document.querySelectorAll(".bar-tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".bar-tab")
+      .forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
   });
 });
 </script>
 
-<script>
-const searchInput = document.getElementById("menu-search");
-const cards = document.querySelectorAll(".product-card");
-const categories = document.querySelectorAll(".menu-category");
-const noResults = document.getElementById("no-results");
-
-searchInput.addEventListener("input", () => {
-  const q = searchInput.value.toLowerCase().trim();
-  let visibleCount = 0;
-
-  cards.forEach(card => {
-    const title = card.querySelector("h3")?.innerText || "";
-    const desc  = card.querySelector("p")?.innerText || "";
-    const price = card.querySelector(".price")?.innerText || "";
-    const category =
-      card.closest(".menu-category")
-          ?.querySelector(".category-toggle")
-          ?.innerText || "";
-
-    const text = `${title} ${desc} ${price} ${category}`.toLowerCase();
-
-    const match = text.includes(q);
-    card.style.display = match ? "" : "none";
-    if (match) visibleCount++;
-  });
-
-  // 🔓 apro categorie se sto cercando
-  document.querySelectorAll(".category-content").forEach(c => {
-    if (q.length > 0) c.classList.add("open");
-  });
-
-  // ❌ nessun risultato
-  if (q.length > 0 && visibleCount === 0) {
-    categories.forEach(cat => cat.style.display = "none");
-    noResults.style.display = "block";
-  } else {
-    categories.forEach(cat => cat.style.display = "");
-    noResults.style.display = "none";
-  }
-  updateSectionTitles();
-});
-</script>
 
 <script>
-const priceFilter = document.getElementById("filter-price");
-const categoryFilter = document.getElementById("filter-category");
-const bestFilter = document.getElementById("filter-best");
-const grid = document.querySelector(".product-grid");
-
-function applyFilters(){
-  let cards = Array.from(document.querySelectorAll(".product-card"));
-  let visible = 0;
-
-  // FILTRO
-  cards.forEach(card => {
-    const price = parseFloat(card.dataset.price || 0);
-    const category = card.dataset.category || "";
-    const isBest = card.dataset.best === "true";
-
-    let ok = true;
-
-    if (categoryFilter.value && category !== categoryFilter.value) ok = false;
-    if (bestFilter.checked && !isBest) ok = false;
-
-    card.style.display = ok ? "" : "none";
-    if (ok) visible++;
-  });
-
-// ORDINAMENTO
-if (priceFilter.value){
-  const sorted = cards.sort((a,b) => {
-    const pa = parseFloat(a.dataset.price || 0);
-    const pb = parseFloat(b.dataset.price || 0);
-    return priceFilter.value === "asc" ? pa - pb : pb - pa;
-  });
-
-  sorted.forEach(c => grid.appendChild(c));
-}
-
-// messaggio nessun risultato
-const noResults = document.getElementById("no-results");
-
-const hasActiveFilter =
-  priceFilter.value ||
-  categoryFilter.value ||
-  bestFilter.checked ||
-  document.getElementById("menu-search").value.trim().length > 0;
-
-if (hasActiveFilter && visible === 0){
-  noResults.style.display = "block";
-} else {
-  noResults.style.display = "none";
-}
-
-// 🔑 aggiorna SEMPRE i titoli (Colazioni / Promo)
-updateSectionTitles();
-}
-
-priceFilter.addEventListener("change", applyFilters);
-categoryFilter.addEventListener("change", applyFilters);
-bestFilter.addEventListener("change", applyFilters);
-
-</script>
-
-
-
-<script>
-function updateSectionTitles(){
-  const separators = document.querySelectorAll(".colazioni-separator");
-  const priceFilter = document.getElementById("filter-price");
-
-  // 🔴 SE FILTRO PREZZO ATTIVO → NASCONDO TUTTI I TITOLI
-  if (priceFilter.value) {
-    separators.forEach(sep => sep.style.display = "none");
-    return;
-  }
-
-  // 🟢 ALTRIMENTI: mostra solo titoli con prodotti visibili sotto
-  separators.forEach(sep => {
-    let hasVisible = false;
-    let el = sep.nextElementSibling;
-
-    while (el && !el.classList.contains("colazioni-separator")) {
-      if (el.classList.contains("product-card") && el.style.display !== "none") {
-        hasVisible = true;
-        break;
-      }
-      el = el.nextElementSibling;
-    }
-
-    sep.style.display = hasVisible ? "" : "none";
-  });
-}
-</script>
-
-<script>
-const tabs = document.querySelectorAll(".menu-tab");
+const switchTabs = document.querySelectorAll(".menu-tab");
 const menuBar = document.getElementById("menu-bar");
 const menuGelato = document.getElementById("menu-gelato");
 
-tabs.forEach(tab => {
+switchTabs.forEach(tab => {
   tab.addEventListener("click", () => {
-    tabs.forEach(t => t.classList.remove("active"));
+    switchTabs.forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
 
-    const target = tab.dataset.menu;
-
-    if (target === "bar") {
+    if (tab.dataset.section === "bar") {
       menuBar.style.display = "";
       menuGelato.style.display = "none";
     } else {
       menuBar.style.display = "none";
       menuGelato.style.display = "";
     }
+  });
+});
+</script>
+  
+
+<script>
+const barTabs = document.querySelectorAll(".bar-tab");
+const barCards = document.querySelectorAll("#menu-bar .product-card");
+const separators = document.querySelectorAll(".colazioni-separator");
+
+barTabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+
+    // attivo tab
+    barTabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const category = tab.innerText.toLowerCase();
+
+    /* =========================
+       TITOLI / SEPARATORI
+       REGOLA ASSOLUTA
+    ========================= */
+    separators.forEach(sep => {
+      const only = sep.dataset.only;
+      sep.style.display = (category === only) ? "flex" : "none";
+    });
+
+    /* =========================
+       FILTRO CARD
+    ========================= */
+    barCards.forEach(card => {
+      const c = card.dataset.category;
+
+      if (category === "tutto") {
+        card.style.display = "";
+        return;
+      }
+
+      // colazioni include promo
+      if (category === "colazioni") {
+        card.style.display = (c === "colazioni" || c === "promo") ? "" : "none";
+        return;
+      }
+
+      card.style.display = (c === category) ? "" : "none";
+    });
+
+  });
+});
+</script>
+
+<script>
+const gelatoTabs = document.querySelectorAll(".gelato-tab");
+const gelatoCards = document.querySelectorAll("#menu-gelato .product-card");
+const gelatoWarning = document.querySelector(".info-warning");
+
+gelatoTabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+
+    // attiva tab
+    gelatoTabs.forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const category = tab.dataset.gelato;
+
+    // warning solo su porzioni al tavolo
+    if (gelatoWarning) {
+      gelatoWarning.style.display =
+        category === "tavolo" ? "block" : "none";
+    }
+
+    gelatoCards.forEach(card => {
+      const c = card.dataset.category;
+
+      if (category === "all") {
+        card.style.display = "";
+        return;
+      }
+
+      card.style.display = (c === category) ? "" : "none";
+    });
   });
 });
 </script>
