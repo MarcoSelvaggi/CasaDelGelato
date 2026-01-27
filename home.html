@@ -465,6 +465,15 @@ body {
   color: #444;
   max-width: 420px;
 }
+.experience {
+  min-height: 100vh;
+}
+
+@supports (height: 100svh) {
+  .experience {
+    min-height: 100svh;
+  }
+}
 
 /* ===============================
    🍏 EXPERIENCE INDICATOR (APPLE)
