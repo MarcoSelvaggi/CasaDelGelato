@@ -288,12 +288,17 @@ body.no-bottom-nav #bottom-nav {
 .badge-new-left{
   background: #ff3b30;
   color: #fff;
-  font-size: 9px;          /* ⬅️ più piccolo */
+  font-size: 9px;
   font-weight: 700;
-  padding: 3px 6px;        /* ⬅️ meno padding */
+  padding: 3px 6px;
   border-radius: 999px;
   line-height: 1;
   letter-spacing: .3px;
+
+  /* 🔥 FIX SAFARI iOS */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 body.no-scroll {
   overflow: hidden;
@@ -460,16 +465,19 @@ body.chat-open #coppa-popup{
    transform: translate(-1px, -0.5px);
 }
 /* ℹ️ INFO UTILI CARD */
+
 .info-card{
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  margin: 16px auto;
-  max-width: 360px;          /* ⬅️ PIÙ STRETTA */
-  width: calc(100% - 32px);  /* ⬅️ margini laterali fissi */
-  overflow: hidden;
-}
-/* header cliccabile */
+  background:#fff;
+  border-radius:16px;
+  margin:16px auto;
+  max-width:360px;
+  overflow:hidden;
+
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  transition:
+    transform .35s cubic-bezier(.22,.61,.36,1),
+    box-shadow .35s ease;
+}/* header cliccabile */
 .info-card-header{
   width: 100%;
   border: none;
