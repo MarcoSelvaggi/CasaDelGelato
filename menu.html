@@ -16,8 +16,9 @@ body{
   background:#f6f6f7;
   font-family: system-ui, -apple-system, sans-serif;
   color:#111;
-  padding-bottom:90px;
+  padding-bottom: calc(110px + env(safe-area-inset-bottom));
 }
+
 
 /* 🔝 TOP BAR */
 #top-fixed-bar{
@@ -105,6 +106,7 @@ body{
   padding: 20px 16px;
   max-width: 600px;
   margin: 0 auto;
+    padding-bottom: calc(140px + env(safe-area-inset-bottom));
 }
 
 /* FOOTER */
@@ -405,6 +407,441 @@ body{
 
   box-shadow: 0 4px 12px rgba(0,0,0,.06);
 }
+
+/* 🍨 GELATO – CARD PIÙ GRANDI */
+#menu-gelato .product-card{
+  padding: 14px;
+  border-radius: 18px;
+}
+
+/* immagine più alta */
+#menu-gelato .product-img{
+  height: 400px;          /* ⬅️ QUI CAMBI LA GRANDEZZA */
+  border-radius: 16px;
+}
+
+/* immagine centrata e non tagliata */
+#menu-gelato .product-img img{
+  object-fit: contain;
+  background: #f6f6f7;
+}
+
+/* testi più ariosi */
+#menu-gelato .product-info h3{
+  font-size: 16px;
+}
+
+#menu-gelato .product-info p{
+  font-size: 13px;
+}
+
+#menu-gelato .product-info .price{
+  font-size: 16px;
+}
+
+/* 🍨 GELATO – PORZIONI AL TAVOLO COME BAR */
+#menu-gelato .product-card[data-category="tavolo"]{
+  padding: 10px;
+  border-radius: 16px;
+}
+
+/* immagine piccola come bar */
+#menu-gelato .product-card[data-category="tavolo"] .product-img{
+  height: 90px;
+  border-radius: 12px;
+}
+
+#menu-gelato .product-card[data-category="tavolo"] .product-img img{
+  object-fit: cover;
+}
+
+/* testi più compatti */
+#menu-gelato .product-card[data-category="tavolo"] .product-info h3{
+  font-size: 13px;
+}
+
+#menu-gelato .product-card[data-category="tavolo"] .product-info p{
+  font-size: 11px;
+}
+
+#menu-gelato .product-card[data-category="tavolo"] .product-info .price{
+  font-size: 13px;
+}
+/* 🍨 SOLO COPPE GELATO → più spazio */
+#menu-gelato .product-card:not([data-category="tavolo"]){
+  margin-bottom: 28px;
+}
+/* 🍨 separatore tra Porzioni al tavolo e Coppe */
+.gelato-separator{
+  height: 48px;   /* spazio netto */
+}
+
+/* 🍨 GELATO – PER I PIÙ PICCOLI (come card standard) */
+#menu-gelato .product-card[data-category="bimbi"]{
+  padding: 10px;
+  border-radius: 16px;
+}
+
+/* immagine compatta */
+#menu-gelato .product-card[data-category="bimbi"] .product-img{
+  height: 90px;
+  border-radius: 12px;
+}
+
+/* immagine come bar / porzioni */
+#menu-gelato .product-card[data-category="bimbi"] .product-img img{
+  object-fit: cover;
+}
+
+/* testi compatti */
+#menu-gelato .product-card[data-category="bimbi"] .product-info h3{
+  font-size: 13px;
+}
+
+#menu-gelato .product-card[data-category="bimbi"] .product-info p{
+  font-size: 11px;
+}
+
+#menu-gelato .product-card[data-category="bimbi"] .product-info .price{
+  font-size: 13px;
+}
+
+/* 🧲 CATEGORY BAR STICKY */
+.category-sticky {
+  position: sticky;
+  top: 55px; /* altezza top-fixed-bar */
+  z-index: 998;
+
+  background: #f2f2f7;
+  padding-top: 6px;
+  padding-bottom: 6px;
+
+  transition: box-shadow .25s ease, backdrop-filter .25s ease;
+}
+
+/* quando è attaccata */
+.category-sticky.is-stuck {
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+  backdrop-filter: blur(8px);
+}
+/* ☕🍨 CATEGORIE – ombra più evidente */
+.bar-tabs,
+.gelato-tabs{
+  background: #f2f2f7;
+  border-radius: 14px;
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,.10),
+    0 1px 3px rgba(0,0,0,.08);
+}
+
+
+.bottom-search-bar input::placeholder{
+  color: #8e8e93;
+}
+
+
+
+
+/* 🔍 INPUT — ACCORCIATO DAVVERO */
+.bottom-search-bar input{
+  flex: 1;
+  min-width: 0; /* 🔴 FONDAMENTALE SU SAFARI */
+  height: 44px;
+
+  border-radius: 14px;
+  border: none;
+  padding: 0 12px;
+
+  font-size: 15px;
+  background: #f2f2f7;
+}
+
+/* ⚙️ BOTTONE — FISSO A DESTRA */
+#filter-btn{
+  position: absolute;
+  right: 12px;
+  bottom: calc(10px + env(safe-area-inset-bottom));
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 14px;
+  border: none;
+  background: #fff;
+
+  font-size: 18px;
+  cursor: pointer;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+/* 📦 MENU FILTRI */
+#filter-menu{
+  position: fixed;
+ right: 12px;
+  bottom: calc(74px + 64px + env(safe-area-inset-bottom));
+
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  padding: 10px;
+
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+
+  z-index: 10001;
+}
+
+/* ✅ visibile */
+#filter-menu.open{
+  display: flex;
+}
+/* 🔍 BOTTOM SEARCH BAR */
+.bottom-search-bar{
+  position: fixed;
+  left: 0;
+  bottom: env(safe-area-inset-bottom);
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  z-index: 9999;
+}
+.best-seller-pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  height: 32px;
+  padding: 0 12px;
+
+  border-radius: 999px;
+
+  background: #ffd60a;   /* 🟡 SEMPRE GIALLA */
+  color: #111;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+  user-select: none;
+
+  flex-shrink: 0;
+  width: 130px;
+}
+
+/* NASCONDE CHECKBOX */
+.best-seller-pill input{
+  display: none;
+}
+
+/* CERCHIETTO SPUNTA */
+.best-seller-pill .check{
+  width: 16px;
+  height: 16px;
+
+  border-radius: 50%;
+  border: 2px solid #c7c7cc;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  color: transparent;
+  background: #fff;
+}
+
+/* ATTIVA */
+.best-seller-pill input:checked + .check{
+  background: #007aff;
+  border-color: #007aff;
+  color: #fff;
+}
+
+.best-seller-pill{
+  flex-shrink: 0;
+  width: 130px;   /* 👈 prova 100 / 110 / 120 */
+}
+
+
+
+.allergen-pill{
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  height: 28px;
+  padding: 0 12px;
+
+  border-radius: 999px;
+  border: none;
+
+  background: #ff3b30;   /* 🔴 ROSSO iOS */
+  color: #fff;           /* testo bianco */
+
+  font-size: 13px;
+  font-weight: 800;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  cursor: pointer;
+}
+
+.allergen-pill:active{
+  opacity: .6;
+}
+
+#allergen-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: .25s;
+  z-index: 10000;
+}
+
+#allergen-panel{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(.95);
+
+  width: calc(100% - 40px);
+  max-width: 360px;
+
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px;
+
+  box-shadow: 0 20px 50px rgba(0,0,0,.3);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: .25s;
+
+  z-index: 10001;
+}
+
+#allergen-panel h3{
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.allergen-list{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.allergen-list label{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.close-allergen{
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: none;
+
+  background: #007aff;   /* 🔵 BLU iOS */
+  color: #fff;           /* testo bianco */
+
+  font-size: 15px;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+/* 🧪 ALLERGENI – CARD OSCURATA */
+.product-card.allergen-blocked{
+  opacity: 0.35;
+  filter: grayscale(1);
+  pointer-events: none;
+  position: relative;
+}
+
+/* overlay testo */
+.product-card.allergen-blocked::after{
+  content: attr(data-allergen-label);
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.85);
+  color: #b42318;
+
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+
+  border-radius: inherit;
+  padding: 10px;
+}
+
+/* CARD BLOCCATA PER ALLERGENI */
+.product-card.allergen-blocked {
+  position: relative;
+  opacity: 0.35;
+  filter: grayscale(100%);
+  pointer-events: none;
+}
+
+/* ETICHETTA ALLERGENI */
+.product-card.allergen-blocked::after {
+  content: attr(data-allergen-label);
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.85);
+  color: #b00020;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  padding: 12px;
+
+  border-radius: 14px;
+}
+/* 🔒 blocca scroll quando popup aperto */
+body.no-scroll{
+  overflow: hidden;
+}
+
+/* 🌫️ BLUR SFONDO QUANDO ALLERGENI APERTI */
+body.allergen-open #menu-bar,
+body.allergen-open #menu-gelato,
+body.allergen-open header,
+body.allergen-open #top-fixed-bar,
+body.allergen-open .bottom-search-bar{
+  filter: blur(6px);
+  pointer-events: none;
+  transition: filter .25s ease;
+}
 </style>
 </head>
 
@@ -417,6 +854,9 @@ body{
   <a href="home.html" class="home-btn">
     <img src="tastohome.png" alt="Home">
   </a>
+  <button id="allergen-btn" class="allergen-pill">
+  Allergeni
+</button>
 </div>
 
 <div id="top-fixed-spacer"></div>
@@ -435,7 +875,7 @@ body{
   <!-- ☕ SEZIONE BAR -->
   <div id="menu-bar">
 
-<div class="bar-tabs">
+<div class="bar-tabs category-sticky">
   <button class="bar-tab active" data-bar="all">Tutto</button>
   <button class="bar-tab" data-bar="caffetteria">Caffetteria</button>
   <button class="bar-tab" data-bar="colazioni">Colazioni</button>
@@ -724,7 +1164,8 @@ data-best="false">
 <div class="product-card"
 data-price="2.00"
 data-category="colazioni"
-data-best="false">
+data-best="false"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/brioche.jpg" alt="Brioche">
   </div>
@@ -738,7 +1179,8 @@ data-best="false">
 <div class="product-card"
 data-price="5.00"
 data-category="colazioni"
-data-best="false">
+data-best="false"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/torte-dolci.jpg" alt="Torte e dolci">
   </div>
@@ -772,7 +1214,8 @@ data-best="false">
 data-price="8.00"
 data-category="colazioni"
 data-subcategory="promo"
-data-best="true">
+data-best="true"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/promo-cappuccino-brioche-spremuta.jpg" alt="Colazione Italiana">
   </div>
@@ -787,7 +1230,8 @@ data-best="true">
 data-price="3.50"
 data-category="colazioni"
 data-subcategory="promo"
-data-best="false">
+data-best="false"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/promo-cappuccino-biscotto.jpg" alt="Cappuccino Biscotto">
   </div>
@@ -802,7 +1246,8 @@ data-best="false">
 data-price="3.00"
 data-category="colazioni"
 data-subcategory="promo"
-data-best="false">
+data-best="false"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/promo-espresso-biscotto.jpg" alt="Espresso Biscotto">
   </div>
@@ -817,7 +1262,8 @@ data-best="false">
 data-price="2.50"
 data-category="colazioni"
 data-subcategory="promo"
-data-best="true">
+data-best="true"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/Brioches-Farcita-al-Pistacchio.jpg" alt="Brioches Pistacchio">
   </div>
@@ -832,7 +1278,8 @@ data-best="true">
 data-price="2.50"
 data-category="colazioni"
 data-subcategory="promo"
-data-best="false">
+data-best="false"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/Brioches-Farcita-alle-Fragole.jpg" alt="Brioches Fragole">
   </div>
@@ -847,7 +1294,8 @@ data-best="false">
 data-price="2.50"
 data-category="colazioni"
 data-subcategory="promo"
-data-best="true">
+data-best="true"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/Brioches-Farcita-alla-Nutella.jpg" alt="Brioches Nutella">
   </div>
@@ -862,7 +1310,8 @@ data-best="true">
 data-price="2.50"
 data-category="colazioni"
 data-subcategory="promo"
-data-best="false">
+data-best="false"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/Brioches-Farcita-Bosco.jpg" alt="Brioches Bosco">
   </div>
@@ -877,7 +1326,8 @@ data-best="false">
 data-price="6.50"
 data-category="colazioni"
 data-subcategory="promo"
-data-best="false">
+data-best="false"
+data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/promo-domenica.jpg" alt="Promo Domenica">
   </div>
@@ -1628,7 +2078,7 @@ data-best="false">
 
   <!--SNACK -->
 
-<div class="product-card" data-price="7.50" data-category="snacks" data-best="true">
+<div class="product-card" data-price="7.50" data-category="snacks" data-best="true" data-allergeni="glutine,latte">
         <div class="product-img"><img src="img/snacks/tirolese.jpg" alt="Tirolese"></div>
         <div class="product-info">
           <h3>Tirolese</h3>
@@ -1637,7 +2087,7 @@ data-best="false">
         </div>
       </div>
 
-      <div class="product-card" data-price="7.50" data-category="snacks" data-best="true">
+      <div class="product-card" data-price="7.50" data-category="snacks" data-best="true" data-allergeni="glutine,latte">
         <div class="product-img"><img src="img/snacks/caprese.jpg" alt="Caprese"></div>
         <div class="product-info">
           <h3>Caprese</h3>
@@ -1646,7 +2096,7 @@ data-best="false">
         </div>
       </div>
 
-      <div class="product-card" data-price="7.00" data-category="snacks" data-best="false">
+      <div class="product-card" data-price="7.00" data-category="snacks" data-best="false" data-allergeni="glutine,latte">
         <div class="product-img"><img src="img/snacks/tostone-farcito.jpg" alt="Tostone Farcito"></div>
         <div class="product-info">
           <h3>Tostone Farcito</h3>
@@ -1655,7 +2105,7 @@ data-best="false">
         </div>
       </div>
 
-      <div class="product-card" data-price="6.50" data-category="snacks" data-best="false">
+      <div class="product-card" data-price="6.50" data-category="snacks" data-best="false" data-allergeni="glutine,latte">
         <div class="product-img"><img src="img/snacks/tostone.jpg" alt="Tostone"></div>
         <div class="product-info">
           <h3>Tostone</h3>
@@ -1674,12 +2124,14 @@ data-best="false">
 <div id="menu-gelato" style="display:none">
 
   <!-- 🍨 CATEGORIE GELATO -->
-<div class="gelato-tabs">
+<div class="gelato-tabs category-sticky">
   <button class="gelato-tab active" data-gelato="all">Tutte</button>
   <button class="gelato-tab" data-gelato="tavolo">Porzioni al tavolo</button>
   <button class="gelato-tab" data-gelato="crema">Coppe crema</button>
   <button class="gelato-tab" data-gelato="frutta">Coppe frutta</button>
+  <button class="gelato-tab" data-gelato="pizze-spaghetti">Pizze/Spaghetti </button>
   <button class="gelato-tab" data-gelato="yogurt">Coppe yogurt</button>
+  <button class="gelato-tab" data-gelato="bere">Gelato da bere</button>
   <button class="gelato-tab" data-gelato="bimbi">Per i più piccoli</button>
 </div>
 <!-- 🍨 PORZIONI AL TAVOLO -->
@@ -1742,7 +2194,8 @@ data-best="false">
   <div class="product-card"
        data-price="1.80"
        data-category="tavolo"
-       data-best="false">
+       data-best="false"
+       data-allergeni="latte">
 
     <div class="product-img">
       <img src="img/gelato/panna-montata.jpg" alt="Panna Montata">
@@ -1757,9 +2210,12 @@ data-best="false">
 
 </div>
 
+<!-- 🔴 SPACER -->
+<div class="gelato-separator"></div>
+
 <!-- 🍨 COPPE CREMA -->
 
-<div class="product-card" data-price="9.00" data-category="crema">
+<div class="product-card" data-price="9.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/pistacchio.jpg" alt="Coppa Pistacchio">
   </div>
@@ -1770,7 +2226,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="9.00" data-category="crema">
+<div class="product-card" data-price="9.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/nafta.jpg" alt="Coppa Nafta">
   </div>
@@ -1781,7 +2237,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="9.00" data-category="crema">
+<div class="product-card" data-price="9.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/after-eight.jpg" alt="After Eight Cup">
   </div>
@@ -1792,7 +2248,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="20.00" data-category="crema">
+<div class="product-card" data-price="20.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/latin-lover.jpg" alt="Latin Lover Cup">
   </div>
@@ -1803,7 +2259,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="9.00" data-category="crema">
+<div class="product-card" data-price="9.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/cabana.jpg" alt="Coppa Cabana">
   </div>
@@ -1814,7 +2270,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="crema">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/cioccolato.jpg" alt="Coppa Cioccolato">
   </div>
@@ -1825,40 +2281,8 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="crema">
-  <div class="product-img">
-    <img src="img/gelato/coppe/spaghetti-boscaiola.jpg" alt="Spaghetti Boscaiola">
-  </div>
-  <div class="product-info">
-    <h3>Spaghetti Boscaiola</h3>
-    <p>Vaniglia, frutti di bosco e salsa ai frutti di bosco</p>
-    <span class="price">€ 8,50</span>
-  </div>
-</div>
 
-<div class="product-card" data-price="8.50" data-category="crema">
-  <div class="product-img">
-    <img src="img/gelato/coppe/spaghetti-fantasia.jpg" alt="Spaghetti Fantasia">
-  </div>
-  <div class="product-info">
-    <h3>Spaghetti Fantasia*</h3>
-    <p>Vaniglia e nocciola, frutta secca, amaretti, caramello e liquore all'uovo</p>
-    <span class="price">€ 8,50</span>
-  </div>
-</div>
-
-<div class="product-card" data-price="8.00" data-category="crema">
-  <div class="product-img">
-    <img src="img/gelato/coppe/spaghetti-classico.jpg" alt="Spaghetti Classico">
-  </div>
-  <div class="product-info">
-    <h3>Spaghetti Classico</h3>
-    <p>Vaniglia, salsa di fragole e cocco rapè</p>
-    <span class="price">€ 8,00</span>
-  </div>
-</div>
-
-<div class="product-card" data-price="8.50" data-category="crema">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/nocciola.jpg" alt="Coppa Nocciola">
   </div>
@@ -1869,7 +2293,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="crema">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/cookies.jpg" alt="Cookies Cup">
   </div>
@@ -1880,7 +2304,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="crema">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/croccantino.jpg" alt="Croccantino Cup">
   </div>
@@ -1891,7 +2315,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="crema">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/stracciatella.jpg" alt="Coppa Stracciatella">
   </div>
@@ -1902,7 +2326,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="crema">
+<div class="product-card" data-price="9.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/amaretto.jpg" alt="Coppa Amaretto">
   </div>
@@ -1913,7 +2337,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="9.00" data-category="crema">
+<div class="product-card" data-price="9.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/rocher.jpg" alt="Coppa Rocher">
   </div>
@@ -1924,7 +2348,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="crema">
+<div class="product-card" data-price="9.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/malaga.jpg" alt="Coppa Malaga">
   </div>
@@ -1935,7 +2359,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="9.00" data-category="crema">
+<div class="product-card" data-price="9.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/tiramisu.jpg" alt="Tiramisù Cup">
   </div>
@@ -1946,7 +2370,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="crema">
+<div class="product-card" data-price="9.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/zabaione.jpg" alt="Zabaione Cup">
   </div>
@@ -1957,7 +2381,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="crema">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/mandorla.jpg" alt="Coppa Mandorla">
   </div>
@@ -1967,8 +2391,7 @@ data-best="false">
     <span class="price">€ 8,50</span>
   </div>
 </div>
-
-<div class="product-card" data-price="8.00" data-category="crema">
+<div class="product-card" data-price="8.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/tartufo.jpg" alt="Tartufo">
   </div>
@@ -1979,29 +2402,8 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="crema">
-  <div class="product-img">
-    <img src="img/gelato/coppe/pizza-margherita.jpg" alt="Pizza Margherita">
-  </div>
-  <div class="product-info">
-    <h3>Pizza Margherita</h3>
-    <p>Fiordilatte, banana, fragole fresche e salsa di fragole</p>
-    <span class="price">€ 8,50</span>
-  </div>
-</div>
 
-<div class="product-card" data-price="9.50" data-category="crema">
-  <div class="product-img">
-    <img src="img/gelato/coppe/pizza-golosa.jpg" alt="Pizza Golosa">
-  </div>
-  <div class="product-info">
-    <h3>Pizza Golosa</h3>
-    <p>Tartufo, cioccolatini, frutta secca, panna e salsa al cioccolato</p>
-    <span class="price">€ 9,50</span>
-  </div>
-</div>
-
-<div class="product-card" data-price="8.50" data-category="crema">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/mokkachica.jpg" alt="Mokkachica">
   </div>
@@ -2012,7 +2414,330 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.00" data-category="crema">
+
+<!-- 🍓 COPPE FRUTTA -->
+
+<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/calipso.jpg" alt="Calipso">
+  </div>
+  <div class="product-info">
+    <h3>Calipso</h3>
+    <p>Gelato misto alla frutta, frutta fresca, panna e salsa di fragole</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/ananas-cup.jpg" alt="Ananas Cup">
+  </div>
+  <div class="product-info">
+    <h3>Ananas Cup</h3>
+    <p>Gelato misto alla frutta, ananas fresco, panna e salsa di ananas</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="20.00" data-category="frutta" data-best="true" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/fantasia-frutta.jpg" alt="Fantasia Cup">
+  </div>
+  <div class="product-info">
+    <h3>Fantasia Cup</h3>
+    <p>Gelato misto alla frutta, frutta fresca di stagione, panna e salse varie</p>
+    <span class="price">€ 20,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.00" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/melone-cup.jpg" alt="Melone Cup">
+  </div>
+  <div class="product-info">
+    <h3>Melone Cup</h3>
+    <p>Gelato misto alla frutta, melone fresco e salsa di melone</p>
+    <span class="price">€ 8,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="11.00" data-category="frutta" data-best="true" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/la-ola.jpg" alt="La Ola Cup">
+  </div>
+  <div class="product-info">
+    <h3>La Ola Cup</h3>
+    <p>Gelato misto alla frutta, ananas, kiwi, banana, melone, fragole, mela, panna e salse</p>
+    <span class="price">€ 11,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppa-fragola.jpg" alt="Coppa Fragola">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Fragola</h3>
+    <p>Gelato fragola e vaniglia, fragole fresche, panna e salsa di fragole</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/fragole-panna.jpg" alt="Fragole con panna">
+  </div>
+  <div class="product-info">
+    <h3>Fragole con panna</h3>
+    <p>Fragole fresche con panna montata</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.00" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/macedonia.jpg" alt="Macedonia">
+  </div>
+  <div class="product-info">
+    <h3>Macedonia</h3>
+    <p>Frutta fresca di stagione</p>
+    <span class="price">€ 9,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppa-kiwi.jpg" alt="Coppa Kiwi">
+  </div>
+  <div class="product-info">
+    <h3>Coppa Kiwi</h3>
+    <p>Gelato kiwi e fiordilatte, kiwi freschi, panna e salsa di kiwi</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/chiquita.jpg" alt="Chiquita Cup">
+  </div>
+  <div class="product-info">
+    <h3>Chiquita Cup *</h3>
+    <p>Gelato banana e vaniglia, banana, panna, liquore all’uovo e salsa al cioccolato</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="frutta" data-best="true" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/lambada.jpg" alt="Lambada Cup">
+  </div>
+  <div class="product-info">
+    <h3>Lambada Cup *</h3>
+    <p>Gelato cocco, ananas e fragola, frutta fresca, panna, salsa fragole e liquore al cocco</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/frutti-di-bosco.jpg" alt="Frutti di Bosco">
+  </div>
+  <div class="product-info">
+    <h3>Frutti di Bosco</h3>
+    <p>Gelato misto alla frutta, frutti di bosco, panna e salsa ai frutti di bosco</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.00" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/banana-split.jpg" alt="Banana Split">
+  </div>
+  <div class="product-info">
+    <h3>Banana Split</h3>
+    <p>Gelato fiordilatte e banana, banana, panna, salsa al cioccolato e granella di nocciola</p>
+    <span class="price">€ 9,00</span>
+  </div>
+</div>
+
+
+
+  <!-- PIZZE E SPAGHETTI -->
+<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">  
+    <img src="img/gelato/coppe/spaghetti-boscaiola.jpg" alt="Spaghetti Boscaiola">
+  </div>
+  <div class="product-info">
+    <h3>Spaghetti Boscaiola</h3>
+    <p>Vaniglia, frutti di bosco e salsa ai frutti di bosco</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppe/spaghetti-fantasia.jpg" alt="Spaghetti Fantasia">
+  </div>
+  <div class="product-info">
+    <h3>Spaghetti Fantasia*</h3>
+    <p>Vaniglia e nocciola, frutta secca, amaretti, caramello e liquore all'uovo</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.00" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppe/spaghetti-classico.jpg" alt="Spaghetti Classico">
+  </div>
+  <div class="product-info">
+    <h3>Spaghetti Classico</h3>
+    <p>Vaniglia, salsa di fragole e cocco rapè</p>
+    <span class="price">€ 8,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppe/pizza-margherita.jpg" alt="Pizza Margherita">
+  </div>
+  <div class="product-info">
+    <h3>Pizza Margherita</h3>
+    <p>Fiordilatte, banana, fragole fresche e salsa di fragole</p>
+    <span class="price">€ 8,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppe/pizza-golosa.jpg" alt="Pizza Golosa">
+  </div>
+  <div class="product-info">
+    <h3>Pizza Golosa</h3>
+    <p>Tartufo, cioccolatini, frutta secca, panna e salsa al cioccolato</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppe/pizza-primavera.jpg" alt="Pizza Primavera">
+  </div>
+  <div class="product-info">
+    <h3>Pizza Primavera</h3>
+    <p>Gelato alla vaniglia, frutta mista di stagione, salsa di fragole</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card"
+     data-price="10.00"
+     data-category="yogurt"
+     data-best="false"
+     data-allergeni="glutine,latte">
+
+  <div class="product-img">
+    <img src="img/gelato/yogurt-macedonia.jpg" alt="Yogurt Macedonia">
+  </div>
+
+  <div class="product-info">
+    <h3>Yogurt Macedonia</h3>
+    <p>Gelato allo yogurt, yogurt fresco, panna, frutta fresca, salsa di fragole</p>
+    <span class="price">€ 10,00</span>
+  </div>
+</div>
+
+<div class="product-card"
+     data-price="9.50"
+     data-category="yogurt"
+     data-best="true"
+     data-allergeni="glutine,latte">
+
+  <div class="product-img">
+    <img src="img/gelato/yogurt-fragole.jpg" alt="Yogurt Fragole">
+  </div>
+
+  <div class="product-info">
+    <h3>Yogurt Fragole</h3>
+    <p>Gelato allo yogurt, yogurt fresco, panna, fragole</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card"
+     data-price="9.50"
+     data-category="yogurt"
+     data-best="true"
+     data-allergeni="glutine,latte">
+
+  <div class="product-img">
+    <img src="img/gelato/yogurt-bosco.jpg" alt="Yogurt Frutti di Bosco">
+  </div>
+
+  <div class="product-info">
+    <h3>Yogurt Frutti di Bosco</h3>
+    <p>Gelato allo yogurt, yogurt fresco, panna, frutti di bosco</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card"
+     data-price="9.50"
+     data-category="yogurt"
+     data-best="false"
+     data-allergeni="glutine,latte">
+
+  <div class="product-img">
+    <img src="img/gelato/yogurt-melone.jpg" alt="Yogurt Melone">
+  </div>
+
+  <div class="product-info">
+    <h3>Yogurt Melone</h3>
+    <p>Gelato allo yogurt, yogurt fresco, panna, melone</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card"
+     data-price="9.50"
+     data-category="yogurt"
+     data-best="false"
+     data-allergeni="glutine,latte">
+
+  <div class="product-img">
+    <img src="img/gelato/yogurt-amarena.jpg" alt="Yogurt Amarena">
+  </div>
+
+  <div class="product-info">
+    <h3>Yogurt Amarena</h3>
+    <p>Gelato allo yogurt, yogurt fresco, panna, amarene</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<!-- GELATO DA BERE -->
+<div class="product-card" data-price="8.00" data-category="bere" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppe/tramonto.jpg" alt="Tramonto">
+  </div>
+  <div class="product-info">
+    <h3>Tramonto</h3>
+    <p>Gelato alla vaniglia, succo d'arancia, sciroppo di amarena</p>
+    <span class="price">€ 8,00</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="9.50" data-category="bere" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/prosecco-julep.jpg" alt="Prosecco Julep">
+  </div>
+  <div class="product-info">
+    <h3>Prosecco Julep *</h3>
+    <p>Gelato al limone, Prosecco e fragole fresche</p>
+    <span class="price">€ 9,50</span>
+  </div>
+</div>
+
+<div class="product-card" data-price="8.00" data-category="bere" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/eiscaffe.jpg" alt="Eis Caffè">
   </div>
@@ -2023,7 +2748,7 @@ data-best="false">
   </div>
 </div>
 
-<div class="product-card" data-price="8.00" data-category="crema">
+<div class="product-card" data-price="8.00" data-category="bere" data-best="false" data-allergeni="glutine,latte">
   <div class="product-img">
     <img src="img/gelato/coppe/eiscioccolato.jpg" alt="Eis Cioccolato">
   </div>
@@ -2032,6 +2757,94 @@ data-best="false">
     <p>Gelato al cioccolato con panna</p>
     <span class="price">€ 8,00</span>
   </div>
+</div>
+
+
+<div class="product-card" data-price="4.50" data-category="bere" data-best="false" data-allergeni="glutine,latte">
+  <div class="product-img">
+    <img src="img/gelato/coppe/frappè.jpg" alt="Frappè">
+  </div>
+  <div class="product-info">
+    <h3>Frappè</h3>
+    <p>Gelato a scelta</p>
+    <span class="price">€ 4,50</span>
+  </div>
+</div>
+
+<!-- 🍭 PER I PIÙ PICCOLI -->
+<div class="product-grid">
+
+  <div class="product-card"
+       data-price="6.00"
+       data-category="bimbi"
+       data-best="false"
+       data-allergeni="glutine,latte">
+
+    <div class="product-img">
+      <img src="img/gelato/bimbi-pinocchio.jpg" alt="Pinocchio">
+    </div>
+
+    <div class="product-info">
+      <h3>Pinocchio</h3>
+      <p>Coppa gelato per bambini</p>
+      <span class="price">€ 6,00</span>
+    </div>
+  </div>
+
+
+  <div class="product-card"
+       data-price="6.00"
+       data-category="bimbi"
+       data-best="false"
+       data-allergeni="glutine,latte">
+
+    <div class="product-img">
+      <img src="img/gelato/bimbi-kinder-spaghetti.jpg" alt="Kinder Spaghetti">
+    </div>
+
+    <div class="product-info">
+      <h3>Kinder Spaghetti</h3>
+      <p>Gelato formato spaghetti</p>
+      <span class="price">€ 6,00</span>
+    </div>
+  </div>
+
+
+  <div class="product-card"
+       data-price="6.00"
+       data-category="bimbi"
+       data-best="false"
+       data-allergeni="glutine,latte">
+
+    <div class="product-img">
+      <img src="img/gelato/bimbi-clown.jpg" alt="Clown">
+    </div>
+
+    <div class="product-info">
+      <h3>Clown</h3>
+      <p>Coppa colorata per bambini</p>
+      <span class="price">€ 6,00</span>
+    </div>
+  </div>
+
+
+  <div class="product-card"
+       data-price="6.00"
+       data-category="bimbi"
+       data-best="false"
+       data-allergeni="glutine,latte">
+
+    <div class="product-img">
+      <img src="img/gelato/bimbi-ape-maja.jpg" alt="Ape Maja">
+    </div>
+
+    <div class="product-info">
+      <h3>Ape Maja</h3>
+      <p>Coppa gelato per bambini</p>
+      <span class="price">€ 6,00</span>
+    </div>
+  </div>
+
 </div>
   <!-- qui poi metteremo le card gelato -->
 </div>
@@ -2201,14 +3014,13 @@ document.querySelectorAll(".bar-tab").forEach(tab => {
 
 <script>
 const switchTabs = document.querySelectorAll(".menu-tab");
-const menuBar = document.getElementById("menu-bar");
-const menuGelato = document.getElementById("menu-gelato");
 
 switchTabs.forEach(tab => {
   tab.addEventListener("click", () => {
     switchTabs.forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
 
+    // ✅ usa le variabili già dichiarate nello script filtri
     if (tab.dataset.section === "bar") {
       menuBar.style.display = "";
       menuGelato.style.display = "none";
@@ -2216,90 +3028,348 @@ switchTabs.forEach(tab => {
       menuBar.style.display = "none";
       menuGelato.style.display = "";
     }
+
+    applyFilters();
   });
 });
 </script>
   
 
+
 <script>
 const barTabs = document.querySelectorAll(".bar-tab");
-const barCards = document.querySelectorAll("#menu-bar .product-card");
-const separators = document.querySelectorAll(".colazioni-separator");
 
 barTabs.forEach(tab => {
   tab.addEventListener("click", () => {
 
-    // attivo tab
     barTabs.forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
 
-    const category = tab.innerText.toLowerCase();
+    activeBarCategory = tab.innerText.toLowerCase();
 
-    /* =========================
-       TITOLI / SEPARATORI
-       REGOLA ASSOLUTA
-    ========================= */
-    separators.forEach(sep => {
-      const only = sep.dataset.only;
-      sep.style.display = (category === only) ? "flex" : "none";
-    });
-
-    /* =========================
-       FILTRO CARD
-    ========================= */
-    barCards.forEach(card => {
-      const c = card.dataset.category;
-
-      if (category === "tutto") {
-        card.style.display = "";
-        return;
-      }
-
-      // colazioni include promo
-      if (category === "colazioni") {
-        card.style.display = (c === "colazioni" || c === "promo") ? "" : "none";
-        return;
-      }
-
-      card.style.display = (c === category) ? "" : "none";
-    });
-
+    // NON filtrare qui
+    applyFilters();
   });
 });
 </script>
 
 <script>
 const gelatoTabs = document.querySelectorAll(".gelato-tab");
-const gelatoCards = document.querySelectorAll("#menu-gelato .product-card");
 const gelatoWarning = document.querySelector(".info-warning");
 
 gelatoTabs.forEach(tab => {
   tab.addEventListener("click", () => {
 
-    // attiva tab
     gelatoTabs.forEach(t => t.classList.remove("active"));
     tab.classList.add("active");
 
-    const category = tab.dataset.gelato;
+    activeGelatoCategory = tab.dataset.gelato;
 
     // warning solo su porzioni al tavolo
     if (gelatoWarning) {
       gelatoWarning.style.display =
-        category === "tavolo" ? "block" : "none";
+        activeGelatoCategory === "tavolo" ? "block" : "none";
     }
 
-    gelatoCards.forEach(card => {
-      const c = card.dataset.category;
-
-      if (category === "all") {
-        card.style.display = "";
-        return;
-      }
-
-      card.style.display = (c === category) ? "" : "none";
-    });
+    // NON filtrare qui
+    applyFilters();
   });
 });
+</script>
+
+<script>
+const categoryBar = document.getElementById("category-bar");
+if (!categoryBar) return;
+const categoryBarTop = categoryBar.offsetTop;
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > categoryBarTop - 55) {
+    categoryBar.classList.add("category-sticky", "is-stuck");
+  } else {
+    categoryBar.classList.remove("category-sticky", "is-stuck");
+  }
+});
+</script>
+
+<!-- 🔍 BOTTOM SEARCH BAR -->
+<div class="bottom-search-bar">
+  <input
+    type="search"
+    id="menu-search"
+    placeholder="Cerca nel menu…"
+  >
+
+  <label class="best-seller-pill">
+    <input type="checkbox" id="filter-best">
+    <span class="check">✓</span>
+    <span>Best Seller</span>
+  </label>
+</div>
+
+<script>
+let activeBarCategory = "tutto";
+let activeGelatoCategory = "all";
+</script>
+
+<script>
+/* =========================
+   VAR GLOBALI (NECESSARIE)
+========================= */
+const menuBar   = document.getElementById("menu-bar");
+const menuGelato = document.getElementById("menu-gelato");
+const searchInput = document.getElementById("menu-search");
+const bestCheck   = document.getElementById("filter-best");
+
+
+let currentSort = null; // lasciato per compatibilità, ma NON usato
+
+/* =========================
+   FUNZIONI BASE
+========================= */
+function normalize(text){
+  return (text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[€.,]/g, "")
+    .trim();
+}
+
+function getActiveSection(){
+  // se BAR visibile → BAR, altrimenti GELATO
+  return (menuBar && menuBar.style.display !== "none") ? menuBar : menuGelato;
+}
+
+function getSectionCards(section){
+  return Array.from(section.querySelectorAll(".product-card"));
+}
+
+/* solo BAR: separatori colazioni */
+function updateBarSeparators(hasFilters){
+  document.querySelectorAll("#menu-bar .colazioni-separator").forEach(sep => {
+
+    if (hasFilters) { // se filtri attivi -> nascondo tutto
+      sep.style.display = "none";
+      return;
+    }
+
+    const only = sep.dataset.only; // es: "colazioni"
+    sep.style.display = (only === activeBarCategory) ? "flex" : "none";
+  });
+}
+
+/* =========================
+   APPLY FILTERS (CENTRALE)
+========================= */
+window.applyFilters = function(){
+
+  const q = normalize(searchInput.value);
+  const section = getActiveSection();
+  const cards = getSectionCards(section);
+
+  const hasFilters =
+    q.length > 0 ||
+    currentSort !== null ||
+    bestCheck.checked;
+
+  // separatori SOLO nel BAR
+  if (section === menuBar) updateBarSeparators(hasFilters);
+
+  cards.forEach(card => {
+
+    let visible = true;
+
+    /* 1) FILTRO CATEGORIA */
+    if (section === menuBar) {
+
+      if (activeBarCategory !== "tutto") {
+
+        if (activeBarCategory === "colazioni") {
+          visible =
+            (card.dataset.category === "colazioni" ||
+             card.dataset.category === "promo");
+        } else {
+          visible = (card.dataset.category === activeBarCategory);
+        }
+      }
+
+    } else {
+      // GELATO
+      if (activeGelatoCategory !== "all") {
+        visible = (card.dataset.category === activeGelatoCategory);
+      }
+    }
+
+    if (!visible) {
+      card.style.display = "none";
+      return;
+    }
+
+    /* 2) SEARCH + BEST */
+    const title = card.querySelector("h3")?.innerText || "";
+    const desc  = card.querySelector("p")?.innerText || "";
+    const price = card.querySelector(".price")?.innerText || "";
+    const cat   = card.dataset.category || "";
+    const best  = card.dataset.best === "true";
+
+    const text = normalize(`${title} ${desc} ${price} ${cat}`);
+
+    if (!text.includes(q)) visible = false;
+    if (bestCheck.checked && !best) visible = false;
+
+    /* 3) ALLERGENI */
+card.classList.remove("allergen-blocked");
+card.removeAttribute("data-allergen-label");
+
+const selectedAllergens = getSelectedAllergens();
+const cardAllergens = (card.dataset.allergeni || "")
+  .split(",")
+  .map(a => a.trim())
+  .filter(Boolean);
+
+const matched = cardAllergens.filter(a =>
+  selectedAllergens.includes(a)
+);
+
+if (matched.length > 0) {
+  card.classList.add("allergen-blocked");
+  card.setAttribute(
+    "data-allergen-label",
+    "⚠️ Contiene: " + matched.join(", ")
+  );
+}
+
+    card.style.display = visible ? "" : "none";
+  });
+
+  /* 3) SORT (DOPO IL FILTRO) */
+  if (!currentSort) return;
+
+  const groups = new Map();
+
+  cards.forEach(card => {
+    if (card.style.display === "none") return;
+
+    const grid = card.closest(".product-grid");
+    if (!grid) return;
+
+    if (!groups.has(grid)) groups.set(grid, []);
+    groups.get(grid).push(card);
+  });
+
+  groups.forEach((list, grid) => {
+    list.sort((a, b) => {
+      const pa = parseFloat(a.dataset.price || 0);
+      const pb = parseFloat(b.dataset.price || 0);
+      return currentSort === "high" ? pb - pa : pa - pb;
+    });
+
+    list.forEach(card => grid.appendChild(card));
+  });
+};
+
+
+bestCheck.addEventListener("change", applyFilters);
+searchInput.addEventListener("input", applyFilters);
+const filterMenu = document.getElementById("filter-menu");
+
+function getSelectedAllergens(){
+  return Array.from(
+    document.querySelectorAll('.allergen-checkbox:checked')
+  ).map(cb => cb.value);
+}
+
+</script>
+
+
+<div id="allergen-overlay"></div>
+
+<div id="allergen-panel">
+  <h3>Seleziona allergeni</h3>
+
+<div class="allergen-list">
+<label>
+  <input type="checkbox"
+         class="allergen-checkbox"
+         value="glutine">
+  Glutine
+</label>
+
+<label>
+  <input type="checkbox"
+         class="allergen-checkbox"
+         value="latte">
+  Latte
+</label>
+
+<label>
+  <input type="checkbox"
+         class="allergen-checkbox"
+         value="frutta a guscio">
+  Frutta a guscio
+</label>
+
+<label>
+  <input type="checkbox"
+         class="allergen-checkbox"
+         value="uova">
+  Uova
+</label>
+
+<label>
+  <input type="checkbox"
+         class="allergen-checkbox"
+         value="soia">
+  Soia
+</label>
+</div>
+
+<script>
+document.querySelectorAll(".product-card").forEach(card => {
+  if (!card.dataset.originalGrid) {
+    card.dataset.originalGrid = card.closest(".product-grid")?.dataset.gridId || "";
+  }
+});
+document
+  .querySelectorAll(".allergen-checkbox")
+  .forEach(cb => cb.addEventListener("change", applyFilters));
+applyFilters();
+</script>
+
+  <button class="close-allergen">Chiudi</button>
+</div>
+
+<script>
+const allergenBtn = document.getElementById("allergen-btn");
+const allergenPanel = document.getElementById("allergen-panel");
+const allergenOverlay = document.getElementById("allergen-overlay");
+const closeAllergen = document.querySelector(".close-allergen");
+
+function openAllergen(){
+  document.body.classList.add("no-scroll");
+  document.body.classList.add("allergen-open"); // 🌫️ BLUR ON
+
+  allergenOverlay.style.opacity = "1";
+  allergenOverlay.style.pointerEvents = "auto";
+  allergenPanel.style.opacity = "1";
+  allergenPanel.style.pointerEvents = "auto";
+  allergenPanel.style.transform = "translate(-50%, -50%) scale(1)";
+}
+
+function closeAllergenPanel(){
+  document.body.classList.remove("no-scroll");
+  document.body.classList.remove("allergen-open"); // 🌫️ BLUR OFF
+
+  allergenOverlay.style.opacity = "0";
+  allergenOverlay.style.pointerEvents = "none";
+  allergenPanel.style.opacity = "0";
+  allergenPanel.style.pointerEvents = "none";
+  allergenPanel.style.transform = "translate(-50%, -50%) scale(.95)";
+}
+
+allergenBtn.addEventListener("click", openAllergen);
+allergenOverlay.addEventListener("click", closeAllergenPanel);
+closeAllergen.addEventListener("click", closeAllergenPanel);
 </script>
 
 </body>
