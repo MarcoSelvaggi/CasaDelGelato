@@ -179,12 +179,14 @@ body {
 }
 
 .badge-new-left{
-  background:#ff3b30;
-  color:#fff;
-  font-size:9px;
-  font-weight:700;
-  padding:3px 6px;
-  border-radius:999px;
+  background: #ff3b30;
+  color: #fff;
+  font-size: 9px;          /* ⬅️ più piccolo */
+  font-weight: 700;
+  padding: 3px 6px;        /* ⬅️ meno padding */
+  border-radius: 999px;
+  line-height: 1;
+  letter-spacing: .3px;
 }
 
 
@@ -463,10 +465,6 @@ body {
   color: #444;
   max-width: 420px;
 }
-.experience {
-  min-height: 100vh;
-}
-
 
 /* ===============================
    🍏 EXPERIENCE INDICATOR (APPLE)
@@ -890,7 +888,26 @@ body {
   margin-bottom: 0;
 }
 
-/* ➕ PLUS INFO HERO */
+#info-slides{
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-40px);
+  pointer-events: none;
+
+  transition:
+    max-height .6s cubic-bezier(.22,.61,.36,1),
+    opacity .35s ease,
+    transform .6s cubic-bezier(.22,.61,.36,1);
+}
+
+#info-slides.open{
+  max-height: 1200px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+/* ➕ PLUS INFO & CONTATTI */
 #info-plus-btn{
   position: absolute;
   right: 16px;
@@ -921,83 +938,6 @@ body {
 #info-plus-btn:active{
   transform: scale(.92);
   background: #0066d6;
-}
-/* ===============================
-   ℹ️ INFO SLIDES – COLLASSATE
-=============================== */
-
-#info-slides{
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(-40px);
-  pointer-events: none;
-
-  transition:
-    max-height .6s cubic-bezier(.22,.61,.36,1),
-    opacity .35s ease,
-    transform .6s cubic-bezier(.22,.61,.36,1);
-}
-
-/* 🔓 APERTE */
-#info-slides.open{
-  max-height: 1200px;
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-/* ===============================
-   🖥️ DESKTOP FIX – PRESERVA SLIDE
-=============================== */
-@media (min-width: 769px){
-
-  /* NON tocchiamo height né padding globali */
-  
-  /* CTA: meno “spinta” verso il basso */
-  .experience .exp-cta{
-    margin-top: 120px !important; /* era 220 → troppo */
-  }
-
-  /* pill: resta visiva ma non rompe layout */
-  .experience .exp-indicator{
-    position: absolute;           /* come da design originale */
-    bottom: 32px;                 /* più alto = meno overlap */
-    transform: translateX(-50%);
-  }
-
-}
-/* ===============================
-   🖥️ DESKTOP – SPAZIO TRA HERO (CORRETTO)
-=============================== */
-@media (min-width: 769px){
-
-  /* distanza tra: hero menu -> hero lavora, e lavora -> info */
-  .hero-lavora{
-    margin-top: 160px;
-  }
-
-  .hero-info{
-    margin-top: 160px;
-  }
-
-  /* opzionale: se vuoi anche stacco tra exp "coppa" e hero menu */
-  .hero-after-coppa{
-    margin-top: 160px;
-  }
-}
-/* ===============================
-   🖥️ DESKTOP – SPAZIO TRA MENU → LAVORA
-=============================== */
-@media (min-width: 769px){
-  .hero-lavora{
-    margin-top: 300px; /* 🔧 regola QUI lo spazio */
-  }
-}
-/* ===============================
-   📱🖥️ SPAZIO HERO INFO → FOOTER
-=============================== */
-.hero-info{
-  margin-bottom: 120px; /* 🔧 regola qui lo stacco */
 }
   </style>
 
@@ -1889,6 +1829,14 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+  initSwipeExperience(
+    document.querySelector('.experience[data-type="info"]')
+  );
+});
+</script>
+
+<script>
 (() => {
   const section = document.querySelector('.experience[data-type="menu"]');
   if (!section) return;
@@ -1973,7 +1921,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 })();
 </script>
-
 <script>
 (() => {
   const btn = document.getElementById("info-plus-btn");
@@ -1989,21 +1936,28 @@ document.addEventListener("DOMContentLoaded", () => {
     slides.classList.toggle("open", open);
     btn.textContent = open ? "×" : "+";
 
-    if (open){
-      // reset prima slide INFO
-      slides.querySelectorAll(".exp-step").forEach(s => s.classList.remove("active"));
-      slides.querySelectorAll(".exp-bar span").forEach(d => d.classList.remove("active"));
+    if (open) {
 
-      const first = slides.querySelector(".exp-step");
-      const dot   = slides.querySelector(".exp-bar span");
+      /* 🔥 stesso comportamento del menu */
+      slides.style.marginBottom = "-360px";
 
-      if (first) first.classList.add("active");
-      if (dot) dot.classList.add("active");
+      /* 🔁 reset slide + pill */
+      const steps = slides.querySelectorAll(".exp-step");
+      const dots  = slides.querySelectorAll(".exp-bar span");
+
+      steps.forEach(s => s.classList.remove("active"));
+      dots.forEach(d => d.classList.remove("active"));
+
+      if (steps[0]) steps[0].classList.add("active");
+      if (dots[0])  dots[0].classList.add("active");
 
       slides.scrollIntoView({
         behavior: "smooth",
         block: "start"
       });
+
+    } else {
+      slides.style.marginBottom = "";
     }
   });
 })();
@@ -2021,7 +1975,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let index = 0;
   let startX = 0;
   let timer = null;
-  let inView = false;
   const DELAY = 5000;
 
   function show(i){
@@ -2057,25 +2010,15 @@ document.addEventListener("DOMContentLoaded", () => {
     timer = null;
   }
 
-  // stato iniziale
-  show(0);
-
-  // 👀 entra / esce viewport
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !inView){
-        inView = true;
-        index = 0;
-        show(0);
-        start();
-      } else if (!entry.isIntersecting){
-        inView = false;
-        stop();
-      }
-    });
-  }, { threshold: 0.6 });
-
-  io.observe(section);
+  /* 🔁 RESET quando apri INFO */
+  const infoBtn = document.getElementById("info-plus-btn");
+  infoBtn.addEventListener("click", () => {
+    setTimeout(() => {
+      index = 0;
+      show(0);
+      start();
+    }, 300);
+  });
 
   /* 📱 TOUCH */
   slidesWrap.addEventListener("touchstart", e => {
@@ -2086,7 +2029,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const diff = e.changedTouches[0].clientX - startX;
     if (Math.abs(diff) > 50){
       diff < 0 ? next() : prev();
-      start(); // 🔁 riparte autoplay
+      start();
     }
   });
 
@@ -2105,6 +2048,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
 })();
 </script>
-
 </body>
 </html>
