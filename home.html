@@ -939,6 +939,38 @@ body {
   transform: scale(.92);
   background: #0066d6;
 }
+/* 📱 iOS FIX – stacco slide INFO dal nero */
+@supports (-webkit-touch-callout: none) {
+
+  .experience-info {
+    padding-bottom: calc(160px + env(safe-area-inset-bottom));
+  }
+
+}
+/* ===============================
+   🧊 FIX iOS – INFO SLIDES + FOOTER
+=============================== */
+
+/* spazio reale sotto le slide info */
+.experience[data-type="info"]{
+  padding-bottom: -120px;
+}
+
+/* safe area iPhone */
+@supports (-webkit-touch-callout: none) {
+  .experience[data-type="info"]{
+    padding-bottom: calc(120px + env(safe-area-inset-bottom));
+  }
+}
+/* 📏 Footer più staccato quando INFO è chiuso */
+body.info-closed .profile-footer{
+  margin-top: 64px;
+}
+
+/* quando INFO è aperto → distanza normale */
+body.info-open .profile-footer{
+  margin-top: 24px;
+}
   </style>
 
   <link rel="stylesheet" href="bottom-nav.css">
@@ -1640,10 +1672,12 @@ document.querySelectorAll(".reveal").forEach(el => {
       if (dots[0])  dots[0].classList.add("active");
 
       /* 📍 scroll controllato */
-      slides.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+ const y = slides.getBoundingClientRect().top + window.scrollY - 20;
+
+window.scrollTo({
+  top: y,
+  behavior: "smooth"
+});
 
     } else {
 
@@ -1838,91 +1872,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 (() => {
-  const section = document.querySelector('.experience[data-type="menu"]');
-  if (!section) return;
-
-  const slidesWrap = section.querySelector('.exp-slides');
-  const steps = [...section.querySelectorAll('.exp-step')];
-  const dots  = [...section.querySelectorAll('.exp-bar span')];
-
-  let index = 0;
-  let startX = 0;
-  let timer = null;
-  const DELAY = 5000;
-
-  function show(i){
-    steps.forEach((s, idx) =>
-      s.classList.toggle("active", idx === i)
-    );
-
-    dots.forEach((d, idx) => {
-      d.classList.toggle("active", idx === i);
-      d.style.animation = "none";
-      d.offsetHeight;
-      if (idx === i) d.style.animation = "";
-    });
-  }
-
-  function next(){
-    index = (index + 1) % steps.length;
-    show(index);
-  }
-
-  function prev(){
-    index = (index - 1 + steps.length) % steps.length;
-    show(index);
-  }
-
-  function start(){
-    stop();
-    timer = setInterval(next, DELAY);
-  }
-
-  function stop(){
-    clearInterval(timer);
-    timer = null;
-  }
-
-  /* 🔁 RESET quando il menu viene aperto */
-  const menuBtn = document.getElementById("menu-plus-btn");
-  menuBtn.addEventListener("click", () => {
-    setTimeout(() => {
-      index = 0;
-      show(0);
-      start();
-    }, 300); // attende apertura animazione
-  });
-
-  /* 📱 TOUCH */
-  slidesWrap.addEventListener("touchstart", e => {
-    startX = e.touches[0].clientX;
-  }, { passive: true });
-
-  slidesWrap.addEventListener("touchend", e => {
-    const diff = e.changedTouches[0].clientX - startX;
-    if (Math.abs(diff) > 50){
-      diff < 0 ? next() : prev();
-      start(); // 🔁 riparte autoplay
-    }
-  });
-
-  /* 🖱️ MOUSE */
-  slidesWrap.addEventListener("mousedown", e => {
-    startX = e.clientX;
-  });
-
-  window.addEventListener("mouseup", e => {
-    const diff = e.clientX - startX;
-    if (Math.abs(diff) > 50){
-      diff < 0 ? next() : prev();
-      start();
-    }
-  });
-
-})();
-</script>
-<script>
-(() => {
   const btn = document.getElementById("info-plus-btn");
   const slides = document.getElementById("info-slides");
 
@@ -1933,15 +1882,13 @@ document.addEventListener("DOMContentLoaded", () => {
   btn.addEventListener("click", () => {
     open = !open;
 
+    document.body.classList.toggle("info-open", open);
+    document.body.classList.toggle("info-closed", !open);
+
     slides.classList.toggle("open", open);
     btn.textContent = open ? "×" : "+";
 
     if (open) {
-
-      /* 🔥 stesso comportamento del menu */
-      slides.style.marginBottom = "-360px";
-
-      /* 🔁 reset slide + pill */
       const steps = slides.querySelectorAll(".exp-step");
       const dots  = slides.querySelectorAll(".exp-bar span");
 
@@ -1951,18 +1898,16 @@ document.addEventListener("DOMContentLoaded", () => {
       if (steps[0]) steps[0].classList.add("active");
       if (dots[0])  dots[0].classList.add("active");
 
-      slides.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-
-    } else {
-      slides.style.marginBottom = "";
+      const y = slides.getBoundingClientRect().top + window.scrollY - 20;
+      window.scrollTo({ top: y, behavior: "smooth" });
     }
   });
+
+  // stato iniziale: info chiuso
+  document.body.classList.add("info-closed");
+
 })();
 </script>
-
 <script>
 (() => {
   const section = document.querySelector('.experience[data-type="info"]');
