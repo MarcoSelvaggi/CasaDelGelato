@@ -80,7 +80,7 @@ body{
 }
 
 #top-fixed-spacer{
-  height: 55px;
+  height: 120px;
 }
 
 /* HEADER PAGINA */
@@ -507,16 +507,15 @@ body{
 }
 
 /* 🧲 CATEGORY BAR STICKY */
-.category-sticky {
+.category-sticky{
   position: sticky;
-  top: 55px; /* altezza top-fixed-bar */
+  top: calc(55px + 56px); /* 🔥 top-bar + search */
   z-index: 998;
 
   background: #f2f2f7;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding: 6px 6px;
 
-  transition: box-shadow .25s ease, backdrop-filter .25s ease;
+  transition: box-shadow .25s ease;
 }
 
 /* quando è attaccata */
@@ -597,11 +596,12 @@ body{
 #filter-menu.open{
   display: flex;
 }
-/* 🔍 BOTTOM SEARCH BAR */
-.bottom-search-bar{
+
+/* 🔍 TOP SEARCH BAR – sotto la top-fixed-bar */
+.top-search-bar{
   position: fixed;
+  top: 55px; /* altezza top bar */
   left: 0;
-  bottom: env(safe-area-inset-bottom);
   width: 100%;
 
   display: flex;
@@ -610,8 +610,14 @@ body{
 
   padding: 10px 12px;
   background: #fff;
-  border-top: 1px solid #ddd;
-  z-index: 9999;
+
+  border-bottom: 1px solid #ddd;
+
+  z-index: 9998;
+
+  /* 🔒 fix Safari iOS */
+  transform: translateZ(0);
+  will-change: transform;
 }
 .best-seller-pill{
   display: inline-flex;
@@ -842,6 +848,29 @@ body.allergen-open #top-fixed-bar{
   pointer-events: none;
   transition: filter .25s ease;
 }
+
+.top-search-bar{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 🔍 INPUT SEARCH */
+#menu-search{
+  flex: 1;                /* 🔥 QUESTO è il punto chiave */
+  min-width: 0;           /* fix Safari */
+  height: 40px;
+
+  padding: 0 14px;
+  border-radius: 999px;
+
+  border: 1px solid #e5e5ea;
+  background: #f2f2f7;
+
+  font-size: 15px;
+  outline: none;
+}
+
 
 </style>
 </head>
@@ -3097,7 +3126,7 @@ window.addEventListener("scroll", () => {
 </script>
 
 <!-- 🔍 BOTTOM SEARCH BAR -->
-<div class="bottom-search-bar">
+<div class="top-search-bar">
   <input
     type="search"
     id="menu-search"

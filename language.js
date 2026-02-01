@@ -102,17 +102,14 @@
   const current = localStorage.getItem("cdg_lang") || "it";
   toggle.textContent = FLAGS[current] + " ▾";
 
-  // apri / chiudi menu
-  toggle.addEventListener("click", e => {
-    e.stopPropagation();
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
-  });
+toggle.addEventListener("click", e => {
+  e.stopPropagation();
+  menu.classList.toggle("open");
+});
 
-  // click fuori → chiude
-  document.addEventListener("click", () => {
-    menu.style.display = "none";
-  });
-
+document.addEventListener("click", () => {
+  menu.classList.remove("open");
+});
   // cambio lingua
   menu.querySelectorAll(".lang-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -138,3 +135,4 @@
     });
   });
 })();
+

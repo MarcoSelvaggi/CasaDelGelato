@@ -569,36 +569,6 @@ body {
 
 <body>
 
-<script>
-/* =========================
-   🔐 PROTEZIONE PAGINA ADMIN
-========================= */
-
-const ADMIN_PASSWORD = "115365"; // 🔴 CAMBIA QUI
-
-function chiediPasswordAdmin() {
-  const pwd = prompt("🔐 Inserisci la password admin");
-
-  if (pwd === null) {
-    // annullato → fuori
-    alert("Accesso annullato");
-    window.location.href = "home.html";
-    return;
-  }
-
-  if (pwd !== ADMIN_PASSWORD) {
-    alert("❌ Password errata");
-    window.location.href = "home.html";
-    return;
-  }
-
-  // ✅ password corretta
-  console.log("Accesso admin autorizzato");
-}
-
-// 🔥 CHIEDI PASSWORD APPENA CARICA LA PAGINA
-document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
-</script>
 
 <div id="top-fixed-bar">
 
@@ -647,6 +617,22 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 
 </div>
 <div id="spacer"></div>
+
+
+  <!-- 🍨 TOGGLE CREA COPPA -->
+  <div class="admin-setting">
+    <div class="admin-setting-text">
+      <div class="admin-title">🍨 Crea Coppa</div>
+      <div class="admin-desc">
+        Abilita o disabilita la creazione delle coppe sul sito
+      </div>
+    </div>
+
+    <label class="ios-switch">
+      <input type="checkbox" id="toggle-crea-coppa">
+      <span class="slider"></span>
+    </label>
+  </div>
 
 
 <!-- ⏳ TEMPO DI ATTESA -->
@@ -813,6 +799,164 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 .stat-item span{
   color:#007aff;
 }
+.admin-setting{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px;
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  margin-bottom:18px;
+}
+
+.admin-setting-text{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.admin-title{
+  font-size:16px;
+  font-weight:700;
+  color:#111;
+}
+
+.admin-desc{
+  font-size:13px;
+  color:#666;
+}
+
+/* 🍎 iOS SWITCH */
+.ios-switch{
+  position:relative;
+  width:50px;
+  height:30px;
+}
+
+.ios-switch input{
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  background:#e5e5ea;
+  border-radius:999px;
+  transition:.25s;
+  cursor:pointer;
+}
+
+.slider::before{
+  content:"";
+  position:absolute;
+  height:26px;
+  width:26px;
+  left:2px;
+  top:2px;
+  background:#fff;
+  border-radius:50%;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+  transition:.25s cubic-bezier(.22,.61,.36,1);
+}
+
+.ios-switch input:checked + .slider{
+  background:#34c759;
+}
+
+.ios-switch input:checked + .slider::before{
+  transform:translateX(20px);
+}
+
+.pin-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(10px);
+  z-index: 99999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pin-box{
+  background: #fff;
+  border-radius: 20px;
+  width: 320px;
+  padding: 22px;
+  text-align: center;
+}
+
+.pin-box h2{
+  font-size: 18px;
+  margin-bottom: 18px;
+}
+
+.pin-dots{
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.pin-dots span{
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #d1d1d6;
+  transition: background .15s ease;
+}
+
+.pin-dots span.filled{
+  background: #007aff;
+}
+
+.pin-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 78px); /* ⬅️ PIÙ LARGHI */
+  gap: 28px;                              /* ⬅️ aria tra i tasti */
+  justify-content: center;
+  align-items: center;
+  margin: 32px auto 0;                   /* ⬅️ più respiro sopra */
+}
+.pin-keypad button {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f2f2f7;          /* ⬅️ grigio iOS */
+  color: #111;                  /* testo scuro */
+  font-size: 26px;
+  font-weight: 600;
+
+  border: none;
+}
+
+.pin-keypad button:active {
+  background: #e5e5ea;          /* ⬅️ grigio più scuro */
+  transform: scale(0.92);
+}
+
+.pin-keypad .empty{
+  background: transparent;
+}
+
+.pin-cancel{
+  margin-top: 18px;
+  background: none;
+  border: none;
+  color: #007aff;
+  font-size: 15px;
+}
+
+
 </style>
 <!-- 🔥 Sezione Dashboard (lista utenti + coppe) -->
 <div id="sezione-dashboard">
@@ -821,7 +965,6 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 
 <!-- 🔥 Sezione Disponibilità (inizialmente nascosta) -->
 <div id="sezione-disponibilita" style="display:none; padding:20px;"></div>
-
 
 
 <!-- 🔥 Sezione Statistiche -->
@@ -2922,6 +3065,147 @@ window.apriAvvisoSito = function () {
 document.addEventListener("DOMContentLoaded", () => {
   const box = document.getElementById("admin-alert-box");
   if (box) box.style.display = "none";
+});
+</script>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const toggle = document.getElementById("toggle-crea-coppa");
+  if (!toggle) {
+    console.error("❌ toggle-crea-coppa non trovato");
+    return;
+  }
+
+  /* 1️⃣ CARICA STATO DAL DB */
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("crea_coppa_enabled")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    console.error("Errore lettura crea_coppa", error);
+    return;
+  }
+
+  toggle.checked = data.crea_coppa_enabled === true;
+
+  console.log("🔁 Stato iniziale CREA COPPA:", toggle.checked);
+
+  /* 2️⃣ SALVA AL CAMBIO */
+  toggle.addEventListener("change", async () => {
+    const value = toggle.checked;
+    console.log("💾 Salvo CREA COPPA =", value);
+
+    const { error } = await supabase
+      .from("site_settings")
+      .update({ crea_coppa_enabled: value })
+      .eq("id", 1);
+
+    if (error) {
+      alert("Errore salvataggio");
+      toggle.checked = !value; // rollback
+    }
+  });
+});
+</script>
+
+<!-- 🔐 ADMIN PIN OVERLAY -->
+<div id="admin-pin-overlay" class="pin-overlay" hidden>
+  <div class="pin-box">
+    <h2>Inserisci PIN Admin</h2>
+
+<div class="pin-dots">
+  <span></span><span></span><span></span>
+  <span></span><span></span><span></span>
+</div>
+
+    <div class="pin-keypad">
+      <button data-n="1">1</button>
+      <button data-n="2">2</button>
+      <button data-n="3">3</button>
+      <button data-n="4">4</button>
+      <button data-n="5">5</button>
+      <button data-n="6">6</button>
+      <button data-n="7">7</button>
+      <button data-n="8">8</button>
+      <button data-n="9">9</button>
+
+      <button class="empty"></button>
+      <button data-n="0">0</button>
+      <button id="pin-del">⌫</button>
+    </div>
+
+  </div>
+</div>
+
+
+
+<script>
+const ADMIN_PIN = "115365";
+let enteredPin = "";
+
+function openAdminPin() {
+  const overlay = document.getElementById("admin-pin-overlay");
+  overlay.style.display = "flex";
+  enteredPin = "";
+  updatePinDots();
+}
+
+function closeAdminPin() {
+  const overlay = document.getElementById("admin-pin-overlay");
+  if (!overlay) return;
+
+  overlay.style.display = "none"; // ⬅️ STESSO METODO DI OPEN
+  enteredPin = "";
+  updatePinDots();
+}
+
+function updatePinDots() {
+  document.querySelectorAll(".pin-dots span").forEach((d, i) => {
+    d.classList.toggle("filled", i < enteredPin.length);
+  });
+}
+
+function checkAdminPin() {
+  if (enteredPin === ADMIN_PIN) {
+    console.log("✅ PIN OK");
+    closeAdminPin();
+    return;
+  }
+
+  // ❌ sbagliato
+  enteredPin = "";
+  updatePinDots();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const keypad = document.querySelector(".pin-keypad");
+
+  openAdminPin(); // mostra subito
+
+  keypad.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn || btn.classList.contains("empty")) return;
+
+    if (btn.id === "pin-del") {
+      enteredPin = enteredPin.slice(0, -1);
+      updatePinDots();
+      return;
+    }
+
+    const n = btn.dataset.n;
+    if (!n || enteredPin.length >= 6) return;
+
+    enteredPin += n;
+    updatePinDots();
+
+    if (enteredPin.length === 6) {
+      setTimeout(checkAdminPin, 150);
+    }
+  });
 });
 </script>
 

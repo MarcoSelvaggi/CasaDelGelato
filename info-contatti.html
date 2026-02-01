@@ -989,6 +989,31 @@ body.no-anim .poi-group{
 .shop-img-slider{
   height: 280px;
 }
+/* HEADER INFO UTILI */
+.info-card-header{
+  width:100%;
+  border:none;
+  background:transparent;
+  padding:16px 18px;
+
+  display:flex;
+  align-items:center;              /* centro verticale */
+  justify-content:space-between;   /* testo a sx / Apri a dx */
+
+  cursor:pointer;
+}
+
+/* pill Apri */
+.info-open-btn{
+  flex-shrink:0;
+  background:#f2f2f7;
+  color:#007aff;
+  font-size:13px;
+  font-weight:700;
+  padding:6px 14px;
+  border-radius:999px;
+  line-height:1;
+}
 </style>
 </head>
 
@@ -1049,13 +1074,14 @@ body.no-anim .poi-group{
 <!-- ℹ️ INFO UTILI -->
 <div class="info-card">
 
-  <button class="info-card-header" onclick="toggleInfoUtili()">
-    <div class="info-card-left">
-      <span class="info-icon">ℹ️</span>
-      <span class="info-title">Info utili</span>
-    </div>
-    <span id="info-arrow" class="info-arrow">›</span>
-  </button>
+<button class="info-card-header" onclick="toggleInfoUtili()">
+  <div class="info-card-left">
+    <span class="info-icon">ℹ</span>
+    <span class="info-title">Info utili</span>
+  </div>
+
+  <span class="info-open-btn">Apri</span>
+</button>
 
   <div id="info-utili-content" class="info-card-content">
 
