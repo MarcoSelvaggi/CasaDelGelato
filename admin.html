@@ -489,6 +489,80 @@ body {
   max-width: 100%;
   box-sizing: border-box;
 }
+.reload-btn{
+  width:38px;
+  height:38px;
+  border-radius:10px;
+  background:#f2f2f7;
+  border:none;
+  font-size:18px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.18);
+}
+
+.reload-btn:active{
+  transform:scale(.95);
+}
+
+.admin-tabs{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:8px;
+  margin:14px 12px;
+}
+
+/* terzo pulsante a tutta riga */
+.tab-btn.full{
+  grid-column: 1 / -1;
+}
+
+.tab-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  height:40px;
+  padding:0 10px;
+
+  border:none;
+  border-radius:10px;
+
+  background:#e5e5ea;
+  color:#111;
+
+  font-size:14px;
+  font-weight:600;
+  white-space:nowrap;
+}
+
+.tab-btn.active{
+  background:#007aff;
+  color:#fff;
+  box-shadow:0 3px 8px rgba(0,122,255,.35);
+}
+
+/* spazio sotto la sezione coppe quando è aperta */
+.coppe-container {
+  margin-bottom: 18px;
+}
+
+.alert-btn{
+  background:#fff3cd;
+  color:#8a6d3b;
+  border:1px solid #ffe69c;
+}
+
+.alert-btn:active{
+  transform: scale(.96);
+}
+.admin-box textarea,
+.admin-box input {
+  box-sizing: border-box;
+  max-width: 100%;
+}
 </style>
 
 </head>
@@ -528,9 +602,28 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 
 <div id="top-fixed-bar">
 
-  <div class="top-title">📊 Pannello Admin</div>
+
+  <div id="online-counter"
+     style="
+       position:absolute;
+       left:12px;
+       font-size:13px;
+       font-weight:600;
+       color:#34c759;
+       background:#eaffea;
+       padding:4px 10px;
+       border-radius:999px;
+       box-shadow:0 2px 6px rgba(0,0,0,.1);
+     ">
+  👥 Online: --
+</div>
 
   <div class="top-actions">
+
+    <button class="reload-btn" onclick="reloadAdmin()">
+  🔄
+</button>
+
     <a href="admin-scan.html" class="qr-btn">📷</a>
 
     <button id="email-dropdown-btn" class="mail-btn">
@@ -574,18 +667,84 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 <input id="search-admin" type="text" placeholder="Cerca utenti o coppe...">
 
 
-<div style="text-align:center; margin: 20px 0;">
-    <button id="btn-dashboard"
-            onclick="apriDashboard()" 
-            class="tab-btn active">
-        Dashboard
-    </button>
+<div class="admin-tabs">
+  <button id="btn-dashboard"
+          onclick="apriDashboard()" 
+          class="tab-btn active">
+    Dashboard
+  </button>
 
-    <button id="btn-dispo"
-            onclick="apriDisponibilita()" 
-            class="tab-btn">
-        Disponibilità ingredienti
-    </button>
+  <button id="btn-dispo"
+          onclick="apriDisponibilita()" 
+          class="tab-btn">
+    Disponibilità
+  </button>
+
+  <button id="btn-stats"
+          onclick="apriStatistiche()" 
+          class="tab-btn">
+    Statistiche
+  </button>
+
+  <!-- 🔔 AVVISO -->
+  <button id="btn-alert"
+          onclick="apriAvvisoSito()"
+          class="tab-btn alert-btn">
+    🔔 Avviso
+  </button>
+</div>
+
+<!-- 🔔 AVVISO SITO -->
+<div id="admin-alert-box" class="admin-box" style="
+  display:none;
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  margin:16px 12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+">
+  <h3 style="margin-top:0">🔔 Avviso sito</h3>
+
+  <label style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+    <input type="checkbox" id="alert-enabled">
+    <span>Avviso attivo</span>
+  </label>
+
+  <textarea
+    id="alert-text"
+    placeholder="Testo avviso..."
+    style="width:100%;min-height:70px;padding:10px;border-radius:10px;border:1px solid #ccc"
+  ></textarea>
+
+  <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+  <div style="flex:1;">
+    <label style="font-size:13px; font-weight:600;">Inizio</label>
+    <input type="datetime-local" id="alert-start"
+      style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+  </div>
+
+  <div style="flex:1;">
+    <label style="font-size:13px; font-weight:600;">Fine</label>
+    <input type="datetime-local" id="alert-end"
+      style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+  </div>
+</div>
+
+  <button
+    onclick="salvaAvviso()"
+    style="
+      margin-top:10px;
+      width:100%;
+      background:#007aff;
+      color:#fff;
+      border:none;
+      padding:10px;
+      border-radius:10px;
+      font-weight:600;
+      font-size:15px;
+    ">
+    Salva avviso
+  </button>
 </div>
 
 <style>
@@ -602,6 +761,58 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 .tab-btn.active {
     background: #005ecb;
 }
+.stat-box{
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  text-align:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.stat-num{
+  font-size:28px;
+  font-weight:800;
+  color:#007aff;
+}
+
+.stat-label{
+  margin-top:4px;
+  font-size:14px;
+  color:#555;
+  font-weight:600;
+}
+.stat-list{
+  margin-top:18px;
+  background:#fff;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.stat-list h4{
+  margin:0 0 10px 0;
+  font-size:15px;
+}
+
+.stat-items{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.stat-item{
+  background:#f2f2f7;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:13px;
+  font-weight:600;
+  display:flex;
+  gap:6px;
+}
+
+.stat-item span{
+  color:#007aff;
+}
 </style>
 <!-- 🔥 Sezione Dashboard (lista utenti + coppe) -->
 <div id="sezione-dashboard">
@@ -612,6 +823,126 @@ document.addEventListener("DOMContentLoaded", chiediPasswordAdmin);
 <div id="sezione-disponibilita" style="display:none; padding:20px;"></div>
 
 
+
+<!-- 🔥 Sezione Statistiche -->
+<div id="sezione-statistiche" style="display:none; padding:20px;">
+
+  <h2 style="margin-top:0;">📊 Statistiche</h2>
+
+  <!-- BOX RIASSUNTIVO -->
+  <div style="
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap:12px;
+    margin-bottom:24px;
+  ">
+
+    <div class="stat-box">
+      <div class="stat-num" id="stat-coppe">--</div>
+      <div class="stat-label">Coppe create</div>
+    </div>
+
+    <div class="stat-box">
+  <div class="stat-num" id="stat-eliminate">--</div>
+  <div class="stat-label">Coppe eliminate</div>
+</div>
+
+    <div class="stat-box">
+      <div class="stat-num" id="stat-coupon">--</div>
+      <div class="stat-label">Coupon sbloccati</div>
+    </div>
+
+  </div>
+
+  <!-- UTENTI -->
+<h3 style="margin-top:30px;">👥 Utenti</h3>
+
+<div style="
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap:12px;
+">
+<div class="stat-box" onclick="filtraUtentiStatistiche('registrati')">
+  <div class="stat-num" id="stat-utenti">--</div>
+  <div class="stat-label">Registrati</div>
+</div>
+
+<div class="stat-box" onclick="filtraUtentiStatistiche('disiscritti')">
+  <div class="stat-num" id="stat-disiscritti">--</div>
+  <div class="stat-label">Disiscritti</div>
+</div>
+
+<div class="stat-box" onclick="filtraUtentiStatistiche('coupon')">
+  <div class="stat-num" id="stat-utenti-coupon">--</div>
+  <div class="stat-label">Con coupon</div>
+</div>
+
+</div>
+
+<!-- 👤 Lista utenti statistiche -->
+<div id="stat-utenti-lista" style="
+  margin-top:30px;
+  display:none;
+">
+  <h3 id="stat-utenti-titolo">👤 Utenti</h3>
+
+  <div id="stat-utenti-righe"></div>
+</div>
+
+  <!-- FORMATI -->
+  <h3>🍨 Formati più usati</h3>
+
+  <div style="
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap:12px;
+  ">
+
+    <div class="stat-box">
+      <div class="stat-num" id="stat-piccola">--</div>
+      <div class="stat-label">Piccola</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="stat-num" id="stat-media">--</div>
+      <div class="stat-label">Media</div>
+    </div>
+
+    <div class="stat-box">
+      <div class="stat-num" id="stat-grande">--</div>
+      <div class="stat-label">Grande</div>
+    </div>
+
+  </div>
+
+  <!-- INGREDIENTI PIÙ USATI -->
+<h3 style="margin-top:30px;">📈 Ingredienti più usati</h3>
+
+<div id="stat-gusti" class="stat-list">
+  <h4>🍦 Gusti</h4>
+  <div class="stat-items"></div>
+</div>
+
+<div id="stat-granelle" class="stat-list">
+  <h4>🌰 Granelle</h4>
+  <div class="stat-items"></div>
+</div>
+
+<div id="stat-topping" class="stat-list">
+  <h4>🍫 Topping</h4>
+  <div class="stat-items"></div>
+</div>
+
+<div id="stat-ingredienti" class="stat-list">
+  <h4>🍓 Ingredienti</h4>
+  <div class="stat-items"></div>
+</div>
+
+<div id="stat-extra" class="stat-list">
+  <h4>✨ Extra</h4>
+  <div class="stat-items"></div>
+</div>
+</div>
 
 
 <div id="email-registrati-box" style="
@@ -700,8 +1031,12 @@ let COPPE = [];
 let filtro = "";
 let filtroConfermate = {};
 let filtroEliminate = {};
+let filtroStatisticheUtenti = null;
 let coppeCollapsed = {}; // memorizza quali coppe sono chiuse/aperte per id
 let sezioniAperte = {};
+// valori possibili:
+// null | "registrati" | "disiscritti" | "coupon"
+let COUPON_PER_EMAIL = {};
 let annullaUI = {}; // { [coppaId]: { open: boolean, qty: number } }
 let sezioneAttiva = "dashboard"; // oppure "disponibilita"
 function getAnnullaState(id){
@@ -777,6 +1112,10 @@ window.qtyMinusAdd = function(id){
   if (!c) return;
 
   renderCoppe(c.email || "Anonimo");
+};
+
+window.reloadAdmin = function(){
+  location.reload();
 };
 
 // 🔓 Apre il selettore per aggiungere conferme
@@ -890,6 +1229,22 @@ function showPopupSaved() {
     }, 1000);
 }
 
+
+window.filtraUtentiStatistiche = function(tipo) {
+  const box = document.getElementById("stat-utenti-lista");
+
+  // 👉 se clicco lo STESSO filtro → chiudi
+  if (filtroStatisticheUtenti === tipo) {
+    filtroStatisticheUtenti = null;
+    box.style.display = "none";
+    return;
+  }
+
+  // 👉 altrimenti apri / cambia filtro
+  filtroStatisticheUtenti = tipo;
+  renderListaUtentiStatistiche(tipo);
+};
+
 // ✨ Evidenziazione ricerca
 function highlight(text) {
     if (!filtro || !text) return text;
@@ -900,6 +1255,69 @@ function highlight(text) {
     return String(text).replace(regex, match =>
         `<span style="background:yellow; border-radius:4px;">${match}</span>`
     );
+}
+
+function renderListaUtentiStatistiche(tipo) {
+  const box = document.getElementById("stat-utenti-lista");
+  const righe = document.getElementById("stat-utenti-righe");
+  const titolo = document.getElementById("stat-utenti-titolo");
+
+  if (!box || !righe) return;
+
+  righe.innerHTML = "";
+  box.style.display = "block";
+
+  if (tipo === "registrati") titolo.textContent = "👤 Utenti registrati";
+  if (tipo === "disiscritti") titolo.textContent = "🚫 Utenti disiscritti";
+  if (tipo === "coupon") titolo.textContent = "🎁 Utenti con coupon";
+
+  UTENTI.forEach(u => {
+    const email = u.email;
+    if (!email) return;
+
+    const stats = getStats(email);
+
+    // FILTRI
+    if (tipo === "disiscritti" && !u.disiscritto) return;
+    if (tipo === "coupon" && stats.coupon <= 0) return;
+    if (tipo === "registrati" && u.disiscritto) return;
+
+    righe.innerHTML += `
+      <div style="
+        background:#fff;
+        border-radius:12px;
+        padding:12px;
+        margin-bottom:10px;
+        box-shadow:0 4px 12px rgba(0,0,0,.06);
+      ">
+        <b>${u.nome || "-"} ${u.cognome || ""}</b><br>
+
+        <span style="font-size:13px;">
+          📧 ${email}
+        </span><br>
+
+        <span style="font-size:13px;">
+          🗓 Iscritto: ${formatDate(u.created_at)}
+        </span><br>
+
+        ${
+          u.disiscritto
+            ? `<span style="font-size:13px; color:#d60000;">
+                🚫 Disiscritto: ${formatDate(u.data_disiscrizione)}
+               </span><br>`
+            : ""
+        }
+
+        <span style="font-size:13px; font-weight:600;">
+          🎁 Coupon: ${stats.coupon}
+        </span>
+      </div>
+    `;
+  });
+
+  if (!righe.innerHTML) {
+    righe.innerHTML = `<p style="opacity:.6;">Nessun utente trovato</p>`;
+  }
 }
 
 function formatDate(d) {
@@ -958,15 +1376,20 @@ document.getElementById("search-admin").addEventListener("input", e => {
 });
 
 async function load(){
-    const u = await supabase.from("utenti").select("*");
-    const c = await supabase.from("coppe").select("*");
+  const u = await supabase.from("utenti").select("*");
+  const c = await supabase.from("coppe").select("*");
 
-    if (!u.error) UTENTI = u.data;
-    if (!c.error) COPPE = c.data;
+  if (!u.error) UTENTI = u.data;
+  window._UTENTI = UTENTI;
+  if (!c.error) COPPE = c.data;
 
-    render();
+  await caricaCouponPerTutti(); // 🔥 QUESTA RIGA
+  render();
 }
 load();
+caricaStatisticheBase();
+caricaStatisticheFormati();
+caricaStatisticheIngredienti();
 
 // 🔥 AGGIORNAMENTO IN TEMPO REALE
 supabase
@@ -1020,6 +1443,7 @@ supabase
     }
   )
   .subscribe();
+
 
 function matchSearch(user) {
     if (!filtro) return true;
@@ -1090,7 +1514,7 @@ function getStats(email){
     }, 0);
 
     const elim = list.filter(c => c.eliminata).length;
-    const coupon = Math.floor(conf / 10);
+    const coupon = COUPON_PER_EMAIL[email] ?? 0;
 
     return { tot, conf, elim, coupon, list };
 }
@@ -1137,6 +1561,173 @@ async function syncCouponUtente(email) {
     if (sezioniAperte[email]) {
         renderCoppe(email);
     }
+}
+
+// 1️⃣ FUNZIONE
+async function aggiornaOnlineCount() {
+  const { count, error } = await supabase
+    .from("online_users")
+    .select("*", { count: "exact", head: true })
+    .gt("last_seen", new Date(Date.now() - 30000).toISOString());
+
+  if (error) {
+    console.warn("Errore online count", error.message);
+    return;
+  }
+
+  const box = document.getElementById("online-counter");
+  if (box) {
+    box.innerHTML = `👥 Online: ${count}`;
+  }
+}
+
+// 2️⃣ PRIMA CHIAMATA (SUBITO)
+aggiornaOnlineCount();
+// 🔁 refresh automatico ogni 5 secondi
+setInterval(() => {
+  aggiornaOnlineCount();
+}, 5000);
+// 3️⃣ REALTIME
+supabase
+  .channel("online-users-realtime")
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "online_users" },
+    () => {
+      aggiornaOnlineCount();
+    }
+  )
+  .subscribe();
+
+
+async function caricaStatisticheBase() {
+
+  // 🔢 COPPE CREATE (non eliminate)
+  const { count: totCoppe } = await supabase
+    .from("coppe")
+    .select("*", { count: "exact", head: true })
+    .or("eliminata.is.null,eliminata.eq.false");
+
+  // ❌ COPPE ELIMINATE
+  const { count: totEliminate } = await supabase
+    .from("coppe")
+    .select("*", { count: "exact", head: true })
+    .eq("eliminata", true);
+
+  // 🎁 COUPON TOTALI
+  const { count: totCoupon } = await supabase
+    .from("coupon")
+    .select("*", { count: "exact", head: true });
+
+  // 👤 UTENTI REGISTRATI
+  const { count: totUtenti } = await supabase
+    .from("utenti")
+    .select("*", { count: "exact", head: true });
+
+  // 🚫 UTENTI DISISCRITTI
+  const { count: totDisiscritti } = await supabase
+    .from("utenti")
+    .select("*", { count: "exact", head: true })
+    .eq("disiscritto", true);
+
+  // 🎁 UTENTI CON ALMENO 1 COUPON
+  const { data: utentiCoupon } = await supabase
+    .from("coupon")
+    .select("email");
+
+  const utentiConCoupon = new Set(
+    (utentiCoupon || []).map(c => c.email)
+  ).size;
+
+  // 🧩 UI
+  document.getElementById("stat-coppe").textContent = totCoppe ?? 0;
+  document.getElementById("stat-eliminate").textContent = totEliminate ?? 0;
+  document.getElementById("stat-coupon").textContent = totCoupon ?? 0;
+
+  document.getElementById("stat-utenti").textContent = totUtenti ?? 0;
+  document.getElementById("stat-disiscritti").textContent = totDisiscritti ?? 0;
+  document.getElementById("stat-utenti-coupon").textContent = utentiConCoupon ?? 0;
+}
+
+async function caricaStatisticheFormati() {
+
+  const { data, error } = await supabase
+    .from("coppe")
+    .select("formato");
+
+  if (error) return;
+
+  const stats = { PICCOLA: 0, MEDIA: 0, GRANDE: 0 };
+
+  data.forEach(c => {
+    if (stats[c.formato] !== undefined) {
+      stats[c.formato]++;
+    }
+  });
+
+  // UI
+  document.getElementById("stat-piccola").textContent = stats.PICCOLA;
+  document.getElementById("stat-media").textContent   = stats.MEDIA;
+  document.getElementById("stat-grande").textContent  = stats.GRANDE;
+}
+
+async function caricaStatisticheIngredienti() {
+  console.log("📊 STATISTICHE INGREDIENTI");
+
+  const { data, error } = await supabase
+    .from("coppe")
+    .select("gusti, granelle, topping, ingredienti, extra");
+
+  if (error) {
+    console.error("Errore statistiche ingredienti", error);
+    return;
+  }
+
+  const conta = {
+    gusti: {},
+    granelle: {},
+    topping: {},
+    ingredienti: {},
+    extra: {}
+  };
+
+  function accumula(lista, bucket) {
+    if (!Array.isArray(lista)) return;
+    lista.forEach(item => {
+      bucket[item] = (bucket[item] || 0) + 1;
+    });
+  }
+
+  data.forEach(c => {
+    accumula(Array.isArray(c.gusti) ? c.gusti : JSON.parse(c.gusti || "[]"), conta.gusti);
+    accumula(Array.isArray(c.granelle) ? c.granelle : JSON.parse(c.granelle || "[]"), conta.granelle);
+    accumula(Array.isArray(c.topping) ? c.topping : JSON.parse(c.topping || "[]"), conta.topping);
+    accumula(Array.isArray(c.ingredienti) ? c.ingredienti : JSON.parse(c.ingredienti || "[]"), conta.ingredienti);
+    accumula(Array.isArray(c.extra) ? c.extra : JSON.parse(c.extra || "[]"), conta.extra);
+  });
+  renderStatList("stat-gusti", conta.gusti);
+  renderStatList("stat-granelle", conta.granelle);
+  renderStatList("stat-topping", conta.topping);
+  renderStatList("stat-ingredienti", conta.ingredienti);
+  renderStatList("stat-extra", conta.extra);
+}
+
+function renderStatList(containerId, dataObj) {
+  const box = document.querySelector(`#${containerId} .stat-items`);
+  if (!box) return;
+
+  box.innerHTML = "";
+
+  Object.entries(dataObj)
+    .sort((a, b) => b[1] - a[1]) // più usati prima
+    .slice(0, 10)
+    .forEach(([nome, count]) => {
+      box.innerHTML += `
+        <div class="stat-item">
+          ${nome} <span>${count}</span>
+        </div>
+      `;
+    });
 }
 
 window.toggleConferma = async function (id) {
@@ -1220,6 +1811,7 @@ window.apriSezioneCoupon = async function(email) {
     alert("Errore caricamento coupon");
     return;
   }
+
 
   // 🔢 contatori
   const totali = couponFinali.length;
@@ -1349,6 +1941,24 @@ couponFinali.forEach(cpn => {
   box.scrollIntoView({ behavior: "smooth", block: "center" });
 };
 
+async function caricaCouponPerTutti() {
+  const { data, error } = await supabase
+    .from("coupon")
+    .select("email");
+
+  if (error) {
+    console.error("Errore caricamento coupon globali", error);
+    return;
+  }
+
+  COUPON_PER_EMAIL = {};
+
+  data.forEach(c => {
+    const email = c.email || "Anonimo";
+    COUPON_PER_EMAIL[email] = (COUPON_PER_EMAIL[email] || 0) + 1;
+  });
+}
+
 // 📱 Mostra / nasconde area QR del coupon
 window.toggleCouponQR = function(couponId) {
   const box = document.getElementById("coupon-qr-" + couponId);
@@ -1406,20 +2016,21 @@ window.toggleSezioneCoupon = function(email) {
 // COLLASSA / ESPANDI COPPA
 // =========================
 window.toggleCoppaCollapse = function (id) {
-    // inverti stato aperto/chiuso
-    coppeCollapsed[id] = !coppeCollapsed[id];
+    // 🔥 inizializza correttamente
+    if (coppeCollapsed[id] === undefined) {
+        coppeCollapsed[id] = false; // false = APERTA
+    } else {
+        coppeCollapsed[id] = !coppeCollapsed[id];
+    }
 
-    // trova la coppa per capire di quale utente è
     const c = COPPE.find(x => x.id === id);
     if (!c) return;
 
-    const email = c.email || "Anonimo";
-
-    // ricarica solo quella sezione (non tutta la pagina)
-    renderCoppe(email);
+    renderCoppe(c.email || "Anonimo");
 };
 
 window.apriDashboard = function() {
+  document.getElementById("admin-alert-box").style.display = "none";
   sezioneAttiva = "dashboard";
 
   document.getElementById("sezione-dashboard").style.display = "block";
@@ -1428,10 +2039,15 @@ window.apriDashboard = function() {
   document.getElementById("btn-dashboard").classList.add("active");
   document.getElementById("btn-dispo").classList.remove("active");
 
+  document.getElementById("btn-stats").classList.remove("active");
+const s = document.getElementById("sezione-statistiche");
+if (s) s.style.display = "none";
+
   render(); // 🔥 ricalcola ricerca
 };
 
 window.apriDisponibilita = function() {
+  document.getElementById("admin-alert-box").style.display = "none";
   sezioneAttiva = "disponibilita";
 
   document.getElementById("sezione-dashboard").style.display = "none";
@@ -1440,7 +2056,33 @@ window.apriDisponibilita = function() {
   document.getElementById("btn-dashboard").classList.remove("active");
   document.getElementById("btn-dispo").classList.add("active");
 
+
+  document.getElementById("btn-stats").classList.remove("active");
+const s = document.getElementById("sezione-statistiche");
+if (s) s.style.display = "none";
+
   window.caricaDisponibilita(); // 🔥 ricalcola ricerca
+};
+window.apriStatistiche = function() {
+  document.getElementById("admin-alert-box").style.display = "none";
+  document.getElementById("sezione-dashboard").style.display = "none";
+  document.getElementById("sezione-disponibilita").style.display = "none";
+  document.getElementById("sezione-statistiche").style.display = "block";
+
+  document.getElementById("btn-dashboard").classList.remove("active");
+  document.getElementById("btn-dispo").classList.remove("active");
+  document.getElementById("btn-stats").classList.add("active");
+
+  caricaStatisticheBase();
+  caricaStatisticheFormati();
+  caricaStatisticheIngredienti();
+
+  // reset lista utenti
+  const box = document.getElementById("stat-utenti-lista");
+  if (box) {
+    box.style.display = "none";
+    box.dataset.open = "";
+  }
 };
 
 window.caricaDisponibilita = async function () {
@@ -1581,6 +2223,8 @@ function render(){
         const email = u.email || "Anonimo";
         const stats = getStats(email);
 
+// "registrati" = nessun filtro extra
+
         // Mostra utente solo se la ricerca combacia
 // con l'utente OPPURE con almeno una sua coppa
 const contieneNelleCoppe = stats.list.some(c => coppaMatchSearch(c));
@@ -1591,23 +2235,30 @@ if (!matchUtente && !contieneNelleCoppe) return;
         const cardCls = u.disiscritto ? "utente-card utente-disiscritto" : "utente-card";
 
 out.innerHTML += `
-    <div class="${cardCls}" onclick="toggleFilters('${email}')">
-        <b>${highlight(email)}</b>
+  <div class="${cardCls}"
+       onclick="toggleFilters('${email}')"
+       style="cursor:pointer;">
 
-        <div class="counter-row">
-            <span class="badge badge-blue">Coppe: ${stats.tot}</span>
-            <span class="badge badge-green">Confermate: ${stats.conf}</span>
-            <span class="badge badge-red">Eliminate: ${stats.elim}</span>
-<span class="badge badge-coupon"
-      onclick="toggleSezioneCoupon('${email}'); event.stopPropagation();">
-    🎁 ${stats.coupon}
-</span>
-        </div>
+    <b>${highlight(email)}</b>
+
+    <div class="counter-row">
+      <span class="badge badge-blue">Coppe: ${stats.tot}</span>
+      <span class="badge badge-green">Confermate: ${stats.conf}</span>
+      <span class="badge badge-red">Eliminate: ${stats.elim}</span>
+
+      <span class="badge badge-coupon"
+            onclick="event.stopPropagation(); toggleSezioneCoupon('${email}')">
+        🎁 ${stats.coupon}
+      </span>
     </div>
+  </div>
 
-    <div id="c-${email}" class="coppe-container"
-         style="display:${sezioniAperte[email] ? "block" : "none"}"></div>
-         <div id="coupon-box-${email}" style="display:none;"></div>
+  <div id="c-${email}"
+       class="coppe-container"
+       style="display:${sezioniAperte[email] ? "block" : "none"}">
+  </div>
+
+  <div id="coupon-box-${email}" style="display:none;"></div>
 `;
     });
 
@@ -1721,14 +2372,14 @@ arr.forEach(c => {
 
    const icon = collapsed ? "👁️" : "✖️";
 
-    // SCROLL AUTOMATICO sul primo risultato trovato
-    if (!primoRisultato) {
-        setTimeout(() => {
-            const el = document.getElementById("coppa-" + c.id);
-            if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 200);
-        primoRisultato = true;
-    }
+// 🔍 scroll SOLO se sto usando la ricerca
+if (filtro && !primoRisultato) {
+  setTimeout(() => {
+    const el = document.getElementById("coppa-" + c.id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, 200);
+  primoRisultato = true;
+}
 
     box.innerHTML += `
         <div id="coppa-${c.id}" class="${coppaCls}">
@@ -2200,5 +2851,79 @@ function apriBoxEmailRegistrati() {
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+async function caricaAvvisoAdmin(){
+  const { data, error } = await supabase
+    .from("site_alert")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) return;
+
+  document.getElementById("alert-enabled").checked = data.enabled;
+  document.getElementById("alert-text").value = data.text || "";
+}
+
+window.salvaAvviso = async function () {
+  const enabled = document.getElementById("alert-enabled").checked;
+  const text = document.getElementById("alert-text").value.trim();
+
+  const start = document.getElementById("alert-start")?.value || null;
+  const end   = document.getElementById("alert-end")?.value || null;
+
+  const { error } = await supabase
+    .from("site_alert")
+    .update({
+      enabled,
+      text,
+      start_at: start ? new Date(start).toISOString() : null,
+      end_at: end ? new Date(end).toISOString() : null,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", 1);
+
+  if (error) {
+    console.error(error);
+    alert("Errore salvataggio avviso");
+    return;
+  }
+
+  alert("Avviso aggiornato ✅");
+};
+
+document.addEventListener("DOMContentLoaded", caricaAvvisoAdmin);
+</script>
+
+<script>
+window.apriAvvisoSito = function () {
+  // NASCONDI TUTTO
+  document.getElementById("sezione-dashboard").style.display = "none";
+  document.getElementById("sezione-disponibilita").style.display = "none";
+  document.getElementById("sezione-statistiche").style.display = "none";
+
+  // MOSTRA SOLO AVVISO
+  document.getElementById("admin-alert-box").style.display = "block";
+
+  // TOGLI ACTIVE A TUTTI
+  document.getElementById("btn-dashboard").classList.remove("active");
+  document.getElementById("btn-dispo").classList.remove("active");
+  document.getElementById("btn-stats").classList.remove("active");
+
+  // (opzionale) evidenzia il bottone 🔔
+  document.getElementById("btn-alert")?.classList.add("active");
+};
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const box = document.getElementById("admin-alert-box");
+  if (box) box.style.display = "none";
+});
+</script>
+
 </body>
 </html>

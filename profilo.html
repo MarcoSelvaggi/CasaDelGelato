@@ -3299,10 +3299,13 @@ window.disiscriviti = async function(){
   const email = localStorage.getItem("user_email");
   if (!email) return;
 
-  await supabase
-    .from("utenti")
-    .update({ disiscritto: true })
-    .eq("email", email);
+await supabase
+  .from("utenti")
+  .update({
+    disiscritto: true,
+    data_disiscrizione: new Date().toISOString()
+  })
+  .eq("email", email);
 
   localStorage.removeItem("user_email");
   localStorage.setItem("userLogged", "0");

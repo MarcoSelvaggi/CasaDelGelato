@@ -888,6 +888,61 @@ body {
   margin-bottom: 0;
 }
 
+#site-alert{
+  position: fixed;
+  top: 55px;
+  left: 0;
+  width: 100%;
+  height: 42px;
+
+  background: #fffae6;
+  color: #333;
+
+  display: none;                 /* mostrato solo via JS */
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 44px;               /* spazio per la X */
+  box-sizing: border-box;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  z-index: 998;
+  border-bottom: 1px solid #e6d98c;
+}
+
+/* TESTO CENTRATO */
+#site-alert-text{
+  text-align: center;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/* PULSANTE X */
+#site-alert button{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 26px;
+  height: 26px;
+
+  border: none;
+  background: #e5e5ea;
+  border-radius: 50%;
+
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
 
   </style>
 
@@ -908,7 +963,16 @@ body {
 
 </div>
 
+
+
 <div id="top-fixed-spacer"></div>
+
+<!-- 🔔 AVVISO SITO -->
+<div id="site-alert">
+  <span id="site-alert-text"></span>
+  <button onclick="chiudiAvviso()">✕</button>
+</div>
+
 
 
 <button id="scroll-top-btn" aria-label="Torna su">
@@ -1902,5 +1966,81 @@ document.addEventListener("visibilitychange", () => {
   if (!document.hidden) pingOnline();
 });
 </script>
+
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+const alertBox  = document.getElementById("site-alert");
+const alertText = document.getElementById("site-alert-text");
+
+/* 🔥 FIX TIMEZONE */
+function parseTs(ts){
+  if (!ts) return null;
+  // se manca la Z → lo tratto come UTC (perché lo salvi con toISOString)
+  return new Date(ts.endsWith("Z") ? ts : ts + "Z");
+}
+
+async function loadSiteAlert() {
+  if (!alertBox || !alertText) return;
+
+  alertBox.style.display = "none";
+
+  const { data, error } = await supabase
+    .from("site_alert")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) return;
+
+  const nowMs = Date.now();
+  const startMs = data.start_at ? Date.parse(data.start_at) : null;
+  const endMs   = data.end_at   ? Date.parse(data.end_at)   : null;
+
+  // 🔒 BLOCCO ASSOLUTO
+  if (!data.enabled) return;
+  if (startMs && nowMs < startMs) return;   // ⬅️ QUESTO ERA IL BUCO
+  if (endMs && nowMs > endMs) return;
+
+  alertText.textContent = data.text || "";
+  alertBox.style.display = "flex";
+}
+
+// carica al load
+window.addEventListener("load", () => {
+  setTimeout(loadSiteAlert, 300);
+});
+
+// 🔴 REALTIME
+supabase
+  .channel("site-alert-live")
+  .on(
+    "postgres_changes",
+    {
+      event: "UPDATE",
+      schema: "public",
+      table: "site_alert"
+    },
+    () => {
+      loadSiteAlert();
+    }
+  )
+  .subscribe();
+  // ⏱️ ricontrolla ogni 30 secondi (solo orario)
+setInterval(() => {
+  loadSiteAlert();
+}, 10000);
+</script>
+
+
+
+<script>
+function chiudiAvviso(){
+  const alert = document.getElementById("site-alert");
+  if (alert) alert.style.display = "none";
+}
+</script>
+
 </body>
 </html>

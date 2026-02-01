@@ -3336,7 +3336,17 @@ await new Promise(r => setTimeout(r, 250));
   setLoadingProgress(100);
 }
 
+ // 🔥 FIX CRITICO: FORZA REPAINT DELLA COPPA VISIBILE
+if (stage) {
+  // attende un frame reale
   await new Promise(r => requestAnimationFrame(r));
+
+  // micro-pausa per Safari / iOS
+  await new Promise(r => setTimeout(r, 50));
+
+  // forza layout + paint definitivo
+  stage.getBoundingClientRect();
+}
 
   // 4️⃣ FINE LOADING
   resetBlurTotale();

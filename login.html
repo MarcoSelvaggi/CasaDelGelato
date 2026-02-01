@@ -648,7 +648,7 @@ window.register = async function () {
   /* 1️⃣ UTENTE ESISTENTE? */
 const { data: existing, error } = await supabase
   .from("utenti")
-  .select("email, email_confermata")
+  .select("email, email_confermata, disiscritto")
   .eq("email", email)
   .maybeSingle();
 
@@ -665,6 +665,44 @@ if (existing) {
     );
     return;
   }
+
+  // 🔁 EMAIL ESISTENTE MA DISISCRITTA → BENTORNATO
+if (existing && existing.disiscritto === true) {
+
+  // riattivo utente
+  const token = crypto.randomUUID();
+
+  await supabase
+    .from("utenti")
+    .update({
+      disiscritto: false,
+      email_confermata: false,
+      conferma_token: token,
+      data_disiscrizione: null
+    })
+    .eq("email", email);
+
+  // invio mail di conferma
+  try {
+    await fetch(
+      "https://casa-del-gelato-mailer-kg7f.vercel.app/api/conferma-email",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token })
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+
+  mostraPopup(
+    "Bentornato! 👋",
+    "Ti abbiamo inviato una mail di conferma.\nDopo la conferma potrai accedere."
+  );
+
+  return;
+}
 
   mostraPopup(
     "Email già registrata",
