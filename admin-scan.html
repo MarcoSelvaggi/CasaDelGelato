@@ -59,6 +59,176 @@
         border-radius:10px;
         cursor:pointer;
     }
+
+    /* ===== OVERLAY ===== */
+.pin-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* ===== BOX ===== */
+.pin-box{
+  width: 300px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 20px 26px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+/* ===== TITOLO ===== */
+.pin-box h2{
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* ===== DOTS ===== */
+.pin-dots{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.pin-dots span{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d1d1d6;
+  transition: background .2s, transform .2s;
+}
+
+.pin-dots span.filled{
+  background: #111;
+  transform: scale(1.15);
+}
+
+/* ===== KEYPAD ===== */
+.pin-keypad{
+  display: grid;
+  grid-template-columns: repeat(3, 74px);
+  gap: 18px;
+  justify-content: center;
+}
+
+/* ===== BUTTONS ===== */
+.pin-keypad button{
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: none;
+  background: #f2f2f7;
+  color: #111;
+  font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .1s, background .15s;
+}
+
+/* TAP iOS */
+.pin-keypad button:active{
+  background: #e5e5ea;
+  transform: scale(0.92);
+}
+
+/* TASTO DELETE */
+#pin-del{
+  font-size: 20px;
+}
+
+/* CELLA VUOTA */
+.pin-keypad .empty{
+  background: transparent;
+  pointer-events: none;
+}
+/* ===== CONFIRM OVERLAY ===== */
+.confirm-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+/* ===== BOX ===== */
+.confirm-box{
+  width: 320px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 20px 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  text-align: center;
+}
+
+/* ICONA */
+.confirm-icon{
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+/* TITOLO */
+.confirm-box h3{
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* TESTO */
+.confirm-box p{
+  font-size: 15px;
+  line-height: 1.4;
+  color: #333;
+  margin: 0 0 18px;
+}
+
+/* AZIONI */
+.confirm-actions{
+  display: flex;
+  border-top: 1px solid #e5e5ea;
+}
+
+.confirm-actions button{
+  flex: 1;
+  padding: 14px 0;
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-cancel{
+  color: #8e8e93;
+  border-right: 1px solid #e5e5ea;
+}
+
+.btn-ok{
+  color: #007aff;
+  font-weight: 600;
+}
+.badge-confermate{
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 8px;
+
+  background: #e8ffe8;
+  color: #008a00;
+  font-weight: 700;
+  font-size: 14px;
+}
 </style>
 </head>
 
@@ -78,7 +248,7 @@
 import { supabase } from "./supabase.js";
 let scanLock = false;
 let html5QrCode = null;
-
+let scannerRunning = false; // 🔥 FIX
 function mostra(msg, ok = false) {
     const box = document.getElementById("risultato");
     box.style.display = "block";
@@ -221,13 +391,12 @@ const dataCoppa = new Date(coppa.data).toLocaleString("it-IT", {
 const confermate = coppa.confermate || 0;
 
 if (confermate >= 1) {
-    const ok = confirm(
-        `⚠️ Questa coppa è già stata confermata.\n\n` +
-        `Ne sono state ordinate più uguali?\n\n` +
-        `Confermate finora: ${confermate}`
-    );
+const ok = await openConfirm(`
+  Ne sono state ordinate più uguali?<br><br>
+  <b>Confermate finora:</b> ${confermate}
+`);
 
-    if (!ok) return;
+if (!ok) return;
 }
 
 // 3️⃣ CONFERMO la coppa
@@ -351,6 +520,24 @@ function estraiCodiceCoupon(raw) {
   }
 }
 
+let confirmResolve = null;
+
+function openConfirm(message){
+  return new Promise(resolve => {
+    confirmResolve = resolve;
+    document.getElementById("confirm-text").innerHTML = message;
+    document.getElementById("confirm-overlay").style.display = "flex";
+  });
+}
+
+function closeConfirm(result){
+  document.getElementById("confirm-overlay").style.display = "none";
+  if (confirmResolve) {
+    confirmResolve(result);
+    confirmResolve = null;
+  }
+}
+
 async function gestisciScan(raw) {
   const codice = estraiCodiceCoupon(raw);
 
@@ -422,7 +609,10 @@ function renderLista() {
           <div style="margin-top:6px; font-size:14px; line-height:1.35;">
             <div><b>Formato:</b> ${x.formato || "-"}</div>
             <div><b>Tavolo:</b> ${x.tavolo || "-"}</div>
-            <div><b>Confermate:</b> ${x.confermate || 0}</div>
+            <div>
+  <b>Confermate:</b>
+  <span class="badge-confermate">${x.confermate || 0}</span>
+</div>
           </div>
           ${x.cliente ? `
             <div style="margin-top:8px; font-size:13px; opacity:.9;">
@@ -443,65 +633,193 @@ function renderLista() {
 // chiamala all’avvio pagina
 renderLista();
 
-// Avvio scanner
 function startScanner() {
 
-    if (!html5QrCode) {
-        html5QrCode = new Html5Qrcode("reader");
-    }
+  if (scannerRunning) {
+    console.warn("📷 Scanner già attivo");
+    return;
+  }
 
-    html5QrCode.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        async qrCodeMessage => {
+  if (!html5QrCode) {
+    html5QrCode = new Html5Qrcode("reader");
+  }
 
-            // 🔒 blocco scansioni multiple
-            if (scanLock) return;
-            scanLock = true;
+  scannerRunning = true;
 
-            console.log("QR:", qrCodeMessage);
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
 
-            // 🔥 conferma coppa
-            await gestisciScan(qrCodeMessage);
+    async qrCodeMessage => {
+      if (scanLock) return;
+      scanLock = true;
 
-            // ⏸️ fermo lo scanner
-            await html5QrCode.stop();
+      await gestisciScan(qrCodeMessage);
 
-            // 🔓 sblocco + riavvio stabile
-            setTimeout(() => {
-                scanLock = false;
-                startScanner();
-            }, 1200);
-        },
-        () => {
-            // errori lettura → ignorati
-        }
-    );
+      await html5QrCode.stop();
+      scannerRunning = false;
+
+      setTimeout(() => {
+        scanLock = false;
+        startScanner();
+      }, 1200);
+    },
+
+    () => {}
+  );
 }
 
-startScanner();
-</script>
+window.startScanner = startScanner;
+window.openConfirm = openConfirm;
+window.closeConfirm = closeConfirm;
+window.startScanner = startScanner;
+ </script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
 
-  if (params.get("scan") === "1") {
-    console.log("📷 Avvio scanner automatico (Shortcut)");
+  if (isPinValidToday()) {
+    // 🔥 PIN già valido → avvio diretto
+    startScanner();
+  } else {
+    // 🔒 chiedi PIN
+    openAdminScanPin();
+  }
 
-    // ⏱️ micro delay per sicurezza Safari
-    setTimeout(() => {
-      if (typeof startScanner === "function") {
-        startScanner();
-      } else if (typeof avviaScanner === "function") {
-        avviaScanner();
-      } else {
-        console.warn("⚠️ Funzione scanner non trovata");
-      }
-    }, 300);
+});
+</script>
+
+<!-- 🔐 ADMIN SCAN PIN OVERLAY -->
+<div id="admin-pin-overlay" class="pin-overlay" style="display:none">
+  <div class="pin-box">
+    <h2>Inserisci PIN Admin</h2>
+
+    <div class="pin-dots">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+
+    <div class="pin-keypad">
+      <button data-n="1">1</button>
+      <button data-n="2">2</button>
+      <button data-n="3">3</button>
+
+      <button data-n="4">4</button>
+      <button data-n="5">5</button>
+      <button data-n="6">6</button>
+
+      <button data-n="7">7</button>
+      <button data-n="8">8</button>
+      <button data-n="9">9</button>
+
+      <button class="empty"></button>
+      <button data-n="0">0</button>
+      <button id="pin-del">⌫</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= CONFIG ========= */
+const ADMIN_PIN = "000000";
+const PIN_KEY = "adminScan_pin_ok_until";
+let enteredPin = "";
+
+/* ========= VALIDITÀ 1 GIORNO ========= */
+function getPinExpireToday() {
+  const d = new Date();
+  d.setHours(23, 59, 59, 999);
+  return d.getTime();
+}
+
+function isPinValidToday() {
+  const until = Number(localStorage.getItem(PIN_KEY) || 0);
+  return Date.now() < until;
+}
+
+function savePinValid() {
+  localStorage.setItem(PIN_KEY, String(getPinExpireToday()));
+}
+
+/* ========= UI ========= */
+function updatePinDots() {
+  const dots = document.querySelectorAll(".pin-dots span");
+  dots.forEach((d, i) => {
+    d.classList.toggle("filled", i < enteredPin.length);
+  });
+}
+
+function openAdminScanPin() {
+  const overlay = document.getElementById("admin-pin-overlay");
+  overlay.style.display = "flex";
+  enteredPin = "";
+  updatePinDots();
+}
+
+/* ========= CHECK PIN ========= */
+function checkAdminScanPin() {
+  if (enteredPin === ADMIN_PIN) {
+    savePinValid();
+    document.getElementById("admin-pin-overlay").style.display = "none";
+    startScanner(); // 🔥 ORA PARTE
+    return;
+  }
+
+  // PIN errato
+  enteredPin = "";
+  updatePinDots();
+  navigator.vibrate?.(100);
+}
+
+/* ========= KEYPAD ========= */
+document.addEventListener("DOMContentLoaded", () => {
+  const keypad = document.querySelector(".pin-keypad");
+  if (!keypad) return;
+
+  keypad.addEventListener("click", e => {
+    const btn = e.target.closest("button");
+    if (!btn || btn.classList.contains("empty")) return;
+
+    if (btn.id === "pin-del") {
+      enteredPin = enteredPin.slice(0, -1);
+      updatePinDots();
+      return;
+    }
+
+    const n = btn.dataset.n;
+    if (!n || enteredPin.length >= 6) return;
+
+    enteredPin += n;
+    updatePinDots();
+
+    if (enteredPin.length === 6) {
+      setTimeout(checkAdminScanPin, 120);
+    }
+  });
+
+  // 🔐 controllo iniziale
+  if (isPinValidToday()) {
+    startScanner();
+  } else {
+    openAdminScanPin();
   }
 });
 </script>
+
+<!-- ⚠️ POPUP COPPA GIÀ CONFERMATA -->
+<div id="confirm-overlay" class="confirm-overlay" style="display:none">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+
+    <h3>Coppa già confermata</h3>
+    <p id="confirm-text"></p>
+
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm(false)">Annulla</button>
+      <button class="btn-ok" onclick="closeConfirm(true)">Conferma</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

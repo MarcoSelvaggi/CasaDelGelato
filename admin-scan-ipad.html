@@ -61,14 +61,23 @@ p {
 
 /* RISULTATO */
 #risultato {
-    display: none;
-    margin: 12px auto;
-    max-width: 520px;
-    background: #fff;
-    padding: 16px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
-    font-size: 16px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  max-height: 45vh;
+  overflow-y: auto;
+
+  background: #fff;
+  padding: 18px 16px 28px;
+  border-radius: 18px 18px 0 0;
+
+  box-shadow: 0 -6px 24px rgba(0,0,0,.18);
+  font-size: 16px;
+
+  display: none;
+  z-index: 9998;
 }
 
 .ok {
@@ -79,6 +88,77 @@ p {
 .error {
     color: #d60000;
     font-weight: 700;
+}
+
+/* ===== PIN OVERLAY ===== */
+.pin-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.pin-box{
+  width: 300px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 20px 26px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  text-align: center;
+}
+
+.pin-box h2{
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.pin-dots{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.pin-dots span{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d1d1d6;
+}
+
+.pin-dots span.filled{
+  background: #111;
+}
+
+.pin-keypad{
+  display: grid;
+  grid-template-columns: repeat(3, 74px);
+  gap: 18px;
+  justify-content: center;
+}
+
+.pin-keypad button{
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: none;
+  background: #f2f2f7;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.pin-keypad button:active{
+  background: #e5e5ea;
+  transform: scale(.92);
+}
+
+.pin-keypad .empty{
+  background: transparent;
 }
 </style>
 </head>
@@ -174,11 +254,18 @@ async function switchCamera() {
     } catch {}
 
     scanLock = false;
-    startScanner();
+window.openAdminPin = openAdminPin;
+window.closeAdminPin = closeAdminPin;
+window.updatePinDots = updatePinDots;
+window.checkPin = checkPin;
 }
 
 /* ================= START SCANNER ================= */
 async function startScanner() {
+      if (!isPinValidToday()) {
+    openAdminPin();
+    return;
+  }
     if (!html5QrCode) {
         html5QrCode = new Html5Qrcode("reader");
     }
@@ -206,18 +293,147 @@ async function startScanner() {
 
             setTimeout(() => {
                 scanLock = false;
-                startScanner();
             }, 1200);
         }
     );
 }
-
+window.startScanner = startScanner;
 /* ================= INIT ================= */
 document.getElementById("switchCamBtn")
     ?.addEventListener("click", switchCamera);
 
-startScanner();
+
 </script>
+
+<!-- 🔐 ADMIN PIN OVERLAY -->
+<div id="admin-pin-overlay" class="pin-overlay" style="display:none">
+  <div class="pin-box">
+    <h2>Inserisci PIN Admin</h2>
+
+    <div class="pin-dots">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+
+    <div class="pin-keypad">
+      <button data-n="1">1</button>
+      <button data-n="2">2</button>
+      <button data-n="3">3</button>
+
+      <button data-n="4">4</button>
+      <button data-n="5">5</button>
+      <button data-n="6">6</button>
+
+      <button data-n="7">7</button>
+      <button data-n="8">8</button>
+      <button data-n="9">9</button>
+
+      <button class="empty"></button>
+      <button data-n="0">0</button>
+      <button id="pin-del">⌫</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ====== PIN VALIDITÀ GIORNALIERA ====== */
+const ADMIN_PIN = "000000";
+const PIN_KEY = "adminScan_pin_ok_until";
+
+function getPinExpireToday() {
+  const d = new Date();
+  d.setHours(23, 59, 59, 999);
+  return d.getTime();
+}
+
+function isPinValidToday() {
+  const until = Number(localStorage.getItem(PIN_KEY) || 0);
+  return Date.now() < until;
+}
+
+function savePinValid() {
+  localStorage.setItem(PIN_KEY, String(getPinExpireToday()));
+}
+</script>
+
+<script>
+/* ====== STATO ====== */
+let enteredPin = "";
+
+/* ====== UI ====== */
+function openAdminPin() {
+  enteredPin = "";
+  updatePinDots();
+  document.getElementById("admin-pin-overlay").style.display = "flex";
+}
+
+function closeAdminPin() {
+  document.getElementById("admin-pin-overlay").style.display = "none";
+}
+
+function updatePinDots() {
+  document.querySelectorAll(".pin-dots span").forEach((dot, i) => {
+    dot.classList.toggle("filled", i < enteredPin.length);
+  });
+}
+
+/* ====== CHECK PIN ====== */
+function checkPin() {
+  if (enteredPin === ADMIN_PIN) {
+    savePinValid();
+    closeAdminPin();
+    window.startScanner(); // ✅ chiama quella esposta dal module
+    return;
+  }
+
+  // ❌ PIN errato
+  enteredPin = "";
+  updatePinDots();
+  navigator.vibrate?.(100);
+}
+document.addEventListener("DOMContentLoaded", () => {
+  if (!isPinValidToday()) {
+    openAdminPin();   // 🔐 MOSTRA PIN
+  } else {
+    window.startScanner(); // 📷 parte diretto se già valido
+  }
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const keypad = document.querySelector(".pin-keypad");
+  if (!keypad) {
+    console.error("❌ pin-keypad non trovata");
+    return;
+  }
+
+  keypad.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn || btn.classList.contains("empty")) return;
+
+    // ⌫ cancella
+    if (btn.id === "pin-del") {
+      enteredPin = enteredPin.slice(0, -1);
+      updatePinDots();
+      return;
+    }
+
+    // numero
+    const n = btn.dataset.n;
+    if (!n || enteredPin.length >= 6) return;
+
+    enteredPin += n;
+    updatePinDots();
+
+    // se 6 cifre → verifica
+    if (enteredPin.length === 6) {
+      setTimeout(checkPin, 120);
+    }
+  });
+});
+
+window.openAdminPin = openAdminPin;
+window.isPinValidToday = isPinValidToday;
+</script>
+
 
 </body>
 </html>
