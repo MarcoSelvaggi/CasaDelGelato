@@ -3299,64 +3299,61 @@ const almostReadyTimer = setTimeout(() => {
 
 // 3️⃣ ATTENDI IMMAGINI (MAX 15s)
 const stage = document.getElementById("coppa-stage");
+
 if (stage) {
 
   let fakeProgress = 0;
 
-  // 🔁 PROGRESS FAKE (per far muovere sempre la barra)
   const fakeProgressInterval = setInterval(() => {
     fakeProgress += 2;
     if (fakeProgress > 90) fakeProgress = 90;
     setLoadingProgress(fakeProgress);
   }, 120);
 
-  // 🖼️ PROGRESS REALE IMMAGINI
   const immaginiPromise = waitForImagesWithProgress(stage, pct => {
     setLoadingProgress(Math.max(fakeProgress, pct));
   });
 
-  // ⏱️ IMMAGINI O TIMEOUT
   const result = await Promise.race([
     immaginiPromise,
     timeoutPromise(15000)
   ]);
 
-  // 🛑 STOP PROGRESS FAKE
   clearInterval(fakeProgressInterval);
-// ✅ CHIUSURA ELEGANTE BARRA
-setLoadingProgress(100);
+  setLoadingProgress(100);
 
-// micro pausa per far "vedere" il completamento
-await new Promise(r => setTimeout(r, 250));
+  await new Promise(r => setTimeout(r, 250));
+
   if (result === "timeout") {
     console.warn("⏱️ Timeout immagini");
   }
-
-  // ✅ CHIUSURA A 100%
-  setLoadingProgress(100);
 }
 
- // 🔥 FIX CRITICO: FORZA REPAINT DELLA COPPA VISIBILE
-if (stage) {
-  // attende un frame reale
+await new Promise(r => requestAnimationFrame(r));
+
+// 4️⃣ FINE LOADING
+resetBlurTotale();
+nascondiLoadingRiepilogo();
+isLoadingCoppa = false;
+
+// 🔥 FIX IMMAGINI INVISIBILI (RIUSA stage)
+if (stage && hasInvisibleImages(stage)) {
+  console.warn("🧩 Immagini non visibili → ricostruisco riepilogo");
+
+  stage.style.opacity = "0";
+  await new Promise(r => setTimeout(r, 80));
+
+  await mostraRiepilogo();
+
   await new Promise(r => requestAnimationFrame(r));
-
-  // micro-pausa per Safari / iOS
-  await new Promise(r => setTimeout(r, 50));
-
-  // forza layout + paint definitivo
   stage.getBoundingClientRect();
+
+  stage.style.opacity = "1";
 }
 
-  // 4️⃣ FINE LOADING
-  resetBlurTotale();
-  nascondiLoadingRiepilogo();
-  isLoadingCoppa = false;
-
-  // 5️⃣ NUVOLA IG
-  avviaTimerNuvolettaInstagram();
-}
-
+// 5️⃣ NUVOLA IG
+avviaTimerNuvolettaInstagram();
+} // ⬅️ CHIUDE preparaRiepilogoFinale
 
 function resetBlurTotale() {
   document.body.classList.remove("blur-bg");
@@ -4347,3 +4344,14 @@ document
     }
     chiudiPopupRimuovi();
   });
+
+  function hasInvisibleImages(container) {
+  const imgs = Array.from(container.querySelectorAll("img"));
+
+  return imgs.some(img => {
+    if (!img.complete || img.naturalWidth === 0) return true;
+
+    const rect = img.getBoundingClientRect();
+    return rect.width === 0 || rect.height === 0;
+  });
+}
