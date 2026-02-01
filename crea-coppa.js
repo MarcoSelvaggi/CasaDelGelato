@@ -3336,24 +3336,24 @@ resetBlurTotale();
 nascondiLoadingRiepilogo();
 isLoadingCoppa = false;
 
-// 🔥 FIX IMMAGINI INVISIBILI (RIUSA stage)
-if (stage && hasInvisibleImages(stage)) {
-  console.warn("🧩 Immagini non visibili → ricostruisco riepilogo");
+// 🔥 FIX SAFARI / WEBKIT: forza repaint reale
+if (stage) {
+  stage.style.display = "none";
+  stage.getBoundingClientRect(); // ⛔ forza reflow
+  stage.style.display = "";
 
-  stage.style.opacity = "0";
-  await new Promise(r => setTimeout(r, 80));
-
-  await mostraRiepilogo();
-
-  await new Promise(r => requestAnimationFrame(r));
-  stage.getBoundingClientRect();
-
-  stage.style.opacity = "1";
+  requestAnimationFrame(() => {
+    stage.getBoundingClientRect();
+  });
 }
 
 // 5️⃣ NUVOLA IG
 avviaTimerNuvolettaInstagram();
 } // ⬅️ CHIUDE preparaRiepilogoFinale
+
+
+
+
 
 function resetBlurTotale() {
   document.body.classList.remove("blur-bg");
