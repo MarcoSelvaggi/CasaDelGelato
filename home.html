@@ -89,18 +89,31 @@ body {
       z-index:10000;
     }
 
-    #lang-menu{
-      position:fixed; 
-      top:50px; 
-      right:14px;
-      background:#fff;
-      padding:6px 0;
-      border-radius:10px;
-      box-shadow:0 6px 20px rgba(0,0,0,0.12);
-      display:none;
-      z-index:10001;
-    }
+#lang-menu{
+  position: fixed;
+  top: 54px;
+  right: 14px;
 
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+
+  min-width: 140px;
+
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+
+  transition: opacity .2s ease, transform .2s ease;
+
+  z-index: 10002;
+}
+
+#lang-menu.open{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
     #lang-menu button{
       padding:10px 16px;
       border:none;
@@ -944,6 +957,113 @@ body {
   cursor: pointer;
 }
 
+.popup-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.popup-box{
+  background:#fff;
+  border-radius:16px;
+  padding:22px;
+  max-width:360px;
+  width:90%;
+  text-align:center;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+}
+
+.popup-box h2{
+  margin-top:0;
+  font-size:20px;
+}
+
+.popup-box p{
+  font-size:14px;
+  line-height:1.5;
+  margin:14px 0 20px;
+}
+
+.popup-actions{
+  display:flex;
+  gap:10px;
+}
+
+.popup-btn{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.popup-btn.primary{
+  background:#007aff;
+  color:#fff;
+}
+
+.popup-btn.secondary{
+  background:#eee;
+  color:#111;
+}
+/* 🔒 blocca scroll quando popup aperto */
+body.popup-open{
+  overflow: hidden;
+}
+
+/* 🌫️ blur dello sfondo */
+body.popup-open > *:not(#popup-benvenuto){
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* popup sempre nitido */
+#popup-benvenuto{
+  filter: none !important;
+  pointer-events: auto;
+}
+.welcome-hide-row{
+  margin-top: 18px;      /* distanza dal testo sopra */
+  margin-bottom: 22px;   /* 🔥 stacco dai pulsanti */
+  text-align: center;
+}
+
+.welcome-hide-row label{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.welcome-hide-row input{
+  width: 16px;
+  height: 16px;
+  accent-color: #007aff; /* iOS blue */
+  cursor: pointer;
+}
+
+
+/* 🖥️ DESKTOP: evita che l'hero successivo si sovrapponga alle slide */
+@media (min-width: 900px){
+  .hero-after-coppa{
+    margin-top: 80px !important;   /* oppure 0 se lo vuoi attaccato */
+  }
+}
+
+
+
+
+
+
+
+
   </style>
 
   <link rel="stylesheet" href="bottom-nav.css">
@@ -963,6 +1083,13 @@ body {
 
 </div>
 
+<div id="lang-toggle">🇮🇹 ▾</div>
+
+<div id="lang-menu">
+  <button class="lang-btn" data-lang="it">Italiano</button>
+  <button class="lang-btn" data-lang="en">English</button>
+  <button class="lang-btn" data-lang="de">Deutsch</button>
+</div>
 
 
 <div id="top-fixed-spacer"></div>
@@ -979,20 +1106,13 @@ body {
   ↑
 </button>
 
-<!-- LANGUAGE -->
-<div id="lang-toggle">🇮🇹 ▾</div>
-<div id="lang-menu">
-  <button class="lang-btn" data-lang="it">Italiano</button>
-  <button class="lang-btn" data-lang="en">English</button>
-  <button class="lang-btn" data-lang="de">Deutsch</button>
-</div>
 
 
 <section class="hero">
   <img src="img/hero-gelato.jpg" class="hero-img" alt="Gelato artigianale">
 
   <div class="hero-content reveal">
-    <p data-lang="create_cup_subtitle">
+    <p>
       Crea la tua coppa. Vivi l’esperienza.
     </p>
 
@@ -1231,46 +1351,7 @@ body {
   const db = firebase.firestore();
 </script>
 
-<!-- LANGUAGE LOGIC -->
-<script>
-(function(){
-  const FLAGS = { it:"🇮🇹", en:"🇬🇧", de:"🇩🇪" };
-  const LANG = {
-    it:{title:"Casa del Gelato",create_cup_title:"Crea la tua Coppa",create_cup_subtitle:"Personalizza la tua coppa come la vuoi tu",create_button:"🍨 INIZIA",contacts:"I nostri Locali"},
-    en:{title:"House of Gelato",create_cup_title:"Create Your Cup",create_cup_subtitle:"Customize your cup",create_button:"🍨 START",contacts:"Our Shops"},
-    de:{title:"Haus des Gelatos",create_cup_title:"Erstelle deinen Becher",create_cup_subtitle:"Gestalte deinen Becher",create_button:"🍨 START",contacts:"Unsere Standorte"}
-  };
 
-  const toggle = document.getElementById('lang-toggle');
-  const menu = document.getElementById('lang-menu');
-
-  toggle.onclick = () => menu.style.display = menu.style.display=="flex" ? "none" : "flex";
-
-  document.addEventListener('click', e => {
-    if(!e.target.closest('#lang-toggle') && !e.target.closest('#lang-menu')) menu.style.display="none";
-  });
-
-  function apply(l){
-    localStorage.setItem("lang",l);
-    document.querySelectorAll("[data-lang]").forEach(el => el.textContent = LANG[l][el.dataset.lang]);
-    toggle.textContent = FLAGS[l] + " ▾";
-  }
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlLang = urlParams.get("lang");
-  if (urlLang) localStorage.setItem("lang", urlLang);
-
-  apply(localStorage.getItem("lang") || "it");
-
-  document.querySelectorAll(".lang-btn").forEach(btn =>
-    btn.onclick = () => apply(btn.dataset.lang)
-  );
-
-  document.getElementById("start-coppa").onclick = () => {
-    window.location.href = "crea-coppa.html";
-  };
-})();
-</script>
 
 
 <script>
@@ -1638,33 +1719,42 @@ document.querySelectorAll(".reveal").forEach(el => {
     slides.classList.toggle("open", open);
     btn.textContent = open ? "×" : "+";
 
-    if (open) {
+if (open) {
 
-      /* 🔥 riduce spazio SOLO quando aperto */
-      slides.style.marginBottom = "-360px";
+  /* ✅ DESKTOP: crea spazio verso l’hero SENZA toccare le slide */
+  if (window.innerWidth > 768) {
+    slides.style.marginTop = "140px";   // ← QUI regoli lo spazio
+    slides.style.marginBottom = "0";
+  } 
+  /* 📱 MOBILE: lascia il comportamento originale */
+  else {
+    slides.style.marginTop = "";
+    slides.style.marginBottom = "-360px";
+  }
 
-      /* 🔁 RESET SLIDE + PILL (come CREA COPPA) */
-      const steps = slides.querySelectorAll(".exp-step");
-      const dots  = slides.querySelectorAll(".exp-bar span");
+  /* 🔁 RESET SLIDE + PILL (come CREA COPPA) */
+  const steps = slides.querySelectorAll(".exp-step");
+  const dots  = slides.querySelectorAll(".exp-bar span");
 
-      steps.forEach(s => s.classList.remove("active"));
-      dots.forEach(d => d.classList.remove("active"));
+  steps.forEach(s => s.classList.remove("active"));
+  dots.forEach(d => d.classList.remove("active"));
 
-      if (steps[0]) steps[0].classList.add("active");
-      if (dots[0])  dots[0].classList.add("active");
+  if (steps[0]) steps[0].classList.add("active");
+  if (dots[0])  dots[0].classList.add("active");
 
-      /* 📍 scroll controllato */
-      slides.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+  /* 📍 scroll controllato */
+  slides.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 
-    } else {
+} else {
 
-      /* 🔙 ripristino PERFETTO (zero overlap) */
-      slides.style.marginBottom = "";
+  /* 🔙 ripristino pulito */
+  slides.style.marginTop = "";
+  slides.style.marginBottom = "";
 
-    }
+}
   });
 })();
 </script>
@@ -2041,6 +2131,192 @@ function chiudiAvviso(){
   if (alert) alert.style.display = "none";
 }
 </script>
+
+<!-- 🍨 POPUP BENVENUTO -->
+<div id="popup-benvenuto" class="popup-overlay" style="display:none">
+  <div class="popup-box">
+
+    <h2 style="
+      font-size:22px;
+      font-weight:800;
+      margin-bottom:14px;
+      letter-spacing:-0.3px;
+    ">
+      Benvenuto in <b>Casa del Gelato</b>
+    </h2>
+
+    <p style="
+      font-size:15.5px;
+      line-height:1.5;
+      color:#333;
+      margin-bottom:16px;
+    ">
+      Scopri il nostro <b>menu</b>, tutte le <b>info utili</b><br>
+      e personalizza la tua <b>coppa</b> come desideri.
+    </p>
+
+    <p style="
+      font-size:15px;
+      font-weight:600;
+      margin-bottom:6px;
+    ">
+      Registrandoti puoi:
+    </p>
+
+    <p style="
+      font-size:15px;
+      line-height:1.6;
+      color:#333;
+      margin-bottom:16px;
+    ">
+      • personalizzare le coppe<br>
+      • salvare i tuoi preferiti<br>
+      • accedere a <b>coupon e vantaggi esclusivi</b>
+    </p>
+
+<div class="welcome-hide-row">
+  <label>
+    <input type="checkbox" id="welcome-hide-forever">
+    <span>Non mostrare più</span>
+  </label>
+</div>
+
+    <div class="popup-actions">
+      <button class="popup-btn secondary" onclick="chiudiPopupBenvenuto()">
+        Chiudi
+      </button>
+
+   <button class="popup-btn primary" onclick="vaiAllaRegistrazione()">
+  Registrati
+</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function chiudiPopupBenvenuto(){
+  const popup = document.getElementById("popup-benvenuto");
+  const checkbox = document.getElementById("welcome-hide-forever");
+
+  if (!popup) return;
+
+  // ✅ salva preferenza
+  if (checkbox && checkbox.checked) {
+    localStorage.setItem("hideWelcomePopup", "1");
+  }
+
+  popup.style.display = "none";
+  document.body.classList.remove("popup-open");
+  document.body.style.overflow = "";
+}
+
+function vaiAllaRegistrazione(){
+  chiudiPopupBenvenuto();
+  window.location.href = "login.html?mode=register";
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const hide = localStorage.getItem("hideWelcomePopup") === "1";
+  const isLogged = localStorage.getItem("userLogged") === "1";
+
+  if (hide || isLogged) return;
+
+  const popup = document.getElementById("popup-benvenuto");
+  if (!popup) return;
+
+  popup.style.display = "flex";
+  document.body.classList.add("popup-open");
+  document.body.style.overflow = "hidden";
+});
+</script>
+
+<!-- GOOGLE TRANSLATE (invisibile) -->
+<div id="google_translate_element" style="display:none;"></div>
+
+<script>
+/* ===============================
+   🌍 GOOGLE TRANSLATE INIT
+=============================== */
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'it',
+    includedLanguages: 'it,en,de',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+
+/* ===============================
+   🔗 BRIDGE: forza lingua
+=============================== */
+function setGoogleLang(lang){
+  const combo = document.querySelector(".goog-te-combo");
+  if (!combo) {
+    console.warn("Google Translate non pronto");
+    return;
+  }
+  combo.value = lang;
+  combo.dispatchEvent(new Event("change"));
+}
+</script>
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+/* ===============================
+   🇮🇹 🇬🇧 🇩🇪 LANGUAGE MENU
+=============================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle  = document.getElementById("lang-toggle");
+  const menu    = document.getElementById("lang-menu");
+  const buttons = document.querySelectorAll(".lang-btn");
+
+  if (!toggle || !menu || !buttons.length) return;
+
+  const FLAGS = {
+    it: "🇮🇹",
+    en: "🇬🇧",
+    de: "🇩🇪"
+  };
+
+  // 🔽 toggle menu
+  toggle.addEventListener("click", e => {
+    e.stopPropagation();
+    menu.classList.toggle("open");
+  });
+
+  // ❌ click fuori → chiudi
+  document.addEventListener("click", () => {
+    menu.classList.remove("open");
+  });
+
+  menu.addEventListener("click", e => e.stopPropagation());
+
+  // 🌍 click lingua
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const lang = btn.dataset.lang;
+
+      localStorage.setItem("lang", lang);
+      toggle.textContent = FLAGS[lang] + " ▾";
+      menu.classList.remove("open");
+
+      setGoogleLang(lang);
+    });
+  });
+
+  // 🔁 ripristino lingua salvata
+  const saved = localStorage.getItem("lang") || "it";
+  toggle.textContent = FLAGS[saved] + " ▾";
+
+  // ⏳ attende Google e applica
+  setTimeout(() => setGoogleLang(saved), 800);
+});
+</script>
+
+
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
