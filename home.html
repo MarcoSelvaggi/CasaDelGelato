@@ -332,7 +332,7 @@ body {
 
 .hero{
   position: relative;
-  height: 60vh;
+  height: calc(var(--vh, 1vh) * 60);
   overflow: hidden;
   background: #000;
 }
@@ -426,7 +426,7 @@ body {
 
 .experience{
   position: relative;
-  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   background: #f6f6f7;
 }
 
@@ -809,7 +809,8 @@ body {
 }
 
 /* ➕ PLUS MENU HERO */
-#menu-plus-btn{
+#menu-plus-btn,
+#info-plus-btn{
   position: absolute;
   right: 16px;
   bottom: 16px;
@@ -833,13 +834,43 @@ body {
   cursor: pointer;
 
   box-shadow: 0 10px 28px rgba(0,122,255,.45);
-
   z-index: 5;
 }
 
-#menu-plus-btn:active{
+#menu-plus-btn:active,
+#info-plus-btn:active{
   transform: scale(.92);
   background: #0066d6;
+}
+
+/* ===============================
+   ℹ️ INFO SLIDES – COLLASSATE
+=============================== */
+
+#info-slides{
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-40px);
+  pointer-events: none;
+
+  transition:
+    max-height .6s cubic-bezier(.22,.61,.36,1),
+    opacity .35s ease,
+    transform .6s cubic-bezier(.22,.61,.36,1);
+}
+
+/* 🔓 APERTE */
+#info-slides.open{
+  max-height: 1200px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* stato chiuso → niente slide visibili */
+#info-slides:not(.open) .exp-slides{
+  display: none;
 }
 
 /* ===============================
@@ -877,19 +908,17 @@ body {
 #menu-slides:not(.open) .exp-slides{
   display: none;
 }
-/* ===============================
-   ✅ MENU: CTA + PILL come CREA COPPA
-=============================== */
-.experience[data-type="menu"] .exp-cta{
-  position: static !important;
-  margin-top: 10px !important;   /* 🔥 annulla il 220px */
-}
 
-.experience[data-type="menu"] .exp-indicator{
-  position: static !important;   /* 🔥 non più absolute */
-  transform: none !important;
-  margin-top: 14px;
-  margin-bottom: 20px;
+/* 🖥️ DESKTOP: MENU -> CTA + PILL più in basso (come “Scegli i gusti”) */
+@media (min-width: 900px){
+  .experience[data-type="menu"] .exp-cta{
+    margin-top: 220px !important;   /* ⬅️ abbassa SOLO il bottone */
+  }
+
+  .experience[data-type="menu"] .exp-indicator{
+    margin-top: 14px !important;    /* sotto al bottone */
+    margin-bottom: 40px !important; /* respiro come l’altra sezione */
+  }
 }
 
 /* ===============================
@@ -1057,9 +1086,12 @@ body.popup-open > *:not(#popup-benvenuto){
   }
 }
 
-
-
-
+/* 🖥️ DESKTOP – MENU: riduce SOLO spazio sopra la card */
+@media (min-width: 900px){
+  .experience[data-type="menu"] .exp-step{
+    padding-top: 20px;   /* prima era 80px */
+  }
+}
 
 
 
@@ -1704,60 +1736,7 @@ document.querySelectorAll(".reveal").forEach(el => {
 })();
 </script>
 
-<script>
-(() => {
-  const btn = document.getElementById("menu-plus-btn");
-  const slides = document.getElementById("menu-slides");
 
-  if (!btn || !slides) return;
-
-  let open = false;
-
-  btn.addEventListener("click", () => {
-    open = !open;
-
-    slides.classList.toggle("open", open);
-    btn.textContent = open ? "×" : "+";
-
-if (open) {
-
-  /* ✅ DESKTOP: crea spazio verso l’hero SENZA toccare le slide */
-  if (window.innerWidth > 768) {
-    slides.style.marginTop = "140px";   // ← QUI regoli lo spazio
-    slides.style.marginBottom = "0";
-  } 
-  /* 📱 MOBILE: lascia il comportamento originale */
-  else {
-    slides.style.marginTop = "";
-    slides.style.marginBottom = "-360px";
-  }
-
-  /* 🔁 RESET SLIDE + PILL (come CREA COPPA) */
-  const steps = slides.querySelectorAll(".exp-step");
-  const dots  = slides.querySelectorAll(".exp-bar span");
-
-  steps.forEach(s => s.classList.remove("active"));
-  dots.forEach(d => d.classList.remove("active"));
-
-  if (steps[0]) steps[0].classList.add("active");
-  if (dots[0])  dots[0].classList.add("active");
-
-  /* 📍 scroll controllato */
-  slides.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-
-} else {
-
-  /* 🔙 ripristino pulito */
-  slides.style.marginTop = "";
-  slides.style.marginBottom = "";
-
-}
-  });
-})();
-</script>
 
 <script>
 function initSwipeExperience(section) {
@@ -1820,18 +1799,20 @@ function initSwipeExperience(section) {
 </script>
 
 <script>
-(() => {
-  const section = document.querySelector('.experience:not([data-type="menu"])');
-  if (!section) return;
+function initAutoplayOnExpand({
+  sectionSelector,
+  triggerBtnId
+}) {
+  const section = document.querySelector(sectionSelector);
+  const btn = document.getElementById(triggerBtnId);
+  if (!section || !btn) return;
 
   const slidesWrap = section.querySelector('.exp-slides');
   const steps = [...section.querySelectorAll('.exp-step')];
   const dots  = [...section.querySelectorAll('.exp-bar span')];
 
   let index = 0;
-  let startX = 0;
   let timer = null;
-  let inView = false;
   const DELAY = 5000;
 
   function show(i){
@@ -1852,11 +1833,6 @@ function initSwipeExperience(section) {
     show(index);
   }
 
-  function prev(){
-    index = (index - 1 + steps.length) % steps.length;
-    show(index);
-  }
-
   function start(){
     stop();
     timer = setInterval(next, DELAY);
@@ -1867,54 +1843,33 @@ function initSwipeExperience(section) {
     timer = null;
   }
 
-  // stato iniziale
-  show(0);
-  start();
-  // 👀 quando rientri sulla sezione → riparte da "Scegli il formato"
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        if (!inView) {
-          inView = true;
-          index = 0;
-          show(0);
-          start();
-        }
-      } else {
-        inView = false;
-        stop();
-      }
-    });
-  }, { threshold: 0.6 });
-
-  io.observe(section);
-  /* 📱 TOUCH */
-  slidesWrap.addEventListener("touchstart", e => {
-    startX = e.touches[0].clientX;
-  }, { passive: true });
-
-  slidesWrap.addEventListener("touchend", e => {
-    const diff = e.changedTouches[0].clientX - startX;
-    if (Math.abs(diff) > 50){
-      diff < 0 ? next() : prev();
-      start(); // 🔁 riparte autoplay
+  btn.addEventListener("click", () => {
+    const slides = section;
+const isOpening = slides.dataset.open === "1";
+    if (!isOpening) {
+      stop();
+      return;
     }
+
+    setTimeout(() => {
+      index = 0;
+      show(0);
+      start();
+    }, 300);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  initAutoplayOnExpand({
+    sectionSelector: '.experience[data-type="menu"]',
+    triggerBtnId: 'menu-plus-btn'
   });
 
-  /* 🖱️ MOUSE */
-  slidesWrap.addEventListener("mousedown", e => {
-    startX = e.clientX;
+  initAutoplayOnExpand({
+    sectionSelector: '.experience[data-type="info"]',
+    triggerBtnId: 'info-plus-btn'
   });
-
-  window.addEventListener("mouseup", e => {
-    const diff = e.clientX - startX;
-    if (Math.abs(diff) > 50){
-      diff < 0 ? next() : prev();
-      start(); // 🔁 riparte autoplay
-    }
-  });
-
-})();
+});
 </script>
 
 <script>
@@ -2013,6 +1968,89 @@ document.addEventListener("DOMContentLoaded", () => {
       diff < 0 ? next() : prev();
       start();
     }
+  });
+
+})();
+</script>
+
+<script>
+(() => {
+  const section = document.getElementById("info-slides");
+  const btnOpen = document.getElementById("info-plus-btn");
+  if (!section || !btnOpen) return;
+
+  const slidesWrap = section.querySelector(".exp-slides");
+  const steps = [...section.querySelectorAll(".exp-step")];
+  const dots  = [...section.querySelectorAll(".exp-bar span")];
+  if (!slidesWrap || !steps.length || !dots.length) return;
+
+  let index = 0;
+  let startX = 0;
+  let timer = null;
+  const DELAY = 5000;
+
+  function show(i){
+    steps.forEach((s, idx) => s.classList.toggle("active", idx === i));
+
+    dots.forEach((d, idx) => {
+      d.classList.toggle("active", idx === i);
+      d.style.animation = "none";
+      d.offsetHeight; // reset
+      if (idx === i) d.style.animation = "";
+    });
+  }
+
+  function next(){
+    index = (index + 1) % steps.length;
+    show(index);
+  }
+
+  function start(){
+    stop();
+    timer = setInterval(next, DELAY);
+  }
+
+  function stop(){
+    if (timer) clearInterval(timer);
+    timer = null;
+  }
+
+  // swipe (come le altre)
+  slidesWrap.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+
+  slidesWrap.addEventListener("touchend", e => {
+    const diff = e.changedTouches[0].clientX - startX;
+    if (Math.abs(diff) > 50){
+      index = diff < 0 ? (index + 1) % steps.length : (index - 1 + steps.length) % steps.length;
+      show(index);
+      start(); // riparte autoplay
+    }
+  });
+
+  slidesWrap.addEventListener("mousedown", e => { startX = e.clientX; });
+  window.addEventListener("mouseup", e => {
+    const diff = e.clientX - startX;
+    if (Math.abs(diff) > 50){
+      index = diff < 0 ? (index + 1) % steps.length : (index - 1 + steps.length) % steps.length;
+      show(index);
+      start();
+    }
+  });
+
+  // ✅ parte/si ferma quando apri/chiudi col +
+  btnOpen.addEventListener("click", () => {
+    setTimeout(() => {
+      const isOpen = section.classList.contains("open");
+      if (isOpen) {
+        index = 0;
+        show(0);
+        start();
+      } else {
+        stop();
+      }
+    }, 350);
   });
 
 })();
@@ -2317,6 +2355,87 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+function initExpandableSlides({
+  btnId,
+  slidesId
+}) {
+  const btn = document.getElementById(btnId);
+  const slides = document.getElementById(slidesId);
+
+  if (!btn || !slides) return;
+
+  let open = false;
+
+  btn.addEventListener("click", () => {
+    open = !open;
+
+    slides.classList.toggle("open", open);
+slides.dataset.open = open ? "1" : "0";
+    btn.textContent = open ? "×" : "+";
+
+    if (open) {
+
+      /* 🖥️ DESKTOP: spazio verso HERO sopra */
+      if (window.innerWidth > 768) {
+        slides.style.marginTop = "140px";
+        slides.style.marginBottom = "0";
+      } 
+      /* 📱 MOBILE: comportamento originale */
+      else {
+        slides.style.marginTop = "";
+        slides.style.marginBottom = "-360px";
+      }
+
+      /* 🔁 reset slide + pill */
+      const steps = slides.querySelectorAll(".exp-step");
+      const dots  = slides.querySelectorAll(".exp-bar span");
+
+      steps.forEach(s => s.classList.remove("active"));
+      dots.forEach(d => d.classList.remove("active"));
+
+      if (steps[0]) steps[0].classList.add("active");
+      if (dots[0])  dots[0].classList.add("active");
+
+      slides.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    } else {
+      slides.style.marginTop = "";
+      slides.style.marginBottom = "";
+    }
+  });
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  initExpandableSlides({
+    btnId: "menu-plus-btn",
+    slidesId: "menu-slides"
+  });
+
+  initExpandableSlides({
+    btnId: "info-plus-btn",
+    slidesId: "info-slides"
+  });
+});
+</script>
+
+<script>
+(function () {
+  function setRealVH() {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  }
+
+  setRealVH();
+  window.addEventListener('resize', setRealVH);
+})();
+</script>
 
 </body>
 </html>
