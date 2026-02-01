@@ -888,89 +888,7 @@ body {
   margin-bottom: 0;
 }
 
-#info-slides{
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(-40px);
-  pointer-events: none;
 
-  transition:
-    max-height .6s cubic-bezier(.22,.61,.36,1),
-    opacity .35s ease,
-    transform .6s cubic-bezier(.22,.61,.36,1);
-}
-
-#info-slides.open{
-  max-height: 1200px;
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-/* ➕ PLUS INFO & CONTATTI */
-#info-plus-btn{
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-
-  width: 48px;
-  height: 48px;
-
-  border-radius: 50%;
-  background: #007aff;
-  color: #fff;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 28px;
-  font-weight: 500;
-  line-height: 1;
-
-  border: none;
-  cursor: pointer;
-
-  box-shadow: 0 10px 28px rgba(0,122,255,.45);
-  z-index: 5;
-}
-
-#info-plus-btn:active{
-  transform: scale(.92);
-  background: #0066d6;
-}
-/* 📱 iOS FIX – stacco slide INFO dal nero */
-@supports (-webkit-touch-callout: none) {
-
-  .experience-info {
-    padding-bottom: calc(160px + env(safe-area-inset-bottom));
-  }
-
-}
-/* ===============================
-   🧊 FIX iOS – INFO SLIDES + FOOTER
-=============================== */
-
-/* spazio reale sotto le slide info */
-.experience[data-type="info"]{
-  padding-bottom: -120px;
-}
-
-/* safe area iPhone */
-@supports (-webkit-touch-callout: none) {
-  .experience[data-type="info"]{
-    padding-bottom: calc(120px + env(safe-area-inset-bottom));
-  }
-}
-/* 📏 Footer più staccato quando INFO è chiuso */
-body.info-closed .profile-footer{
-  margin-top: 64px;
-}
-
-/* quando INFO è aperto → distanza normale */
-body.info-open .profile-footer{
-  margin-top: 24px;
-}
   </style>
 
   <link rel="stylesheet" href="bottom-nav.css">
@@ -1672,12 +1590,10 @@ document.querySelectorAll(".reveal").forEach(el => {
       if (dots[0])  dots[0].classList.add("active");
 
       /* 📍 scroll controllato */
- const y = slides.getBoundingClientRect().top + window.scrollY - 20;
-
-window.scrollTo({
-  top: y,
-  behavior: "smooth"
-});
+      slides.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
 
     } else {
 
@@ -1863,54 +1779,8 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  initSwipeExperience(
-    document.querySelector('.experience[data-type="info"]')
-  );
-});
-</script>
-
-<script>
 (() => {
-  const btn = document.getElementById("info-plus-btn");
-  const slides = document.getElementById("info-slides");
-
-  if (!btn || !slides) return;
-
-  let open = false;
-
-  btn.addEventListener("click", () => {
-    open = !open;
-
-    document.body.classList.toggle("info-open", open);
-    document.body.classList.toggle("info-closed", !open);
-
-    slides.classList.toggle("open", open);
-    btn.textContent = open ? "×" : "+";
-
-    if (open) {
-      const steps = slides.querySelectorAll(".exp-step");
-      const dots  = slides.querySelectorAll(".exp-bar span");
-
-      steps.forEach(s => s.classList.remove("active"));
-      dots.forEach(d => d.classList.remove("active"));
-
-      if (steps[0]) steps[0].classList.add("active");
-      if (dots[0])  dots[0].classList.add("active");
-
-      const y = slides.getBoundingClientRect().top + window.scrollY - 20;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  });
-
-  // stato iniziale: info chiuso
-  document.body.classList.add("info-closed");
-
-})();
-</script>
-<script>
-(() => {
-  const section = document.querySelector('.experience[data-type="info"]');
+  const section = document.querySelector('.experience[data-type="menu"]');
   if (!section) return;
 
   const slidesWrap = section.querySelector('.exp-slides');
@@ -1955,14 +1825,14 @@ document.addEventListener("DOMContentLoaded", () => {
     timer = null;
   }
 
-  /* 🔁 RESET quando apri INFO */
-  const infoBtn = document.getElementById("info-plus-btn");
-  infoBtn.addEventListener("click", () => {
+  /* 🔁 RESET quando il menu viene aperto */
+  const menuBtn = document.getElementById("menu-plus-btn");
+  menuBtn.addEventListener("click", () => {
     setTimeout(() => {
       index = 0;
       show(0);
       start();
-    }, 300);
+    }, 300); // attende apertura animazione
   });
 
   /* 📱 TOUCH */
@@ -1974,7 +1844,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const diff = e.changedTouches[0].clientX - startX;
     if (Math.abs(diff) > 50){
       diff < 0 ? next() : prev();
-      start();
+      start(); // 🔁 riparte autoplay
     }
   });
 
@@ -1992,6 +1862,45 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 })();
+</script>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+const SESSION_KEY = "cdg_session_id";
+const PING_EVERY = 15000; // 15s
+let sessionId = localStorage.getItem(SESSION_KEY);
+
+if (!sessionId) {
+  sessionId = crypto.randomUUID();
+  localStorage.setItem(SESSION_KEY, sessionId);
+}
+
+async function pingOnline() {
+  const { error } = await supabase
+    .from("online_users")
+    .upsert({
+      session_id: sessionId,
+      last_seen: new Date().toISOString()
+    }, {
+      onConflict: "session_id"
+    });
+
+  if (error) {
+    console.warn("online ping error", error.message);
+  }
+}
+
+// ping subito
+pingOnline();
+
+// ping periodico
+setInterval(pingOnline, PING_EVERY);
+
+// ping quando la pagina torna visibile
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) pingOnline();
+});
 </script>
 </body>
 </html>
