@@ -919,6 +919,59 @@ body.allergen-open #top-fixed-bar{
   transform: translateY(-50%) scale(0.9);
   opacity: .7;
 }
+/* ⏰ INFO PROMO COLAZIONI – ALLINEATA AL SEPARATORE */
+.promo-info{
+  grid-column: 1 / -1;     /* 🔥 prende tutta la riga della grid */
+  display: none;           /* gestita dal JS */
+  justify-content: center;
+  text-align: center;
+
+  margin: 6px 0 18px;
+
+  font-size: 13px;
+  font-weight: 700;
+  color: #8a6d1d;
+}
+
+/* 🔒 PROMO SOLO DOMENICA – CARD OSCURATA */
+.product-card.promo-locked{
+  opacity: 0.35;
+  filter: grayscale(100%);
+  pointer-events: none;
+  position: relative;
+}
+
+/* overlay testo */
+.product-card.promo-locked::after{
+  content: attr(data-promo-label);
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255,255,255,0.85);
+  color: #111;   /* nero iOS */
+
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+
+  border-radius: inherit;
+  padding: 10px;
+}
+
+.product-img{
+  padding: 2px;          /* stringe leggermente il contenitore */
+  background: #f6f6f7;   /* stesso colore della pagina */
+}
+.product-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;   /* leggermente meno del wrapper */
+}
 </style>
 </head>
 
@@ -1286,6 +1339,9 @@ data-best="false">
 <div class="colazioni-separator promo" data-only="colazioni">
   <h3>Promo Colazioni</h3>
 </div>
+<div id="promo-colazioni-info" class="promo-info">
+  ⏰ Disponibili dalle 8 alle 12
+</div>
 
 <div class="product-card"
 data-price="8.00"
@@ -1404,7 +1460,8 @@ data-price="6.50"
 data-category="colazioni"
 data-subcategory="promo"
 data-best="true"
-data-allergeni="glutine,latte">
+data-allergeni="glutine,latte"
+data-only-day="sunday">
   <div class="product-img">
     <img src="img/promo-domenica.jpg" alt="Promo Domenica">
   </div>
@@ -3267,6 +3324,24 @@ window.applyFilters = function(){
 
   cards.forEach(card => {
 
+/* ⏰ PROMO COLAZIONI: visibili solo 08–12 */
+if (
+  card.dataset.category === "colazioni" &&
+  card.dataset.subcategory === "promo"
+) {
+  const ora = new Date().getHours();
+  if (ora < 8 || ora >= 12) {
+    card.style.display = "none";
+    return; // ⛔ STOP totale
+  }
+}
+// ⏰ INFO "Disponibili dalle 8 alle 12"
+const promoInfo = document.getElementById("promo-colazioni-info");
+
+if (promoInfo) {
+  promoInfo.style.display = promoColazioniAttiveOra() ? "none" : "block";
+}
+ 
     let visible = true;
 
     /* 1) FILTRO CATEGORIA */
@@ -3476,6 +3551,62 @@ if (searchInput && clearBtn) {
     );
   });
 }
+</script>
+
+<script>
+function promoColazioniAttiveOra(){
+  const now = new Date();
+  const ora = now.getHours();
+  return ora >= 8 && ora < 12; // 08:00 → 11:59
+}
+
+function aggiornaPromoColazioni(){
+  const attive = promoColazioniAttiveOra();
+
+  document
+    .querySelectorAll('#menu-bar .product-card[data-category="promo"]')
+    .forEach(card => {
+      card.style.display = attive ? "" : "none";
+    });
+}
+</script>
+
+<script>
+function aggiornaPromoDomenica(){
+  const oggi = new Date().getDay(); // 0 = Domenica
+  const isDomenica = oggi === 0;
+
+  document
+    .querySelectorAll('.product-card[data-only-day="sunday"]')
+    .forEach(card => {
+
+      if (isDomenica) {
+        // ✅ DOMENICA → normale
+        card.classList.remove("promo-locked");
+        card.removeAttribute("data-promo-label");
+      } else {
+        // ⛔ NON DOMENICA → oscurata
+        card.classList.add("promo-locked");
+        card.setAttribute(
+          "data-promo-label",
+          "📅 Disponibile solo la domenica"
+        );
+      }
+    });
+}
+
+// esegui subito
+aggiornaPromoDomenica();
+</script>
+
+<script>
+aggiornaPromoColazioni();               // subito al load
+setInterval(aggiornaPromoColazioni, 60000); // ogni 1 minuto
+</script>
+
+<script>
+aggiornaPromoDomenica();                 // subito
+setInterval(aggiornaPromoDomenica, 60000); // ogni 1 minuto
 </script>
 
 </body>
