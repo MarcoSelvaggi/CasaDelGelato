@@ -871,10 +871,15 @@ body.allergen-open #top-fixed-bar{
   outline: none;
 }
 /* ☕ BAR – box immagine più stretto */
+/* ☕ BAR – restringe visivamente solo i lati */
 #menu-bar .product-img{
-  width: 78%;              /* ⬅️ prova 70–85% */
-  margin: 0 auto 8px;      /* centra orizzontalmente */
+  padding: 0 14px;          /* ⬅️ agisce SOLO a sinistra/destra */
   background: #f6f6f7;
+}
+#menu-bar .product-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 </style>
 </head>
