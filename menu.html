@@ -962,18 +962,18 @@ body.allergen-open #top-fixed-bar{
   padding: 10px;
 }
 
-/* ☕ BAR – immagini SENZA cornici */
-#menu-bar .product-img {
+/* ☕ BAR – restringe SOLO il box immagine in larghezza */
+#menu-bar .product-img{
+  width: 82%;          /* ← prova 80–85% */
+  margin: 0 auto 8px;  /* centra orizzontalmente */
   background: #f6f6f7;
 }
 
-#menu-bar .product-img img {
+/* l’immagine continua a riempire il box */
+#menu-bar .product-img img{
   width: 100%;
   height: 100%;
-  object-fit: cover;      /* ✅ RIEMPIE */
-  border: none;
-  outline: none;
-  display: block;
+  object-fit: cover;
 }
 
 </style>
