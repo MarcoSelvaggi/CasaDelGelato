@@ -962,22 +962,14 @@ body.allergen-open #top-fixed-bar{
   padding: 10px;
 }
 
-/* ☕ BAR – box che si adatta all'immagine */
+/* ☕ BAR – ingrandisce leggermente l'immagine per eliminare bordi */
 #menu-bar .product-img{
-  width: auto;              /* ⬅️ NON percentuale */
-  max-width: 140px;         /* ⬅️ controlli solo i lati */
-  height: 90px;             /* 🔒 altezza invariata */
-  margin: 0 auto 8px;
-
-  border-radius: 12px;
-  overflow: hidden;
-  background: transparent;  /* ⬅️ NIENTE BORDI */
+  overflow: hidden;        /* 🔒 nasconde i bordi */
 }
+
 #menu-bar .product-img img{
-  width: 100%;
-  height: 100%;
-  object-fit: contain;      /* NON taglia */
-  display: block;
+  transform: scale(1.4);   /* 🔥 valore trovato */
+  transform-origin: center;
 }
 </style>
 </head>
