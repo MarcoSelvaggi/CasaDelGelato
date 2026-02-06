@@ -1243,6 +1243,19 @@ body.no-anim .poi-group{
     </button>
   </div>
 
+
+    <!-- TICKET PARCHEGGIO -->
+  <div class="parking-card poi-card">
+    <div class="parking-info">
+      <div class="parking-name">🅿️ Ticket Parcheggio</div>
+      <div class="parking-desc">A 1 minuto a piedi</div>
+    </div>
+    <button class="parking-btn"
+      onclick="openMaps('https://www.google.com/maps/place/Via+Andromeda,+144,+30020+Bibione+VE/@45.6351367,13.057437,19z/data=!3m1!4b1!4m6!3m5!1s0x477b92ea74a6d215:0x4903f7d04c76e47a!8m2!3d45.6351358!4d13.0580807!16s%2Fg%2F11cscv64h8?entry=ttu&g_ep=EgoyMDI2MDIwMy4wIKXMDSoASAFQAw%3D%3D')">
+      Maps
+    </button>
+  </div>
+
   <!-- LUNA PARK -->
   <div class="parking-card poi-card">
     <div class="parking-info">
@@ -2111,8 +2124,8 @@ function unblurBackground() {
 <script>
 function toggleInfoUtili(){
   const content = document.getElementById("info-utili-content");
-  const arrow = document.getElementById("info-arrow");
   const card = document.querySelector(".info-card");
+  const btn = document.querySelector(".info-open-btn");
 
   const isOpen = content.classList.contains("open");
 
@@ -2124,22 +2137,22 @@ function toggleInfoUtili(){
     content.classList.remove("open");
 
     card.classList.remove("open");
-    arrow.style.transform = "rotate(0deg)";
+    btn.textContent = "Apri";
   } else {
-// 🔼 APERTURA
-content.classList.add("open");
-content.style.maxHeight = content.scrollHeight + "px";
+    // 🔼 APERTURA
+    content.classList.add("open");
+    content.style.maxHeight = content.scrollHeight + "px";
 
-card.classList.add("open");
-arrow.style.transform = "rotate(90deg)";
+    card.classList.add("open");
+    btn.textContent = "Chiudi";
 
-/* 🔥 FIX: dopo l’animazione libera l’altezza */
-setTimeout(() => {
-  if (content.classList.contains("open")) {
-    content.style.maxHeight = "none";
+    // 🔓 libera altezza dopo animazione
+    setTimeout(() => {
+      if (content.classList.contains("open")) {
+        content.style.maxHeight = "none";
+      }
+    }, 500);
   }
-}, 500); // stesso tempo della transition
-}
 }
 </script>
 

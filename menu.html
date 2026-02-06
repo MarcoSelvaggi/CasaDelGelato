@@ -867,10 +867,58 @@ body.allergen-open #top-fixed-bar{
   border: 1px solid #e5e5ea;
   background: #f2f2f7;
 
-  font-size: 15px;
+  font-size: 16px;
   outline: none;
 }
+/* 🔍 SEARCH WRAPPER */
+.search-wrapper{
+  position: relative;
+  flex: 1;
+  min-width: 0; /* fix Safari */
+}
 
+/* input resta identico */
+.search-wrapper input{
+  width: 100%;
+  padding-right: 42px; /* spazio per la X */
+}
+
+/* ❌ BOTTONE CLEAR */
+#clear-search{
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+
+  background: #d1d1d6;
+  color: #111;
+
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+
+  display: none;          /* 🔒 nascosta di default */
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+/* mostra la X solo se c'è testo */
+.search-wrapper input:not(:placeholder-shown) + #clear-search{
+  display: flex;
+}
+
+/* feedback iOS */
+#clear-search:active{
+  transform: translateY(-50%) scale(0.9);
+  opacity: .7;
+}
 </style>
 </head>
 
@@ -3131,11 +3179,15 @@ window.addEventListener("scroll", () => {
 
 <!-- 🔍 BOTTOM SEARCH BAR -->
 <div class="top-search-bar">
+<div class="search-wrapper">
   <input
     type="search"
     id="menu-search"
     placeholder="Cerca nel menu…"
+    autocomplete="off"
   >
+  <button id="clear-search" type="button">✕</button>
+</div>
 
   <label class="best-seller-pill">
     <input type="checkbox" id="filter-best">
@@ -3408,6 +3460,22 @@ function closeAllergenPanel(){
 allergenBtn.addEventListener("click", openAllergen);
 allergenOverlay.addEventListener("click", closeAllergenPanel);
 closeAllergen.addEventListener("click", closeAllergenPanel);
+</script>
+
+<script>
+const clearBtn = document.getElementById("clear-search");
+
+if (searchInput && clearBtn) {
+  clearBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    searchInput.focus();
+
+    // 🔁 forza aggiornamento filtri / lista
+    searchInput.dispatchEvent(
+      new Event("input", { bubbles: true })
+    );
+  });
+}
 </script>
 
 </body>
