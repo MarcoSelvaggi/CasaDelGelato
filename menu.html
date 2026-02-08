@@ -3356,7 +3356,10 @@ if (
 const promoInfo = document.getElementById("promo-colazioni-info");
 
 if (promoInfo) {
-  promoInfo.style.display = promoColazioniAttiveOra() ? "none" : "block";
+  promoInfo.style.display =
+    activeBarCategory === "colazioni" && !promoColazioniAttiveOra()
+      ? "flex"
+      : "none";
 }
  
     let visible = true;
@@ -3625,6 +3628,26 @@ setInterval(aggiornaPromoColazioni, 60000); // ogni 1 minuto
 aggiornaPromoDomenica();                 // subito
 setInterval(aggiornaPromoDomenica, 60000); // ogni 1 minuto
 </script>
+
+<script>
+function aggiornaPromoInfoColazioni(){
+  const info = document.getElementById("promo-colazioni-info");
+  if (!info) return;
+
+  // mostra solo se categoria attiva = colazioni
+  info.style.display =
+    activeBarCategory === "colazioni" ? "flex" : "none";
+}
+
+// 🔁 aggancia agli switch categoria
+document.querySelectorAll(".bar-tab").forEach(tab => {
+  tab.addEventListener("click", aggiornaPromoInfoColazioni);
+});
+
+// 🔁 prima esecuzione
+aggiornaPromoInfoColazioni();
+</script>
+
 
 </body>
 </html>
