@@ -2822,18 +2822,46 @@ aggiornaExtraRiepilogo();
 // ===============================
 await waitNextPaint();
 
-const coppaEl = document.getElementById("coppa-stage");
-if (!coppaEl) {
+const original = document.getElementById("coppa-stage");
+if (!original) {
   console.warn("❌ coppa-stage non trovato");
 } else {
 
-const canvas = await html2canvas(coppaEl, {
-  backgroundColor: null,
-  scale: 2,
-  useCORS: true
-});
+  const renderBox = document.getElementById("coppa-render-isolata");
+  if (!renderBox) {
+    console.error("❌ coppa-render-isolata non trovato");
+    return;
+  }
 
-coppa.coppa_img = canvas.toDataURL("image/png");
+  // 🔥 pulizia
+  renderBox.innerHTML = "";
+
+  // 🔥 clona SOLO la coppa
+  const clone = original.cloneNode(true);
+
+  // rimuove eventuali classi globali dal clone
+  clone.classList.remove("coppa-media", "coppa-piccola", "coppa-grande");
+
+  renderBox.appendChild(clone);
+
+  // 🔥 forza layout completo
+  clone.getBoundingClientRect();
+  await new Promise(r => requestAnimationFrame(r));
+  await new Promise(r => requestAnimationFrame(r));
+
+  // 🔥 cattura SOLO il clone isolato
+  const canvas = await html2canvas(clone, {
+    backgroundColor: null,
+    scale: 2,
+    useCORS: true
+  });
+
+  coppa.coppa_img = canvas.toDataURL("image/png");
+
+  // 🔥 pulizia
+  renderBox.innerHTML = "";
+
+
 window.coppaCorrente = coppa;
 // 🔥 ascolta conferma QR in realtime
 ascoltaConfermaCoppaRealtime(coppa.qr_token);
