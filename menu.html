@@ -989,31 +989,40 @@ body.allergen-open #top-fixed-bar{
   transform: scale(1.1);   /* 🔥 valore trovato */
   transform-origin: center;
 }
-/* 🍨 GELATO – nasconde eventuali bordi */
-#menu-gelato .product-img{
+
+/* =====================================================
+   🍨 GELATO – SOLO COPPE GRANDI (NO tavolo, NO bimbi)
+   ===================================================== */
+
+/* Nasconde eventuali bordi solo per coppe grandi */
+#menu-gelato 
+.product-card:not([data-category="tavolo"]):not([data-category="bimbi"]) 
+.product-img{
   overflow: hidden;
 }
 
-/* 🍨 SOLO COPPE GELATO GRANDI (NO tavolo, NO bimbi) */
+/* Zoom leggero per eliminare bordi neri */
 #menu-gelato 
 .product-card:not([data-category="tavolo"]):not([data-category="bimbi"]) 
 .product-img img{
-  transform: scale(1.17);   /* 🔥 valore che hai trovato perfetto */
+  transform: scale(1.17);
   transform-origin: center;
 }
 
+/* =====================================================
+   💻 DESKTOP – layout identico al telefono
+   ===================================================== */
 
-/* 🍨 COPPE GELATO GRANDI – layout identico al telefono anche su desktop */
 @media (min-width: 769px){
 
-  /* grid centrata e larga come mobile */
+  /* Grid centrata come mobile */
   #menu-gelato .product-grid{
     grid-template-columns: repeat(2, 1fr);
     max-width: 600px;
     margin: 0 auto;
   }
 
-  /* solo coppe grandi */
+  /* Solo coppe grandi */
   #menu-gelato 
   .product-card:not([data-category="tavolo"]):not([data-category="bimbi"]){
     max-width: 280px;
