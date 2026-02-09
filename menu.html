@@ -745,6 +745,10 @@ body{
   margin: 0 0 12px;
   font-size: 18px;
   font-weight: 800;
+  text-align: center;   /* 👈 centrato */
+}
+#allergen-panel{
+  text-align: center;
 }
 
 .allergen-list{
@@ -1013,7 +1017,9 @@ body.allergen-open #top-fixed-bar{
    💻 DESKTOP – layout identico al telefono
    ===================================================== */
 
-  /* Solo coppe grandi */
+/* 💻 SOLO DESKTOP */
+@media (min-width: 1024px){
+
   #menu-gelato 
   .product-card:not([data-category="tavolo"]):not([data-category="bimbi"]){
     max-width: 280px;
@@ -1042,6 +1048,390 @@ body.allergen-open #top-fixed-bar{
   transform-origin: center;
 }
 
+.product-card{
+  position: relative; /* fondamentale */
+}
+
+.add-plus{
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: linear-gradient(135deg,#3b82f6,#007aff);
+  color: #fff;
+
+  font-size: 22px;
+  font-weight: 900;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0,122,255,.35);
+
+  transition: transform .2s ease;
+}
+
+/* DISEGNO DEL + */
+.add-plus::before,
+.add-plus::after{
+  content:"";
+  position:absolute;
+  background:#fff;
+  border-radius:4px;
+  transition:.2s;
+}
+
+.add-plus::before{
+  width:20px;
+  height:3px;
+}
+
+.add-plus::after{
+  width:3px;
+  height:20px;
+}
+
+/* Stato AGGIUNTO */
+.add-plus.added{
+  animation: plusBounce .6s cubic-bezier(.22,1,.36,1);
+}
+
+/* nasconde le linee del + */
+.add-plus.added::before,
+.add-plus.added::after{
+  opacity:0;
+  transform:scale(.5);
+}
+
+/* mostra la ✓ */
+.add-plus.added{
+  font-size:22px;
+}
+
+@keyframes plusBounce{
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.25); }
+  70%  { transform: scale(.95); }
+  100% { transform: scale(1); }
+}
+
+.lista-btn-wrap{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* 👈 spazio tra bottone e i */
+  margin-top: 8px;
+}
+
+#lista-btn{
+  background: #007aff;
+  color: #fff;
+
+  border: none;
+  border-radius: 999px;
+
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+  cursor: pointer;
+}
+
+#lista-btn:active{
+  transform: scale(.95);
+  opacity: .85;
+}
+
+/* 📝 TESTO INFO LISTA – non deve mai tagliarsi a destra */
+#lista-panel p{
+  margin-right: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+
+  white-space: normal;
+  overflow-wrap: anywhere;   /* 🔥 evita taglio anche con parole lunghe */
+  word-break: break-word;    /* backup */
+}
+#lista-panel{
+  box-sizing: border-box;
+  padding: 20px 18px; /* un filo meno ai lati */
+}
+
+/* header lista: titolo a sinistra, timer a destra */
+.lista-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.lista-header h3{
+  margin:0;
+  font-size:18px;
+  font-weight:800;
+}
+
+#lista-timer{
+  font-size:12px;
+  font-weight:800;
+  color:#007aff;
+  background:#eaf2ff;
+  padding:6px 10px;
+  border-radius:999px;
+  white-space:nowrap;
+}
+
+/* stato animazione */
+.add-plus.added {
+  animation: plusBounce .35s ease;
+}
+
+@keyframes plusBounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.25); }
+  70%  { transform: scale(.95); }
+  100% { transform: scale(1); }
+}
+
+/* icona check temporanea */
+.add-plus.added::before,
+.add-plus.added::after{
+  background: #fff;
+}
+
+/* nasconde il + quando è added */
+.add-plus.added::before,
+.add-plus.added::after{
+  display: none;
+}
+
+.add-plus.added::after{
+  content: "✓";
+  position: absolute;
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff;
+}
+
+#welcome-overlay{
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: .25s;
+
+  z-index: 10000;
+}
+
+#welcome-overlay.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+/* 👋 POPUP BENVENUTO – VERSIONE PREMIUM */
+
+#welcome-panel{
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(.96);
+
+  width: calc(100% - 40px);
+  max-width: 400px;
+
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 22px;
+
+  box-shadow: 0 30px 60px rgba(0,0,0,.18);
+  opacity: 0;
+  pointer-events: none;
+  transition: .25s;
+  z-index: 10001;
+}
+
+#welcome-panel.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Titolo */
+#welcome-panel h3{
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 900;
+  text-align: center;
+}
+
+/* Sottotitolo */
+.welcome-sub{
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: #6e6e73;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Lista */
+.welcome-list{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Singola riga */
+.welcome-item{
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.welcome-item span{
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.welcome-item b{
+  font-weight: 800;
+}
+
+/* Footer */
+.welcome-footer{
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Checkbox */
+.welcome-nomore{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6e6e73;
+  justify-content: center;
+}
+
+/* Bottone */
+#welcome-close{
+  width: 100%;
+  height: 48px;
+  border-radius: 16px;
+  border: none;
+
+  background: linear-gradient(135deg,#007aff,#3b82f6);
+  color: #fff;
+
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+
+  box-shadow: 0 8px 18px rgba(0,122,255,.35);
+}
+
+#welcome-close:active{
+  transform: scale(.98);
+}
+
+/* ℹ️ INFO BUTTON */
+#info-btn{
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+  border: 2px solid #007aff;
+
+  background: transparent;
+  color: #007aff;
+
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+#info-btn:active{
+  transform: scale(.9);
+  opacity: .7;
+}
+
+/* 💬 INFO TOOLTIP – versione soft */
+#info-tooltip{
+  position: absolute;
+
+  min-width: 160px;
+  max-width: 220px;
+  padding: 8px 10px;
+
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+
+  border-radius: 12px;
+
+  font-size: 12px;
+  line-height: 1.3;
+  color: #333;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px) scale(.98);
+  transition: .18s ease;
+
+  z-index: 9999;
+}
+
+/* triangolino centrato */
+#info-tooltip::after{
+  content:"";
+  position:absolute;
+  top:-5px;
+  left:50%;
+  transform: translateX(-50%) rotate(45deg);
+
+  width:8px;
+  height:8px;
+  background: rgba(255,255,255,0.95);
+}
+.allergen-info{
+  margin: 6px 0 14px;
+  padding: 10px 12px;
+  background: #f2f2f7;
+  border-radius: 12px;
+
+  font-size: 13px;
+  line-height: 1.4;
+  color: #444;
+}
 </style>
 </head>
 
@@ -1061,14 +1451,20 @@ body.allergen-open #top-fixed-bar{
 
 <div id="top-fixed-spacer"></div>
 
+
 <!-- HEADER -->
 <header class="page-header">
-  <h1>Menu</h1>
  <div class="menu-switch">
-  <button class="menu-tab active" data-section="bar">☕ Bar</button>
-  <button class="menu-tab" data-section="gelato">🍨 Gelato</button>
+  <button class="menu-tab active" data-section="bar">☕ Menù Bar</button>
+  <button class="menu-tab" data-section="gelato">🍨 Menù Gelato</button>
 </div>
 </header>
+
+<div class="lista-btn-wrap">
+  <button id="lista-btn">Apri Lista</button>
+  <button id="info-btn" aria-label="Informazioni">i</button>
+</div>
+
 
 <div class="page-content">
 
@@ -2465,7 +2861,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="20.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="20.00" data-category="crema" data-best="false" data-allergeni="glutine,latte, frutta a guscio">
   <div class="product-img">
     <img src="img/coppa-latinlover.jpg" alt="Latin Lover Cup">
   </div>
@@ -2499,7 +2895,7 @@ data-only-day="sunday">
 </div>
 
 
-<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte, frutta a guscio">
   <div class="product-img">
     <img src="img/coppa-nocciola.jpg" alt="Coppa Nocciola">
   </div>
@@ -2598,7 +2994,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte, frutta a guscio">
   <div class="product-img">
     <img src="img/coppa-mandorla.jpg" alt="Coppa Mandorla">
   </div>
@@ -2608,7 +3004,7 @@ data-only-day="sunday">
     <span class="price">€ 8,50</span>
   </div>
 </div>
-<div class="product-card" data-price="8.00" data-category="crema" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.00" data-category="crema" data-best="false" data-allergeni="glutine,latte, frutta a guscio">
   <div class="product-img">
     <img src="img/coppa-tartufo.jpg" alt="Tartufo">
   </div>
@@ -2634,7 +3030,7 @@ data-only-day="sunday">
 
 <!-- 🍓 COPPE FRUTTA -->
 
-<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-calipso.jpg" alt="Calipso">
   </div>
@@ -2645,7 +3041,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-ananas.jpg" alt="Ananas Cup">
   </div>
@@ -2656,7 +3052,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="20.00" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="20.00" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-fantasia.jpg" alt="Fantasia Cup">
   </div>
@@ -2667,7 +3063,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.00" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.00" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-melone.jpg" alt="Melone Cup">
   </div>
@@ -2678,7 +3074,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="11.00" data-category="frutta" data-best="true" data-allergeni="glutine,latte">
+<div class="product-card" data-price="11.00" data-category="frutta" data-best="true" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-ola.jpg" alt="La Ola Cup">
   </div>
@@ -2689,7 +3085,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="frutta" data-best="true" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.50" data-category="frutta" data-best="true" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-fragola.jpg" alt="Coppa Fragola">
   </div>
@@ -2700,7 +3096,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-fragolepanna.jpg" alt="Fragole con panna">
   </div>
@@ -2711,7 +3107,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.00" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.00" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-macedonia.jpg" alt="Macedonia">
   </div>
@@ -2722,7 +3118,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-kiwi.jpg" alt="Coppa Kiwi">
   </div>
@@ -2733,7 +3129,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.50" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-chiquita.jpg" alt="Chiquita Cup">
   </div>
@@ -2744,7 +3140,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.50" data-category="frutta" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-lambada.jpg" alt="Lambada Cup">
   </div>
@@ -2755,7 +3151,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="frutta" data-best="true" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.50" data-category="frutta" data-best="true" data-allergeni="latte">
   <div class="product-img">
     <img src="img/coppa-fruttidibosco.jpg" alt="Frutti di Bosco">
   </div>
@@ -2766,7 +3162,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.00" data-category="frutta" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.00" data-category="frutta" data-best="false" data-allergeni="glutine, latte">
   <div class="product-img">
     <img src="img/coppa-bananasplit.jpg" alt="Banana Split">
   </div>
@@ -2780,7 +3176,7 @@ data-only-day="sunday">
 
 
   <!-- PIZZE E SPAGHETTI -->
-<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="latte">
   <div class="product-img">  
     <img src="img/spaghetti-boscaiola.jpg" alt="Spaghetti Boscaiola">
   </div>
@@ -2791,7 +3187,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte, frutta a guscio">
   <div class="product-img">
     <img src="img/spaghetti-fantasia.jpg"alt="Spaghetti Fantasia">
   </div>
@@ -2802,7 +3198,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.00" data-category="pizze-spaghetti" data-best="true" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.00" data-category="pizze-spaghetti" data-best="true" data-allergeni="latte">
   <div class="product-img">
     <img src="img/spaghetti-classico.jpg"alt="Spaghetti Classico">
   </div>
@@ -2813,7 +3209,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/pizza-margherita.jpg" alt="Pizza Margherita">
   </div>
@@ -2824,7 +3220,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="pizze-spaghetti" data-best="true" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.50" data-category="pizze-spaghetti" data-best="true" data-allergeni="glutine,latte, frutta a guscio">
   <div class="product-img">
     <img src="img/pizza-golosa.jpg" alt="Pizza Golosa">
   </div>
@@ -2835,7 +3231,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.50" data-category="pizze-spaghetti" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/pizza-primavera.jpg" alt="Pizza Primavera">
   </div>
@@ -2850,7 +3246,7 @@ data-only-day="sunday">
      data-price="10.00"
      data-category="yogurt"
      data-best="true"
-     data-allergeni="glutine,latte">
+     data-allergeni="latte">
 
   <div class="product-img">
     <img src="img/yogurt-macedonia.jpg" alt="Yogurt Macedonia">
@@ -2867,7 +3263,7 @@ data-only-day="sunday">
      data-price="9.50"
      data-category="yogurt"
      data-best="false"
-     data-allergeni="glutine,latte">
+     data-allergeni="latte">
 
   <div class="product-img">
     <img src="img/yogurt-fragole.jpg" alt="Yogurt Fragole">
@@ -2884,7 +3280,7 @@ data-only-day="sunday">
      data-price="9.50"
      data-category="yogurt"
      data-best="false"
-     data-allergeni="glutine,latte">
+     data-allergeni="latte">
 
   <div class="product-img">
     <img src="img/yogurt-bosco.jpg" alt="Yogurt Frutti di Bosco">
@@ -2901,7 +3297,7 @@ data-only-day="sunday">
      data-price="9.50"
      data-category="yogurt"
      data-best="false"
-     data-allergeni="glutine,latte">
+     data-allergeni="latte">
 
   <div class="product-img">
     <img src="img/yogurt-melone.jpg" alt="Yogurt Melone">
@@ -2918,7 +3314,7 @@ data-only-day="sunday">
      data-price="9.50"
      data-category="yogurt"
      data-best="false"
-     data-allergeni="glutine,latte">
+     data-allergeni="latte">
 
   <div class="product-img">
     <img src="img/yogurt-amarena.jpg" alt="Yogurt Amarena">
@@ -2932,7 +3328,7 @@ data-only-day="sunday">
 </div>
 
 <!-- GELATO DA BERE -->
-<div class="product-card" data-price="8.00" data-category="bere" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.00" data-category="bere" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/tramonto.jpg" alt="Tramonto">
   </div>
@@ -2943,7 +3339,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="9.50" data-category="bere" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="9.50" data-category="bere" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/prosecco-julep.jpg" alt="Prosecco Julep">
   </div>
@@ -2954,7 +3350,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="8.00" data-category="bere" data-best="true" data-allergeni="glutine,latte">
+<div class="product-card" data-price="8.00" data-category="bere" data-best="true" data-allergeni="latte">
   <div class="product-img">
     <img src="img/eis-cafe.jpg" alt="Eis Caffè">
   </div>
@@ -2977,7 +3373,7 @@ data-only-day="sunday">
 </div>
 
 
-<div class="product-card" data-price="4.50" data-category="bere" data-best="false" data-allergeni="glutine,latte">
+<div class="product-card" data-price="4.50" data-category="bere" data-best="false" data-allergeni="latte">
   <div class="product-img">
     <img src="img/frappe.jpg" alt="Frappè">
   </div>
@@ -3327,6 +3723,7 @@ window.addEventListener("scroll", () => {
   </label>
 </div>
 
+
 <script>
 let activeBarCategory = "tutto";
 let activeGelatoCategory = "all";
@@ -3343,6 +3740,7 @@ const bestCheck   = document.getElementById("filter-best");
 
 
 let currentSort = null; // lasciato per compatibilità, ma NON usato
+
 
 /* =========================
    FUNZIONI BASE
@@ -3529,6 +3927,14 @@ function getSelectedAllergens(){
 <div id="allergen-panel">
   <h3>Seleziona allergeni</h3>
 
+  <p class="allergen-info">
+    Selezionando un allergene verranno filtrati automaticamente i prodotti.
+    Chiedere comunque al responsabile di sala perché potrebbero esserci contaminazioni.
+    <br><br>
+    <strong>Attenzione:</strong> selezionando <strong>Latte</strong> quasi tutte le coppe verranno filtrate,
+    poiché composte anche da panna montata.
+  </p>
+
 <div class="allergen-list">
 <label>
   <input type="checkbox"
@@ -3541,7 +3947,7 @@ function getSelectedAllergens(){
   <input type="checkbox"
          class="allergen-checkbox"
          value="latte">
-  Latte
+  Latte 
 </label>
 
 <label>
@@ -3703,6 +4109,344 @@ document.querySelectorAll(".bar-tab").forEach(tab => {
 
 // 🔁 prima esecuzione
 aggiornaPromoInfoColazioni();
+</script>
+
+<script>
+document.querySelectorAll('.product-card').forEach(card => {
+
+  const titolo = card.querySelector('h3')?.innerText;
+  const prezzo = card.querySelector('.price')?.innerText;
+
+  const btn = document.createElement('button');
+  btn.className = 'add-plus';
+
+btn.onclick = (e) => {
+  e.stopPropagation();
+
+  aggiungiAllaLista(titolo, prezzo);
+
+  // 🔔 Vibrazione breve (se supportata)
+  if (navigator.vibrate) {
+    navigator.vibrate(15); // 15ms = micro feedback elegante
+  }
+
+  btn.classList.add("added");
+  btn.textContent = "✓";
+
+  setTimeout(() => {
+    btn.classList.remove("added");
+    btn.textContent = "";
+  }, 1100);
+};
+  card.appendChild(btn);   // 👈 questa mancava
+});                        // 👈 questa parentesi mancava
+</script>
+
+<script>
+function aggiungiAllaLista(nome, prezzo){
+
+  let lista = JSON.parse(localStorage.getItem("listaOrdine") || "[]");
+
+  // 🔥 rimuove quelli scaduti prima di aggiungere
+  const now = Date.now();
+  lista = lista.filter(item => (now - item.time) < (10 * 60 * 1000));
+
+  lista.push({
+    nome: nome,
+    prezzo: prezzo,
+    time: now
+  });
+
+  localStorage.setItem("listaOrdine", JSON.stringify(lista));
+
+  console.log("Aggiunto:", nome);
+ }
+
+
+/* ⏳ PULIZIA AUTOMATICA DOPO 30 MINUTI */
+function pulisciListaScaduta(){
+  let lista = JSON.parse(localStorage.getItem("listaOrdine") || "[]");
+  const now = Date.now();
+
+  lista = lista.filter(item => (now - item.time) < (10 * 60 * 1000));
+
+  localStorage.setItem("listaOrdine", JSON.stringify(lista));
+  return lista;
+}
+
+/* esegue controllo ad ogni caricamento */
+pulisciListaScaduta();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const listaBtn = document.getElementById("lista-btn");
+  const overlay = document.getElementById("lista-overlay");
+  const panel = document.getElementById("lista-panel");
+  const listaContainer = document.getElementById("lista-prodotti");
+
+
+  function openLista(){
+    renderLista();
+    overlay.style.display = "block";
+    panel.style.display = "block";
+    aggiornaTimerLista();
+window.__listaTimerInt && clearInterval(window.__listaTimerInt);
+window.__listaTimerInt = setInterval(aggiornaTimerLista, 1000);
+  }
+
+  function closeLista(){
+    overlay.style.display = "none";
+    panel.style.display = "none";
+    window.__listaTimerInt && clearInterval(window.__listaTimerInt);
+  }
+
+  listaBtn.addEventListener("click", openLista);
+  overlay.addEventListener("click", closeLista);
+
+});
+
+function getListaPulita(){
+  let lista = JSON.parse(localStorage.getItem("listaOrdine") || "[]");
+  const now = Date.now();
+
+ lista = lista.filter(item => (now - item.time) < (10 * 60 * 1000));
+
+  localStorage.setItem("listaOrdine", JSON.stringify(lista));
+
+  return lista;
+}
+function renderLista(){
+
+  const listaContainer = document.getElementById("lista-prodotti");
+  if(!listaContainer) return;
+
+  const lista = getListaPulita();
+
+  listaContainer.innerHTML = "";
+
+  if(lista.length === 0){
+    listaContainer.innerHTML = "<p style='color:#888;'>La lista è vuota</p>";
+    return;
+  }
+
+  // ✅ Raggruppa doppioni
+  const map = new Map();
+
+  lista.forEach(item => {
+    const key = `${item.nome}|||${item.prezzo}`;
+    if(!map.has(key)){
+      map.set(key, { nome: item.nome, prezzo: item.prezzo, qty: 1 });
+    } else {
+      map.get(key).qty += 1;
+    }
+  });
+
+  Array.from(map.values()).forEach(r => {
+    const div = document.createElement("div");
+    div.style.marginBottom = "10px";
+
+    div.innerHTML = `
+      <strong>${r.nome}</strong>
+      ${r.qty > 1 ? `<span style="color:#007aff;font-weight:800;margin-left:6px;">x${r.qty}</span>` : ""}
+      <br>
+      <span style="color:#666;">${r.prezzo}</span>
+    `;
+
+    listaContainer.appendChild(div);
+  });
+}
+
+function msToMMSS(ms){
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const m = String(Math.floor(total / 60)).padStart(2, "0");
+  const s = String(total % 60).padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+// ⏳ tempo restante allo svuotamento (30 min dall’ULTIMO elemento aggiunto)
+function getRemainingMs(){
+  const lista = JSON.parse(localStorage.getItem("listaOrdine") || "[]");
+  if (!lista.length) return 0;
+
+  const oldest = Math.min(...lista.map(i => i.time || 0)); // 🔥 PRIMO elemento
+  const expireAt = oldest + (10 * 60 * 1000);
+  return expireAt - Date.now();
+}
+
+// 🔁 aggiorna pill timer
+function aggiornaTimerLista(){
+  const el = document.getElementById("lista-timer");
+  if (!el) return;
+
+  const rem = getRemainingMs();
+  if (rem <= 0){
+    // se scaduto → svuota lista e aggiorna UI
+    localStorage.setItem("listaOrdine", "[]");
+    el.textContent = "00:00";
+    if (typeof renderLista === "function") renderLista();
+    return;
+  }
+
+  el.textContent = msToMMSS(rem);
+}
+
+</script>
+
+<!-- 📝 LISTA ORDINE PANEL -->
+<div id="lista-overlay" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: none;
+  z-index: 10000;
+"></div>
+
+<div id="lista-panel" style="
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-height: 70%;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  display: none;
+  z-index: 10001;
+  overflow-y: auto;
+">
+
+ <div class="lista-header">
+  <h3>La tua Lista</h3>
+  <span id="lista-timer">--:--</span>
+</div>
+
+  <p style="font-size:13px;color:#666;margin-top:15px;">
+    Questa lista serve per comunicare l’ordine al cameriere.
+    Si svuota automaticamente dopo 10 minuti.
+  </p>
+
+  <div id="lista-prodotti"></div>
+
+</div>
+
+<!-- 👋 POPUP BENVENUTO -->
+<div id="welcome-overlay"></div>
+
+<div id="welcome-panel" role="dialog" aria-modal="true" aria-label="Benvenuto nel nostro menù">
+  <h3>Benvenuto nel nostro menù 👋</h3>
+  <p class="welcome-sub">
+    Qui trovi tutto quello che puoi ordinare: scorri le categorie tra Bar e Gelateria.
+  </p>
+
+<ul class="welcome-list">
+  <li class="welcome-item">
+    <span>⭐</span>
+    <div><b>Best Seller</b><br>Attiva il filtro per vedere i prodotti più richiesti.</div>
+  </li>
+
+  <li class="welcome-item">
+    <span>⚠️</span>
+    <div><b>Allergeni</b><br>Usa il pulsante “Allergeni” per filtrare ciò che vuoi evitare.</div>
+  </li>
+
+  <li class="welcome-item">
+    <span>📝</span>
+    <div><b>Lista</b><br>Premi “+” sui prodotti per creare la tua lista da comunicare in fase di ordinazione.</div>
+  </li>
+</ul>
+
+  <div class="welcome-footer">
+    <label class="welcome-nomore">
+      <input type="checkbox" id="welcome-nomore">
+      Non visualizzare più
+    </label>
+
+    <button id="welcome-close">Ho capito</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const KEY = "cdg_welcome_menu_hidden";
+  const overlay = document.getElementById("welcome-overlay");
+  const panel   = document.getElementById("welcome-panel");
+  const closeBtn= document.getElementById("welcome-close");
+  const noMore  = document.getElementById("welcome-nomore");
+
+function openWelcome(){
+  overlay.classList.add("show");
+  panel.classList.add("show");
+  document.body.classList.add("no-scroll");
+  document.body.classList.add("welcome-open");
+}
+
+function closeWelcome(){
+  if (noMore && noMore.checked) localStorage.setItem(KEY, "1");
+
+  overlay.classList.remove("show");
+  panel.classList.remove("show");
+  document.body.classList.remove("no-scroll");
+  document.body.classList.remove("welcome-open");
+}
+
+  // Mostra solo se non disattivato
+  if (!localStorage.getItem(KEY)) {
+    // piccolo delay per evitare "scatto" al load
+    setTimeout(openWelcome, 250);
+  }
+
+  closeBtn.addEventListener("click", closeWelcome);
+  overlay.addEventListener("click", closeWelcome);
+})();
+</script>
+
+<div id="info-tooltip">
+Aggiungendo i prodotti alla lista potrai comunicare più velocemente il tuo ordine al cameriere.
+</div>
+
+<script>
+const infoBtn  = document.getElementById("info-btn");
+const tooltip  = document.getElementById("info-tooltip");
+
+function openTooltip(e){
+  e.stopPropagation();
+
+  const rect = infoBtn.getBoundingClientRect();
+  const tooltipRect = tooltip.getBoundingClientRect();
+
+  const top = rect.bottom + window.scrollY + 8;
+  const left = rect.left + window.scrollX + (rect.width / 2) - (tooltipRect.width / 2);
+
+  tooltip.style.top = top + "px";
+  tooltip.style.left = left + "px";
+
+  tooltip.style.opacity = "1";
+  tooltip.style.pointerEvents = "auto";
+  tooltip.style.transform = "translateY(0) scale(1)";
+
+  // attivo chiusura allo scroll SOLO quando è aperto
+  window.addEventListener("scroll", closeTooltip, { passive: true });
+}
+
+function closeTooltip(){
+  tooltip.style.opacity = "0";
+  tooltip.style.pointerEvents = "none";
+  tooltip.style.transform = "translateY(8px) scale(.98)";
+
+  window.removeEventListener("scroll", closeTooltip);
+}
+
+// CLICK SU INFO
+infoBtn.addEventListener("click", openTooltip);
+
+// CLICK FUORI
+document.addEventListener("click", (e)=>{
+  if (!tooltip.contains(e.target) && e.target !== infoBtn) {
+    closeTooltip();
+  }
+});
 </script>
 
 
