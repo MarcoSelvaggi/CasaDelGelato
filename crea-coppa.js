@@ -2844,6 +2844,19 @@ if (!coppaEl) {
     })
   );
 
+  // 🔥 aspetta che lo stage abbia altezza reale
+await new Promise(resolve => {
+  const check = () => {
+    const rect = coppaEl.getBoundingClientRect();
+    if (rect.height > 50) {
+      resolve();
+    } else {
+      requestAnimationFrame(check);
+    }
+  };
+  check();
+});
+
   // 🔥 SNAPSHOT
   const canvas = await html2canvas(coppaEl, {
     backgroundColor: null,
