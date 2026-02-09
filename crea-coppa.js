@@ -1911,6 +1911,7 @@ function renderCoppaGrande(stage) {
 
   <img
     id="gusto-top-img"
+    src="img/pallina-vaniglia.png"
     crossorigin="anonymous"
   >
 </div>
@@ -1923,7 +1924,7 @@ function renderCoppaGrande(stage) {
         </svg>
         <div class="arrow-text left gusto-text" id="gusto-left-text">Gusto</div>
       </div>
-      <img id="gusto-left-img" crossorigin="anonymous">
+      <img id="gusto-left-img" src="img/pallina-fragola.png"crossorigin="anonymous">
     </div>
 
     <div class="box box-pallina pallina-right">
@@ -1935,7 +1936,7 @@ function renderCoppaGrande(stage) {
           <path d="M38 15 L30 11 M38 15 L30 19"/>
         </svg>
       </div>
-      <img id="gusto-right-img" crossorigin="anonymous">
+      <img id="gusto-right-img" src="img/pallina-cioccolato.png"crossorigin="anonymous">
     </div>
 
 <div class="box box-pallina pallina-bottom">
@@ -1950,7 +1951,7 @@ function renderCoppaGrande(stage) {
     </svg>
   </div>
 
-  <img id="gusto-bottom-img" crossorigin="anonymous">
+  <img id="gusto-bottom-img" src="img/pallina-pistacchio.png"crossorigin="anonymous">
 </div>
 
   </div>
@@ -2051,7 +2052,7 @@ function renderCoppaGrande(stage) {
 
   <!-- FRUTTA -->
 <div class="box box-extra frutta-1">
-  <img id="frutta-1-img" crossorigin="anonymous">
+  <img id="frutta-1-img" src="img/fragola.png"crossorigin="anonymous">
 
   <div class="arrow"
        style="bottom:-52px; left:50%; transform:translateX(-50%);">
@@ -2081,7 +2082,7 @@ function renderCoppaGrande(stage) {
 
 
 <div class="box box-extra frutta-2">
-  <img id="frutta-2-img" crossorigin="anonymous">
+  <img id="frutta-2-img" src="img/fragola.png"crossorigin="anonymous">
 
   <div class="arrow"
        style="bottom:-52px; left:50%; transform:translateX(-50%);">
@@ -2622,7 +2623,7 @@ if (coppaSelezionata === "PICCOLA") {
 
     <!-- Pallina sinistra -->
     <div class="box box-pallina pallina-1">
-     <img id="gusto-left-img"crossorigin="anonymous">
+     <img id="gusto-left-img" src="img/pallina-vaniglia.png"crossorigin="anonymous">
 
       <!-- Freccia gusto sinistra -->
       <div class="arrow"
@@ -2640,7 +2641,7 @@ if (coppaSelezionata === "PICCOLA") {
 
     <!-- Pallina destra -->
     <div class="box box-pallina pallina-2">
-      <img id="gusto-right-img" crossorigin="anonymous">
+      <img id="gusto-right-img" src="img/pallina-fragola.png"crossorigin="anonymous">
 
       <!-- Freccia gusto destra -->
       <div class="arrow"
@@ -2716,7 +2717,7 @@ if (coppaSelezionata === "PICCOLA") {
 
   <!-- FRUTTA -->
 <div class="box box-extra box-frutta">
-  <img id="frutta-img" crossorigin="anonymous">
+  <img id="frutta-img" src="img/fragola.png"crossorigin="anonymous">
 
   <div class="arrow"
        id="frutta-arrow"
@@ -2822,19 +2823,15 @@ aggiornaExtraRiepilogo();
 await waitNextPaint();
 
 const coppaEl = document.getElementById("coppa-stage");
-
 if (!coppaEl) {
   console.warn("❌ coppa-stage non trovato");
 } else {
 
-
-  // 🔥 SNAPSHOT
-  const canvas = await html2canvas(coppaEl, {
-    backgroundColor: null,
-    scale: 2,
-    useCORS: true,
-    imageTimeout: 3000
-  });
+const canvas = await html2canvas(coppaEl, {
+  backgroundColor: null,
+  scale: 2,
+  useCORS: true
+});
 
 coppa.coppa_img = canvas.toDataURL("image/png");
 window.coppaCorrente = coppa;
@@ -3339,15 +3336,14 @@ resetBlurTotale();
 nascondiLoadingRiepilogo();
 isLoadingCoppa = false;
 
-// 🔥 FIX SAFARI / WEBKIT: forza repaint GPU
+// 🔥 FIX SAFARI / WEBKIT: forza repaint reale
 if (stage) {
-  stage.style.willChange = "transform";
-  stage.style.transform = "translateZ(0)";
-  stage.getBoundingClientRect();
+  stage.style.display = "none";
+  stage.getBoundingClientRect(); // ⛔ forza reflow
+  stage.style.display = "";
 
   requestAnimationFrame(() => {
-    stage.style.transform = "";
-    stage.style.willChange = "";
+    stage.getBoundingClientRect();
   });
 }
 
@@ -4359,31 +4355,3 @@ document
     return rect.width === 0 || rect.height === 0;
   });
 }
-
-function preloadTutteImmaginiCoppa() {
-
-  const urls = new Set();
-
-  // base sempre
-  urls.add("img/coppa-base.png");
-  urls.add("img/panna.png");
-
-  Object.values(MAP_GUSTI_IMG || {}).forEach(u => urls.add(u));
-  Object.values(MAP_GRANELLE_IMG || {}).forEach(u => urls.add(u));
-  Object.values(MAP_TOPPING_IMG || {}).forEach(u => urls.add(u));
-  Object.values(MAP_INGREDIENTI_IMG || {}).forEach(u => urls.add(u));
-  Object.values(MAP_EXTRA_IMG || {}).forEach(u => urls.add(u));
-
-  urls.forEach(src => {
-    const img = new Image();
-    img.src = src;
-  });
-
-  console.log("🚀 Preload completo immagini coppa:", urls.size);
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    preloadTutteImmaginiCoppa();
-  }, 300);
-});
