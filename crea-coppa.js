@@ -2822,15 +2822,35 @@ aggiornaExtraRiepilogo();
 await waitNextPaint();
 
 const coppaEl = document.getElementById("coppa-stage");
+
 if (!coppaEl) {
   console.warn("❌ coppa-stage non trovato");
 } else {
 
-const canvas = await html2canvas(coppaEl, {
-  backgroundColor: null,
-  scale: 2,
-  useCORS: true
-});
+  // 🔥 FIX SAFARI – forza stabilizzazione immagini
+  const imgs = Array.from(coppaEl.querySelectorAll("img"));
+
+  await Promise.all(
+    imgs.map(img => {
+      if (img.complete && img.naturalWidth > 0) {
+        return Promise.resolve();
+      }
+
+      return new Promise(resolve => {
+        const i = new Image();
+        i.src = img.src;
+        i.onload = i.onerror = resolve;
+      });
+    })
+  );
+
+  // 🔥 SNAPSHOT
+  const canvas = await html2canvas(coppaEl, {
+    backgroundColor: null,
+    scale: 2,
+    useCORS: true,
+    imageTimeout: 3000
+  });
 
 coppa.coppa_img = canvas.toDataURL("image/png");
 window.coppaCorrente = coppa;
