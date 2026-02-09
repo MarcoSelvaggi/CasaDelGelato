@@ -1543,7 +1543,20 @@ body.no-scroll #fedelta-box.compact {
     /* ----------- TUTTO IL TUO JAVASCRIPT ORIGINALE QUI ----------- */
     /* (lo ricopio completamente) */
 
-    let coppe = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+let coppe = [];
+
+
+try {
+  const cache = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
+
+  // 🔥 sicurezza: solo array valido
+  coppe = Array.isArray(cache) ? cache : [];
+
+} catch(e) {
+  console.warn("Cache corrotta, resetto.");
+  coppe = [];
+  localStorage.removeItem("cronologiaCoppe");
+}
 
 function dedupCoppe(lista) {
     const map = new Map();
@@ -1650,7 +1663,20 @@ function observeCoppaImg(img) {
     const PAGE_SIZE = 5;   // quante coppe per volta
     let visibleCount = 5; // quante ne sto mostrando ora
 
-    function salva() { localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe)); }
+function salva() {
+
+  const coppeLeggere = coppe.map(c => {
+    const copia = { ...c };
+    delete copia.coppa_img; // 🔥 MAI salvare immagini
+    return copia;
+  });
+
+  try {
+    localStorage.setItem("cronologiaCoppe", JSON.stringify(coppeLeggere));
+  } catch (e) {
+    console.warn("Cache piena, ignoro salvataggio.");
+  }
+}
 
     function mostraGustiCompatti(arr) {
         if (!arr || arr.length === 0) return "-";
@@ -2565,22 +2591,40 @@ if (arrCompleto.length > visibleCount) {
   btnMore.className = "load-more-btn";
   btnMore.style.margin = "20px auto";
 
-btnMore.onclick = () => {
+btnMore.onclick = async () => {
 
-  // 🔒 disabilita click multipli
+  console.log("🟡 Click su Carica altre");
+
   btnMore.disabled = true;
   btnMore.textContent = "Caricamento…";
 
-  // 🔄 spinner sotto
   const spinner = document.createElement("div");
   spinner.className = "load-spinner";
   lista.appendChild(spinner);
 
-  // ⏱️ micro delay per percezione (UX)
-  setTimeout(() => {
-    visibleCount += PAGE_SIZE;
-    renderLista();
-  }, 200);
+  const email = localStorage.getItem("user_email");
+  console.log("📧 Email:", email);
+  console.log("📦 Offset prima:", window.supabaseOffset);
+
+  try {
+    const altre = await getCoppeSupabaseUtente(email);
+
+    console.log("📥 Coppe ricevute:", altre.length);
+
+    if (altre.length > 0) {
+      coppe = dedupCoppe([...coppe, ...altre]);
+      console.log("📊 Totale coppe in memoria:", coppe.length);
+    } else {
+      console.log("🛑 Nessun'altra coppa disponibile");
+    }
+
+  } catch (err) {
+    console.error("❌ Errore Supabase:", err);
+  }
+
+  visibleCount += PAGE_SIZE;
+
+  renderLista();
 };
 
   lista.appendChild(btnMore);
@@ -2636,31 +2680,35 @@ window.supabase = supabase;
 /* ------------------------------------------
    🔥 1) LEGGE COPPE UTENTE da SUPABASE
 ---------------------------------------------*/
-async function getCoppeSupabaseUtente(email) {
-    const guest_id = localStorage.getItem("guest_id");
+window.supabaseOffset = 0;
+window.SUPABASE_PAGE_SIZE = 5;
+
+window.getCoppeSupabaseUtente = async function(email, append = false) {
+
+    if (!email) return [];
 
     let query = supabase
         .from("coppe")
         .select("*")
-        .order("id", { ascending: false });
-
-    // (per ora manteniamo la tua or, poi la sistemiamo nel punto 2)
-if (email) {
-    // 🔥 Mostra SOLO coppe dell’email loggata
-    query = query.eq("email", email);
-} else {
-    // Nessuna email loggata → nessuna coppa
-    return [];
-}
-
-    // 🔥 filtro: mostra solo coppe NON eliminate
-    query = query.or("eliminata.is.null,eliminata.eq.false");
+        .eq("email", email)
+        .or("eliminata.is.null,eliminata.eq.false")
+        .order("id", { ascending: false })
+        .range(
+            window.supabaseOffset,
+            window.supabaseOffset + SUPABASE_PAGE_SIZE - 1
+        );
 
     const { data, error } = await query;
 
     if (error) {
-        console.error("Errore caricamento coppe da Supabase:", error);
+        console.error("Errore Supabase:", error);
         return [];
+    }
+
+    if (!append) {
+        window.supabaseOffset = SUPABASE_PAGE_SIZE;
+    } else {
+        window.supabaseOffset += SUPABASE_PAGE_SIZE;
     }
 
     return data || [];
@@ -2695,10 +2743,24 @@ coppeLocali = coppeLocali.filter(c => c.email === email);
    🔥 3) SOVRASCRIVE l'array “coppe” DEL TUO JS
 ---------------------------------------------*/
 caricaCoppeComplete().then(all => {
+
     coppe = all;
+
+    // 🔥 salva cache leggera (senza immagini)
+    const cacheLeggera = all.map(c => {
+        const copia = { ...c };
+        delete copia.coppa_img;
+        return copia;
+    });
+
+    try {
+        localStorage.setItem("cronologiaCoppe", JSON.stringify(cacheLeggera));
+    } catch(e) {
+        console.warn("Cache troppo grande, ignoro.");
+    }
+
     renderLista();
 
-    // 🔥 ASPETTA CHE IL DOM ESISTA
     requestAnimationFrame(() => {
       aggiornaFedelta();
     });
