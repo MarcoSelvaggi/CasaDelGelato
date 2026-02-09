@@ -1013,15 +1013,6 @@ body.allergen-open #top-fixed-bar{
    💻 DESKTOP – layout identico al telefono
    ===================================================== */
 
-@media (min-width: 769px){
-
-  /* Grid centrata come mobile */
-  #menu-gelato .product-grid{
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
   /* Solo coppe grandi */
   #menu-gelato 
   .product-card:not([data-category="tavolo"]):not([data-category="bimbi"]){
@@ -1029,6 +1020,26 @@ body.allergen-open #top-fixed-bar{
     margin: 0 auto 28px;
   }
 
+}
+
+/* =====================================================
+   🍨 GELATO – TAVOLO + BIMBI (card quadrate piccole)
+   ===================================================== */
+
+/* Card quadrate e più piccole */
+#menu-gelato .product-card[data-category="tavolo"],
+#menu-gelato .product-card[data-category="bimbi"]{
+  aspect-ratio: 1 / 1;     /* 🔥 quadrata */
+  max-width: 160px;        /* 🔥 stessa misura che hai trovato perfetta */
+  margin: 0 auto 20px;
+}
+
+/* Immagine interna */
+#menu-gelato .product-card[data-category="tavolo"] .product-img img,
+#menu-gelato .product-card[data-category="bimbi"] .product-img img{
+  object-fit: cover;
+  transform: scale(1.05);   /* 🔥 valore che hai scelto */
+  transform-origin: center;
 }
 
 </style>
@@ -2471,7 +2482,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Coppa Cabana*</h3>
-    <p>Gelato alla vaniglia, stracciatella e alla nocciola, granella di croccante, panna, Vov e salsa al cioccolato e arancia</p>
+    <p>Gelato alla vaniglia, stracciatella e alla nocciola, granella di croccante, panna, liquore all'uovo e salsa al cioccolato e arancia</p>
     <span class="price">€ 9,00</span>
   </div>
 </div>
@@ -2571,7 +2582,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Tiramisù Cup*</h3>
-    <p>Gelato al tiramisù, tiramisù, panna, cacao, Vov e salsa al cioccolato</p>
+    <p>Gelato al tiramisù, tiramisù, panna, cacao, liquore all'uovo e salsa al cioccolato</p>
     <span class="price">€ 9,00</span>
   </div>
 </div>
@@ -2582,7 +2593,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Zabaione Cup*</h3>
-    <p>Gelato alle creme, panna, Vov e cacao</p>
+    <p>Gelato alle creme, panna, liquore all'uovo e cacao</p>
     <span class="price">€ 9,50</span>
   </div>
 </div>
@@ -2717,7 +2728,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Coppa Kiwi</h3>
-    <p>Gelato kiwi e fiordilatte, kiwi freschi, panna e salsa di kiwi</p>
+    <p>Gelato al kiwi e al fiordilatte, kiwi freschi, panna e salsa di kiwi</p>
     <span class="price">€ 8,50</span>
   </div>
 </div>
@@ -2728,7 +2739,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Chiquita Cup *</h3>
-    <p>Gelato banana e vaniglia, banana, panna, liquore all’uovo e salsa al cioccolato</p>
+    <p>Gelato alla banana e vaniglia, banana, panna, liquore all'uovo e salsa al cioccolato</p>
     <span class="price">€ 9,50</span>
   </div>
 </div>
@@ -2739,7 +2750,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Lambada Cup *</h3>
-    <p>Gelato cocco, ananas e fragola, frutta fresca, panna, salsa fragole e liquore al cocco</p>
+    <p>Gelato al cocco, ananas e fragola, frutta fresca, panna, salsa di fragola, cocco rapè e liquore al cocco</p>
     <span class="price">€ 9,50</span>
   </div>
 </div>
@@ -2750,7 +2761,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Frutti di Bosco</h3>
-    <p>Gelato misto alla frutta, frutti di bosco, panna e salsa ai frutti di bosco</p>
+    <p>Gelato alla fragola e lampone, frutti di bosco, panna e salsa ai frutti di bosco</p>
     <span class="price">€ 9,50</span>
   </div>
 </div>
@@ -2761,7 +2772,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Banana Split</h3>
-    <p>Gelato fiordilatte e banana, banana, panna, salsa al cioccolato e granella di nocciola</p>
+    <p>Gelato al fiordilatte e banana, banana, panna, salsa al cioccolato e granella di nocciola</p>
     <span class="price">€ 9,00</span>
   </div>
 </div>
@@ -2775,7 +2786,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Spaghetti Boscaiola</h3>
-    <p>Vaniglia, frutti di bosco e salsa ai frutti di bosco</p>
+    <p>gelato alla vaniglia, frutti di bosco e salsa ai frutti di bosco</p>
     <span class="price">€ 8,50</span>
   </div>
 </div>
@@ -2786,7 +2797,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Spaghetti Fantasia*</h3>
-    <p>Vaniglia e nocciola, frutta secca, amaretti, caramello e liquore all'uovo</p>
+    <p>Gelato alla vaniglia e nocciola, frutta secca, amaretti, salsa al caramello e liquore all'uovo</p>
     <span class="price">€ 8,50</span>
   </div>
 </div>
@@ -2797,7 +2808,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Spaghetti Classico</h3>
-    <p>Vaniglia, salsa di fragole e cocco rapè</p>
+    <p>Gelato alla vaniglia, salsa di fragole e cocco rapè</p>
     <span class="price">€ 8,00</span>
   </div>
 </div>
@@ -2808,7 +2819,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Pizza Margherita</h3>
-    <p>Fiordilatte, banana, fragole fresche e salsa di fragole</p>
+    <p>Gelato al fiordilatte, banana, fragole fresche e salsa di fragole e cioccolato</p>
     <span class="price">€ 8,50</span>
   </div>
 </div>
@@ -2819,7 +2830,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Pizza Golosa</h3>
-    <p>Tartufo, cioccolatini, frutta secca, panna e salsa al cioccolato</p>
+    <p>Gelato al bacio, cioccolatini, frutta secca, panna, granella di nocciola e salsa al cioccolato</p>
     <span class="price">€ 9,50</span>
   </div>
 </div>
@@ -2864,7 +2875,7 @@ data-only-day="sunday">
 
   <div class="product-info">
     <h3>Yogurt Fragole</h3>
-    <p>Gelato allo yogurt, yogurt fresco, panna, fragole</p>
+    <p>Gelato allo yogurt, yogurt fresco, panna, fragole fresche</p>
     <span class="price">€ 9,50</span>
   </div>
 </div>
@@ -2949,7 +2960,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Eis Caffè</h3>
-    <p>Gelato al caffè con panna</p>
+    <p>Gelato al caffè e vaniglia, caffè freddo e panna</p>
     <span class="price">€ 8,00</span>
   </div>
 </div>
@@ -2960,7 +2971,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Eis Cioccolato</h3>
-    <p>Gelato al cioccolato con panna</p>
+    <p>Gelato al cioccolato e vaniglia, cioccolato freddo e panna</p>
     <span class="price">€ 8,00</span>
   </div>
 </div>
@@ -2972,7 +2983,7 @@ data-only-day="sunday">
   </div>
   <div class="product-info">
     <h3>Frappè</h3>
-    <p>Gelato a scelta</p>
+    <p>1 gusto a scelta</p>
     <span class="price">€ 4,50</span>
   </div>
 </div>
@@ -2992,7 +3003,7 @@ data-only-day="sunday">
 
     <div class="product-info">
       <h3>Pinocchio</h3>
-      <p>Coppa gelato per bambini</p>
+      <p>Coppa gelato per bambini con vaniglia e fragola</p>
       <span class="price">€ 6,00</span>
     </div>
   </div>
@@ -3010,7 +3021,7 @@ data-only-day="sunday">
 
     <div class="product-info">
       <h3>Kinder Spaghetti</h3>
-      <p>Gelato formato spaghetti</p>
+      <p>Coppa gelato per bambini con vaniglia</p>
       <span class="price">€ 6,00</span>
     </div>
   </div>
@@ -3028,7 +3039,7 @@ data-only-day="sunday">
 
     <div class="product-info">
       <h3>Clown</h3>
-      <p>Coppa colorata per bambini</p>
+      <p>Coppa gelato per bambini con vaniglia e fragola</p>
       <span class="price">€ 6,00</span>
     </div>
   </div>
@@ -3046,7 +3057,7 @@ data-only-day="sunday">
 
     <div class="product-info">
       <h3>Ape Maja</h3>
-      <p>Coppa gelato per bambini</p>
+      <p>Coppa gelato per bambini con vaniglia e fragola</p>
       <span class="price">€ 6,00</span>
     </div>
   </div>
