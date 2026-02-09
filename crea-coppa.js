@@ -1158,6 +1158,9 @@ updateRiepilogo();
     el.classList.add("collapsed");
     el.innerHTML = el.dataset.mini;
   }
+  
+// 🔥 PRELOAD IMMAGINI COPPA
+preloadTutteImmaginiCoppa();
 }
 
 
@@ -2822,46 +2825,18 @@ aggiornaExtraRiepilogo();
 // ===============================
 await waitNextPaint();
 
-const original = document.getElementById("coppa-stage");
-if (!original) {
+const coppaEl = document.getElementById("coppa-stage");
+if (!coppaEl) {
   console.warn("❌ coppa-stage non trovato");
 } else {
 
-  const renderBox = document.getElementById("coppa-render-isolata");
-  if (!renderBox) {
-    console.error("❌ coppa-render-isolata non trovato");
-    return;
-  }
+const canvas = await html2canvas(coppaEl, {
+  backgroundColor: null,
+  scale: 2,
+  useCORS: true
+});
 
-  // 🔥 pulizia
-  renderBox.innerHTML = "";
-
-  // 🔥 clona SOLO la coppa
-  const clone = original.cloneNode(true);
-
-  // rimuove eventuali classi globali dal clone
-  clone.classList.remove("coppa-media", "coppa-piccola", "coppa-grande");
-
-  renderBox.appendChild(clone);
-
-  // 🔥 forza layout completo
-  clone.getBoundingClientRect();
-  await new Promise(r => requestAnimationFrame(r));
-  await new Promise(r => requestAnimationFrame(r));
-
-  // 🔥 cattura SOLO il clone isolato
-  const canvas = await html2canvas(clone, {
-    backgroundColor: null,
-    scale: 2,
-    useCORS: true
-  });
-
-  coppa.coppa_img = canvas.toDataURL("image/png");
-
-  // 🔥 pulizia
-  renderBox.innerHTML = "";
-
-
+coppa.coppa_img = canvas.toDataURL("image/png");
 window.coppaCorrente = coppa;
 // 🔥 ascolta conferma QR in realtime
 ascoltaConfermaCoppaRealtime(coppa.qr_token);
@@ -3364,14 +3339,15 @@ resetBlurTotale();
 nascondiLoadingRiepilogo();
 isLoadingCoppa = false;
 
-// 🔥 FIX SAFARI / WEBKIT: forza repaint reale
+// 🔥 FIX SAFARI / WEBKIT: forza repaint GPU
 if (stage) {
-  stage.style.display = "none";
-  stage.getBoundingClientRect(); // ⛔ forza reflow
-  stage.style.display = "";
+  stage.style.willChange = "transform";
+  stage.style.transform = "translateZ(0)";
+  stage.getBoundingClientRect();
 
   requestAnimationFrame(() => {
-    stage.getBoundingClientRect();
+    stage.style.transform = "";
+    stage.style.willChange = "";
   });
 }
 
@@ -4382,4 +4358,27 @@ document
     const rect = img.getBoundingClientRect();
     return rect.width === 0 || rect.height === 0;
   });
+}
+
+function preloadTutteImmaginiCoppa() {
+
+  const urls = new Set();
+
+  // base sempre
+  urls.add("img/coppa-base.png");
+  urls.add("img/panna.png");
+
+  // tutte le mappe immagini
+  Object.values(MAP_GUSTI_IMG || {}).forEach(u => urls.add(u));
+  Object.values(MAP_GRANELLE_IMG || {}).forEach(u => urls.add(u));
+  Object.values(MAP_TOPPING_IMG || {}).forEach(u => urls.add(u));
+  Object.values(MAP_INGREDIENTI_IMG || {}).forEach(u => urls.add(u));
+  Object.values(MAP_EXTRA_IMG || {}).forEach(u => urls.add(u));
+
+  urls.forEach(src => {
+    const img = new Image();
+    img.src = src;
+  });
+
+  console.log("🚀 Preload completo immagini coppa:", urls.size);
 }
