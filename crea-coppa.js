@@ -1549,20 +1549,31 @@ function limitEffect(step, nome){
 
 function toggle(stepParam, nome, el) {
 
+  let step = stepParam;
+
   // 🔥 se mini aperto → chiudi e torna a EXTRA
   if (window.step === "riepilogo-mini-open") {
     chiudiMiniRiepilogo();
     window.step = "extra";
-    stepParam = "extra";
+    step = "extra";
   }
 
   const container = document.getElementById("riepilogo-mini");
 
-  if (stepParam === "extra") {
+  // ================= EXTRA =================
+  if (step === "extra") {
+
     if (scelti.extra.includes(nome)) {
       scelti.extra = scelti.extra.filter(x => x !== nome);
+      console.log("❌ Deselezionato extra:", nome);
+
     } else {
       scelti.extra.push(nome);
+      console.log("✅ Selezionato extra:", nome);
+
+      if (MAP_EXTRA_IMG[nome]) {
+        preloadImage(MAP_EXTRA_IMG[nome]);
+      }
     }
 
     showIsland("extra", nome);
@@ -1572,70 +1583,60 @@ function toggle(stepParam, nome, el) {
     return;
   }
 
-  // ---------------- TOGGLE NORMALI ----------------
-  if (scelti[step].includes(nome)) {
-    scelti[step] = scelti[step].filter(x => x !== nome);
+  // ================= TOGGLE NORMALI =================
 
+  // 🔄 Se già selezionato → RIMUOVI (sempre permesso)
+  if (scelti[step].includes(nome)) {
+
+    scelti[step] = scelti[step].filter(x => x !== nome);
+    console.log("❌ Deselezionato:", nome);
 
   } else {
-    // 🚫 se siamo al limite → NON nascondere titolo
+
+    // 🚫 controllo limite SOLO in aggiunta
     if (scelti[step].length >= max[step]) {
       limitEffect(step, nome);
       return;
     }
 
-  scelti[step].push(nome);
+    scelti[step].push(nome);
+    console.log("✅ Selezionato:", nome);
 
-// 🔥 NASCONDI TITOLO DELLO STEP CORRENTE
-titoloGustiVisibile = false;
-hideStepTitle();
+    // 🔥 PRELOAD PER STEP SOLO QUANDO AGGIUNGI
+    if (step === "granelle" && MAP_GRANELLE_IMG[nome]) {
+      preloadImage(MAP_GRANELLE_IMG[nome]);
+    }
+
+    if (step === "topping" && MAP_TOPPING_IMG[nome]) {
+      preloadImage(MAP_TOPPING_IMG[nome]);
+    }
+
+    if (step === "ingredienti" && MAP_INGREDIENTI_IMG[nome]) {
+      preloadImage(MAP_INGREDIENTI_IMG[nome]);
+    }
+
+    // 🔥 NASCONDI TITOLO SOLO IN AGGIUNTA
+    titoloGustiVisibile = false;
+    hideStepTitle();
   }
-
-  scelti[step].push(nome);
-
-// 🔥 PRELOAD INTELLIGENTE PER STEP
-if (step === "granelle" && MAP_GRANELLE_IMG[nome]) {
-  console.log("🧊 Preload granella:", nome);
-  preloadImage(MAP_GRANELLE_IMG[nome]);
-}
-
-if (step === "topping" && MAP_TOPPING_IMG[nome]) {
-  console.log("🍯 Preload topping:", nome);
-  preloadImage(MAP_TOPPING_IMG[nome]);
-}
-
-if (step === "ingredienti" && MAP_INGREDIENTI_IMG[nome]) {
-  console.log("🍓 Preload ingrediente:", nome);
-  preloadImage(MAP_INGREDIENTI_IMG[nome]);
-}
-
-if (step === "extra" && MAP_EXTRA_IMG[nome]) {
-  console.log("✨ Preload extra:", nome);
-  preloadImage(MAP_EXTRA_IMG[nome]);
-}
 
   showIsland(step, nome);
   render();
   updateRiepilogo();
   stabilizeMiniRiepilogo();
 
-  const currentCount = scelti[step].length;
-  const maxCount = max[step];
+  // 🎯 animazione mini
+  if (container) {
+    container.classList.remove("open");
+    container.classList.add("collapsed");
+    container.innerHTML = container.dataset.mini || "";
 
-  // ❌ QUI se vuoi non aprirlo più al raggiungimento max, commenta questa parte:
-  // if (maxCount && currentCount === maxCount) openMiniRiepilogoTemporaneo();
-
-  // shake
-  container.classList.remove("open");
-  container.classList.add("collapsed");
-  container.innerHTML = container.dataset.mini || "";
-
-  container.classList.remove("shake");
-  void container.offsetWidth;
-  container.classList.add("shake");
-  setTimeout(() => container.classList.remove("shake"), 350);
+    container.classList.remove("shake");
+    void container.offsetWidth;
+    container.classList.add("shake");
+    setTimeout(() => container.classList.remove("shake"), 350);
+  }
 }
-
 
 // ---------------- NAV ----------------
 function nextStep() {
@@ -3229,18 +3230,29 @@ function waitForImagesWithProgress(container, onProgress) {
   let loaded = 0;
 
   return new Promise(resolve => {
+
+    const checkDone = () => {
+      if (loaded >= total) {
+        onProgress?.(100);
+        resolve();
+      }
+    };
+
     imgs.forEach(img => {
-      if (img.complete && img.naturalHeight !== 0) {
+
+      // 🔥 Se già caricata correttamente
+      if (img.complete && img.naturalWidth > 0) {
         loaded++;
-        onProgress(Math.round((loaded / total) * 100));
-        if (loaded === total) resolve();
+        onProgress?.(Math.round((loaded / total) * 100));
+        checkDone();
         return;
       }
 
+      // 🔥 Altrimenti aspetta evento
       const done = () => {
         loaded++;
-        onProgress(Math.round((loaded / total) * 100));
-        if (loaded === total) resolve();
+        onProgress?.(Math.round((loaded / total) * 100));
+        checkDone();
       };
 
       img.addEventListener("load", done, { once: true });
