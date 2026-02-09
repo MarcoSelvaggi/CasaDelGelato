@@ -4349,6 +4349,41 @@ async function generaCoppaInstagramStory() {
 
   ctx.drawImage(coppaCanvas, x, y, w, h);
 
+// ✍️ WATERMARK Casa del Gelato
+const padding = 60;
+
+// 🔥 Testi
+const line1 = "© iCEcream by Casa del Gelato";
+const line2 = "www.casa-del-gelato.it";
+
+// Allineamento
+ctx.textAlign = "right";
+ctx.textBaseline = "bottom";
+
+// Ombra leggera per leggibilità
+ctx.shadowColor = "rgba(0,0,0,0.25)";
+ctx.shadowBlur = 12;
+
+// Prima riga (più importante)
+ctx.font = "600 36px -apple-system, system-ui, sans-serif";
+ctx.fillStyle = "rgba(0,0,0,0.65)";
+ctx.fillText(
+  line1,
+  canvas.width - padding,
+  canvas.height - padding - 40
+);
+
+// Seconda riga (più leggera)
+ctx.font = "400 28px -apple-system, system-ui, sans-serif";
+ctx.fillStyle = "rgba(0,0,0,0.45)";
+ctx.fillText(
+  line2,
+  canvas.width - padding,
+  canvas.height - padding
+);
+
+// Reset shadow
+ctx.shadowBlur = 0;
   return new Promise(res =>
     canvas.toBlob(blob => res(blob), "image/png")
   );
