@@ -1182,6 +1182,18 @@ function selectGusto(nome) {
         gustiQuantities[nome] = 1;
         rebuildSceltiGustiFromQuantities();
 
+      console.log("🍨 Gusto selezionato:", nome);
+
+    // 🔥 PRELOAD IMMEDIATO IMMAGINE GUSTO
+    if (MAP_GUSTI_IMG[nome]) {
+        console.log("📦 Avvio preload gusto:", nome);
+        preloadImage(MAP_GUSTI_IMG[nome]);
+    } else {
+        console.warn("⚠️ Nessuna immagine trovata per:", nome);
+    }
+
+
+
         // 🔥 NASCONDE IL TITOLO SOLO AL PRIMO GUSTO
         titoloGustiVisibile = false;
       
@@ -1578,6 +1590,29 @@ function toggle(stepParam, nome, el) {
 titoloGustiVisibile = false;
 hideStepTitle();
   }
+
+  scelti[step].push(nome);
+
+// 🔥 PRELOAD INTELLIGENTE PER STEP
+if (step === "granelle" && MAP_GRANELLE_IMG[nome]) {
+  console.log("🧊 Preload granella:", nome);
+  preloadImage(MAP_GRANELLE_IMG[nome]);
+}
+
+if (step === "topping" && MAP_TOPPING_IMG[nome]) {
+  console.log("🍯 Preload topping:", nome);
+  preloadImage(MAP_TOPPING_IMG[nome]);
+}
+
+if (step === "ingredienti" && MAP_INGREDIENTI_IMG[nome]) {
+  console.log("🍓 Preload ingrediente:", nome);
+  preloadImage(MAP_INGREDIENTI_IMG[nome]);
+}
+
+if (step === "extra" && MAP_EXTRA_IMG[nome]) {
+  console.log("✨ Preload extra:", nome);
+  preloadImage(MAP_EXTRA_IMG[nome]);
+}
 
   showIsland(step, nome);
   render();
@@ -4354,4 +4389,21 @@ document
     const rect = img.getBoundingClientRect();
     return rect.width === 0 || rect.height === 0;
   });
+}
+
+function preloadImage(src) {
+  if (!src) return;
+
+  const img = new Image();
+  img.src = src;
+
+  console.log("🧊 Preload richiesto:", src);
+
+  img.onload = () => {
+    console.log("✅ Preload completato:", src);
+  };
+
+  img.onerror = () => {
+    console.warn("❌ Errore preload:", src);
+  };
 }
