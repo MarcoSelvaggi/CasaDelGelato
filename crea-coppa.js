@@ -2827,35 +2827,6 @@ if (!coppaEl) {
   console.warn("❌ coppa-stage non trovato");
 } else {
 
-  // 🔥 FIX SAFARI – forza stabilizzazione immagini
-  const imgs = Array.from(coppaEl.querySelectorAll("img"));
-
-  await Promise.all(
-    imgs.map(img => {
-      if (img.complete && img.naturalWidth > 0) {
-        return Promise.resolve();
-      }
-
-      return new Promise(resolve => {
-        const i = new Image();
-        i.src = img.src;
-        i.onload = i.onerror = resolve;
-      });
-    })
-  );
-
-  // 🔥 aspetta che lo stage abbia altezza reale
-await new Promise(resolve => {
-  const check = () => {
-    const rect = coppaEl.getBoundingClientRect();
-    if (rect.height > 50) {
-      resolve();
-    } else {
-      requestAnimationFrame(check);
-    }
-  };
-  check();
-});
 
   // 🔥 SNAPSHOT
   const canvas = await html2canvas(coppaEl, {
