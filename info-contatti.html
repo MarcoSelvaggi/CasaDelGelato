@@ -1014,6 +1014,90 @@ body.no-anim .poi-group{
   border-radius:999px;
   line-height:1;
 }
+
+
+/* 🍰 BOX SEMIFREDDO */
+.semifreddo-box{
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e5ea;
+  text-align: center;
+}
+
+/* Titolo */
+.semifreddo-box h4{
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* "Chiamaci!" */
+.semifreddo-sub{
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* Disclaimer */
+.semifreddo-disclaimer{
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: #6e6e73;
+  line-height: 1.6;   /* 🔥 più aria tra le righe */
+}
+
+/* 🟢 Pulsante Prenota ora – verde pieno */
+.semifreddo-btn{
+  display: block;          /* come Scrivici */
+  width: 100%;             /* stessa larghezza */
+  max-width: 240px;        /* come scrivici */
+  margin: 0 auto;          /* centrato */
+
+  padding: 10px;
+  border-radius: 12px;
+
+  text-align: center;
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  background: #34c759;     /* verde pieno */
+  color: #fff;
+}
+.semifreddo-btn:active{
+  opacity: .8;
+}
+
+/* =========================
+   📩 SCRIVICI – CSS dedicato
+   ========================= */
+
+.shop-card-scrivici{
+  text-align: center;   /* centra tutto solo qui */
+}
+
+.shop-card-scrivici .shop-content{
+  text-align: center;
+}
+
+.shop-card-scrivici a{
+  display: block;
+  margin-top: 6px;
+}
+
+.shop-card-scrivici .shop-actions{
+  justify-content: center;
+}
+
+.shop-card-scrivici .shop-actions a{
+  width: 100%;
+  max-width: 240px;
+}
+
+
+
 </style>
 </head>
 
@@ -1055,10 +1139,13 @@ body.no-anim .poi-group{
 <section class="section">
 
 <!-- CONTATTI -->
-<div class="shop-card">
+<div class="shop-card shop-card-scrivici">
   <div class="shop-content">
+
     <b>📩 Scrivici</b>
-    <a href="mailto:casadelgelato.it@icloud.com">casadelgelato.it@icloud.com</a>
+    <a href="mailto:casadelgelato.it@icloud.com">
+      casadelgelato.it@icloud.com
+    </a>
 
     <div class="shop-actions">
       <a
@@ -1068,6 +1155,27 @@ body.no-anim .poi-group{
         Scrivici
       </a>
     </div>
+
+    <!-- 🍰 SEZIONE SEMIFREDDO -->
+    <div class="semifreddo-box">
+
+      <h4>🍰 Vuoi ordinare un nostro semifreddo?</h4>
+
+      <p class="semifreddo-sub">
+        <b>Chiamaci!</b>
+      </p>
+
+      <p class="semifreddo-disclaimer">
+        Si avvisa che per la prenotazione di un nostro semifreddo
+        abbiamo bisogno di almeno <b>3 giorni di preavviso</b>
+      </p>
+
+      <a class="semifreddo-btn" href="tel:+393387334493">
+        Prenota ora 📞
+      </a>
+
+    </div>
+
   </div>
 </div>
 

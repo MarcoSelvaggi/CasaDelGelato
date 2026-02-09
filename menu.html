@@ -1017,7 +1017,6 @@ body.allergen-open #top-fixed-bar{
    💻 DESKTOP – layout identico al telefono
    ===================================================== */
 
-/* 💻 SOLO DESKTOP */
 @media (min-width: 1024px){
 
   #menu-gelato 
@@ -1026,26 +1025,25 @@ body.allergen-open #top-fixed-bar{
     margin: 0 auto 28px;
   }
 
+  /* 🔥 SOLO DESKTOP */
+  #menu-gelato .product-card[data-category="tavolo"],
+  #menu-gelato .product-card[data-category="bimbi"]{
+    aspect-ratio: 1 / 1;
+    max-width: 160px;
+    margin: 0 auto 20px;
+  }
+
 }
 
-/* =====================================================
-   🍨 GELATO – TAVOLO + BIMBI (card quadrate piccole)
-   ===================================================== */
+@media (min-width: 1024px){
 
-/* Card quadrate e più piccole */
-#menu-gelato .product-card[data-category="tavolo"],
-#menu-gelato .product-card[data-category="bimbi"]{
-  aspect-ratio: 1 / 1;     /* 🔥 quadrata */
-  max-width: 160px;        /* 🔥 stessa misura che hai trovato perfetta */
-  margin: 0 auto 20px;
-}
+  #menu-gelato .product-card[data-category="tavolo"] .product-img img,
+  #menu-gelato .product-card[data-category="bimbi"] .product-img img{
+    object-fit: cover;
+    transform: scale(1.05);
+    transform-origin: center;
+  }
 
-/* Immagine interna */
-#menu-gelato .product-card[data-category="tavolo"] .product-img img,
-#menu-gelato .product-card[data-category="bimbi"] .product-img img{
-  object-fit: cover;
-  transform: scale(1.05);   /* 🔥 valore che hai scelto */
-  transform-origin: center;
 }
 
 .product-card{
