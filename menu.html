@@ -1009,7 +1009,7 @@ body.allergen-open #top-fixed-bar{
 #menu-gelato 
 .product-card:not([data-category="tavolo"]):not([data-category="bimbi"]) 
 .product-img img{
-  transform: scale(1.17);
+  transform: scale(1.1);
   transform-origin: center;
 }
 
@@ -1052,19 +1052,19 @@ body.allergen-open #top-fixed-bar{
 
 .add-plus{
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 6px;
+  right: 6px;
 
-  width: 42px;
-  height: 42px;
+  width: 26px;
+  height: 26px;
 
   border-radius: 50%;
   border: none;
 
-  background: linear-gradient(135deg,#3b82f6,#007aff);
+  background: #007aff;   /* niente sfumatura, più pulito */
   color: #fff;
 
-  font-size: 22px;
+  font-size: 14px;
   font-weight: 900;
 
   display:flex;
@@ -1072,9 +1072,9 @@ body.allergen-open #top-fixed-bar{
   justify-content:center;
 
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0,122,255,.35);
+  box-shadow: 0 3px 8px rgba(0,122,255,.25);
 
-  transition: transform .2s ease;
+  transition: transform .18s ease;
 }
 
 /* DISEGNO DEL + */
@@ -1088,13 +1088,13 @@ body.allergen-open #top-fixed-bar{
 }
 
 .add-plus::before{
-  width:20px;
-  height:3px;
+  width:10px;
+  height:2px;
 }
 
 .add-plus::after{
-  width:3px;
-  height:20px;
+  width:2px;
+  height:10px;
 }
 
 /* Stato AGGIUNTO */
