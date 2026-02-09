@@ -1013,6 +1013,32 @@ body.allergen-open #top-fixed-bar{
   transform-origin: center;
 }
 
+/* 📱 MOBILE – scale separati */
+@media (max-width: 768px){
+
+  /* 🍨 Coppe grandi */
+  #menu-gelato 
+  .product-card:not([data-category="tavolo"]):not([data-category="bimbi"]) 
+  .product-img img{
+    transform: scale(1.1) !important;
+  }
+
+  /* 🍽 Tavolo */
+  #menu-gelato 
+  .product-card[data-category="tavolo"] 
+  .product-img img{
+    transform: scale(1.03) !important;
+  }
+
+  /* 🧒 Bimbi */
+  #menu-gelato 
+  .product-card[data-category="bimbi"] 
+  .product-img img{
+    transform: scale(1.03) !important;
+  }
+
+}
+
 /* =====================================================
    💻 DESKTOP – layout identico al telefono
    ===================================================== */
