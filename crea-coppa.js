@@ -3383,14 +3383,25 @@ resetBlurTotale();
 nascondiLoadingRiepilogo();
 isLoadingCoppa = false;
 
-// 🔥 FIX SAFARI / WEBKIT: forza repaint reale
+// 🔥 FIX SAFARI / WEBKIT definitivo
 if (stage) {
+
+  // forza repaint container
   stage.style.display = "none";
-  stage.getBoundingClientRect(); // ⛔ forza reflow
+  stage.getBoundingClientRect();
   stage.style.display = "";
 
+  // forza repaint immagini interne
   requestAnimationFrame(() => {
-    stage.getBoundingClientRect();
+    const imgs = stage.querySelectorAll("img");
+
+    imgs.forEach(img => {
+      if (img.complete && img.naturalWidth > 0) {
+        const src = img.src;
+        img.src = "";      // reset
+        img.src = src;     // riapplica → forza ridisegno
+      }
+    });
   });
 }
 
