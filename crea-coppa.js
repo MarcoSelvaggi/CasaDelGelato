@@ -3783,25 +3783,27 @@ window.apriCarrello = function() {
   const overlay = document.getElementById("carrello-overlay");
   if (!overlay) return;
 
-  // 🔥 reset stato (CHIAVE DEL FIX)
   overlay.classList.remove("show");
   overlay.style.display = "flex";
 
-  // 🔥 reset forzato
+  // 🔒 BLOCCA SCROLL PAGINA
+  const scrollY = window.scrollY;
+  document.body.dataset.scrollY = scrollY;
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+
   overlay.getBoundingClientRect();
 
-  // 🔥 UI
   aggiornaCarrelloUI();
   updateCarrelloBadge();
   updateBadgeNav();
 
-  // 🔥 anima
   overlay.classList.add("show");
 
-  // ⏱️ timer
   avviaTimerSvuotamentoCarrello();
 
-  // bottone cronologia
   const btnCron = document.getElementById("btn-cronologia");
   if (btnCron) {
     const email = localStorage.getItem("user_email");
@@ -3865,7 +3867,19 @@ updateBadgeNav();
 // ✖ CHIUDE IL CARRELLO
 window.chiudiCarrello = function() {
     const overlay = document.getElementById("carrello-overlay");
+    if (!overlay) return;
+
     overlay.style.display = "none";
+
+    // 🔓 RIPRISTINA SCROLL PAGINA (VERO FIX)
+    const scrollY = document.body.dataset.scrollY || 0;
+
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+
+    window.scrollTo(0, parseInt(scrollY));
 };
 
 window.svuotaCarrello = function () {

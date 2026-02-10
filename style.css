@@ -1196,6 +1196,10 @@ body.step-size #riepilogo-mini {
     border-radius: 16px;
     padding: 18px;
     box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+
+    max-height: 85vh;              /* 🔥 limite altezza */
+    overflow-y: auto;              /* 🔥 SCROLL INTERNO */
+    -webkit-overflow-scrolling: touch;
 }
 
 /* HEADER */
@@ -4770,4 +4774,32 @@ body.blur-bg #blur-overlay {
 #carrello-overlay.show #carrello-box {
   transform: translateY(0);
   opacity: 1;
+}
+
+/* ============================
+   🛒 STRUTTURA SCROLL CARRELLO
+============================ */
+
+/* box principale */
+#carrello-box{
+  max-height: 85vh;           /* non supera lo schermo */
+  display: flex;
+  flex-direction: column;
+}
+
+/* zona centrale scrollabile */
+#carrello-scroll{
+  flex: 1;                    /* prende lo spazio tra header e footer */
+  overflow-y: auto;
+  margin: 10px 0;
+}
+
+/* footer sempre visibile */
+#carrello-footer{
+  flex-shrink: 0;
+}
+body.no-scroll {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
 }

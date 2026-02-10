@@ -14,7 +14,7 @@ function stopTimerCarrello() {
 
   if (countdownEl) countdownEl.textContent = "00:00";
   if (timerBox) timerBox.style.display = "none";
-}
+} 
 
 function getTotaleCarrelloQty() {
   const carrello = JSON.parse(localStorage.getItem("carrelloCoppe") || "[]");
@@ -40,9 +40,17 @@ window.chiudiCarrello = function() {
   setTimeout(() => {
     overlay.style.display = "none";
 
-    // 🔥 pulizia extra (fondamentale)
-    overlay.classList.remove("show");
-  }, 300);
+    // 🔓 SBLOCCA SCROLL
+    const scrollY = document.body.dataset.scrollY || 0;
+
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+
+    window.scrollTo(0, parseInt(scrollY));
+
+  }, 250);
 };
 
 // 🔥 Aggiorna contenuto carrello
