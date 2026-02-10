@@ -1137,7 +1137,7 @@ body.allergen-open #top-fixed-bar{
 
 /* mostra la ✓ */
 .add-plus.added{
-  font-size:22px;
+  font-size:14px;
 }
 
 @keyframes plusBounce{
@@ -4422,7 +4422,11 @@ function closeWelcome(){
   }
 
   closeBtn.addEventListener("click", closeWelcome);
-  overlay.addEventListener("click", closeWelcome);
+  overlay.addEventListener("click", (e) => {
+  if (e.target === overlay) {
+    // non fare nulla
+  }
+});
 })();
 </script>
 

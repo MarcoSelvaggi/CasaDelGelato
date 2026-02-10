@@ -1420,6 +1420,36 @@ body.no-scroll #fedelta-box.compact {
   pointer-events: none;
   transition: opacity .25s ease;
 }
+
+#search-bar-fixed{
+  position: fixed;   /* resta fixed */
+  bottom: 30px;
+  left: 0;
+  width: 100%;
+}
+
+#search-bar-fixed input{
+  padding-right: 40px;   /* spazio per la X */
+}
+
+#clear-search{
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: #e9e9e9;
+  font-size: 14px;
+  cursor: pointer;
+
+  align-items: center;
+  justify-content: center;
+}
     </style>
 </head>
 
@@ -1494,15 +1524,23 @@ body.no-scroll #fedelta-box.compact {
 <div id="fedelta-spacer"></div>
 
 <!-- 🔎 SEARCH BAR FISSA IN BASSO -->
-<div id="search-bar-fixed">
+<div id="search-bar-fixed" class="search-wrapper">
   <input
     id="search"
     type="text"
     placeholder="Cerca per nome, data, gusto..."
     autocomplete="off"
   >
+
+  <button
+    type="button"
+    id="clear-search"
+    class="clear-search-btn"
+  >
+    ✕
+  </button>
 </div>
-<!-- ⭐ CONTROLLI -->
+
 <!-- ⭐ CONTROLLI (TUTTI SULLA STESSA RIGA) -->
 <div class="controls">
 <button id="toggle-preferiti" aria-label="Preferiti">
@@ -2632,16 +2670,33 @@ btnMore.onclick = async () => {
   animaLista = false; // reset
 } // ✅ CHIUDE async function renderLista()
 
-document.getElementById("search").addEventListener("input", e => {
+const searchInput = document.getElementById("search");
+const clearBtn = document.getElementById("clear-search");
+
+searchInput.addEventListener("input", e => {
   termineRicerca = e.target.value;
 
-  // 🔥 reset paginazione
   visibleCount = PAGE_SIZE;
-
-  // 🔥 abilito animazione SOLO per filtri/search
   animaLista = true;
 
   renderLista();
+
+  // 🔥 mostra / nasconde la X
+  clearBtn.style.display =
+    searchInput.value.trim() ? "flex" : "none";
+});
+
+clearBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  termineRicerca = "";
+
+  clearBtn.style.display = "none";
+
+  visibleCount = PAGE_SIZE;
+  animaLista = true;
+  renderLista();
+
+  searchInput.focus();
 });
 
 
@@ -3232,6 +3287,25 @@ async function generaCoppaInstagramStory(stageEl) {
     w,
     h
   );
+
+  // 🔥 WATERMARK
+ctx.textAlign = "right";
+ctx.fillStyle = "rgba(0,0,0,0.55)";
+
+ctx.font = "bold 36px -apple-system, sans-serif";
+ctx.fillText(
+
+  "© iCEcream by Casa del Gelato",
+  canvas.width - 60,
+  canvas.height - 120
+);
+
+ctx.font = "26px -apple-system, sans-serif";
+ctx.fillText(
+  "www.casa-del-gelato.it",
+  canvas.width - 60,
+  canvas.height - 70
+);
 
   return new Promise(res =>
     canvas.toBlob(blob => res(blob), "image/png")
