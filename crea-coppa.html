@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <!-- 🪑 SELEZIONE TAVOLO -->
 <section id="step-tavolo" style="text-align:center; padding:20px;">
 
+
   <h2>Seleziona il tavolo</h2>
 
 <div class="tavolo-zona">
@@ -93,6 +94,14 @@ document.addEventListener("DOMContentLoaded", function () {
     Fuori
   </button>
 </div>
+
+  <!-- 🔵 Riga con bottone -->
+  <div class="tavolo-help">
+    <button id="info-tavolo-btn" onclick="apriInfoTavolo()">
+      Come funziona? Clicca qui
+    </button>
+  </div>
+
 
 <div id="numeri-tavolo" class="tavolo-grid"></div>
 <!-- Bottone conferma tavolo -->
@@ -737,6 +746,72 @@ function vaiARegistrazione() {
 </script>
 <div id="toast" class="toast"></div>
 
+<!-- 🔵 POPUP COME FUNZIONA – CREA COPPA -->
+<div id="info-tavolo-overlay" class="bottom-overlay">
+  <div class="bottom-sheet">
+
+    <div class="sheet-handle"></div>
+
+    <h3>Come funziona</h3>
+
+    <div class="sheet-body">
+    <div>
+
+  <p>
+    👀 <b>Guarda il numero del tuo tavolo</b> e selezionalo dall’elenco.
+  </p>
+
+  <p>
+    ⚠️ Se necessario consulta gli <b>allergeni</b>.  
+    In ogni caso ti consigliamo sempre di <b>chiedere al personale di sala</b> per qualsiasi dubbio.
+  </p>
+
+  <hr>
+
+  <p>
+    🍨 Scegli il <b>formato</b> che preferisci e completa la tua coppa selezionando:
+  </p>
+
+  <ul style="padding-left:18px; margin-top:6px;">
+    <li><b>Gusti</b></li>
+    <li><b>Granelle</b></li>
+    <li><b>Topping</b></li>
+    <li><b>Ingredienti</b></li>
+    <li><b>Extra</b> (facoltativi)</li>
+  </ul>
+
+  <p>
+    💡 Se non utilizzi tutte le opzioni disponibili per il formato scelto,
+    le quantità selezionate verranno <b>abbondanti</b> per valorizzare al meglio la tua coppa.
+  </p>
+
+  <hr>
+
+  <p>
+    📲 Una volta completata, scorri fino alla fine del <b>riepilogo finale</b>  
+    e comunica la coppa creata al cameriere per ordinarla.
+  </p>
+
+  <p>
+    🎁 Ricorda di chiedere la <b>conferma della coppa</b> per accumulare punti fedeltà
+    e sbloccare i tuoi <b>coupon premio</b>.
+  </p>
+
+  <p>
+    🔓 Non sei registrato?  
+    Registrati per attivare la <b>Cronologia</b>, salvare le tue coppe preferite
+    e accedere a tutti i <b>vantaggi esclusivi</b>.
+  </p>
+
+</div>
+    </div>
+
+    <button id="chiudi-info-tavolo" class="sheet-close-btn">
+      Chiudi
+    </button>
+
+  </div>
+</div>
 
 </body>
 </html>

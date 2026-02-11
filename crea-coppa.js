@@ -4343,11 +4343,11 @@ async function generaCoppaInstagramStory() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // cattura coppa
-  const coppaCanvas = await html2canvas(stage, {
-    backgroundColor: null,
-    scale: 2,
-    useCORS: true
-  });
+const coppaCanvas = await html2canvas(stage, {
+  backgroundColor: "#ffffff",   // ← QUI
+  scale: 2,
+  useCORS: true
+});
 
   // centra la coppa verticalmente
   const scale = Math.min(
@@ -4479,3 +4479,56 @@ function preloadImage(src) {
     console.warn("❌ Errore preload:", src);
   };
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("info-tavolo-btn");
+  const stepTavolo = document.getElementById("step-tavolo");
+  const btnDentro = document.getElementById("btn-dentro");
+  const btnFuori = document.getElementById("btn-fuori");
+
+  if (!btn || !stepTavolo) return;
+
+  function aggiornaVisibilita() {
+    const visibile = window.getComputedStyle(stepTavolo).display !== "none";
+    btn.style.display = visibile ? "block" : "none";
+  }
+
+  function nascondiInfo() {
+    btn.style.display = "none";
+  }
+
+  // Stato iniziale
+  aggiornaVisibilita();
+
+  // Quando clicchi Dentro o Fuori
+  btnDentro?.addEventListener("click", nascondiInfo);
+  btnFuori?.addEventListener("click", nascondiInfo);
+
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("info-tavolo-btn");
+  const overlay = document.getElementById("info-tavolo-overlay");
+  const closeBtn = document.getElementById("chiudi-info-tavolo");
+
+  if (!btn || !overlay) return;
+
+  function apri() {
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function chiudi() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+
+  btn.addEventListener("click", apri);
+  closeBtn?.addEventListener("click", chiudi);
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) chiudi();
+  });
+
+});

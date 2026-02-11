@@ -148,8 +148,8 @@
     background: white;
     padding: 16px;
     border-radius: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 28px;
+box-shadow: 0 14px 34px rgba(0,0,0,0.14);
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -558,12 +558,15 @@
 /* titolo coppa: può andare a capo */
 .cup-title b.cup-name{
   display: block;
-  max-width: calc(100% - 100px); /* spazio riservato alle icone */
+  max-width: calc(100% - 100px);
   white-space: normal;
   word-break: break-word;
   overflow-wrap: anywhere;
   line-height: 1.2;
-  .rename-wrapper{
+}
+
+/* RINOMINA */
+.rename-wrapper{
   max-width: calc(100% - 100px);
 }
 
@@ -571,7 +574,6 @@
   width: 100%;
   box-sizing: border-box;
   white-space: normal;
-}
 }
 
 /* ===============================
@@ -1623,13 +1625,58 @@ body.info-open{
 }
 
 
+.info-tip-title{
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ff7a00;
+  margin-bottom: 8px;
+}
 
 
 
+.info-tip{
+  background: rgba(255,122,0,0.08);   /* arancione molto leggero */
+  border: 1px solid rgba(255,122,0,0.18);
+  border-radius: 14px;
 
+  padding: 14px;
+  margin: 8px 0;
+}
 
+.info-tip-title{
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ff7a00;
+  margin-bottom: 8px;
+}
 
+/* 🔄 Mini spinner fedeltà */
+.fedelta-loading{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
+.mini-spinner{
+  width: 14px;
+  height: 14px;
+
+  border: 2px solid rgba(0,0,0,0.15);
+  border-top-color: #34c759;   /* verde fedeltà */
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
 
 
@@ -1693,9 +1740,10 @@ body.info-open{
   <div id="fedelta-bar"></div>
 </div>
 
-    <div id="fedelta-msg">
-      Caricamento...
-    </div>
+<div id="fedelta-msg" class="fedelta-loading">
+  <div class="mini-spinner"></div>
+  <span id="fedelta-text">Caricamento...</span>
+</div>
 
     <button id="btn-vedi-coupon" style="
       display:none;
@@ -2150,15 +2198,13 @@ showToast("Coppa eliminata");
 async function rinominaCoppa(idx, nuovoNome) {
     const c = coppe[idx];
     if (!c) return;
-
-
+renderLista();
+await aggiornaFedelta();
     const nomePulito = nuovoNome.trim();
 
     // 1️⃣ Aggiorna subito in memoria (lista corrente)
     c.nome = nomePulito;
     salva();
-    renderLista();
-    await aggiornaFedelta();
 
     // 2️⃣ Aggiorna anche nella cronologia salvata in localStorage
     let cronologia = JSON.parse(localStorage.getItem("cronologiaCoppe") || "[]");
@@ -2301,6 +2347,13 @@ console.log("🚨 aggiornaFedelta chiamata", new Date().toLocaleTimeString());
   console.warn("⛔ Fedeltà DOM non pronto");
   return;
 }
+  // 🔄 Mostra loader
+msgEl.innerHTML = `
+  <div class="fedelta-loading">
+    <div class="mini-spinner"></div>
+    <span>Caricamento...</span>
+  </div>
+`;
 console.log("🟢 aggiornaFedelta ATTIVA – DOM OK");
   // 🔴 non loggato
   if (!email) {
@@ -2780,7 +2833,18 @@ if (animaLista) {
 
 // 🔥 attiva lazy load SOLO per l'immagine di questa card
 const img = div.querySelector(".coppa-thumb");
-if (img) observeCoppaImg(img);
+if (img) {
+  if (!img.dataset.src) return;
+
+  // 🔥 se è già visibile, caricala subito
+  const rect = img.getBoundingClientRect();
+  if (rect.top < window.innerHeight) {
+    img.src = img.dataset.src;
+    img.removeAttribute("data-src");
+  } else {
+    observeCoppaImg(img);
+  }
+}
 
 // ⛔️ questa riga NON serve più con il lazy
 // await waitAllImages(div);
@@ -2860,7 +2924,6 @@ btnMore.onclick = async () => {
 
   lista.appendChild(btnMore);
 }
-  animaLista = false; // reset
 } // ✅ CHIUDE async function renderLista()
 
 const searchInput = document.getElementById("search");
@@ -3029,18 +3092,19 @@ if (emailUtente) {
         table: "coppe",
         filter: `email=eq.${emailUtente}`
       },
-      async payload => {
-        console.log("🔄 Realtime coppa:", payload);
+async payload => {
 
-        // 1️⃣ ricarico coppe aggiornate
-        coppe = await caricaCoppeComplete();
+  const updated = payload.new;
 
-        // 2️⃣ aggiorno UI
-        renderLista();
+  // aggiorno SOLO la coppa modificata in memoria
+  const idx = coppe.findIndex(c => c.id === updated.id);
+  if (idx !== -1) {
+    coppe[idx] = { ...coppe[idx], ...updated };
+  }
 
-        // 3️⃣ ORA la barra vede i numeri giusti
-        await aggiornaFedelta();
-      }
+  renderLista();
+  await aggiornaFedelta();
+}
     )
     .subscribe();
 }
@@ -3787,14 +3851,26 @@ document.getElementById("confirm-delete-single").onclick = async () => {
 <div class="info-card">
 
   <div class="info-header">
-    Come funziona la Cronologia
+    Come funziona
   </div>
 
   <div class="info-body">
 
-    <div class="info-section">
-      Qui trovi tutte le <b>coppe che hai creato</b>.
-    </div>
+<div class="info-section">
+  Qui trovi tutte le <b>coppe che hai creato</b>.
+</div>
+
+<div class="info-section">
+
+<div class="info-section info-tip">
+
+  <div class="info-tip-title">Consiglio</div>
+
+Prepara la tua coppa <b>anche da casa</b> e vieni in gelateria già pronto per ordinare.<br>
+Così <b>riduci i tempi di attesa</b> e ti godi subito il momento.
+
+</div>
+
 
     <div class="info-section">
       Con <b>"Usa questa coppa"</b> ritrovi tutto già precompilato.
@@ -3809,9 +3885,19 @@ document.getElementById("confirm-delete-single").onclick = async () => {
       Tocca la <b>foto della coppa</b> per ingrandirla o condividerla 📸
     </div>
 
-    <div class="info-section">
-      Dopo aver ordinato, chiedi di <b>confermare la coppa</b> per far avanzare la raccolta fedeltà.
-    </div>
+<div class="info-section">
+  Dopo aver ordinato, chiedi di <b>confermare la coppa</b> 
+  per far avanzare la raccolta fedeltà.
+</div>
+
+<div class="info-divider"></div>
+
+<div class="info-section">
+<span style="color:#ff3b30; font-weight:600;">
+⚠️ Per conferme effettuate in un secondo momento,
+è richiesta la comanda o lo scontrino come verifica dell’ordine. (anche foto)
+</span>
+</div>
 
     <div class="info-section info-important">
       Se ordini più volte la stessa coppa può essere confermata più volte.
