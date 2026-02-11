@@ -654,35 +654,36 @@ body {
 
 
 <div class="admin-tabs">
-  <button id="btn-dashboard"
-          onclick="apriDashboard()" 
-          class="tab-btn active">
+
+  <button class="tab-btn active"
+          onclick="apriSezioneAdmin('sezione-dashboard', this)">
     Dashboard
   </button>
 
-  <button id="btn-dispo"
-          onclick="apriDisponibilita()" 
-          class="tab-btn">
+  <button class="tab-btn"
+          onclick="apriSezioneAdmin('sezione-disponibilita', this)">
     Disponibilità
   </button>
 
-  <button id="btn-stats"
-          onclick="apriStatistiche()" 
-          class="tab-btn">
+  <button class="tab-btn"
+          onclick="apriSezioneAdmin('sezione-statistiche', this)">
     Statistiche
   </button>
 
-  <!-- 🔔 AVVISO -->
-  <button id="btn-alert"
-          onclick="apriAvvisoSito()"
-          class="tab-btn alert-btn">
+  <button class="tab-btn"
+          onclick="apriSezioneAdmin('admin-locali', this)">
+    🏪 Gestione Locali
+  </button>
+
+  <button class="tab-btn alert-btn"
+          onclick="apriSezioneAdmin('admin-alert-box', this)">
     🔔 Avviso
   </button>
+
 </div>
 
 <!-- 🔔 AVVISO SITO -->
-<div id="admin-alert-box" class="admin-box" style="
-  display:none;
+<div id="admin-alert-box" class="admin-section-content hidden admin-box" style="
   background:#fff;
   border-radius:14px;
   padding:16px;
@@ -956,19 +957,99 @@ body {
   font-size: 15px;
 }
 
+.admin-section {
+  margin-top: 40px;
+}
 
+.admin-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.admin-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 20px;   /* 🔥 spazio tra card */
+  box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+}
+
+.admin-card h3 {
+  margin-top: 0;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.admin-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.admin-row label {
+  font-size: 13px;
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+
+.admin-row input {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.admin-save-btn {
+  background: #007aff;
+  color: white;
+  border: none;
+  font-weight: 600;
+}
+.hidden {
+  display: none !important;
+}
+
+.orari-actions{
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.reset-btn{
+  background: #f2f2f7;
+  color: #444;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:hover{
+  background: #e5e5ea;
+}
+.orari-actions button {
+  flex: 1;              /* 🔥 stessa larghezza */
+  height: 42px;         /* 🔥 stessa altezza */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
 </style>
+
 <!-- 🔥 Sezione Dashboard (lista utenti + coppe) -->
-<div id="sezione-dashboard">
+<div id="sezione-dashboard" class="admin-section-content">
     <div id="admin-list"></div>
 </div>
 
 <!-- 🔥 Sezione Disponibilità (inizialmente nascosta) -->
-<div id="sezione-disponibilita" style="display:none; padding:20px;"></div>
+<div id="sezione-disponibilita" class="admin-section-content" style="display:none; padding:20px;"></div>
 
 
 <!-- 🔥 Sezione Statistiche -->
-<div id="sezione-statistiche" style="display:none; padding:20px;">
+<div id="sezione-statistiche" class="admin-section-content" style="display:none; padding:20px;">
 
   <h2 style="margin-top:0;">📊 Statistiche</h2>
 
@@ -1164,10 +1245,102 @@ Passa a trovarci in gelateria!
 </style>
 
 
-
 <script type="module">
 import { supabase } from "./supabase.js";
 
+
+window.salvaSeason = async function(location) {
+
+  const dateInput  = document.getElementById("season-date-" + location);
+  const textInput  = document.getElementById("season-text-" + location);
+  const openInput  = document.getElementById("open-time-" + location);
+  const closeInput = document.getElementById("close-time-" + location);
+
+  if (!dateInput || !textInput || !openInput || !closeInput) {
+    alert("Campi non trovati");
+    return;
+  }
+
+  const season_opening = dateInput.value || null;
+  const season_text    = textInput.value.trim() || null;
+  const open_time      = openInput.value || null;
+  const close_time     = closeInput.value || null;
+// 🚨 controllo orari incompleti
+if ((open_time && !close_time) || (!open_time && close_time)) {
+  alert("Inserisci sia orario apertura che chiusura");
+  return;
+}
+  const { error } = await supabase
+    .from("shop_settings")
+    .update({
+      season_opening,
+      season_text,
+      open_time,
+      close_time,
+      updated_at: new Date().toISOString()
+    })
+    .eq("location", location);
+
+  if (error) {
+    console.error(error);
+    alert("Errore salvataggio ❌");
+    return;
+  }
+
+  alert("Salvato correttamente ✅");
+};
+
+async function loadSeasonAdmin() {
+
+  const { data, error } = await supabase
+    .from("shop_settings")
+    .select("location, season_opening, season_text, open_time, close_time");
+
+  if (error) {
+    console.error("Errore loadSeasonAdmin:", error);
+    return;
+  }
+
+  data.forEach(row => {
+
+    const dateInput  = document.getElementById("season-date-" + row.location);
+    const textInput  = document.getElementById("season-text-" + row.location);
+    const openInput  = document.getElementById("open-time-" + row.location);
+    const closeInput = document.getElementById("close-time-" + row.location);
+
+    if (dateInput)  dateInput.value  = row.season_opening || "";
+    if (textInput)  textInput.value  = row.season_text || "";
+    if (openInput)  openInput.value  = row.open_time || "";
+    if (closeInput) closeInput.value = row.close_time || "";
+
+  });
+}
+
+document.addEventListener("DOMContentLoaded", loadSeasonAdmin);
+
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("save-season")) return;
+
+  const block = e.target.closest(".admin-shop-block");
+  const location = block.dataset.location;
+  const season_opening = block.querySelector(".season-date").value;
+  const season_text = block.querySelector(".season-text").value;
+
+  const { error } = await supabase
+    .from("shop_settings")
+    .update({
+      season_opening,
+      season_text
+    })
+    .eq("location", location);
+
+  if (error) {
+    alert("Errore salvataggio");
+    console.error(error);
+  } else {
+    alert("Salvato correttamente ✅");
+  }
+});
 
 let UTENTI = [];
 let COPPE = [];
@@ -1530,9 +1703,6 @@ async function load(){
   render();
 }
 load();
-caricaStatisticheBase();
-caricaStatisticheFormati();
-caricaStatisticheIngredienti();
 
 // 🔥 AGGIORNAMENTO IN TEMPO REALE
 supabase
@@ -1743,7 +1913,7 @@ supabase
   .subscribe();
 
 
-async function caricaStatisticheBase() {
+window.caricaStatisticheBase = async function() {
 
   // 🔢 COPPE CREATE (non eliminate)
   const { count: totCoppe } = await supabase
@@ -1792,7 +1962,8 @@ async function caricaStatisticheBase() {
   document.getElementById("stat-utenti-coupon").textContent = utentiConCoupon ?? 0;
 }
 
-async function caricaStatisticheFormati() {
+
+window.caricaStatisticheFormati = async function() {
 
   const { data, error } = await supabase
     .from("coppe")
@@ -1814,7 +1985,8 @@ async function caricaStatisticheFormati() {
   document.getElementById("stat-grande").textContent  = stats.GRANDE;
 }
 
-async function caricaStatisticheIngredienti() {
+
+window.caricaStatisticheIngredienti = async function() {
   console.log("📊 STATISTICHE INGREDIENTI");
 
   const { data, error } = await supabase
@@ -2172,61 +2344,8 @@ window.toggleCoppaCollapse = function (id) {
     renderCoppe(c.email || "Anonimo");
 };
 
-window.apriDashboard = function() {
-  document.getElementById("admin-alert-box").style.display = "none";
-  sezioneAttiva = "dashboard";
-
-  document.getElementById("sezione-dashboard").style.display = "block";
-  document.getElementById("sezione-disponibilita").style.display = "none";
-
-  document.getElementById("btn-dashboard").classList.add("active");
-  document.getElementById("btn-dispo").classList.remove("active");
-
-  document.getElementById("btn-stats").classList.remove("active");
-const s = document.getElementById("sezione-statistiche");
-if (s) s.style.display = "none";
-
-  render(); // 🔥 ricalcola ricerca
-};
-
-window.apriDisponibilita = function() {
-  document.getElementById("admin-alert-box").style.display = "none";
-  sezioneAttiva = "disponibilita";
-
-  document.getElementById("sezione-dashboard").style.display = "none";
-  document.getElementById("sezione-disponibilita").style.display = "block";
-
-  document.getElementById("btn-dashboard").classList.remove("active");
-  document.getElementById("btn-dispo").classList.add("active");
 
 
-  document.getElementById("btn-stats").classList.remove("active");
-const s = document.getElementById("sezione-statistiche");
-if (s) s.style.display = "none";
-
-  window.caricaDisponibilita(); // 🔥 ricalcola ricerca
-};
-window.apriStatistiche = function() {
-  document.getElementById("admin-alert-box").style.display = "none";
-  document.getElementById("sezione-dashboard").style.display = "none";
-  document.getElementById("sezione-disponibilita").style.display = "none";
-  document.getElementById("sezione-statistiche").style.display = "block";
-
-  document.getElementById("btn-dashboard").classList.remove("active");
-  document.getElementById("btn-dispo").classList.remove("active");
-  document.getElementById("btn-stats").classList.add("active");
-
-  caricaStatisticheBase();
-  caricaStatisticheFormati();
-  caricaStatisticheIngredienti();
-
-  // reset lista utenti
-  const box = document.getElementById("stat-utenti-lista");
-  if (box) {
-    box.style.display = "none";
-    box.dataset.open = "";
-  }
-};
 
 window.caricaDisponibilita = async function () {
     const box = document.getElementById("sezione-disponibilita");
@@ -3041,25 +3160,7 @@ window.salvaAvviso = async function () {
 document.addEventListener("DOMContentLoaded", caricaAvvisoAdmin);
 </script>
 
-<script>
-window.apriAvvisoSito = function () {
-  // NASCONDI TUTTO
-  document.getElementById("sezione-dashboard").style.display = "none";
-  document.getElementById("sezione-disponibilita").style.display = "none";
-  document.getElementById("sezione-statistiche").style.display = "none";
 
-  // MOSTRA SOLO AVVISO
-  document.getElementById("admin-alert-box").style.display = "block";
-
-  // TOGLI ACTIVE A TUTTI
-  document.getElementById("btn-dashboard").classList.remove("active");
-  document.getElementById("btn-dispo").classList.remove("active");
-  document.getElementById("btn-stats").classList.remove("active");
-
-  // (opzionale) evidenzia il bottone 🔔
-  document.getElementById("btn-alert")?.classList.add("active");
-};
-</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -3207,7 +3308,191 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+function apriSezioneAdmin(idSezione, btn) {
+
+  console.log("CLICK SEZIONE:", idSezione);
+
+  // 1️⃣ Nasconde tutto
+  document.querySelectorAll(".admin-section-content")
+    .forEach(sec => {
+      sec.classList.add("hidden");
+      sec.style.display = "none";
+    });
+
+  // 2️⃣ Mostra solo la sezione scelta
+  const target = document.getElementById(idSezione);
+  if (target) {
+    target.classList.remove("hidden");
+    target.style.display = "block";
+  }
+
+  // 3️⃣ Active button
+  document.querySelectorAll(".tab-btn")
+    .forEach(b => b.classList.remove("active"));
+
+  if (btn) btn.classList.add("active");
+
+  // 🔥 4️⃣ CARICAMENTI SPECIFICI PER SEZIONE
+
+  if (idSezione === "sezione-disponibilita") {
+    window.caricaDisponibilita();
+  }
+
+if (idSezione === "sezione-statistiche") {
+  window.caricaStatisticheBase();
+  window.caricaStatisticheFormati();
+  window.caricaStatisticheIngredienti();
+}
+}
+
+// 🔥 DEFAULT ORARI PER OGNI LOCALE
+const DEFAULT_HOURS = {
+  bibione:   { open: "08:00", close: "00:00" },
+  bibione10: { open: "10:00", close: "00:00" },
+  lignano:   { open: "10:00", close: "01:00" }
+};
+
+window.resetOrari = async function(location){
+
+  const def = DEFAULT_HOURS[location];
+  if (!def) return;
+
+  const { error } = await supabase
+    .from("shop_settings")
+    .update({
+      open_time: def.open,
+      close_time: def.close,
+      updated_at: new Date().toISOString()
+    })
+    .eq("location", location);
+
+  if (error) {
+    console.error(error);
+    alert("Errore ripristino orari ❌");
+    return;
+  }
+
+  // 🔄 aggiorna input nella UI
+  document.getElementById("open-time-" + location).value  = def.open;
+  document.getElementById("close-time-" + location).value = def.close;
+
+  alert("Orari ripristinati a standard ✅");
+};
+
+
 </script>
+
+<div id="admin-locali" class="admin-section-content hidden">
+
+  <h2 class="admin-section-title">🏪 Gestione Locali</h2>
+
+  <!-- CARD 1 -->
+  <div class="admin-card">
+    <h3>Bibione – Viale delle Costellazioni 49</h3>
+
+    <div class="admin-row">
+      <label>Data apertura stagione</label>
+      <input type="date" id="season-date-bibione">
+    </div>
+
+    <div class="admin-row">
+      <label>Testo personalizzato</label>
+      <input type="text" id="season-text-bibione">
+    </div>
+
+    <div class="admin-row">
+      <label>Orario apertura</label>
+      <input type="time" id="open-time-bibione">
+    </div>
+
+    <div class="admin-row">
+      <label>Orario chiusura</label>
+      <input type="time" id="close-time-bibione">
+    </div>
+
+    <div class="orari-actions">
+      <button class="admin-save-btn" onclick="salvaSeason('bibione')">
+        Salva modifiche
+      </button>
+      <button onclick="resetOrari('bibione')" class="reset-btn">
+        Ripristina orari standard
+      </button>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="admin-card">
+    <h3>Bibione – Costellazioni 10</h3>
+
+    <div class="admin-row">
+      <label>Data apertura stagione</label>
+      <input type="date" id="season-date-bibione10">
+    </div>
+
+    <div class="admin-row">
+      <label>Testo personalizzato</label>
+      <input type="text" id="season-text-bibione10">
+    </div>
+
+    <div class="admin-row">
+      <label>Orario apertura</label>
+      <input type="time" id="open-time-bibione10">
+    </div>
+
+    <div class="admin-row">
+      <label>Orario chiusura</label>
+      <input type="time" id="close-time-bibione10">
+    </div>
+
+    <div class="orari-actions">
+      <button class="admin-save-btn" onclick="salvaSeason('bibione10')">
+        Salva modifiche
+      </button>
+      <button onclick="resetOrari('bibione10')" class="reset-btn">
+        Ripristina orari standard
+      </button>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="admin-card">
+    <h3>Lignano</h3>
+
+    <div class="admin-row">
+      <label>Data apertura stagione</label>
+      <input type="date" id="season-date-lignano">
+    </div>
+
+    <div class="admin-row">
+      <label>Testo personalizzato</label>
+      <input type="text" id="season-text-lignano">
+    </div>
+
+    <div class="admin-row">
+      <label>Orario apertura</label>
+      <input type="time" id="open-time-lignano">
+    </div>
+
+    <div class="admin-row">
+      <label>Orario chiusura</label>
+      <input type="time" id="close-time-lignano">
+    </div>
+
+    <div class="orari-actions">
+      <button class="admin-save-btn" onclick="salvaSeason('lignano')">
+        Salva modifiche
+      </button>
+      <button onclick="resetOrari('lignano')" class="reset-btn">
+        Ripristina orari standard
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
+
+
 
 </body>
 </html>
