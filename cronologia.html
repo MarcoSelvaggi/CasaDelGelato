@@ -770,7 +770,7 @@
 /* 🔎 SEARCH BAR FISSA IN BASSO – CENTRO PERFETTO (NO translate) */
 #search-bar-fixed{
   position: fixed;
-  bottom: 20px; /* sopra bottom nav */
+  bottom: 30px; /* sopra bottom nav */
 
   /* centratura reale */
   left: max(12px, env(safe-area-inset-left));
@@ -795,6 +795,7 @@
 
   box-shadow: 0 6px 18px rgba(0,0,0,0.14);
 }
+
 
 
 #fedelta-box.compact .fedelta-bar-wrapper{
@@ -1421,12 +1422,7 @@ body.no-scroll #fedelta-box.compact {
   transition: opacity .25s ease;
 }
 
-#search-bar-fixed{
-  position: fixed;   /* resta fixed */
-  bottom: 30px;
-  left: 0;
-  width: 100%;
-}
+
 
 #search-bar-fixed input{
   padding-right: 40px;   /* spazio per la X */
@@ -1450,6 +1446,193 @@ body.no-scroll #fedelta-box.compact {
   align-items: center;
   justify-content: center;
 }
+
+/* ℹ️ info: cerchio SVG + testo i */
+#info-btn{
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* cerchio */
+#info-btn .info-ring{
+  position: absolute;
+  width: 28px;
+  height: 28px;
+
+  fill: none;
+  stroke: #000;
+  stroke-width: 2;
+}
+
+/* lettera i */
+#info-btn .info-i{
+  position: relative;
+  z-index: 2;
+
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+  color: #000;
+}
+
+/* ===============================
+   POPUP INFO CRONOLOGIA
+=============================== */
+/* ===============================
+   INFO SHEET – STILE iOS
+=============================== */
+
+.info-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+
+  z-index: 100000;
+}
+
+.info-overlay.open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* SHEET */
+.info-card{
+  width: 100%;
+  max-width: 520px;
+  max-height: 75vh;
+
+  background: #f9f9fb;
+  border-radius: 22px 22px 0 0;
+
+  display: flex;
+  flex-direction: column;
+
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.22,.61,.36,1);
+
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
+}
+
+.info-overlay.open .info-card{
+  transform: translateY(0);
+}
+
+/* DRAG INDICATOR */
+.info-card::before{
+  content: "";
+  width: 42px;
+  height: 5px;
+  border-radius: 999px;
+  background: #d1d1d6;
+
+  margin: 10px auto 8px;
+}
+
+/* HEADER */
+.info-header{
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 4px 20px 12px;
+}
+
+/* BODY */
+.info-body{
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  padding: 0 20px 20px;
+
+  font-size: 14px;
+  line-height: 1.5;
+  color: #444;
+}
+
+/* SEZIONI */
+.info-section{
+  padding: 12px 0;
+  border-bottom: 1px solid #ececec;
+}
+
+.info-section:last-child{
+  border-bottom: none;
+}
+
+/* IMPORTANTE */
+.info-important{
+  font-weight: 600;
+  color: #111;
+}
+
+/* FOOTER */
+.info-footer{
+  padding: 14px 20px 24px;
+}
+
+.info-close-btn{
+  width: 100%;
+  padding: 14px;
+
+  border-radius: 14px;
+  border: none;
+
+  font-weight: 600;
+  font-size: 15px;
+
+  background: #007aff;
+  color: #fff;
+
+  box-shadow: 0 6px 18px rgba(0,122,255,0.35);
+  cursor: pointer;
+
+  transition: transform .15s ease;
+}
+
+.info-close-btn:active{
+  transform: scale(.96);
+}
+
+/* BLOCCO SCROLL */
+body.info-open{
+  overflow: hidden;
+  height: 100vh;
+}
+
+
+
+
+
+
+
+
+
+
+
+
     </style>
 </head>
 
@@ -1467,7 +1650,17 @@ body.no-scroll #fedelta-box.compact {
     <img src="tastohome.png" alt="home">
   </a>
 
+<button id="info-btn" aria-label="Informazioni">
+  <svg viewBox="0 0 24 24" class="info-ring" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"></circle>
+  </svg>
+  <span class="info-i">i</span>
+</button>
+
+
+
 </div>
+
 
 <div id="top-fixed-spacer"></div>
 
@@ -3589,6 +3782,91 @@ document.getElementById("confirm-delete-single").onclick = async () => {
     </button>
   </div>
 </div>
+
+<div id="info-overlay" class="info-overlay">
+<div class="info-card">
+
+  <div class="info-header">
+    Come funziona la Cronologia
+  </div>
+
+  <div class="info-body">
+
+    <div class="info-section">
+      Qui trovi tutte le <b>coppe che hai creato</b>.
+    </div>
+
+    <div class="info-section">
+      Con <b>"Usa questa coppa"</b> ritrovi tutto già precompilato.
+      Puoi modificarla liberamente prima di confermare.
+    </div>
+
+    <div class="info-section">
+      Puoi aggiungerle ai <b>Preferiti ⭐</b> e <b>rinominarle</b>.
+    </div>
+
+    <div class="info-section">
+      Tocca la <b>foto della coppa</b> per ingrandirla o condividerla 📸
+    </div>
+
+    <div class="info-section">
+      Dopo aver ordinato, chiedi di <b>confermare la coppa</b> per far avanzare la raccolta fedeltà.
+    </div>
+
+    <div class="info-section info-important">
+      Se ordini più volte la stessa coppa può essere confermata più volte.
+      <br><br>
+      Non serve ricrearla: basta mostrare di nuovo il QR code.
+    </div>
+
+    <div class="info-section reward">
+      🎁 Ogni <b>10 coppe confermate</b> ricevi un coupon premio.
+    </div>
+
+  </div>
+
+  <div class="info-footer">
+    <button id="info-close" class="info-close-btn">
+      Chiudi
+    </button>
+  </div>
+
+</div>
+
+</div>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("info-btn");
+  const overlay = document.getElementById("info-overlay");
+  const close = document.getElementById("info-close");
+
+  if (!btn || !overlay || !close) return;
+
+  btn.addEventListener("click", () => {
+    overlay.classList.add("open");
+    document.body.classList.add("info-open");   // 🔒 blocco scroll
+  });
+
+  function chiudiInfo(){
+    overlay.classList.remove("open");
+    document.body.classList.remove("info-open"); // 🔓 riattivo scroll
+  }
+
+  close.addEventListener("click", chiudiInfo);
+
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      chiudiInfo();
+    }
+  });
+
+});
+</script>
 
 </body>
 </html>

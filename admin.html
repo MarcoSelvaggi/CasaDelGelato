@@ -1468,6 +1468,29 @@ window.applyAnnulla = async function(id) {
 
   // 2️⃣ USO qty selezionata
   const qty = Math.min(max, Math.max(1, Number(st.qty || 1)));
+
+  // 🔒 BLOCCO se andrei sotto conferme già usate per coupon
+  if (data.email) {
+
+    const { count: couponCount, error: cErr } = await supabase
+      .from("coupon")
+      .select("*", { count: "exact", head: true })
+      .eq("email", data.email);
+
+    if (cErr) {
+      console.warn("Errore count coupon", cErr);
+      alert("Errore controllo coupon, riprova");
+      return;
+    }
+
+    const locked = (couponCount || 0) * 10;
+
+    if ((max - qty) < locked) {
+      alert(`⛔ Non puoi annullare: ${locked} conferme sono già usate per coupon.`);
+      return;
+    }
+  }
+
   const nuovoValore = max - qty;
 
   // 3️⃣ Update DB
@@ -1475,6 +1498,29 @@ window.applyAnnulla = async function(id) {
     .from("coppe")
     .update({ confermate: nuovoValore })
     .eq("id", id);
+
+  // 🔥 RIMUOVO conferme reali (serve per fedeltà)
+  if (data.email) {
+
+    for (let i = 0; i < qty; i++) {
+
+      // prendo una conferma non consumata
+      const { data: conferma } = await supabase
+        .from("conferme_coppe")
+        .select("id")
+        .eq("email", data.email)
+        .eq("coppa_id", id)
+        .limit(1)
+        .single();
+
+      if (!conferma) break;
+
+      await supabase
+        .from("conferme_coppe")
+        .delete()
+        .eq("id", conferma.id);
+    }
+  }
 
   // 4️⃣ Reset stato UI
   st.open = false;
@@ -1486,12 +1532,12 @@ window.applyAnnulla = async function(id) {
 
 // ✅ APPLICA AUMENTO CONFERME
 window.applyAggiungi = async function(id) {
+
   const st = getAggiungiState(id);
 
-  // leggo coppa aggiornata
   const { data, error } = await supabase
     .from("coppe")
-    .select("confermate, email")
+    .select("confermate, email, formato")
     .eq("id", id)
     .single();
 
@@ -1503,18 +1549,29 @@ window.applyAggiungi = async function(id) {
   const current = Number(data.confermate) || 0;
   const qty = Math.max(1, Number(st.qty || 1));
 
-  // update DB
+  // 1️⃣ aggiorno contatore coppa
   await supabase
     .from("coppe")
     .update({ confermate: current + qty })
     .eq("id", id);
 
-  // reset UI
+  // 2️⃣ salvo le conferme reali (come fa lo scan)
+  if (data.email) {
+    for (let i = 0; i < qty; i++) {
+      await supabase
+        .from("conferme_coppe")
+        .insert({
+          email: data.email,
+          coppa_id: id,
+          formato: data.formato
+        });
+    }
+  }
+
   st.open = false;
   st.qty = 1;
 
-  // ricarico solo l’utente giusto
-  renderCoppe(data.email || "Anonimo");
+  await load(); // ricarica tutto correttamente
 };
 
 window.handleAnnullaClick = function(id, multi) {
@@ -1862,6 +1919,7 @@ async function syncCouponUtente(email) {
     }
 }
 
+
  window.toggleFilters = function(email){
     sezioniAperte[email] = !sezioniAperte[email];
 
@@ -2046,19 +2104,34 @@ function renderStatList(containerId, dataObj) {
 }
 
 window.toggleConferma = async function (id) {
-   const c = COPPE.find(x => x.id === id);
-   if (!c) return;
 
-   const nuovoValore = (Number(c.confermate) || 0) + 1;
+  const c = COPPE.find(x => x.id === id);
+  if (!c) return;
 
-   await supabase
-     .from("coppe")
-     .update({ confermate: nuovoValore })
-     .eq("id", id);
+  const nuovoValore = (Number(c.confermate) || 0) + 1;
 
-   await load();
-return false;
+  // 1️⃣ aggiorno contatore coppa
+  await supabase
+    .from("coppe")
+    .update({ confermate: nuovoValore })
+    .eq("id", id);
+
+  // 2️⃣ salvo conferma reale per fedeltà
+  if (c.email) {
+    await supabase
+      .from("conferme_coppe")
+      .insert({
+        email: c.email,
+        coppa_id: c.id,
+        formato: c.formato
+      });
+  }
+
+  await load();
+
+  return false;
 };
+
 
 window.annullaConfermaCoppa = async function (id) {
     const coppa = COPPE.find(c => c.id === id);
