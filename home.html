@@ -2304,5 +2304,16 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 </script>
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const video = document.getElementById("hero-info-video");
+  if (!video) return;
+
+  setTimeout(() => {
+    video.play().catch(() => {});
+  }, 5000); // parte dopo 5 secondi
+});
+</script>
+
 </body>
 </html>
