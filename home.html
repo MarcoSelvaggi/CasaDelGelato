@@ -1346,7 +1346,7 @@ body.popup-open > *:not(#popup-benvenuto){
         <h2>Contatti</h2>
         <p>Scrivici o chiamaci.</p>
  <div class="exp-image">
-  <video autoplay muted loop playsinline>
+  <video autoplay muted playsinline>
     <source src="img/info-contatti.mp4" type="video/mp4">
   </video>
 </div>
@@ -1438,7 +1438,7 @@ function expandWaitBar() {
   compact.style.display = "none";
 
   clearTimeout(collapseTimeout);
-  collapseTimeout = setTimeout(collapseWaitBar, 5000);
+  collapseTimeout = setTimeout(collapseWaitBar, 15000);
 }
 
 function collapseWaitBar() {
@@ -1987,8 +1987,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const slidesWrap = section.querySelector(".exp-slides");
   const steps = [...section.querySelectorAll(".exp-step")];
-  const dots  = [...section.querySelectorAll(".exp-bar span")];
-  if (!slidesWrap || !steps.length || !dots.length) return;
+const dots  = [...section.querySelectorAll(".exp-bar span")];
+if (!slidesWrap || !steps.length || !dots.length) return;
+
+/* ⏸️ VIDEO: pausa 3 secondi prima di ripartire */
+steps.forEach(step => {
+  const video = step.querySelector("video");
+  if (!video) return;
+
+  video.removeAttribute("loop"); // sicurezza
+
+  video.addEventListener("ended", () => {
+    setTimeout(() => {
+      video.currentTime = 0;
+      video.play();
+    }, 3000); // 3 secondi pausa
+  });
+});
 
   let index = 0;
   let startX = 0;
