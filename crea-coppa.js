@@ -1117,7 +1117,6 @@ function showSizeScreen(){
 
 function selectSize(size, g, gr, t, ing){
 
-  // 🔥 RIATTIVA MINI RIEPILOGO DOPO "CREA UN'ALTRA"
   const el = document.getElementById("riepilogo-mini");
   if (el) {
     el.classList.remove("hidden");
@@ -1136,24 +1135,24 @@ function selectSize(size, g, gr, t, ing){
   max = { gusti:g, granelle:gr, topping:t, ingredienti:ing, extra:Infinity };
   scelti = { gusti:[], granelle:[], topping:[], ingredienti:[], extra:[] };
 
-  // 🔥 reset gusti
   gustiQuantities = {};
   gustiList.forEach(gusto => gustiQuantities[gusto] = 0);
   gustoInModifica = null;
 
-// 🔥 cambio step
-step = "gusti";
-titoloGustiVisibile = true;
-
+  step = "gusti";
 
 byId("step-size").style.display = "none";
 byId("step-container").style.display = "block";
 
-nascondiBottomNav();
-renderStepGusti();
-updateRiepilogo();
 
-  // mini riepilogo chiuso ma cliccabile
+setTimeout(() => {
+  stepSize.style.display = "none";
+}, 350);
+
+  nascondiBottomNav();
+  renderStepGusti();
+  updateRiepilogo();
+
   if (el && el.dataset.mini) {
     el.classList.add("collapsed");
     el.innerHTML = el.dataset.mini;
@@ -2467,6 +2466,8 @@ console.log("📌 SALVATAGGIO COPPA IN LOCALE:", coppa);
   // ✅ 7) Riepilogo grafico (come prima)
 area.innerHTML = `
 <div class="riepilogo-header">
+
+
   <h2 class="riepilogo-title">Ecco la tua coppa!</h2>
 
 <p class="riepilogo-subtitle" style="
@@ -2498,6 +2499,11 @@ area.innerHTML = `
 ">
   <div id="coppa-stage"></div>
 </div>
+
+<p class="coppa-callout">
+  Ciao 👋 sono la tua coppa.<br>
+  <b>Comunicami al cameriere per ordinarmi.</b>
+</p>
 
 
 <div class="scontrino" id="scontrino-da-share">
@@ -4532,3 +4538,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+

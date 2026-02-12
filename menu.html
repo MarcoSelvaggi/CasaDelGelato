@@ -1456,6 +1456,55 @@ body.allergen-open #top-fixed-bar{
   line-height: 1.4;
   color: #444;
 }
+
+/* ⬆️ SCROLL TO TOP BUTTON */
+#scroll-top-btn{
+  position: fixed;
+  right: 16px;
+  bottom: 110px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+  background: #007aff; /* 🔵 BLU iOS */
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  box-shadow: 0 8px 24px rgba(0,122,255,.45); /* ombra blu */
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+
+  transition: 
+    opacity .25s ease,
+    transform .25s ease;
+
+  z-index: 9999;
+}
+#scroll-top-btn:active{
+  transform: scale(.92);
+  background: #0066d6;
+}
+
+#scroll-top-btn.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+#scroll-top-btn:active{
+  transform: scale(.92);
+}
+
+
 </style>
 </head>
 
@@ -4477,6 +4526,35 @@ document.addEventListener("click", (e)=>{
 });
 </script>
 
+<button id="scroll-top-btn" aria-label="Torna su">
+  ↑
+</button>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("scroll-top-btn");
+  if (!btn) return;
+
+  // 👀 mostra / nasconde in base allo scroll
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 200) {
+      btn.classList.add("show");
+    } else {
+      btn.classList.remove("show");
+    }
+  });
+
+  // ⬆️ scroll morbido verso top
+  btn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+
+});
+</script>
 
 </body>
 </html>

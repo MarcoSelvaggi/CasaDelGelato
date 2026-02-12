@@ -1494,9 +1494,7 @@ body.no-scroll #fedelta-box.compact {
 /* ===============================
    POPUP INFO CRONOLOGIA
 =============================== */
-/* ===============================
-   INFO SHEET – STILE iOS
-=============================== */
+
 
 .info-overlay{
   position: fixed;
@@ -1561,18 +1559,6 @@ body.no-scroll #fedelta-box.compact {
   padding: 4px 20px 12px;
 }
 
-/* BODY */
-.info-body{
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-
-  padding: 0 20px 20px;
-
-  font-size: 14px;
-  line-height: 1.5;
-  color: #444;
-}
 
 /* SEZIONI */
 .info-section{
@@ -1679,6 +1665,50 @@ body.info-open{
 }
 
 
+.popup-scroll-hint {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin: 6px 0 16px 0; /* 👈 più spazio sotto */
+  animation: bounceHint 1.5s infinite;
+}
+
+@keyframes bounceHint {
+  0%,100% { transform: translateY(0); opacity: .6; }
+  50% { transform: translateY(4px); opacity: 1; }
+}
+
+.info-body{
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 20px 10px; /* 👈 importante: spazio sotto */
+}
+
+.info-footer{
+  position: sticky;
+  bottom: 0;
+  background: #f9f9fb;
+  padding: 16px 20px 24px;
+  z-index: 10;
+}
+
+.info-footer::before{
+  content: "";
+  position: absolute;
+  top: -30px;
+  left: 0;
+  width: 100%;
+  height: 30px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(249,249,251,0),
+    #f9f9fb
+  );
+
+  pointer-events: none;
+}
 
     </style>
 </head>
@@ -3912,6 +3942,10 @@ Così <b>riduci i tempi di attesa</b> e ti godi subito il momento.
   </div>
 
   <div class="info-footer">
+
+    <div class="popup-scroll-hint">
+  ↓ Scorri per leggere tutto ↓
+</div>
     <button id="info-close" class="info-close-btn">
       Chiudi
     </button>

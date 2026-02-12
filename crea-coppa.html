@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <div id="app-blur-zone"></div>
 
 <!-- solo UNO spacer -->
-<div style="height:60px;"></div>
+<div style="height:30px;"></div>
 
 <div id="top-fixed-bar">
     <a href="home.html" class="home-btn" aria-label="Home">
@@ -74,105 +74,110 @@ document.addEventListener("DOMContentLoaded", function () {
 <!-- 🪑 SELEZIONE TAVOLO -->
 <section id="step-tavolo" style="text-align:center; padding:20px;">
 
-
   <h2>Seleziona il tavolo</h2>
 
-<div class="tavolo-zona">
-  <button
-    id="btn-dentro"
-    class="tavolo-zona-btn"
-    data-zona="D"
-    onclick="scegliZona('D')">
-    Dentro
-  </button>
+  <div class="tavolo-zona">
+    <button
+      id="btn-dentro"
+      class="tavolo-zona-btn"
+      data-zona="D"
+      onclick="scegliZona('D')">
+      Dentro
+    </button>
 
-  <button
-    id="btn-fuori"
-    class="tavolo-zona-btn"
-    data-zona="F"
-    onclick="scegliZona('F')">
-    Fuori
-  </button>
-</div>
+    <button
+      id="btn-fuori"
+      class="tavolo-zona-btn"
+      data-zona="F"
+      onclick="scegliZona('F')">
+      Fuori
+    </button>
+  </div>
 
-  <!-- 🔵 Riga con bottone -->
   <div class="tavolo-help">
     <button id="info-tavolo-btn" onclick="apriInfoTavolo()">
       Come funziona? Clicca qui
     </button>
   </div>
 
+  <div id="numeri-tavolo" class="tavolo-grid"></div>
 
-<div id="numeri-tavolo" class="tavolo-grid"></div>
-<!-- Bottone conferma tavolo -->
-<button
-  id="btn-conferma-tavolo"
-  onclick="confermaTavolo()"
-  class="tavolo-zona-btn conferma-btn"
-  style="display:none; margin-top:20px;">
-  Conferma tavolo
-</button>
+  <button
+    id="btn-conferma-tavolo"
+    onclick="confermaTavolo()"
+    class="tavolo-zona-btn conferma-btn"
+    style="display:none; margin-top:20px;">
+    Conferma tavolo
+  </button>
 
-</section>
-  <section id="step-size" style="text-align:center; display:none;">
-  
-
-  
-<p style="margin-top:2px; font-size:13px; color:#666; line-height:1.3;">
-  <span style="font-weight:600; color:#333;">
-    Hai allergie o intolleranze?
-  </span><br>
-  Seleziona gli allergeni: gli ingredienti verranno filtrati automaticamente.
-</p>
-  <!-- 🔶 Tasto Allergie direttamente sotto il testo -->
-  <div style="margin-top:10px; margin-bottom:20px;">
-      <a href="allergie.html"
-         style="
-              display:inline-block;
-              background:#ff3b30;
-              color:white;
-              padding:10px 16px;
-              border-radius:10px;
-              font-size:14px;
-              font-weight:600;
-              text-decoration:none;
-              box-shadow:0 2px 5px rgba(0,0,0,0.20);
-         ">
-          Seleziona allergeni
-      </a>
-  </div>
-
-<h2>Scegli il Formato</h2>
-  <!-- SCELTA FORMATO (onclick usa funzioni globali di crea-coppa.js) -->
- <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
-  <div class="formato-titolo">PICCOLA • €7,50</div>
-  <div class="formato-dettagli">
-    2 gusti · 1 granella · 1 topping · 1 ingrediente
-  </div>
-</div>
-
-<div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
-  <div class="formato-titolo">MEDIA • €9,00</div>
-  <div class="formato-dettagli">
-    3 gusti · 2 granelle · 2 topping · 1 ingrediente
-  </div>
-</div>
-
-<div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
-  <div class="formato-titolo">GRANDE • €12,00</div>
-  <div class="formato-dettagli">
-    4 gusti · 2 granelle · 2 topping · 2 ingredienti
-  </div>
-</div>
-</section>
-
-<h2 id="step-title" class="step-title" style="text-align:center; margin-top:10px;"></h2>
-
-<section id="step-container" style="display:none;">
 </section>
 
 
-</div> <!-- 🔴 CHIUSURA app-blur-zone -->
+
+<!-- 🍨 STEP FORMATO -->
+<section id="step-size" style="text-align:center; display:none;">
+
+  <div class="icecream-hero">
+    <h1 class="icecream-title">
+      Benvenuto in <span class="brand">iCEcream</span><span class="copyright">©</span>
+    </h1>
+
+    <p class="icecream-subtitle">
+      Crea la tua coppa perfetta e goditi ogni momento 🍨
+    </p>
+  </div>
+
+  <div class="allergie-card">
+    <div class="allergie-text">
+      <strong>Allergie o intolleranze?</strong>
+      <span>Imposta i filtri prima di creare la tua coppa.</span>
+    </div>
+
+    <a href="allergie.html" class="allergie-btn">
+      Seleziona allergeni
+    </a>
+  </div>
+
+  <div class="formati-wrapper">
+
+    <h2>Scegli il Formato</h2>
+
+    <p class="format-note">
+      Crea la tua coppa quando vuoi, anche da casa.<br>
+      <span>Così quando arrivi, ordini in un attimo.</span>
+    </p>
+
+    <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
+      <div class="formato-titolo">PICCOLA • €7,50</div>
+      <div class="formato-dettagli">
+        2 gusti · 1 granella · 1 topping · 1 ingrediente
+      </div>
+    </div>
+
+    <div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
+      <div class="formato-titolo">MEDIA • €9,00</div>
+      <div class="formato-dettagli">
+        3 gusti · 2 granelle · 2 topping · 1 ingrediente
+      </div>
+    </div>
+
+    <div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
+      <div class="formato-titolo">GRANDE • €12,00</div>
+      <div class="formato-dettagli">
+        4 gusti · 2 granelle · 2 topping · 2 ingredienti
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- 🔄 STEP DINAMICO (gusti ecc.) -->
+<h2 id="step-title" class="step-title" style="display:none; text-align:center; margin-top:10px;"></h2>
+
+<section id="step-container" style="display:none;"></section>
 
 <!-- POPUP -->
 <div id="popup-coppa">
@@ -754,64 +759,75 @@ function vaiARegistrazione() {
 
     <h3>Come funziona</h3>
 
+    <!-- BODY SCROLLABILE -->
     <div class="sheet-body">
-    <div>
 
-  <p>
-    👀 <b>Guarda il numero del tuo tavolo</b> e selezionalo dall’elenco.
-  </p>
+      <p>
+        👀 <b>Guarda il numero del tuo tavolo</b> e selezionalo dall’elenco.
+      </p>
 
-  <p>
-    ⚠️ Se necessario consulta gli <b>allergeni</b>.  
-    In ogni caso ti consigliamo sempre di <b>chiedere al personale di sala</b> per qualsiasi dubbio.
-  </p>
+      <p>
+        ⚠️ Se necessario consulta gli <b>allergeni</b>.  
+        In ogni caso ti consigliamo sempre di <b>chiedere al personale di sala</b>.
+      </p>
 
-  <hr>
+      <hr>
 
-  <p>
-    🍨 Scegli il <b>formato</b> che preferisci e completa la tua coppa selezionando:
-  </p>
+      <p>
+        🍨 Scegli il <b>formato</b> e completa la tua coppa selezionando:
+      </p>
 
-  <ul style="padding-left:18px; margin-top:6px;">
-    <li><b>Gusti</b></li>
-    <li><b>Granelle</b></li>
-    <li><b>Topping</b></li>
-    <li><b>Ingredienti</b></li>
-    <li><b>Extra</b> (facoltativi)</li>
-  </ul>
+      <ul style="padding-left:18px; margin-top:6px;">
+        <li><b>Gusti</b></li>
+        <li><b>Granelle</b></li>
+        <li><b>Topping</b></li>
+        <li><b>Ingredienti</b></li>
+        <li><b>Extra</b> (facoltativi)</li>
+      </ul>
 
   <p>
     💡 Se non utilizzi tutte le opzioni disponibili per il formato scelto,
     le quantità selezionate verranno <b>abbondanti</b> per valorizzare al meglio la tua coppa.
   </p>
 
-  <hr>
+      <hr>
 
-  <p>
-    📲 Una volta completata, scorri fino alla fine del <b>riepilogo finale</b>  
-    e comunica la coppa creata al cameriere per ordinarla.
-  </p>
+      <p>
+        📲 Una volta completata, scorri fino alla fine del <b>riepilogo finale</b>
+        e comunica la coppa al cameriere.
+      </p>
 
-  <p>
-    🎁 Ricorda di chiedere la <b>conferma della coppa</b> per accumulare punti fedeltà
-    e sbloccare i tuoi <b>coupon premio</b>.
-  </p>
+      <p>
+        📸 Non dimenticare di <b>condividerla sui social</b> e <b>taggarci</b> ✨
+      </p>
 
-  <p>
-    🔓 Non sei registrato?  
-    Registrati per attivare la <b>Cronologia</b>, salvare le tue coppe preferite
-    e accedere a tutti i <b>vantaggi esclusivi</b>.
-  </p>
+      <p>
+        🎁 Ricorda di chiedere la <b>conferma della coppa</b> per i coupon.
+      </p>
 
-</div>
+      <p>
+        🔓 Registrati per attivare la <b>Cronologia</b> e sbloccare i vantaggi.
+      </p>
+
     </div>
 
-    <button id="chiudi-info-tavolo" class="sheet-close-btn">
-      Chiudi
-    </button>
+    <!-- FOOTER STICKY CON SFUMATURA -->
+    <div class="sheet-footer">
+
+      <div class="popup-scroll-hint">
+        ↓ Scorri per leggere tutto ↓
+      </div>
+
+      <button id="chiudi-info-tavolo" class="sheet-close-btn">
+        Chiudi
+      </button>
+
+    </div>
 
   </div>
 </div>
+
+
 
 </body>
 </html>

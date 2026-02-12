@@ -669,6 +669,13 @@ body {
   object-fit: cover;
   display: block;
 }
+
+.exp-image video{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 .exp-step h2{
   margin-bottom: 6px;   /* titolo ↔ sottotitolo */
 }
@@ -1338,10 +1345,11 @@ body.popup-open > *:not(#popup-benvenuto){
       <div class="exp-step">
         <h2>Contatti</h2>
         <p>Scrivici o chiamaci.</p>
-        <div class="exp-image">
-          <img src="img/info-contatti.jpg">
-        </div>
-      </div>
+ <div class="exp-image">
+  <video autoplay muted loop playsinline>
+    <source src="img/info-contatti.mp4" type="video/mp4">
+  </video>
+</div>
 
     </div>
 

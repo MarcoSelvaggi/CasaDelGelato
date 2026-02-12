@@ -4828,22 +4828,33 @@ body.no-scroll {
   margin-top: 30px;
 }
 
-/* =========================
-   BOTTOM SHEET INFO TAVOLO
-========================= */
+
+/* Callout blu */
+.coppa-callout{
+  text-align: center;
+  color: #007aff;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* ===============================
+   POPUP INFO CREA COPPA
+=============================== */
 
 .bottom-overlay{
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
 
   display: flex;
   align-items: flex-end;
+  justify-content: center;
 
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.25s ease;
+  transition: opacity .25s ease;
 
   z-index: 100000;
 }
@@ -4853,63 +4864,329 @@ body.no-scroll {
   pointer-events: auto;
 }
 
+/* SHEET */
 .bottom-sheet{
   width: 100%;
-  max-height: 85vh;
+  max-width: 520px;
+  max-height: 75vh;
 
-  background: #fff;
+  background: #f9f9fb;
   border-radius: 22px 22px 0 0;
-
-  padding: 18px 18px 14px;
-
-  transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(.22,.61,.36,1);
 
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;   /* 🔥 QUESTA È LA CHIAVE */
+
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.22,.61,.36,1);
+
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
 }
 
 .bottom-overlay.open .bottom-sheet{
   transform: translateY(0);
 }
 
-/* maniglia stile iOS */
-.sheet-handle{
+/* DRAG INDICATOR */
+.bottom-sheet::before{
+  content: "";
   width: 42px;
   height: 5px;
-  background: #ddd;
-  border-radius: 4px;
-  margin: 0 auto 12px;
+  border-radius: 999px;
+  background: #d1d1d6;
+  margin: 10px auto 8px;
 }
 
+/* HEADER */
 .bottom-sheet h3{
   text-align: center;
-  margin: 0 0 14px;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 4px 20px 12px;
 }
 
-/* testo scrollabile */
+/* BODY SCROLLABILE */
 .sheet-body{
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  padding: 0 20px 10px; /* 👈 spazio sotto come cronologia */
+}
+
+/* FOOTER STICKY IDENTICO */
+.sheet-footer{
+  position: sticky;
+  bottom: 0;
+  background: #f9f9fb;
+  padding: 16px 20px 24px;
+  z-index: 10;
+}
+
+/* SFUMATURA IDENTICA A CRONOLOGIA */
+.sheet-footer::before{
+  content: "";
+  position: absolute;
+  top: -30px;
+  left: 0;
+  width: 100%;
+  height: 30px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(249,249,251,0),
+    #f9f9fb
+  );
+
+  pointer-events: none;
+}
+
+/* BOTTONE */
+.sheet-close-btn{
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  background: #007aff;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0,122,255,0.35);
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+
+.sheet-close-btn:active{
+  transform: scale(.96);
+}
+
+/* HINT SCROLL */
+.popup-scroll-hint{
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin: 6px 0 16px 0;
+  animation: bounceHint 1.5s infinite;
+}
+
+@keyframes bounceHint{
+  0%,100% { transform: translateY(0); opacity: .6; }
+  50% { transform: translateY(4px); opacity: 1; }
+}
+
+.icecream-title{
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111;
+  letter-spacing: -0.3px;
+}
+
+.icecream-title .brand{
+  background: linear-gradient(90deg,#ff7a00,#ffb347);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.icecream-title .copyright{
+  font-size: 13px;
+  vertical-align: super;
+  margin-left: 3px;
+  opacity: .5;
+}
+
+.icecream-subtitle{
+  font-size: 15px;
+  color: #555;
+  margin: 0 0 20px 0;
+  font-weight: 500;
+}
+.icecream-hero{
+  text-align: center;
+  padding: 10px 20px 20px;
+}
+
+.icecream-badge{
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg,#ff7a00,#ffb347);
+  color: white;
+  margin-bottom: 12px;
+  letter-spacing: .5px;
+}
+
+.icecream-title{
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111;
+}
+
+.icecream-title .copyright{
+  font-size: 13px;
+  vertical-align: super;
+  opacity: .6;
+}
+
+.icecream-subtitle{
+  font-size: 15px;
+  color: #666;
+  margin: 0;
+}
+
+/* ===============================
+   CARD ALLERGIE - iCEcream
+=============================== */
+
+.allergie-card{
+  background: #ffffff;
+  border-radius: 16px;
+
+  padding: 12px 16px;
+  margin: 14px auto 55px;   /* 👈 più spazio sotto */
+
+  max-width: 320px;
+  text-align: center;
+
+  animation: glowPulse 4.5s ease-in-out infinite;
+}
+
+/* Glow più elegante e meno aggressivo */
+@keyframes glowPulse {
+  0% {
+    box-shadow: 0 6px 18px rgba(255,59,48,0.06);
+  }
+  50% {
+    box-shadow: 0 10px 30px rgba(255,59,48,0.14);
+  }
+  100% {
+    box-shadow: 0 6px 18px rgba(255,59,48,0.06);
+  }
+}
+
+/* TESTO */
+.allergie-text{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.allergie-text strong{
   font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.allergie-text span{
+  font-size: 12.5px;
+  color: #666;
+  line-height: 1.35;
+}
+
+/* LINK */
+.allergie-btn{
+  margin-top: 8px;
+
+  background: none;
+  border: none;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  color: #ff3b30;
+  cursor: pointer;
+  padding: 0;
+}
+
+.allergie-btn:active{
+  opacity: 0.6;
+}
+.format-note{
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin-top: 6px;
+  margin-bottom: 18px;
   line-height: 1.5;
 }
 
-/* bottone */
-.sheet-close-btn{
-  margin-top: 16px;
-  width: 100%;
-  padding: 14px;
-
-  border-radius: 14px;
-  border: none;
-
-  background: #007aff;
-  color: #fff;
+.format-note span{
+  display: block;
+  margin-top: 4px;
   font-weight: 600;
-  font-size: 16px;
-
-  cursor: pointer;
+  color: #111;
 }
+
+.formati-wrapper{
+  background: #ffffff;
+  border-radius: 24px;
+
+  padding: 24px 18px 22px;
+  margin: 24px auto 46px;
+
+  width: calc(100% - 48px);   /* 👈 24px per lato */
+  max-width: 340px;           /* 👈 più stretta e centrata */
+
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.05),
+    0 18px 40px rgba(0,0,0,0.06);
+
+  text-align: center;
+}
+.formati-wrapper h2{
+  margin: 0 0 12px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.formati-intro{
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 22px;
+}
+
+/* ===============================
+   CARD FORMATI – VERSIONE DEFINITIVA
+=============================== */
+
+/* base comune */
+.formati-wrapper .menu-item{
+  background: #ffffff;
+  border-radius: 20px;
+
+  padding: 18px 16px;
+  margin-bottom: 40px;
+
+  border: 1px solid rgba(0,0,0,0.04);
+
+  box-shadow:
+    0 10px 20px rgba(0,0,0,0.06);
+
+  transition: none; /* 🔥 niente hover */
+}
+
+/* PICCOLA */
+.formati-wrapper .menu-item:nth-of-type(1){
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.05),
+    0 15px 30px rgba(229,140,100,0.35);
+}
+
+/* MEDIA */
+.formati-wrapper .menu-item:nth-of-type(2){
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.05),
+    0 15px 30px rgba(14,86,99,0.35);
+}
+
+/* GRANDE */
+.formati-wrapper .menu-item:nth-of-type(3){
+  box-shadow:
+    0 8px 18px rgba(0,0,0,0.05),
+    0 15px 30px rgba(139,84,44,0.35);
+}
+
+

@@ -1469,6 +1469,14 @@ body.no-scroll{
   visibility: visible;
   pointer-events: auto;
 }
+.login-hint {
+  text-align: center;
+  width: 100%;
+  margin-top: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+}
 
 </style>
 </head>
@@ -2237,7 +2245,7 @@ setAvatarBackground(avatarUrl);
 
 function scadenzaDaCreazione(created_at){
   const d = new Date(created_at);
-  return new Date(d.getFullYear(), 11, 31);
+  return new Date(d.getFullYear(), 11, 31, 23, 59, 59, 999);
 }
 
 // ===== POPUP CONSENSI =====
@@ -2621,9 +2629,14 @@ coupons.sort((a, b) => {
   coupons.forEach(c => {
     const scadenza = scadenzaDaCreazione(c.created_at);
 
+const oggi = new Date();
+const scaduto = oggi.getTime() > scadenza.getTime();
+
     const div = document.createElement("div");
     div.id = `coupon-${c.codice}`;
-    div.className = "coupon" + (c.redento ? " used" : "");
+    div.className = "coupon" 
+  + (c.redento ? " used" : "") 
+  + (scaduto ? " used" : "");
 
 div.innerHTML = `
   <div style="flex:1">
@@ -2654,9 +2667,9 @@ div.innerHTML = `
   </div>
 
   ${
-    c.redento
-      ? `<button disabled>Usato</button>`
-      : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
+    (c.redento || scaduto)
+  ? `<button disabled>${scaduto ? "Scaduto" : "Usato"}</button>`
+  : `<button onclick="toggleQR('${c.codice}')">Mostra QR</button>`
   }
 `;
 
@@ -2728,6 +2741,11 @@ function aggiornaCouponUI(coupon){
     usedBox.innerText = `Usato il ${new Date(coupon.used_at).toLocaleDateString()}`;
   }
 }
+
+window.debugScadenza = function(dataFinta){
+  window.DATA_TEST = dataFinta;
+  caricaCoupon(localStorage.getItem("user_email"));
+};
 
 /* ===============================
    REALTIME
