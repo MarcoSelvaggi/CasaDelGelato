@@ -1121,13 +1121,6 @@ body.popup-open > *:not(#popup-benvenuto){
 
 </div>
 
-<div id="lang-toggle">🇮🇹 ▾</div>
-
-<div id="lang-menu">
-  <button class="lang-btn" data-lang="it">Italiano</button>
-  <button class="lang-btn" data-lang="en">English</button>
-  <button class="lang-btn" data-lang="de">Deutsch</button>
-</div>
 
 
 <div id="top-fixed-spacer"></div>
@@ -1157,63 +1150,7 @@ body.popup-open > *:not(#popup-benvenuto){
   </div>
 </section> 
 
-<section class="experience">
-  <div class="experience-inner">
 
-    <!-- SLIDE AREA -->
-    <div class="exp-slides">
-
-      <div class="exp-step active">
-        <h2>Scegli il formato</h2>
-        <p>Piccola, media o grande.</p>
-        <div class="exp-image">
-          <img src="img/exp-formato.jpg">
-        </div>
-      </div>
-
-      <div class="exp-step">
-        <h2>Scegli i gusti</h2>
-        <p>I tuoi gusti preferiti.</p>
-        <div class="exp-image">
-          <img src="img/exp-formato.jpg">
-        </div>
-      </div>
-
-      <div class="exp-step">
-        <h2>Personalizzala</h2>
-        <p>Rendi unica la tua coppa.</p>
-        <div class="exp-image">
-          <img src="img/exp-formato.jpg">
-        </div>
-      </div>
-
-      <div class="exp-step">
-        <h2>Goditela</h2>
-        <p>Comunica la coppa al cameriere.</p>
-        <div class="exp-image">
-          <img src="img/exp-formato.jpg">
-        </div>
-      </div>
-
-    </div>
-
-    <!-- CTA FISSO -->
-    <a href="crea-coppa.html" class="exp-cta">
-      Crea la tua coppa
-    </a>
-
-    <!-- PILL -->
-    <div class="exp-indicator">
-      <div class="exp-bar">
-        <span class="active"></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-
-  </div>
-</section>
 
 <section class="hero hero-after-coppa">
   <img src="img/hero-menu.jpg" class="hero-img" alt="Menu Casa del Gelato">
@@ -1223,71 +1160,10 @@ body.popup-open > *:not(#popup-benvenuto){
       Scopri tutti i nostri gusti e ingredienti.
     </p>
   </div>
-  <button id="menu-plus-btn" aria-label="Apri menu">
-  +
-</button>
+
 </section>
 
-<section id="menu-slides"
-         class="experience experience-menu"
-         data-type="menu">
 
-  <div class="experience-inner">
-
-    <!-- SLIDES -->
-    <div class="exp-slides">
-
-      <div class="exp-step active">
-        <h2>Coppe</h2>
-        <p>Scopri tutte le nostre coppe.</p>
-        <div class="exp-image">
-          <img src="img/menu-coppe.jpg">
-        </div>
-      </div>
-
-      <div class="exp-step">
-        <h2>Coni</h2>
-        <p>Croccanti e artigianali.</p>
-        <div class="exp-image">
-          <img src="img/menu-coni.jpg">
-        </div>
-      </div>
-
-      <div class="exp-step">
-        <h2>Vaschette</h2>
-        <p>Porta il gelato a casa.</p>
-        <div class="exp-image">
-          <img src="img/menu-vaschette.jpg">
-        </div>
-      </div>
-
-      <div class="exp-step">
-        <h2>Torte gelato</h2>
-        <p>Per ogni occasione.</p>
-        <div class="exp-image">
-          <img src="img/menu-torte.jpg">
-        </div>
-      </div>
-
-    </div>
-
-    <!-- CTA -->
-    <a href="menu.html" class="exp-cta">
-      Vai al menu
-    </a>
-
-    <!-- PILL -->
-    <div class="exp-indicator">
-      <div class="exp-bar">
-        <span class="active"></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-
-  </div>
-</section>
 
 <section class="hero hero-after-menu hero-lavora">
   <img src="img/hero-lavora.jpg" class="hero-img" alt="Lavora con noi">
@@ -1304,7 +1180,16 @@ body.popup-open > *:not(#popup-benvenuto){
 </section>
 
 <section class="hero hero-info">
-  <img src="img/hero-info.jpg" class="hero-img" alt="Info e contatti">
+  
+  <video
+    id="hero-info-video"
+    class="hero-img"
+    muted
+    playsinline
+    preload="auto"
+  >
+    <source src="img/info-contatti.mp4" type="video/mp4">
+  </video>
 
   <div class="hero-content">
     <p>Info e contatti</p>
@@ -1314,60 +1199,10 @@ body.popup-open > *:not(#popup-benvenuto){
       Info & Contatti
     </a>
   </div>
-  <button id="info-plus-btn" aria-label="Apri info">
-  +
-</button>
+
 </section>
 
-<section id="info-slides"
-         class="experience experience-info"
-         data-type="info">
 
-  <div class="experience-inner">
-
-    <div class="exp-slides">
-
-      <div class="exp-step active">
-        <h2>Orari</h2>
-        <p>I nostri orari di apertura.</p>
-        <div class="exp-image">
-          <img src="img/info-orari.jpg">
-        </div>
-      </div>
-
-      <div class="exp-step">
-        <h2>Dove siamo</h2>
-        <p>Vieni a trovarci.</p>
-        <div class="exp-image">
-          <img src="img/info-mappa.jpg">
-        </div>
-      </div>
-
-      <div class="exp-step">
-        <h2>Contatti</h2>
-        <p>Scrivici o chiamaci.</p>
- <div class="exp-image">
-  <video autoplay muted playsinline>
-    <source src="img/info-contatti.mp4" type="video/mp4">
-  </video>
-</div>
-
-    </div>
-
-    <a href="info-contatti.html" class="exp-cta">
-      Vai a Info & Contatti
-    </a>
-
-    <div class="exp-indicator">
-      <div class="exp-bar">
-        <span class="active"></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-
-  </div>
-</section>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
