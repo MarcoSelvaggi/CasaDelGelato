@@ -56,6 +56,9 @@ document.addEventListener("DOMContentLoaded", function () {
     <a href="home.html" class="home-btn" aria-label="Home">
         <img src="tastohome.png" alt="home">
     </a>
+
+
+
 </div>
 
 <div id="top-fixed-spacer"></div>
@@ -95,9 +98,9 @@ document.addEventListener("DOMContentLoaded", function () {
   </div>
 
   <div class="tavolo-help">
-    <button id="info-tavolo-btn" onclick="apriInfoTavolo()">
-      Come funziona? Clicca qui
-    </button>
+<button id="info-tavolo-btn">
+  Come funziona? Clicca qui
+</button>
   </div>
 
   <div id="numeri-tavolo" class="tavolo-grid"></div>
@@ -175,14 +178,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <!-- 🔄 STEP DINAMICO (gusti ecc.) -->
-<h2 id="step-title" class="step-title" style="display:none; text-align:center; margin-top:10px;"></h2>
+<h2 id="step-title" class="step-title hidden" style="text-align:center; margin-top:10px;"></h2>
 
 <section id="step-container" style="display:none;"></section>
 
 <!-- POPUP -->
 <div id="popup-coppa">
   <div class="popup-content">
-    <h2>🍨 Come funziona</h2>
+    <h2>Come funziona</h2>
 
     <p class="popup-text">
       Scegli il formato della coppa, poi personalizzala con gusti, granelle,
@@ -365,6 +368,7 @@ document.getElementById("riepilogo-mini").style.display = "none";
   <span>Carrello</span>
 </div>
 
+
 <a href="profilo.html" class="nav-item">
   <div class="profile-wrapper">
     <svg class="profile-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -391,19 +395,19 @@ document.getElementById("riepilogo-mini").style.display = "none";
 
 
 <script>
-  const riepilogo = document.getElementById("riepilogo-coppa");
-
-  riepilogo.innerHTML = `
-    <div style="
-      position:absolute;
-      top:20px;
-      left:20px;
-      font-size:20px;
-      font-weight:700;
-    ">
-      Riepilogo Coppa (TEST OK)
-    </div>
-  `;
+const riepilogo = document.getElementById("riepilogo-mini");
+if (riepilogo) {
+    riepilogo.innerHTML = `
+        <div style="
+            position:absolute;
+            top:20px;
+            left:20px;
+            font-size:20px;
+            font-weight:700;">
+            Riepilogo Coppa (TEST OK)
+        </div>
+    `;
+}
 </script>
 
 <script>
@@ -411,20 +415,23 @@ let tavoloSelezionato = null;
 let zonaSelezionata = null;
 
 function scegliZona(zona) {
+
+  // 🔴 RESET STATO TAVOLO
+  tavoloSelezionato = null;
+  document.getElementById("btn-conferma-tavolo").style.display = "none";
+
   zonaSelezionata = zona;
 
-  // 🔵 RESET VISIVO
+  // 🔵 RESET VISIVO ZONA
   document.getElementById("btn-dentro").classList.remove("active");
   document.getElementById("btn-fuori").classList.remove("active");
 
-  // 🔵 ATTIVA ZONA SELEZIONATA
   if (zona === "D") {
     document.getElementById("btn-dentro").classList.add("active");
   } else {
     document.getElementById("btn-fuori").classList.add("active");
   }
 
-  // ===== CODICE ESISTENTE (NON TOCCATO) =====
   const container = document.getElementById("numeri-tavolo");
   container.innerHTML = "";
   container.className = "tavolo-grid";
@@ -457,8 +464,11 @@ function scegliTavolo(codice, btn) {
 }
 
 function confermaTavolo() {
+
+  console.log("Tavolo selezionato:", tavoloSelezionato);
+
   if (!tavoloSelezionato) {
-    alert("Seleziona un tavolo");
+    mostraToast("Seleziona un tavolo");
     return;
   }
 
@@ -760,7 +770,7 @@ function vaiARegistrazione() {
     <h3>Come funziona</h3>
 
     <!-- BODY SCROLLABILE -->
-    <div class="sheet-body">
+<div class="sheet-body">
 
       <p>
         👀 <b>Guarda il numero del tuo tavolo</b> e selezionalo dall’elenco.
@@ -814,9 +824,9 @@ function vaiARegistrazione() {
     <!-- FOOTER STICKY CON SFUMATURA -->
     <div class="sheet-footer">
 
-      <div class="popup-scroll-hint">
-        ↓ Scorri per leggere tutto ↓
-      </div>
+     <div class="popup-scroll-hint" id="info-scroll-hint">
+  ↓ Scorri per leggere tutto ↓
+</div>
 
       <button id="chiudi-info-tavolo" class="sheet-close-btn">
         Chiudi
@@ -827,7 +837,7 @@ function vaiARegistrazione() {
   </div>
 </div>
 
-
+<div id="toast-avviso" class="toast-avviso"></div>
 
 </body>
 </html>

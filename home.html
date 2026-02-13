@@ -330,9 +330,20 @@ body {
 
 .hero{
   position: relative;
-  height: calc(var(--real-vh) * 0.6);
+
+  height: auto;                /* non più 60vh */
+  min-height: 60vh;
+
+  margin: 40px 16px;           /* spazio laterale + verticale */
+
+  border-radius: 28px;         /* arrotondato Apple */
   overflow: hidden;
-  background: #000;
+
+  background: #fff;            /* bianco */
+  
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08),
+    0 2px 8px rgba(0,0,0,0.04);
 }
 
 .hero-img{
@@ -354,16 +365,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
-  /* ✅ invece di center */
-  justify-content: flex-start;
-
-  padding-top: 28vh;   /* ⬅️ QUI controlli l’altezza */
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 60px 24px;
 
   text-align: center;
-  color: #fff;
+  color: #111;  /* 🔥 nero invece che bianco */
 }
 
 .hero-content h1{
@@ -379,29 +386,37 @@ body {
 }
 
 .hero-btn{
-  padding: 14px 22px;
+  padding: 14px 24px;
   font-size: 16px;
   font-weight: 600;
   border-radius: 14px;
 
-  background: #ff7a00;
+  background: #007aff;
   color: #fff;
   text-decoration: none;
 
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 8px 22px rgba(0,122,255,.35);
+
+  transition: 
+    background .2s ease,
+    box-shadow .2s ease,
+    transform .15s ease;
 }
 
-/* overlay scuro stile Apple */
-.hero::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0,0,0,0.45),
-    rgba(0,0,0,0.55)
-  );
+.hero-btn:hover{
+  background:#0066d6;
+  box-shadow: 0 12px 30px rgba(0,122,255,.45);
 }
+
+.hero-btn:active{
+  transform: scale(.96);
+}
+
+
 /* ===============================
    🍏 REVEAL ON SCROLL (APPLE)
 =============================== */
@@ -704,8 +719,8 @@ height: auto;
   }
 }
 .hero-after-coppa{
-  height: 60vh;
-  background: #000;
+  min-height: 60vh;
+  background: #fff;   /* 👈 bianco */
 }
 
 .hero-after-coppa .hero-content{
@@ -726,13 +741,6 @@ height: auto;
    🍎 HERO – LAVORA CON NOI
 =============================== */
 
-.hero-lavora{
-  height: 60vh;
-}
-
-.hero-lavora .hero-content{
-  padding-top: 36vh;   /* leggermente più su */
-}
 
 .hero-lavora .hero-sub{
   font-size: 18px;
@@ -740,18 +748,7 @@ height: auto;
   margin-bottom: 20px;
 }
 
-/* bottone variante */
-.hero-btn-outline{
-  background: transparent;
-  border: 2px solid #fff;
-  color: #fff;
-  box-shadow: none;
-}
 
-.hero-btn-outline:hover{
-  background: #fff;
-  color: #000;
-}
 .hero-lavora{
   margin-top: 120px;   /* regola qui la distanza tra le due hero */
 }
@@ -1015,7 +1012,190 @@ body.popup-open > *:not(#popup-benvenuto){
   }
 }
 
+#site-alert {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
 
+/* wrapper mantiene centratura verticale */
+.alert-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* testo che scorre */
+.alert-track {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: scrollAlert 18s linear infinite;
+}
+
+/* animazione */
+@keyframes scrollAlert {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+/* ===============================
+   📏 SPAZIO UNIFORME TRA HERO
+=============================== */
+
+.hero + .hero{
+  margin-top: 120px;   /* 🔧 regola qui lo spazio */
+}
+
+.hero-info{
+  margin-bottom: 120px;   /* distanza dal footer */
+}
+
+
+/* =========================
+   👤 AVATAR FLOATING BUTTON
+========================= */
+
+#profile-avatar-btn{
+  position: fixed;
+  top: 2px;
+  right: 14px;
+  width: 48px;
+  height: 48px;
+  z-index: 10050;
+
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,0.08);
+
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+
+  padding: 0;
+  cursor: pointer;
+}
+
+#profile-avatar-btn > .profile-avatar{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   🌫 BACKDROP
+========================= */
+
+#profile-menu-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  z-index: 9998;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition: opacity .25s ease;
+}
+
+#profile-menu-backdrop.show{
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* =========================
+   🧊 LIQUID GLASS MENU
+========================= */
+
+#profile-menu{
+  position: fixed;
+  top: 62px;
+  right: 12px;
+  width: 230px;
+
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(255,255,255,0.55);
+  border-radius: 16px;
+
+  box-shadow: 0 18px 45px rgba(0,0,0,0.22);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  padding: 8px;
+  z-index: 9999;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(-14px) scale(0.94);
+  transform-origin: top right;
+
+  transition:
+    opacity .45s ease,
+    transform .75s cubic-bezier(.16,1,.3,1);
+}
+
+#profile-menu.show{
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+
+  transform: translateY(0) scale(1);
+}
+
+/* =========================
+   📋 MENU ITEMS
+========================= */
+
+.glass-item{
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px 10px;
+  border-radius: 12px;
+
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+
+  display:flex;
+  align-items:center;
+  gap: 8px;
+
+  cursor: pointer;
+  text-decoration: none;
+  outline: none;
+}
+
+.glass-item:visited{
+  color: #111;
+  text-decoration: none;
+}
+
+.glass-item:hover{
+  background: rgba(0,0,0,0.06);
+}
+
+.glass-item:active{
+  background: rgba(0,0,0,0.10);
+  transform: scale(0.99);
+}
+
+.glass-item.danger{
+  color: #ff3b30;
+}
 
 
   </style>
@@ -1035,7 +1215,40 @@ body.popup-open > *:not(#popup-benvenuto){
     <img src="tastohome.png" alt="home">
   </a>
 
+  <!-- AVATAR TOP RIGHT -->
+<div class="profile-actions top-right">
+  <button id="profile-avatar-btn" class="avatar-btn" aria-label="Menu profilo">
+    <div class="profile-avatar" id="profile-avatar">
+      <span id="profile-avatar-text">?</span>
+    </div>
+    <span id="profile-notif-badge" style="display:none;">0</span>
+  </button>
 </div>
+
+</div>
+
+<!-- MENU PROFILO -->
+<div id="profile-menu" class="glass-menu">
+  <button class="glass-item" id="menu-change-photo">Cambia immagine</button>
+  <button class="glass-item" id="menu-edit-profile">Modifica profilo</button>
+  <button class="glass-item" id="menu-register">Registrati</button>
+  <a href="login.html" class="glass-item">Accedi</a>
+  <button class="glass-item" id="menu-logout">Logout</button>
+  <button class="glass-item" id="menu-notifiche">
+    Notifiche 🔔 
+    <span id="notifiche-count" class="badge" style="display:none;">0</span>
+  </button>
+  <button class="glass-item" id="menu-consensi">
+    Consensi comunicazioni 📩
+  </button>
+  <a href="privacy.html" class="glass-item">Privacy &amp; Dati personali</a>
+  <button class="glass-item danger" id="menu-unsubscribe">
+    Disiscriviti ✕
+  </button>
+</div>
+
+<div id="profile-menu-backdrop" class="glass-backdrop"></div>
+
 
 
 
@@ -1043,10 +1256,10 @@ body.popup-open > *:not(#popup-benvenuto){
 
 <!-- 🔔 AVVISO SITO -->
 <div id="site-alert">
-  <span id="site-alert-text"></span>
-  <button onclick="chiudiAvviso()">✕</button>
+  <div class="alert-track">
+    <span id="site-alert-text"></span>
+  </div>
 </div>
-
 
 
 <button id="scroll-top-btn" aria-label="Torna su">
@@ -1063,8 +1276,11 @@ body.popup-open > *:not(#popup-benvenuto){
       Crea la tua coppa. Vivi l’esperienza.
     </p>
 
+    <a href="crea-coppa.html" class="hero-btn">
+      Crea Coppa
+    </a>
   </div>
-</section> 
+</section>
 
 
 
@@ -1075,8 +1291,11 @@ body.popup-open > *:not(#popup-benvenuto){
     <p class="hero-subtitle">
       Scopri tutti i nostri gusti e ingredienti.
     </p>
-  </div>
 
+    <a href="menu.html" class="hero-btn">
+      Vai al Menu
+    </a>
+  </div>
 </section>
 
 
@@ -1089,7 +1308,7 @@ body.popup-open > *:not(#popup-benvenuto){
       Entra a far parte del team Casa del Gelato
     </p>
 
-    <a href="lavora-con-noi.html" class="hero-btn hero-btn-outline">
+    <a href="lavora-con-noi.html" class="hero-btn">
       Lavora con noi
     </a>
   </div>
@@ -1110,8 +1329,7 @@ body.popup-open > *:not(#popup-benvenuto){
   <div class="hero-content">
     <p>Info e contatti</p>
     <p>Orari, indirizzi e tutto quello che ti serve.</p>
-
-    <a href="info-contatti.html" class="hero-btn hero-btn-outline">
+<a href="info-contatti.html" class="hero-btn">
       Info & Contatti
     </a>
   </div>
@@ -1836,6 +2054,40 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 5000); // parte dopo 5 secondi
 });
 </script>
+
+<script>
+const avatarBtnProfile = document.getElementById("profile-avatar-btn");
+const profileMenu = document.getElementById("profile-menu");
+const profileBackdrop = document.getElementById("profile-menu-backdrop");
+
+function openProfileMenu(){
+  profileMenu.classList.add("show");
+  profileBackdrop.classList.add("show");
+}
+
+function closeProfileMenu(){
+  profileMenu.classList.remove("show");
+  profileBackdrop.classList.remove("show");
+}
+
+if (avatarBtnProfile){
+  avatarBtnProfile.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isOpen = profileMenu.classList.contains("show");
+    isOpen ? closeProfileMenu() : openProfileMenu();
+  });
+}
+
+if (profileBackdrop){
+  profileBackdrop.addEventListener("click", closeProfileMenu);
+}
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeProfileMenu();
+});
+</script>
+
+
 
 </body>
 </html>

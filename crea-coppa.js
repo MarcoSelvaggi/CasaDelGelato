@@ -1103,6 +1103,17 @@ function showSizeScreen(){
   coppaSalvata = false;          // ← FONDAMENTALE
   step = "size";
 
+    // ✅ NASCONDI MINI-RIEPILOGO quando sei su "Scegli formato"
+  const mini = document.getElementById("riepilogo-mini");
+  if (mini) {
+    mini.classList.add("hidden");
+    mini.classList.remove("open", "collapsed");
+    mini.style.display = "none";
+    mini.innerHTML = "";
+    mini.dataset.full = "";
+    mini.dataset.mini = "";
+  }
+
   byId("step-size").style.display = "block";
   byId("step-container").style.display = "none";
 
@@ -1113,9 +1124,11 @@ function showSizeScreen(){
   }
 
   updateRiepilogo();
+  aggiornaBottomNav();
 }
 
 function selectSize(size, g, gr, t, ing){
+
 
   const el = document.getElementById("riepilogo-mini");
   if (el) {
@@ -1145,8 +1158,9 @@ byId("step-size").style.display = "none";
 byId("step-container").style.display = "block";
 
 
+
 setTimeout(() => {
-  stepSize.style.display = "none";
+  document.getElementById("step-size")?.style.setProperty("display", "none");
 }, 350);
 
   nascondiBottomNav();
@@ -1247,12 +1261,11 @@ function renderStepGusti() {
 const title = document.getElementById("step-title");
 if (title) {
   title.textContent = "Gusti";
-
-  if (titoloGustiVisibile) {
-    title.classList.remove("hidden");
-  } else {
-    title.classList.add("hidden");
-  }
+if (titoloGustiVisibile) {
+  title.classList.remove("hidden");
+} else {
+  title.classList.add("hidden");
+}
 }
     const cont = byId("step-container");
     if (!cont) return;
@@ -1706,6 +1719,7 @@ if (step === "riepilogo-mini-open") {
   titoloGustiVisibile = true;
   render();
   updateRiepilogo();
+
 }
 
 function nextStepFromMini() {
@@ -1760,7 +1774,8 @@ function prevStep(){
     el.classList.add("collapsed");
     el.classList.remove("open");
     el.innerHTML = el.dataset.mini || "";
-  }
+    unblurBackground();
+}
 
   if (collapseTimer) {
     clearTimeout(collapseTimer);
@@ -1785,10 +1800,12 @@ function prevStep(){
     return;
   }
 
-  if (step === "gusti") {
-    showSizeScreen();
-    return;
-  }
+ if (step === "gusti") {
+  step = "size";              // ✅ IMPORTANTISSIMO
+  showSizeScreen();
+
+  return;
+}
 
   if (step === "granelle") step = "gusti";
   else if (step === "topping") step = "granelle";
@@ -1798,6 +1815,7 @@ function prevStep(){
   titoloGustiVisibile = true;
   render();
   updateRiepilogo();
+
 }
 
 // ---------------- MINI-RIEPILOGO ----------------
@@ -2870,7 +2888,7 @@ if (!coppaEl) {
 } else {
 
 const canvas = await html2canvas(coppaEl, {
-  backgroundColor: null,
+  backgroundColor: "#ffffff",
   scale: 2,
   useCORS: true
 });
@@ -3808,6 +3826,7 @@ window.apriCarrello = function() {
 
   overlay.classList.add("show");
 
+
   avviaTimerSvuotamentoCarrello();
 
   const btnCron = document.getElementById("btn-cronologia");
@@ -4211,6 +4230,7 @@ if (nuvolaInstagramTimer) {
   document.getElementById("step-size").style.display = "none";
   document.getElementById("step-container").style.display = "none";
   document.getElementById("step-title").style.display = "none";
+ 
 
   document.getElementById("reg-box").style.display = "block";
 }
@@ -4508,8 +4528,8 @@ document.addEventListener("DOMContentLoaded", () => {
   aggiornaVisibilita();
 
   // Quando clicchi Dentro o Fuori
-  btnDentro?.addEventListener("click", nascondiInfo);
-  btnFuori?.addEventListener("click", nascondiInfo);
+btnDentro?.addEventListener("click", nascondiInfo);
+btnFuori?.addEventListener("click", nascondiInfo);
 
 });
 
@@ -4521,21 +4541,144 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!btn || !overlay) return;
 
-  function apri() {
-    overlay.classList.add("open");
-    document.body.style.overflow = "hidden";
-  }
+  const sheet = overlay.querySelector(".bottom-sheet");
+  if (!sheet) return;
 
-  function chiudi() {
+  /* =========================
+     OPEN / CLOSE
+  ========================= */
+
+function openSheet() {
+  overlay.classList.add("open");
+  document.body.style.overflow = "hidden";
+
+  sheet.style.transform = "";
+  sheet.style.transition = "";
+}
+
+  function closeSheet() {
     overlay.classList.remove("open");
     document.body.style.overflow = "";
+
+    sheet.style.transform = "";
+    sheet.style.transition = "";
   }
 
-  btn.addEventListener("click", apri);
-  closeBtn?.addEventListener("click", chiudi);
+  btn.addEventListener("click", openSheet);
+  closeBtn?.addEventListener("click", closeSheet);
+
   overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) chiudi();
+    if (e.target === overlay) closeSheet();
   });
 
+  /* =========================
+     SWIPE / DRAG LOGIC
+  ========================= */
+
+  let startY = 0;
+  let currentY = 0;
+  let dragging = false;
+
+  const THRESHOLD = 80;
+
+function startDrag(clientY) {
+  if (!overlay.classList.contains("open")) return;
+
+  dragging = true;
+  startY = clientY;
+  currentY = 0;
+
+  sheet.classList.add("dragging");   // ✅ attiva modalità drag
+  sheet.style.transition = "none";
+}
+
+function moveDrag(clientY) {
+  if (!dragging) return;
+
+  currentY = Math.max(0, clientY - startY);
+  sheet.style.transform = `translateY(${currentY}px)`;
+}
+
+function endDrag() {
+  if (!dragging) return;
+
+  dragging = false;
+  sheet.classList.remove("dragging");   // ✅ IMPORTANTISSIMO
+
+  sheet.style.transition = "transform 220ms ease";
+
+  if (currentY > THRESHOLD) {
+    closeSheet();
+  } else {
+    sheet.style.transform = "translateY(0)";
+    setTimeout(() => {
+      sheet.style.transition = "";
+      sheet.style.transform = "";
+    }, 220);
+  }
+
+  document.body.style.userSelect = "";
+}
+
+  /* =========================
+     TOUCH (SMARTPHONE)
+  ========================= */
+
+  sheet.addEventListener("touchstart", (e) => {
+    if (e.touches.length !== 1) return;
+    startDrag(e.touches[0].clientY);
+  }, { passive: true });
+
+  sheet.addEventListener("touchmove", (e) => {
+    if (!dragging) return;
+    e.preventDefault();
+    moveDrag(e.touches[0].clientY);
+  }, { passive: false });
+
+  sheet.addEventListener("touchend", endDrag);
+
+  /* =========================
+     MOUSE (PC)
+  ========================= */
+
+  sheet.addEventListener("mousedown", (e) => {
+    if (e.button !== 0) return;
+    document.body.style.userSelect = "none";
+    startDrag(e.clientY);
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    moveDrag(e.clientY);
+  });
+
+  window.addEventListener("mouseup", endDrag);
+
 });
+
+
+function aggiornaBottomNav() {
+  const nav = document.getElementById("bottom-nav");
+  if (!nav) return;
+
+  if (step === "size") {
+    nav.style.display = "flex";
+  } else {
+    nav.style.display = "none";
+  }
+}
+window.addEventListener("pageshow", () => {
+  aggiornaBottomNav();
+});
+
+function mostraToast(messaggio){
+  const toast = document.getElementById("toast-avviso");
+  if (!toast) return;
+
+  toast.textContent = messaggio;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2000);
+}
 

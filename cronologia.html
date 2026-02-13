@@ -219,7 +219,7 @@ box-shadow: 0 14px 34px rgba(0,0,0,0.14);
 }
 
 .coppa-thumb {
-  width: 80px; /* ⬅️ qui la grandezza */
+  width: 80px;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   cursor: pointer;
@@ -1495,7 +1495,6 @@ body.no-scroll #fedelta-box.compact {
    POPUP INFO CRONOLOGIA
 =============================== */
 
-
 .info-overlay{
   position: fixed;
   inset: 0;
@@ -1518,21 +1517,24 @@ body.no-scroll #fedelta-box.compact {
   pointer-events: auto;
 }
 
-/* SHEET */
+
 .info-card{
   width: 100%;
   max-width: 520px;
-  max-height: 75vh;
+
+  height: 62vh;
+  max-height: 62vh;
 
   background: #f9f9fb;
-  border-radius: 22px 22px 0 0;
+  border-radius: 20px 20px 0 0;
 
   display: flex;
   flex-direction: column;
 
+  overflow: hidden; /* 🔥 fondamentale */
+  
   transform: translateY(100%);
   transition: transform .35s cubic-bezier(.22,.61,.36,1);
-
   box-shadow: 0 -10px 40px rgba(0,0,0,0.25);
 }
 
@@ -1540,6 +1542,10 @@ body.no-scroll #fedelta-box.compact {
   transform: translateY(0);
 }
 
+
+.info-overlay.open .info-card{
+  transform: translateY(0);
+}
 /* DRAG INDICATOR */
 .info-card::before{
   content: "";
@@ -1642,6 +1648,9 @@ body.info-open{
   margin-bottom: 8px;
 }
 
+
+
+
 /* 🔄 Mini spinner fedeltà */
 .fedelta-loading{
   display: flex;
@@ -1678,18 +1687,23 @@ body.info-open{
   50% { transform: translateY(4px); opacity: 1; }
 }
 
+/* CORPO SCROLLABILE */
 .info-body{
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0 20px 10px; /* 👈 importante: spazio sotto */
+
+  padding: 0 20px 0;  /* 🔥 niente padding sotto */
 }
 
 .info-footer{
   position: sticky;
   bottom: 0;
+
+  flex-shrink: 0;
+
   background: #f9f9fb;
-  padding: 16px 20px 24px;
+  padding: 14px 20px 20px;
   z-index: 10;
 }
 
@@ -1709,6 +1723,44 @@ body.info-open{
 
   pointer-events: none;
 }
+
+/* ✅ placeholder "Scarica immagine" (stesso box della miniatura) */
+.coppa-thumb-btn{
+  width: 80px;           /* ⬅️ identico a .coppa-thumb */
+  height: 80px;          /* ⬅️ box uguale, così non cambia layout */
+  border-radius: 10px;
+  border: 1px solid #d1d1d6;
+  background: #f2f2f7;
+  color: #111;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.1;
+  padding: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.coppa-thumb-btn:active{
+  transform: scale(0.98);
+}
+
+.coppa-loading-spinner{
+  width:18px;
+  height:18px;
+  border:2px solid rgba(0,0,0,0.2);
+  border-top-color:#ff7a00;
+  border-radius:50%;
+  animation: spin .8s linear infinite;
+  margin:auto;
+}
+
+.coppa-thumb-btn.loading{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+
 
     </style>
 </head>
@@ -1944,10 +1996,10 @@ function setupCoppaLazyObserver() {
       const img = entry.target;
       const src = img.dataset.src;
 
-      if (src) {
-        img.src = src; // ✅ SOLO ORA parte il download
-        img.removeAttribute("data-src");
-      }
+if (src) {
+  img.src = src;
+  img.removeAttribute("data-src");
+}
 
       obs.unobserve(img);
     }
@@ -2660,6 +2712,64 @@ async function waitAllImages(container) {
   await Promise.all(imgs.map(waitImg));
 }
 
+window.scaricaImmagine = async function(identifier){
+
+  if (!window.supabase) return;
+
+  const card = document.querySelector(
+    `.cup-card[data-coppa-id="${identifier}"]`
+  );
+
+  if (!card) return;
+
+  const wrapper = card.querySelector(".coppa-thumb-wrapper");
+  const btn = wrapper?.querySelector(".coppa-thumb-btn");
+  if (!wrapper || !btn) return;
+
+btn.classList.add("loading");
+btn.innerHTML = `<div class="coppa-loading-spinner"></div>`;
+btn.disabled = true;
+
+  try {
+
+    let query = supabase
+      .from("coppe")
+      .select("coppa_img")
+      .limit(1);
+
+    query = query.or(
+      `id.eq.${identifier},qr_token.eq.${identifier}`
+    );
+
+    const { data, error } = await query;
+
+    if (error || !data?.[0]?.coppa_img) {
+      btn.textContent = "Errore";
+      return;
+    }
+
+    const imgUrl = data[0].coppa_img;
+
+    // aggiorno solo quella coppa in memoria
+    const coppa = coppe.find(c =>
+      c.id == identifier || c.qr_token == identifier
+    );
+    if (coppa) coppa.coppa_img = imgUrl;
+
+    const img = document.createElement("img");
+    img.className = "coppa-thumb";
+    img.src = imgUrl;
+    img.onclick = () => apriCoppaFullscreen(imgUrl, coppa);
+
+    wrapper.innerHTML = "";
+    wrapper.appendChild(img);
+
+  } catch (e) {
+    console.error(e);
+    btn.textContent = "Errore";
+  }
+};
+
 
 async function renderLista() {
 const arrCompleto = getCoppeFiltrateEOrdinate()
@@ -2685,6 +2795,7 @@ const arr = arrCompleto.slice(0, visibleCount);// ✅ NASCONDE LE ELIMINATE
     for (const c of arr) {
         const idx = coppe.indexOf(c);
         const nome = c.nome || `Coppa #${idx + 1}`;
+        console.log("IMG:", c.nome, !!c.coppa_img);
         const stellina = c.preferito ? "⭐" : "☆";
 
         const gustiText = mostraGustiCompatti(c.gusti || []);
@@ -2713,8 +2824,9 @@ const extraText = formatExtra(c.extra);
                 `Ingredienti: ${ingredientiText || "-"}`
             ].join("\n");
 
-            const div = document.createElement("div");
-            div.className = "cup-card";
+           const div = document.createElement("div");
+div.className = "cup-card";
+div.dataset.coppaId = c.id || c.qr_token || idx;
 div.innerHTML = `
 <div class="cup-title">
   <b 
@@ -2760,13 +2872,19 @@ div.innerHTML = `
 
 ${c.coppa_img ? `
   <div class="coppa-thumb-wrapper">
-<img
-  data-src="${c.coppa_img}"
-  class="coppa-thumb"
-  onclick="apriCoppaFullscreen('${c.coppa_img}', coppe[${idx}])"
->
+    <img
+      data-src="${c.coppa_img}"
+      class="coppa-thumb"
+      onclick="apriCoppaFullscreen('${c.coppa_img}', coppe[${idx}])"
+    >
   </div>
-` : ``}
+` : `
+  <div class="coppa-thumb-wrapper">
+    <button class="coppa-thumb-btn" onclick="scaricaImmagine('${c.id || c.qr_token || idx}')">
+      Scarica<br>immagine
+    </button>
+  </div>
+`}
 
 <div class="cup-content">
 <div class="small">
@@ -2863,17 +2981,8 @@ if (animaLista) {
 
 // 🔥 attiva lazy load SOLO per l'immagine di questa card
 const img = div.querySelector(".coppa-thumb");
-if (img) {
-  if (!img.dataset.src) return;
-
-  // 🔥 se è già visibile, caricala subito
-  const rect = img.getBoundingClientRect();
-  if (rect.top < window.innerHeight) {
-    img.src = img.dataset.src;
-    img.removeAttribute("data-src");
-  } else {
-    observeCoppaImg(img);
-  }
+if (img && img.dataset.src) {
+  observeCoppaImg(img);
 }
 
 // ⛔️ questa riga NON serve più con il lazy
@@ -2932,7 +3041,7 @@ btnMore.onclick = async () => {
   console.log("📦 Offset prima:", window.supabaseOffset);
 
   try {
-    const altre = await getCoppeSupabaseUtente(email);
+const altre = await getCoppeSupabaseUtente(email, true);
 
     console.log("📥 Coppe ricevute:", altre.length);
 
@@ -2959,17 +3068,37 @@ btnMore.onclick = async () => {
 const searchInput = document.getElementById("search");
 const clearBtn = document.getElementById("clear-search");
 
-searchInput.addEventListener("input", e => {
-  termineRicerca = e.target.value;
+searchInput.addEventListener("input", async e => {
+  termineRicerca = e.target.value.trim();
+  const email = localStorage.getItem("user_email");
 
-  visibleCount = PAGE_SIZE;
   animaLista = true;
+
+  // 1️⃣ Prova prima con quello che ho già in memoria
+  let risultati = getCoppeFiltrateEOrdinate()
+    .filter(c => !c.eliminata);
+
+  // 2️⃣ Se sto cercando e non trovo nulla → allora carico tutto
+  if (termineRicerca !== "" && risultati.length === 0 && email) {
+
+    window.supabaseOffset = 0;
+    let tutte = [];
+    let batch;
+
+    do {
+      batch = await getCoppeSupabaseUtente(email, true);
+      tutte = [...tutte, ...batch];
+    } while (batch.length === SUPABASE_PAGE_SIZE);
+
+    coppe = dedupCoppe([...coppe, ...tutte]);
+  }
+
+  visibleCount = termineRicerca ? coppe.length : PAGE_SIZE;
 
   renderLista();
 
-  // 🔥 mostra / nasconde la X
   clearBtn.style.display =
-    searchInput.value.trim() ? "flex" : "none";
+    termineRicerca ? "flex" : "none";
 });
 
 clearBtn.addEventListener("click", () => {
@@ -3970,11 +4099,15 @@ document.addEventListener("DOMContentLoaded", () => {
   btn.addEventListener("click", () => {
     overlay.classList.add("open");
     document.body.classList.add("info-open");   // 🔒 blocco scroll
+    card.style.transform = '';
+card.style.transition = '';
   });
 
   function chiudiInfo(){
     overlay.classList.remove("open");
     document.body.classList.remove("info-open"); // 🔓 riattivo scroll
+    card.style.transform = '';
+card.style.transition = '';
   }
 
   close.addEventListener("click", chiudiInfo);
@@ -3986,6 +4119,79 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+</script>
+
+<script>
+(function(){
+
+  const overlay = document.querySelector('.info-overlay');
+  const card = document.querySelector('.info-card');
+  const body = document.querySelector('.info-body');
+
+  if(!overlay || !card || !body) return;
+
+  let startY = 0;
+  let currentY = 0;
+  let dragging = false;
+
+  function startDrag(e){
+    if(body.scrollTop > 0) return; // solo se siamo in cima
+
+    dragging = true;
+    startY = e.touches ? e.touches[0].clientY : e.clientY;
+    card.style.transition = 'none';
+  }
+
+  function onDrag(e){
+    if(!dragging) return;
+
+    currentY = e.touches ? e.touches[0].clientY : e.clientY;
+    const diff = currentY - startY;
+
+    if(diff > 0){
+      card.style.transform = `translateY(${diff}px)`;
+    }
+  }
+
+  function endDrag(){
+    if(!dragging) return;
+    dragging = false;
+
+    card.style.transition = 'transform .35s cubic-bezier(.22,.61,.36,1)';
+
+    const diff = currentY - startY;
+
+    if(diff > 120){
+      closeSheet();
+    } else {
+      card.style.transform = 'translateY(0)';
+    }
+  }
+
+function closeSheet(){
+  overlay.classList.remove('open');
+  document.body.classList.remove('info-open');
+
+  // reset animazione
+  card.style.transition = '';
+  card.style.transform = '';
+
+  setTimeout(() => {
+    card.style.transform = '';
+  }, 50);
+}
+
+  // Touch
+  card.addEventListener('touchstart', startDrag);
+  card.addEventListener('touchmove', onDrag);
+  card.addEventListener('touchend', endDrag);
+
+  // Mouse
+  card.addEventListener('mousedown', startDrag);
+  window.addEventListener('mousemove', onDrag);
+  window.addEventListener('mouseup', endDrag);
+
+})();
 </script>
 
 </body>

@@ -1171,6 +1171,16 @@ body.allergen-open #top-fixed-bar{
   cursor: pointer;
 }
 
+#lista-btn {
+  position: relative;
+}
+
+#static-badge {
+  position: absolute;
+  top: -12px;   /* 🔥 più in alto */
+  right: -10px; /* leggermente più esterno */
+}
+
 #lista-btn:active{
   transform: scale(.95);
   opacity: .85;
@@ -1504,6 +1514,88 @@ body.allergen-open #top-fixed-bar{
   transform: scale(.92);
 }
 
+#floating-apri-lista {
+  position: fixed;
+  bottom: 20px;   /* 🔥 prima era 90px */
+  left: 18px;
+
+  width: 64px;    /* leggermente più grande per bilanciamento */
+  height: 64px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: #007aff;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;      /* 🔥 evita spostamenti icona */
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+
+  transition: .3s ease;
+  z-index: 99999;
+}
+
+#floating-apri-lista.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.floating-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+
+  min-width: 20px;
+  height: 20px;
+
+  background: #ff3b30;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 6px;
+}
+#floating-apri-lista svg {
+  width: 38px;   /* 🔥 aumenta qui */
+  height: 38px;
+  display: block;
+}
+
+/* 🔘 TACCHETTA DRAG LISTA */
+.sheet-handle{
+  width: 42px;
+  height: 5px;
+  border-radius: 999px;
+
+  background: #d1d1d6; /* grigio iOS */
+  margin: 0 auto 14px;
+
+  opacity: .9;
+}
+
+@keyframes floatPulse {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+#floating-apri-lista.attention {
+  animation: floatPulse 1.6s ease-in-out;
+}
 
 </style>
 </head>
@@ -1534,7 +1626,10 @@ body.allergen-open #top-fixed-bar{
 </header>
 
 <div class="lista-btn-wrap">
-  <button id="lista-btn">Apri Lista</button>
+  <button id="lista-btn">
+    Apri Lista
+    <span id="static-badge" class="floating-badge">0</span>
+  </button>
   <button id="info-btn" aria-label="Informazioni">i</button>
 </div>
 
@@ -1545,6 +1640,7 @@ body.allergen-open #top-fixed-bar{
   <div id="menu-bar">
 
 <div class="bar-tabs category-sticky">
+
   <button class="bar-tab active" data-bar="all">Tutto</button>
   <button class="bar-tab" data-bar="caffetteria">Caffetteria</button>
   <button class="bar-tab" data-bar="colazioni">Colazioni</button>
@@ -1556,6 +1652,7 @@ body.allergen-open #top-fixed-bar{
   <button class="bar-tab" data-bar="vini">Vini</button>
   <button class="bar-tab" data-bar="snacks">Snacks</button>
 </div>
+
 
   <!-- CARD CAFFETTERIA -->
 <div class="product-grid" id="bar-products">
@@ -3890,6 +3987,7 @@ if (promoInfo) {
       : "none";
 }
  
+
     let visible = true;
 
     /* 1) FILTRO CATEGORIA */
@@ -4233,6 +4331,7 @@ function aggiungiAllaLista(nome, prezzo){
   localStorage.setItem("listaOrdine", JSON.stringify(lista));
 
   console.log("Aggiunto:", nome);
+    aggiornaBadge();   // 🔥 aggiorna subito il badge
  }
 
 
@@ -4260,24 +4359,79 @@ document.addEventListener("DOMContentLoaded", () => {
   const listaContainer = document.getElementById("lista-prodotti");
 
 
-  function openLista(){
-    renderLista();
-    overlay.style.display = "block";
-    panel.style.display = "block";
-    aggiornaTimerLista();
-window.__listaTimerInt && clearInterval(window.__listaTimerInt);
-window.__listaTimerInt = setInterval(aggiornaTimerLista, 1000);
+function openLista(){
+  listaAperta = true;
+
+  renderLista();
+  overlay.style.display = "block";
+  panel.style.display = "block";
+  aggiornaTimerLista();
+
+  window.__listaTimerInt && clearInterval(window.__listaTimerInt);
+  window.__listaTimerInt = setInterval(aggiornaTimerLista, 1000);
+
+  document.getElementById("floating-apri-lista")
+    ?.classList.remove("show");
+}
+
+function closeLista(){
+  overlay.style.display = "none";
+  panel.style.display = "none";
+  window.__listaTimerInt && clearInterval(window.__listaTimerInt);
+
+  listaAperta = false;
+
+  if (typeof checkVisibility === "function") {
+    checkVisibility();
+  }
+}
+
+listaBtn.addEventListener("click", openLista);
+overlay.addEventListener("click", closeLista);
+let startY = 0;
+let currentY = 0;
+let isDragging = false;
+
+function startDrag(y) {
+  startY = y;
+  isDragging = true;
+  panel.style.transition = "none";
+}
+
+function moveDrag(y) {
+  if (!isDragging) return;
+
+  currentY = y;
+  const diff = currentY - startY;
+
+  if (diff > 0) {
+    panel.style.transform = `translateY(${diff}px)`;
+  }
+}
+
+function endDrag() {
+  isDragging = false;
+  panel.style.transition = "transform .25s ease";
+
+  const diff = currentY - startY;
+
+  if (diff > 120) {
+    closeLista();
   }
 
-  function closeLista(){
-    overlay.style.display = "none";
-    panel.style.display = "none";
-    window.__listaTimerInt && clearInterval(window.__listaTimerInt);
-  }
+  panel.style.transform = "translateY(0)";
+}
 
-  listaBtn.addEventListener("click", openLista);
-  overlay.addEventListener("click", closeLista);
+// TOUCH
+panel.addEventListener("touchstart", e => startDrag(e.touches[0].clientY));
+panel.addEventListener("touchmove", e => moveDrag(e.touches[0].clientY));
+panel.addEventListener("touchend", endDrag);
 
+// MOUSE (PC)
+panel.addEventListener("mousedown", e => startDrag(e.clientY));
+panel.addEventListener("mousemove", e => moveDrag(e.clientY));
+panel.addEventListener("mouseup", endDrag);
+panel.addEventListener("mouseleave", endDrag);
 });
 
 function getListaPulita(){
@@ -4389,6 +4543,8 @@ function aggiornaTimerLista(){
   z-index: 10001;
   overflow-y: auto;
 ">
+
+<div class="sheet-handle"></div>
 
  <div class="lista-header">
   <h3>La tua Lista</h3>
@@ -4555,6 +4711,129 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+
+<button id="floating-apri-lista">
+<svg viewBox="0 0 24 24" width="42" height="42" fill="none">
+  <!-- pallini -->
+  <circle cx="7" cy="8" r="1.6" fill="white"/>
+  <circle cx="7" cy="12" r="1.6" fill="white"/>
+  <circle cx="7" cy="16" r="1.6" fill="white"/>
+
+  <!-- linee -->
+  <line x1="11" y1="8" x2="18" y2="8"
+        stroke="white"
+        stroke-width="2.4"
+        stroke-linecap="round"/>
+
+  <line x1="11" y1="12" x2="18" y2="12"
+        stroke="white"
+        stroke-width="2.4"
+        stroke-linecap="round"/>
+
+  <line x1="11" y1="16" x2="18" y2="16"
+        stroke="white"
+        stroke-width="2.4"
+        stroke-linecap="round"/>
+</svg>
+
+  <span id="floating-badge" class="floating-badge">0</span>
+</button>
+
+<script>
+let listaAperta = false;  // 🔥 VAR GLOBALE
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const floatingBtn = document.getElementById("floating-apri-lista");
+  const staticBtn = document.getElementById("lista-btn");
+
+  if (!floatingBtn || !staticBtn) return;
+
+  function listaHaElementi() {
+    const lista = JSON.parse(localStorage.getItem("listaOrdine") || "[]");
+    return lista.length > 0;
+  }
+
+function checkVisibility() {
+  const rect = staticBtn.getBoundingClientRect();
+
+  const isVisible =
+    rect.top >= 0 &&
+    rect.bottom <= window.innerHeight;
+
+  // 🔥 se lista aperta NON mostrare mai floating
+  if (listaAperta) {
+    floatingBtn.classList.remove("show");
+    return;
+  }
+
+  if (!isVisible && listaHaElementi()) {
+    floatingBtn.classList.add("show");
+  } else {
+    floatingBtn.classList.remove("show");
+  }
+}
+
+  window.addEventListener("scroll", checkVisibility);
+
+  // aggiorna anche quando aggiungi qualcosa
+  window.addEventListener("storage", checkVisibility);
+
+// aggiorna dopo ogni aggiunta alla lista
+document.addEventListener("click", () => {
+  setTimeout(() => {
+    checkVisibility();
+    aggiornaBadge();
+  }, 50);
+});
+
+// prima esecuzione
+checkVisibility();
+aggiornaBadge();
+
+  floatingBtn.addEventListener("click", () => {
+    staticBtn.click();
+  });
+    // 🔥 micro movimento ogni 7 secondi
+  setInterval(() => {
+    if (!floatingBtn) return;
+
+    if (floatingBtn.classList.contains("show")) {
+      floatingBtn.classList.add("attention");
+
+      setTimeout(() => {
+        floatingBtn.classList.remove("attention");
+      }, 1600);
+    }
+  }, 7000);
+});
+
+function aggiornaBadge() {
+  const floatingBadge = document.getElementById("floating-badge");
+  const staticBadge   = document.getElementById("static-badge");
+
+  const lista = JSON.parse(localStorage.getItem("listaOrdine") || "[]");
+  const totale = lista.length;
+
+  if (totale > 0) {
+    if (floatingBadge) {
+      floatingBadge.textContent = totale;
+      floatingBadge.style.display = "flex";
+    }
+    if (staticBadge) {
+      staticBadge.textContent = totale;
+      staticBadge.style.display = "flex";
+    }
+  } else {
+    if (floatingBadge) floatingBadge.style.display = "none";
+    if (staticBadge) staticBadge.style.display = "none";
+  }
+}
+
+</script>
+
 
 </body>
 </html>
