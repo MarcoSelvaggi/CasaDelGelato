@@ -2128,7 +2128,7 @@ function testoRicercaPerCoppa(c) {
     }
 
     function apriPopupConferma({ titolo, testo, onConfirm }) {
-  const popup = document.getElementById("nfirm");
+  const popup = document.getElementById("popup-confirm");
   const titleEl = document.getElementById("popup-confirm-title");
   const textEl = document.getElementById("popup-confirm-text");
   const okBtn = document.getElementById("popup-confirm-ok");
@@ -2210,19 +2210,26 @@ async function tieniSoloPreferiti() {
 
       localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
 
-      if (window.supabase) {
-        const email = localStorage.getItem("user_email");
-        if (email) {
-          await supabase
-            .from("coppe")
-            .update({
-              eliminata: true,
-              data_eliminazione: now
-            })
-            .eq("email", email)
-            .neq("preferito", true);
-        }
-      }
+if (window.supabase) {
+  const email = localStorage.getItem("user_email");
+
+  if (email) {
+
+    const daEliminare = coppe.filter(c =>
+      !c.preferito && c.id
+    );
+
+    for (const c of daEliminare) {
+      await supabase
+        .from("coppe")
+        .update({
+          eliminata: true,
+          data_eliminazione: now
+        })
+        .eq("id", c.id);
+    }
+  }
+}
 
       renderLista();
       await aggiornaFedelta();

@@ -3932,7 +3932,10 @@ window.updateBadgeNav = function() {
 
     if (totale > 0) {
         badge.textContent = totale;
-        badge.style.display = "block";
+        badge.style.display = "flex";
+badge.style.alignItems = "center";
+badge.style.justifyContent = "center";
+badge.style.lineHeight = "16px";
     } else {
         badge.textContent = "";
         badge.style.display = "none";
@@ -4393,7 +4396,7 @@ const coppaCanvas = await html2canvas(stage, {
 const padding = 60;
 
 // 🔥 Testi
-const line1 = "© iCEcream by Casa del Gelato";
+const line1 = "© Scoopy ice by Casa del Gelato";
 const line2 = "www.casa-del-gelato.it";
 
 // Allineamento
@@ -4636,6 +4639,7 @@ function endDrag() {
   }, { passive: false });
 
   sheet.addEventListener("touchend", endDrag);
+
 
   /* =========================
      MOUSE (PC)

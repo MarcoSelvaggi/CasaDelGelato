@@ -3920,21 +3920,26 @@ body.step-riepilogo{
 }
 
 body.step-riepilogo .riepilogo-registrati{
-  position: absolute;     /* 🔥 NON fixed */
-  top: 72px;              /* sotto top bar */
+  position: absolute;
+  top: 72px;
   right: 14px;
 
-  padding: 8px 12px;
-  font-size: 13px;
+  padding: 4px 10px;      /* 🔥 più piccolo */
+  font-size: 11px;        /* 🔥 testo più piccolo */
   font-weight: 600;
 
-  border-radius: 12px;
+  border-radius: 8px;     /* 🔥 meno bombato */
   background: #007aff;
   color: #fff;
   border: none;
 
+  height: 28px;           /* 🔥 altezza fissa elegante */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
   z-index: 20;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
 }
 .riepilogo-totale-row {
   display: flex;
@@ -5256,4 +5261,3 @@ body.no-scroll {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-
