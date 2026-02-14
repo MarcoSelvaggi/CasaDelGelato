@@ -201,67 +201,7 @@ body {
 }
 
 
-/* ===============================
-   ⏱️ WAIT BAR – DIMENSIONI BLOCCATE
-=============================== */
 
-#wait-bar {
-  /* 🔒 isolamento totale */
-  all: unset;
-  box-sizing: border-box;
-
-  position: fixed;
-  bottom: 90px;
-  left: 12px;
-
-  display: none;
-  align-items: center;
-  justify-content: center;
-
-  background: #111;
-  color: #fff;
-
-  /* 🔢 dimensioni IDENTICHE a crea coppa */
-  font-family: -apple-system, BlinkMacSystemFont,
-               "SF Pro Text", "SF Pro Display",
-               system-ui, sans-serif;
-
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1;
-
-  padding: 6px 12px;
-  border-radius: 11px;
-
-  z-index: 999999;
-
-  /* ❌ nessuna scala, mai */
-  transform: none !important;
-  zoom: 1 !important;
-}
-
-/* 🔒 testo interno */
-#wait-bar span {
-  all: unset;
-  font: inherit;
-  color: inherit;
-  line-height: inherit;
-}
-
-/* testo descrittivo */
-#wait-full {
-  font-size: 11.5px;
-  font-weight: 500;
-  opacity: 0.75;
-}
-
-/* countdown */
-#wait-time,
-#wait-mmss {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-}
 /* ☰ MENU BUTTON – PROFILO (identico a HOME) */
 #menu-btn{
   position: absolute;
@@ -325,66 +265,71 @@ body {
 }
 
 /* ===============================
-   🍎 HERO APPLE STYLE
+   🍎 HERO APPLE STYLE – FIXED
 =============================== */
 
 .hero{
   position: relative;
-
-  height: auto;                /* non più 60vh */
   min-height: 60vh;
 
-  margin: 40px 16px;           /* spazio laterale + verticale */
-
-  border-radius: 28px;         /* arrotondato Apple */
+  margin: 40px 16px;
+  border-radius: 28px;
   overflow: hidden;
 
-  background: #fff;            /* bianco */
-  
+  background: #fff;
+
   box-shadow:
     0 10px 30px rgba(0,0,0,0.08),
     0 2px 8px rgba(0,0,0,0.04);
 }
 
+/* sfondo */
 .hero-img{
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-
-  transform: scale(1.08);
-  transition: transform 1.2s ease;
 }
 
+/* contenuto sopra immagine */
 .hero-content{
   position: relative;
   z-index: 2;
-  height: 100%;
 
+  min-height: 60vh;          /* 🔥 stessa altezza della hero */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
 
-  padding: 60px 24px;
+  justify-content: flex-start; /* testi in alto */
+  align-items: center;
+
+  padding: 60px 24px 40px 24px; /* padding sotto per aria */
 
   text-align: center;
-  color: #111;  /* 🔥 nero invece che bianco */
+  color: #111;
 }
 
+/* titolo */
 .hero-content h1{
   font-size: 42px;
   font-weight: 700;
   margin-bottom: 12px;
 }
 
+/* testo */
 .hero-content p{
   font-size: 18px;
   opacity: 0.85;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
+/* 🔥 QUESTO FA LA MAGIA */
+.hero-btn{
+  margin-top: auto;          /* spinge il bottone in fondo */
+}
+
+/* bottone stile Apple */
 .hero-btn{
   padding: 14px 24px;
   font-size: 16px;
@@ -415,8 +360,6 @@ body {
 .hero-btn:active{
   transform: scale(.96);
 }
-
-
 /* ===============================
    🍏 REVEAL ON SCROLL (APPLE)
 =============================== */
@@ -433,309 +376,9 @@ body {
 }
 
 
-/* ===============================
-   🍎 EXPERIENCE SECTION
-=============================== */
-
-.experience{
-  position: relative;
-  height: var(--real-vh);
-  background: #f6f6f7;
-}
-
-.experience-inner{
-  position: relative;
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  padding-bottom: 160px; /* spazio fisso per CTA + pill */
-  box-sizing: border-box;
-
-  overflow: hidden;
-}
-
-.exp-step{
-  position: absolute;
-  inset: 0;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;   /* ⬅️ NON center */
-
-  text-align: center;
-  padding-top: 80px;            /* ⬅️ distanza dall’alto */
-  padding-left: 20px;
-  padding-right: 20px;
-
-  opacity: 0;
-  transform: translateX(60px);
-}
-
-.exp-step.active{
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.exp-step h2{
-  font-size: 34px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-.exp-step p{
-  font-size: 18px;
-  color: #444;
-  max-width: 420px;
-}
-
-/* ===============================
-   🍏 EXPERIENCE INDICATOR (APPLE)
-=============================== */
-
-.exp-indicator{
-  position: absolute;
-  bottom: 60px;          /* distanza dal fondo */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 5;
-}
-
-.exp-bar{
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  padding: 8px 14px;
-  border-radius: 999px;
-
-  background: rgba(0,0,0,0.06);
-  backdrop-filter: blur(8px);
-}
-
-/* pallini */
-.exp-bar span{
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #bbb;
-  opacity: .5;
-  position: relative;
-  overflow: hidden;
-}
-
-.exp-bar span::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:#111;
-  transform: scaleX(0);
-  transform-origin: left;
-}
-
-.exp-bar span.active{
-  width: 26px;
-  border-radius: 999px;
-  opacity: 1;
-}
-
-.exp-bar span.active::after{
-  animation: progress 15s linear forwards;
-}
-
-@keyframes progress{
-  from{ transform: scaleX(0); }
-  to{ transform: scaleX(1); }
-}
-
-.exp-cta{
-  padding: 8px 16px;          /* piccolo */
-  font-size: 13px;
-  font-weight: 600;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  background: #007aff;
-  color: #fff;
-
-  border-radius: 999px;
-  box-shadow: 0 4px 12px rgba(0,122,255,.35);
-
-  text-decoration: none !important;
-  white-space: nowrap;
-
-  transition: transform .2s ease, box-shadow .2s ease;
-}
-
-.exp-cta:hover{
-  transform: scale(1.04);
-  box-shadow: 0 10px 26px rgba(0,122,255,.45);
-}
-
-.exp-cta:active{
-  transform: scale(0.96);
-}
-
-/* 🔒 mai stile link */
-.exp-cta,
-.exp-cta:link,
-.exp-cta:visited,
-.exp-cta:hover,
-.exp-cta:active,
-.exp-cta:focus{
-  color:#fff !important;
-  text-decoration:none !important;
-}
-
-/* 🔒 STRUTTURA BLOCCATA EXPERIENCE */
-.experience-inner{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-}
 
 
 
-/* 🔥 PULSANTE SEMPRE DOPO IMMAGINE */
-.exp-cta{
-  order: 2;
-  position: static !important;
-
-  margin: 10px 0 12px 0;   /* leggermente più compatto */
-  padding: 6px 14px;       /* ⬅️ PIÙ PICCOLO */
-  font-size: 12.5px;       /* ⬅️ leggermente ridotto */
-  font-weight: 600;
-
-  background: #007aff;
-  color: #fff;
-
-  border-radius: 999px;
-  text-decoration: none !important;
-  box-shadow: 0 3px 10px rgba(0,122,255,.32);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-
-  white-space: nowrap;
-}
-
-/* PILL SEMPRE SOTTO */
-.exp-indicator{
-  order: 3;
-  margin-bottom: 40px;
-}
-/* ===== SPAZIATURE STEP (SOLO DISTANZE) ===== */
-
-/* ✅ avvicina sottotitolo al titolo */
-.exp-step h2{
-  margin-bottom: 12px;   /* distanza titolo → sottotitolo */
-}
-
-.exp-step p{
-  margin-bottom: 80px;   /* distanza sottotitolo → immagine */
-}
-
-
-/* ===============================
-   🍎 IMAGE CARD – BACKGROUND
-=============================== */
-
-.exp-image{
-  /* ❌ NIENTE absolute */
-  position: relative;
-
-  width: 100%;
-  max-width: 420px;
-
- aspect-ratio: 4 / 5;
-height: auto;
-  margin-top: -120px;    /* ⬅️ cresce SOLO verso l’alto */
-  margin-bottom: 12px;  /* distanza dal bottone */
-
-  border-radius: 24px;
-  overflow: hidden;
-
-  box-shadow:
-    0 12px 32px rgba(0,0,0,0.12),
-    0 2px 6px rgba(0,0,0,0.08);
-
-  z-index: 1;           /* dietro testi e bottone */
-}
-
-.exp-image img{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.exp-image video{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.exp-step h2{
-  margin-bottom: 6px;   /* titolo ↔ sottotitolo */
-}
-
-.exp-step p{
-  margin-bottom: 12px;  /* sottotitolo ↔ immagine */
-}
-/* Testi sopra la card */
-.exp-step h2,
-.exp-step p{
-  position: relative;
-  z-index: 3;
-}
-
-/* Bottone sopra la card */
-.exp-cta{
-  position: relative;
-  z-index: 3;
-  margin-top: 220px;   /* ⬅️ lo “appoggi” sopra l’immagine */
-}
-/* 📱 MOBILE FIX – pill più vicino al bottone */
-@media (max-width: 768px){
-
-  .exp-indicator{
-    position: static;          /* ⬅️ rientra nel flusso */
-    margin-top: 14px;          /* distanza dal bottone */
-    margin-bottom: 20px;       /* respiro sotto */
-    transform: none;
-  }
-
-  .experience-inner{
-    padding-bottom: 300px;      /* meno spazio inutile */
-  }
-}
-.hero-after-coppa{
-  min-height: 60vh;
-  background: #fff;   /* 👈 bianco */
-}
-
-.hero-after-coppa .hero-content{
-  padding-top: 28vh;
-}
-
-.hero-after-coppa .hero-subtitle{
-  font-size: 18px;
-  color: #fff;
-  opacity: .9;
-  max-width: 420px;
-}
-.hero-after-coppa{
-  margin-top: -240px;   /* prova -60 / -80 / -100 */
-}
 
 /* ===============================
    🍎 HERO – LAVORA CON NOI
@@ -840,14 +483,7 @@ height: auto;
 
 
 
-/* ===============================
-   ✅ MENU SLIDES – SPAZIO SOLO QUANDO APERTE
-=============================== */
 
-/* stato chiuso → IDENTICO a prima */
-.experience-menu{
-  margin-bottom: 0;
-}
 
 #site-alert{
   position: fixed;
@@ -965,11 +601,6 @@ body.popup-open{
   overflow: hidden;
 }
 
-/* 🌫️ blur dello sfondo */
-body.popup-open > *:not(#popup-benvenuto){
-  filter: blur(6px);
-  pointer-events: none;
-}
 
 /* popup sempre nitido */
 #popup-benvenuto{
@@ -997,20 +628,6 @@ body.popup-open > *:not(#popup-benvenuto){
   cursor: pointer;
 }
 
-
-/* 🖥️ DESKTOP: evita che l'hero successivo si sovrapponga alle slide */
-@media (min-width: 900px){
-  .hero-after-coppa{
-    margin-top: 80px !important;   /* oppure 0 se lo vuoi attaccato */
-  }
-}
-
-/* 🖥️ DESKTOP – MENU: riduce SOLO spazio sopra la card */
-@media (min-width: 900px){
-  .experience[data-type="menu"] .exp-step{
-    padding-top: 20px;   /* prima era 80px */
-  }
-}
 
 #site-alert {
   display: flex;
@@ -1197,6 +814,342 @@ body.popup-open > *:not(#popup-benvenuto){
   color: #ff3b30;
 }
 
+/* ===============================
+   🍎 HERO PLUS – Apple Rounded
+=============================== */
+
+.hero-plus-btn{
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+
+  width: 44px;
+  height: 44px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 20px rgba(0,0,0,.25),
+    0 1px 2px rgba(0,0,0,.15);
+
+  transition:
+    transform .2s ease,
+    background .2s ease,
+    box-shadow .2s ease;
+}
+
+/* SVG */
+.hero-plus-btn svg{
+  width: 28px;          /* era 18px */
+  height: 28px;         /* era 18px */
+  stroke: #111;
+  stroke-width: 3;      /* più bold */
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Hover */
+.hero-plus-btn:hover{
+  background: #fff;
+}
+
+/* Click */
+.hero-plus-btn:active{
+  transform: scale(.92);
+  box-shadow:
+    0 4px 12px rgba(0,0,0,.25);
+}
+
+/* ✅ IMPORTANTISSIMO: l'immagine/video NON deve intercettare i click */
+.hero-img{
+  pointer-events: none;
+}
+
+/* ✅ il + deve stare sopra a tutto nella hero */
+.hero-plus-btn{
+  z-index: 10;
+}
+
+/* (facoltativo) per sicurezza anche il contenuto */
+.hero-content{
+  z-index: 5;
+}
+
+
+/* ===============================
+   🍎 HERO POPUP – SCROLL SAFE
+=============================== */
+
+/* ===== OVERLAY ===== */
+.hero-popup-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 24px;
+  box-sizing: border-box;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+
+  z-index: 100000;
+}
+
+.hero-popup-overlay.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== CARD ===== */
+.hero-popup-card{
+  width: 100%;
+  max-width: 360px;
+
+  max-height: 85vh;          /* 🔥 limite altezza */
+  display: flex;
+  flex-direction: column;
+
+  background: #fff;
+  border-radius: 24px;
+
+  box-shadow: 0 25px 70px rgba(0,0,0,.35);
+  position: relative;
+
+  overflow: hidden;          /* evita sbordi */
+}
+
+/* ===== CLOSE BUTTON ===== */
+.hero-popup-close{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: #f2f2f7;
+  font-size: 14px;
+  cursor: pointer;
+
+  z-index: 2;
+}
+
+/* ===== CONTENT WRAPPER (SCROLL) ===== */
+.hero-popup-content{
+  padding: 28px 22px 24px;
+
+  overflow-y: auto;          /* 🔥 scroll interno */
+  -webkit-overflow-scrolling: touch;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===== TITLE ===== */
+#hero-popup-title{
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+/* ===== TEXT BLOCKS ===== */
+.popup-lead{
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+}
+
+.popup-body,
+.popup-steps{
+  font-size: 14px;
+  line-height: 1.6;
+  color: #555;
+}
+
+.popup-highlight{
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+}
+
+/* ===== IMAGE ===== */
+.hero-popup-content img{
+  width: 140px;           /* dimensione cerchio */
+  height: 140px;
+
+  object-fit: cover;      /* riempie senza deformarsi */
+  
+  border-radius: 50%;     /* 🔥 CERCHIO PERFETTO */
+
+  margin: 22px auto 0;    /* centrata */
+  
+  display: block;
+
+  box-shadow: 
+    0 10px 25px rgba(0,0,0,.15),
+    0 0 0 6px #fff;       /* piccolo bordo bianco elegante */
+}
+
+/* BLOCCO INTRO */
+.popup-hero{
+  margin-bottom: 18px;
+}
+
+.popup-big{
+  font-size: 22px;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+/* CARD GENERICHE */
+.popup-card{
+  background: #f7f7f9;
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.popup-card.subtle{
+  background: #f2f2f5;
+  color: #555;
+}
+
+/* STEPS CARD */
+.popup-steps-card{
+  background: linear-gradient(135deg,#f8fbff,#eef5ff);
+  padding: 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 14px rgba(0,122,255,.08);
+}
+
+.popup-steps-card div{
+  margin-bottom: 4px;
+}
+
+/* FINALE */
+.popup-final{
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.popup-inline-cta{
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #007aff;
+  text-decoration: none;
+}
+
+.popup-inline-cta:hover{
+  text-decoration: underline;
+}
+
+.popup-inline-cta:active{
+  opacity: .7;
+}
+
+.popup-inline-link{
+  color:#007aff;
+  font-weight:600;
+  text-decoration:none;
+}
+
+.popup-inline-link:active{
+  opacity:.7;
+}
+.avatar-btn{
+  position: relative;
+}
+
+#profile-notif-badge{
+  position: absolute;
+
+  bottom: -3px;      /* sotto */
+  left: -4px;        /* sinistra */
+
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+
+  display: none;     /* viene mostrato via JS */
+  align-items: center;
+  justify-content: center;
+
+  background: #ff3b30;
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 18px;
+
+  border-radius: 999px;   /* super tondo */
+  border: none;           /* niente bordo bianco */
+
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+
+  z-index: 2;
+  pointer-events: none;
+}
+
+
+
+#menu-notifiche{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;              /* distanza tra testo e badge */
+}
+
+/* 🔵 BADGE BLU */
+#menu-notifiche .badge{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 18px;
+  min-width: 18px;
+  padding: 0 6px;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  border-radius: 999px;
+
+  background: #007aff;   /* blu iOS */
+  color: #fff;
+
+  line-height: 1;
+
+  box-shadow: 0 3px 8px rgba(0,122,255,.35);
+}
 
   </style>
 
@@ -1204,7 +1157,7 @@ body.popup-open > *:not(#popup-benvenuto){
 </head>
 
 <body>
-
+<div id="site-wrapper">
 
 <!-- 🔝 BARRA FISSA -->
 <div id="top-fixed-bar">
@@ -1221,7 +1174,9 @@ body.popup-open > *:not(#popup-benvenuto){
     <div class="profile-avatar" id="profile-avatar">
       <span id="profile-avatar-text">?</span>
     </div>
-    <span id="profile-notif-badge" style="display:none;">0</span>
+
+    <!-- BADGE -->
+    <span id="profile-notif-badge">0</span>
   </button>
 </div>
 
@@ -1229,22 +1184,16 @@ body.popup-open > *:not(#popup-benvenuto){
 
 <!-- MENU PROFILO -->
 <div id="profile-menu" class="glass-menu">
+    <button class="glass-item" id="menu-notifiche">
+    Vai al profilo 
+    <span id="notifiche-count" class="badge" style="display:none;">0</span>
+  </button>
   <button class="glass-item" id="menu-change-photo">Cambia immagine</button>
   <button class="glass-item" id="menu-edit-profile">Modifica profilo</button>
   <button class="glass-item" id="menu-register">Registrati</button>
   <a href="login.html" class="glass-item">Accedi</a>
   <button class="glass-item" id="menu-logout">Logout</button>
-  <button class="glass-item" id="menu-notifiche">
-    Notifiche 🔔 
-    <span id="notifiche-count" class="badge" style="display:none;">0</span>
-  </button>
-  <button class="glass-item" id="menu-consensi">
-    Consensi comunicazioni 📩
-  </button>
   <a href="privacy.html" class="glass-item">Privacy &amp; Dati personali</a>
-  <button class="glass-item danger" id="menu-unsubscribe">
-    Disiscriviti ✕
-  </button>
 </div>
 
 <div id="profile-menu-backdrop" class="glass-backdrop"></div>
@@ -1280,6 +1229,13 @@ body.popup-open > *:not(#popup-benvenuto){
       Crea Coppa
     </a>
   </div>
+
+<button class="hero-plus-btn" data-hero="coppa">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <line x1="12" y1="6" x2="12" y2="18"></line>
+    <line x1="6" y1="12" x2="18" y2="12"></line>
+  </svg>
+</button>
 </section>
 
 
@@ -1288,7 +1244,7 @@ body.popup-open > *:not(#popup-benvenuto){
   <img src="img/hero-menu.jpg" class="hero-img" alt="Menu Casa del Gelato">
 
   <div class="hero-content reveal">
-    <p class="hero-subtitle">
+    <p>
       Scopri tutti i nostri gusti e ingredienti.
     </p>
 
@@ -1296,6 +1252,13 @@ body.popup-open > *:not(#popup-benvenuto){
       Vai al Menu
     </a>
   </div>
+
+<button class="hero-plus-btn" data-hero="menu">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <line x1="12" y1="6" x2="12" y2="18"></line>
+    <line x1="6" y1="12" x2="18" y2="12"></line>
+  </svg>
+</button>
 </section>
 
 
@@ -1312,28 +1275,42 @@ body.popup-open > *:not(#popup-benvenuto){
       Lavora con noi
     </a>
   </div>
+
+  <button class="hero-plus-btn" data-hero="lavora">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <line x1="12" y1="6" x2="12" y2="18"></line>
+    <line x1="6" y1="12" x2="18" y2="12"></line>
+  </svg>
+</button>
 </section>
 
 <section class="hero hero-info">
-<video
-  id="hero-info-video"
-  class="hero-img"
-  muted
-  playsinline
-  loop
-  preload="auto"
->
-  <source src="img/info-contatti.mp4" type="video/mp4">
-</video>
 
-  <div class="hero-content">
-    <p>Info e contatti</p>
+  <video
+    id="hero-info-video"
+    class="hero-img"
+    muted
+    playsinline
+    loop
+    preload="auto"
+  >
+    <source src="img/info-contatti.mp4" type="video/mp4">
+  </video>
+
+  <div class="hero-content reveal">
     <p>Orari, indirizzi e tutto quello che ti serve.</p>
-<a href="info-contatti.html" class="hero-btn">
+
+    <a href="info-contatti.html" class="hero-btn">
       Info & Contatti
     </a>
   </div>
 
+ <button class="hero-plus-btn" data-hero="info">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <line x1="12" y1="6" x2="12" y2="18"></line>
+    <line x1="6" y1="12" x2="18" y2="12"></line>
+  </svg>
+</button>
 </section>
 
 
@@ -1910,7 +1887,7 @@ function chiudiPopupBenvenuto(){
 
 function vaiAllaRegistrazione(){
   chiudiPopupBenvenuto();
-  window.location.href = "login.html?mode=register";
+  window.location.href = "/login?mode=register";
 }
 </script>
 
@@ -1959,7 +1936,7 @@ function setGoogleLang(lang){
 }
 </script>
 
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 
 <script>
 /* ===============================
@@ -2014,7 +1991,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 
 
 
@@ -2056,6 +2033,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
+
 const avatarBtnProfile = document.getElementById("profile-avatar-btn");
 const profileMenu = document.getElementById("profile-menu");
 const profileBackdrop = document.getElementById("profile-menu-backdrop");
@@ -2087,6 +2065,691 @@ window.addEventListener("keydown", (e) => {
 });
 </script>
 
+<!-- 🍎 HERO INFO POPUP -->
+<div id="hero-info-popup" class="hero-popup-overlay">
+  <div class="hero-popup-card">
+
+    <button class="hero-popup-close" onclick="chiudiHeroPopup()">✕</button>
+
+    <div class="hero-popup-content">
+      <h2 id="hero-popup-title"></h2>
+
+      <!-- 👇 NON più <p> -->
+      <div id="hero-popup-text"></div>
+
+      <img id="hero-popup-img" src="" alt="" />
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function initHeroPlusPopup(){
+
+  const heroInfoData = {
+
+coppa: {
+  title: "Benvenuto in <span class='accent'>Scoopy Ice</span>",
+text: `
+  <div class="popup-hero">
+    <div class="popup-lead">
+      Non scegli un gelato.
+    </div>
+    <div class="popup-big">
+      Lo crei.
+    </div>
+  </div>
+
+  <div class="popup-card">
+    <strong>Scoopy ice</strong> è la nostra esperienza digitale
+    che ti permette di costruire la tua coppa
+    esattamente come la immagini.
+  </div>
+
+  <div class="popup-steps-card">
+    <div>✨ Scegli il formato</div>
+    <div>🍨 Seleziona i gusti</div>
+    <div>🍫 Aggiungi topping, ingredienti ed extra</div>
+    <div>🚀 Condividi la tua coppa</div>
+  </div>
+
+  <div class="popup-card">
+    Puoi farlo comodamente <strong>da casa</strong>
+    e arrivare già pronto per ordinare,
+    senza perdere tempo.
+  </div>
+
+  <div class="popup-card subtle">
+    Sei in gelateria e non sai come funziona?
+    Prima di scegliere il tavolo trovi
+    un <strong>tasto dedicato</strong> che ti guida passo dopo passo.
+  </div>
+
+<div class="popup-final">
+  Ogni coppa è diversa.
+  <br><strong>La tua sarà unica.</strong>
+  <br><br>
+  <a href="crea-coppa.html" class="popup-inline-cta">
+    Inizia ora
+  </a>
+</div>
+`,
+  img: "img/hero-gelato.jpg",
+  cta: true
+},
+menu: {
+  title: "Il Nostro Menu",
+  text: `
+    <div class="popup-hero">
+      <div class="popup-lead">
+        Tutto quello che vendiamo.
+      </div>
+      <div class="popup-big">
+        In un unico posto.
+      </div>
+    </div>
+
+    <div class="popup-card">
+      Nel menu trovi <strong>gelati, coppe, bevande e specialità</strong>
+      sempre aggiornate, con descrizioni chiare e dettagliate.
+    </div>
+
+    <div class="popup-steps-card">
+      <div>🍨 Vedi tutti i prodotti disponibili</div>
+      <div>⚠️ Consulta allergeni e ingredienti</div>
+      <div>📝 Aggiungi prodotti alla tua lista</div>
+    </div>
+
+    <div class="popup-card">
+      Puoi creare una <strong>lista completa</strong> e mostrarla
+      al cameriere per ordinare tutto in un’unica volta,
+      in modo semplice e veloce.
+    </div>
+
+    <div class="popup-final">
+      Decidi con calma.<br>
+      <strong>Ordina senza confusione.</strong>
+      <br><br>
+      <a href="menu.html" class="popup-inline-link">Apri il menu</a>
+    </div>
+  `,
+  img: "img/hero-menu.jpg"
+},
+
+lavora: {
+  title: "Lavora con Noi",
+  text: `
+    <div class="popup-hero">
+      <div class="popup-lead">
+        Non è solo un lavoro.
+      </div>
+      <div class="popup-big">
+        È energia, sorriso, squadra.
+      </div>
+    </div>
+
+    <div class="popup-card">
+      In Casa del Gelato cerchiamo persone
+      <strong>solari, dinamiche e affidabili</strong>,
+      con voglia di mettersi in gioco
+      e far vivere un’esperienza speciale ai clienti.
+    </div>
+
+    <div class="popup-steps-card">
+      <div>🤝 Lavoro di squadra</div>
+      <div>⚡️ Velocità, ritmo e spirito attivo</div>
+      <div>❤️ Cura dei dettagli e del servizio</div>
+    </div>
+
+    <div class="popup-card subtle">
+      Anche senza esperienza?
+      Se hai entusiasmo e voglia di imparare,
+      per noi conta più l’attitudine.
+    </div>
+
+    <div class="popup-final">
+      Vuoi far parte del team?
+      <br><strong>Inizia il tuo percorso con noi.</strong>
+      <br><br>
+      <a href="lavora-con-noi.html" class="popup-inline-link">
+        Invia la candidatura
+      </a>
+    </div>
+  `,
+  img: "img/hero-lavora.jpg"
+},
+
+info: {
+  title: "Info & Contatti",
+  text: `
+    <div class="popup-hero">
+      <div class="popup-lead">
+        Tutto quello che ti serve.
+      </div>
+      <div class="popup-big">
+        A portata di mano.
+      </div>
+    </div>
+
+    <div class="popup-card">
+      Qui trovi tutti i nostri <strong>contatti ufficiali</strong>:
+      numero di telefono, email e collegamenti diretti ai
+      <strong>profili social</strong>.
+    </div>
+
+    <div class="popup-steps-card">
+      <div>📍 Indirizzi e indicazioni stradali</div>
+      <div>🕒 Orari aggiornati</div>
+      <div>📞 Contatti rapidi</div>
+      <div>⭐ Lasciaci una recensione </div>
+    </div>
+
+    <div class="popup-card">
+      Scopri informazioni sui nostri locali,
+      cosa trovi nelle vicinanze e tutto ciò che può
+      rendere la tua visita ancora più semplice.
+    </div>
+
+    <div class="popup-final">
+      Un solo spazio.<br>
+      <strong>Tutte le informazioni.</strong><br><br>
+
+      <a href="info-contatti.html" class="popup-inline-link">
+        Vai alla pagina Info & Contatti
+      </a>
+    </div>
+  `,
+  img: "img/hero-info.jpg"
+}
+};
+
+  const popup     = document.getElementById("hero-info-popup");
+  const title     = document.getElementById("hero-popup-title");
+  const text      = document.getElementById("hero-popup-text");
+  const img       = document.getElementById("hero-popup-img");
+  const startBtn  = document.getElementById("popup-start-btn");
+
+  if (!popup) return;
+
+  let currentKey = null;
+
+  function openPopup(key){
+
+    const data = heroInfoData[key];
+    if (!data) return;
+
+    currentKey = key;
+
+    title.innerHTML = data.title;
+    text.innerHTML  = data.text;
+
+    if (img && data.img){
+      img.src = data.img;
+      img.style.display = "block";
+    }
+
+    if (startBtn){
+      if (data.cta){
+        startBtn.style.display = "block";
+        startBtn.href = "crea-coppa.html";
+      } else {
+        startBtn.style.display = "none";
+      }
+    }
+
+    popup.classList.add("show");
+    document.body.classList.add("popup-open");
+  }
+
+function closePopup(){
+  popup.classList.remove("show");
+  document.body.classList.remove("popup-open");
+}
+
+  // click sui +
+  document.querySelectorAll(".hero-plus-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      openPopup(btn.dataset.hero);
+    });
+  });
+
+  // chiudi con X
+  window.chiudiHeroPopup = closePopup;
+
+  // chiudi cliccando fuori
+  popup.addEventListener("click", (e) => {
+    if (e.target === popup){
+      closePopup();
+    }
+  });
+
+  // chiudi con ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape"){
+      closePopup();
+    }
+  });
+
+})();
+</script>
+
+</div>
+
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+
+async function aggiornaAvatarHome(){
+
+  const email  = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+
+  const avatar  = document.getElementById("profile-avatar");
+  const text    = document.getElementById("profile-avatar-text");
+
+  if (!avatar) return;
+
+  // reset base
+  avatar.style.backgroundImage = "";
+  avatar.style.background = "#fff";
+  avatar.style.border = "1px solid rgba(0,0,0,0.08)";
+
+  if (text) text.style.display = "block";
+
+  // ❌ NON LOGGATO
+  if (!logged || !email){
+    if (text) text.textContent = "?";
+    return;
+  }
+
+  // 🔹 carica avatar da Supabase
+  const { data, error } = await supabase
+    .from("utenti")
+    .select("avatar_url")
+    .eq("email", email)
+    .single();
+
+  if (!error && data?.avatar_url){
+    avatar.style.backgroundImage = `url(${data.avatar_url})`;
+    avatar.style.backgroundSize = "contain";
+    avatar.style.backgroundPosition = "center";
+    avatar.style.backgroundRepeat = "no-repeat";
+
+    if (text) text.style.display = "none";
+    return;
+  }
+
+  // fallback iniziale email
+  if (text){
+    text.textContent = email.charAt(0).toUpperCase();
+  }
+}
+
+document.addEventListener("DOMContentLoaded", aggiornaAvatarHome);
+document.addEventListener("DOMContentLoaded", setupAvatarChangeHome);
+document.addEventListener("DOMContentLoaded", () => {
+
+  const editBtn     = document.getElementById("menu-edit-profile");
+  const registerBtn = document.getElementById("menu-register");
+  const loginBtn    = document.querySelector('#profile-menu a[href="login.html"]');
+
+  // 🔵 MODIFICA PROFILO
+  if (editBtn){
+    editBtn.addEventListener("click", () => {
+      closeProfileMenu();
+      window.location.href = "/modifica-profilo.html";
+    });
+  }
+
+  // 🟠 REGISTRATI
+  if (registerBtn){
+    registerBtn.addEventListener("click", () => {
+      closeProfileMenu();
+      window.location.href = "/login.html?mode=register";
+    });
+  }
+
+  // 🟢 ACCEDI
+  if (loginBtn){
+    loginBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeProfileMenu();
+      window.location.href = "/login.html";
+    });
+  }
+
+});
+
+
+async function aggiornaDotNotificheHome(){
+
+  const email  = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+
+  const avatarBadge = document.getElementById("profile-notif-badge");
+  const menuBadge   = document.getElementById("notifiche-count");
+
+  // ❌ NON LOGGATO
+  if (!logged || !email){
+    if (avatarBadge) avatarBadge.style.display = "none";
+    if (menuBadge)   menuBadge.style.display   = "none";
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("notifiche")
+    .select("id")
+    .eq("email", email)
+    .eq("letta", false);
+
+  if (error){
+    if (avatarBadge) avatarBadge.style.display = "none";
+    if (menuBadge)   menuBadge.style.display   = "none";
+    return;
+  }
+
+  const n = data.length;
+
+  if (n > 0){
+
+    const value = n > 99 ? "99+" : n;
+
+    // 🔴 badge avatar
+    if (avatarBadge){
+      avatarBadge.textContent = value;
+      avatarBadge.style.display = "flex";
+    }
+
+    // 🔴 badge nel bottone "Vai al profilo"
+    if (menuBadge){
+      menuBadge.textContent = value;
+      menuBadge.style.display = "inline-flex";
+    }
+
+  } else {
+
+    if (avatarBadge) avatarBadge.style.display = "none";
+    if (menuBadge)   menuBadge.style.display   = "none";
+
+  }
+}
+document.addEventListener("DOMContentLoaded", aggiornaDotNotificheHome);
+document.addEventListener("DOMContentLoaded", () => {
+  const email  = localStorage.getItem("user_email");
+  const logged = localStorage.getItem("userLogged") === "1";
+
+  if (logged && email){
+    subscribeNotificheHome(email);
+  }
+});
+setInterval(aggiornaDotNotificheHome, 15000);
+
+function subscribeNotificheHome(email){
+
+  supabase
+    .channel("notifiche-home-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "notifiche",
+        filter: `email=eq.${email}`
+      },
+      async () => {
+        await aggiornaDotNotificheHome();
+      }
+    )
+    .subscribe();
+
+}
+
+function setupAvatarChangeHome(){
+
+  const changeBtn = document.getElementById("menu-change-photo");
+  const input     = document.getElementById("profile-avatar-input");
+
+  if (!changeBtn || !input) return;
+
+  // 🔵 CLICK SU "CAMBIA IMMAGINE"
+  changeBtn.addEventListener("click", () => {
+
+    const email  = localStorage.getItem("user_email");
+    const logged = localStorage.getItem("userLogged") === "1";
+
+    if (!logged || !email){
+      mostraPopup(
+        "Accesso richiesto",
+        "Accedi o registrati per modificare l’immagine profilo.",
+        "login.html"
+      );
+      return;
+    }
+
+    input.click();
+  });
+
+  // 🟢 QUANDO SELEZIONI FILE
+  input.addEventListener("change", async () => {
+
+    const email  = localStorage.getItem("user_email");
+    const logged = localStorage.getItem("userLogged") === "1";
+
+    if (!logged || !email){
+      input.value = "";
+      return;
+    }
+
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+
+      const bitmap = await createImageBitmap(file);
+
+      let w = bitmap.width;
+      let h = bitmap.height;
+
+      const maxSize = 256;
+      const scale = Math.min(maxSize / w, maxSize / h, 1);
+
+      w = Math.round(w * scale);
+      h = Math.round(h * scale);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(bitmap, 0, 0, w, h);
+
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+      const fileName = `avatar_${email.replace(/[@.]/g,"_")}.jpg`;
+      const blob = await (await fetch(dataUrl)).blob();
+
+      const { error: uploadError } = await supabase
+        .storage
+        .from("avatars")
+        .upload(fileName, blob, {
+          upsert: true,
+          contentType: "image/jpeg"
+        });
+
+      if (uploadError){
+        mostraPopup("Errore", "Errore nel caricamento immagine");
+        return;
+      }
+
+      const { data } = supabase
+        .storage
+        .from("avatars")
+        .getPublicUrl(fileName);
+
+      const avatarUrl = data.publicUrl + "?t=" + Date.now();
+
+      await supabase
+        .from("utenti")
+        .update({ avatar_url: avatarUrl })
+        .eq("email", email);
+
+      aggiornaAvatarHome();
+
+    } catch (err){
+      console.error(err);
+      mostraPopup("Errore", "Si è verificato un problema.");
+    }
+
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const logoutBtn = document.getElementById("menu-logout");
+  if (!logoutBtn) return;
+
+  logoutBtn.addEventListener("click", async () => {
+
+    try {
+      // 🔐 Logout Supabase
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn("Errore logout supabase:", err);
+    }
+
+    // 🧹 Pulisce localStorage
+    localStorage.removeItem("userLogged");
+    localStorage.removeItem("user_email");
+
+    // 🔔 Nasconde badge notifiche
+    const badge = document.getElementById("profile-notif-badge");
+    if (badge) badge.style.display = "none";
+
+    // 👤 Reset avatar
+    aggiornaAvatarHome();
+
+    // ❌ Chiude menu
+    closeProfileMenu();
+
+    // 🔄 Redirect alla home ufficiale
+    window.location.href = "/home.html";
+  });
+
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("menu-notifiche");
+  const popup = document.getElementById("notifiche-popup");
+  const backdrop = document.getElementById("notifiche-backdrop");
+  const closeBtn = document.getElementById("chiudi-notifiche");
+
+  if (!btn || !popup || !backdrop || !closeBtn) return;
+
+  async function apriNotifiche(){
+    closeMenu?.();
+
+    const email = localStorage.getItem("user_email");
+    if (!email){
+      mostraPopup(
+        "Accesso richiesto",
+        "Accedi o registrati per visualizzare le notifiche.",
+        "login.html"
+      );
+      return;
+    }
+
+    await caricaNotificheUtente();   // 👈 usa stessa funzione
+
+    document.body.classList.add("no-scroll");
+    backdrop.classList.add("show");
+    popup.classList.add("show");
+  }
+
+  async function chiudiNotifiche(){
+    popup.classList.remove("show");
+    backdrop.classList.remove("show");
+    document.body.classList.remove("no-scroll");
+
+    const email = localStorage.getItem("user_email");
+    if (!email) return;
+
+    await supabase
+      .from("notifiche")
+      .update({ letta: true })
+      .eq("email", email)
+      .eq("letta", false);
+
+    aggiornaBadgeNotifiche();
+  }
+
+  closeBtn.addEventListener("click", chiudiNotifiche);
+  backdrop.addEventListener("click", chiudiNotifiche);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const notifBtn = document.getElementById("menu-notifiche");
+
+  if (notifBtn) {
+    notifBtn.addEventListener("click", () => {
+      closeMenu(); // chiude menu profilo
+
+      // 🔥 redirect diretto al profilo
+      window.location.href = "profilo.html";
+    });
+  }
+
+});
+
+</script>
+
+<input
+  id="profile-avatar-input"
+  type="file"
+  accept="image/*"
+  style="
+    position: fixed;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  "
+>
+
+
+<!-- 🔔 POPUP NOTIFICHE -->
+<div id="notifiche-backdrop" class="glass-backdrop"></div>
+
+<div id="notifiche-popup" class="glass-menu"
+  style="right:auto; left:50%; width:320px;">
+
+  <div class="notifiche-header">
+    <div class="notifiche-title">Notifiche</div>
+
+    <button
+      class="btn-clear-notifications"
+      onclick="eliminaTutteNotifiche()">
+      Svuota tutto
+    </button>
+  </div>
+
+  <div id="notifiche-list"></div>
+
+  <button id="chiudi-notifiche"
+    style="
+      margin-top:16px;
+      width:100%;
+      padding:10px;
+      border-radius:12px;
+      border:none;
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+    ">
+    Chiudi
+  </button>
+</div>
 
 
 </body>

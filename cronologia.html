@@ -1760,8 +1760,14 @@ body.info-open{
   justify-content:center;
 }
 
-
-
+.cronologia-intro{
+  text-align: center;
+  font-size: 12px;   /* 🔥 più piccolo */
+  color: #777;       /* leggermente più soft */
+  margin-top: 4px;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
     </style>
 </head>
 
@@ -1795,6 +1801,10 @@ body.info-open{
 
 <!-- ⭐ TITOLO ORIGINALE (fuori dalla barra) -->
 <h1>Coppe Create</h1>
+<p class="cronologia-intro">
+  Benvenuto nella tua cronologia.<br>
+  Per capire come funziona clicca il tasto <b>Info</b> in alto a destra.
+</p>
 
 
 <!-- 🎁 FEDELTA' / COUNTER COPPE CONFERMATE -->
@@ -2118,7 +2128,7 @@ function testoRicercaPerCoppa(c) {
     }
 
     function apriPopupConferma({ titolo, testo, onConfirm }) {
-  const popup = document.getElementById("popup-confirm");
+  const popup = document.getElementById("nfirm");
   const titleEl = document.getElementById("popup-confirm-title");
   const textEl = document.getElementById("popup-confirm-text");
   const okBtn = document.getElementById("popup-confirm-ok");
@@ -2354,12 +2364,17 @@ if (window.supabase) {
       
     }
 
-    function usaQuestaCoppa(idx) {
-        const c = coppe[idx];
-        if (!c) return alert("Errore");
-        localStorage.setItem("coppaDaUsare", JSON.stringify(c));
-        window.location.href = "crea-coppa.html?from=cronologia";
-    }
+function usaQuestaCoppa(idx) {
+    const c = coppe[idx];
+    if (!c) return alert("Errore");
+
+    localStorage.setItem("coppaDaUsare", JSON.stringify(c));
+
+    // 🔥 SKIP POPUP UNA SOLA VOLTA
+    localStorage.setItem("skip_popup_coppa", "1");
+
+    window.location.href = "crea-coppa.html?step=gusti";
+}
 
     function getCoppeFiltrateEOrdinate() {
         let arr = coppe.slice();
@@ -2464,162 +2479,46 @@ console.log("🟢 aggiornaFedelta ATTIVA – DOM OK");
     .select("id, redento, nome, tipo, created_at")
     .eq("email", email)
 
-    const couponTotali = coupon.length;          
-const couponRedenti = coupon.filter(c => c.redento).length;
+const couponTotali = coupon.length;
 const couponDisponibili = coupon.filter(c => !c.redento).length;
-const confermeConsumate = couponTotali * 10;
-const confermeValide = confermateTot - confermeConsumate;
-const progress = confermeValide % 10;
-// 🎁 CREA COUPON AUTOMATICO OGNI 10 CONFERME
-if (confermeValide >= 10 && progress === 0) {
 
+// 🔥 blocchi maturati SOLO dalle conferme
+const blocchiMaturati = Math.floor(confermateTot / 10);
 
+// 🔥 blocchi già trasformati in coupon reali
+const blocchiCouponCreati = couponTotali;
 
-const codice = "cp_" + crypto.randomUUID();
+// 🔥 coupon che dovrebbero esserci ma non ancora creati
+const couponVirtuali = blocchiMaturati - blocchiCouponCreati;
 
-const sb = window.supabase;
-if (!sb) {
-  console.error("⛔ supabase non disponibile in aggiornaFedelta()");
-  return;
-}
+// 🔢 progress reale
+const progress = confermateTot % 10;
 
-// 🔥 fallback sicuro
-let tipoCoupon = "media";
+countEl.textContent = `${progress}/10`;
+barEl.style.width = `${(progress / 10) * 100}%`;
 
-try {
-  console.log("🧪 [COUPON] inizio calcolo formato vincente");
+if (couponDisponibili > 0 || couponVirtuali > 0) {
 
-  // 1️⃣ PRENDO LE PRIME 10 CONFERME NON CONSUMATE
-  const { data: conferme10, error: errConf } = await sb
-    .from("conferme_coppe")
-    .select("id, coppa_id")
-    .eq("email", email)
-    .eq("consumata", false)
-    .order("id", { ascending: true })
-    .limit(10);
+  const tot = couponDisponibili + couponVirtuali;
 
-  console.log("🧾 conferme10:", conferme10);
-
-  if (errConf) throw errConf;
-  if (!conferme10 || conferme10.length !== 10) {
-    console.warn("⛔ meno di 10 conferme, uso fallback");
-  } else {
-
-    // 2️⃣ prendo i formati delle coppe coinvolte
-    const idsUnici = [...new Set(conferme10.map(c => c.coppa_id).filter(Boolean))];
-
-    console.log("🧩 coppa_id unici:", idsUnici);
-
-    if (idsUnici.length > 0) {
-      const { data: coppe, error: errCoppe } = await sb
-        .from("coppe")
-        .select("id, formato")
-        .in("id", idsUnici);
-
-      if (errCoppe) throw errCoppe;
-
-      // mappa id → formato
-      const mapFormato = new Map();
-      coppe.forEach(c => mapFormato.set(c.id, c.formato));
-
-      const normalizzaFormato = (formato) => {
-        if (!formato) return null;
-        const f = String(formato).toLowerCase();
-        if (f.includes("piccola")) return "piccola";
-        if (f.includes("media"))   return "media";
-        if (f.includes("grande"))  return "grande";
-        return null;
-      };
-
-      // 3️⃣ CONTO SULLE 10 CONFERME (NON SULLE COPPE)
-      const count = { piccola: 0, media: 0, grande: 0 };
-
-      const raw = [];
-
-      for (const conf of conferme10) {
-        const formato = normalizzaFormato(mapFormato.get(conf.coppa_id));
-        raw.push(formato);
-        if (formato) count[formato]++;
-      }
-
-      console.log("🎯 FORMATI RAW (per conferma):", raw);
-      console.log("📊 COUNT NORMALIZZATO:", count);
-
-      // 4️⃣ formato vincente
-      const vincente = Object.entries(count).sort((a, b) => b[1] - a[1]);
-      if (vincente[0][1] > 0) {
-        tipoCoupon = vincente[0][0];
-      }
-
-      console.log("🏆 FORMATO VINCENTE:", tipoCoupon);
-    }
-  }
-} catch (e) {
-  console.error("❌ ERRORE CALCOLO FORMATO VINCENTE:", e);
-}
-
-const { error: errInsert } = await sb
-  .from("coupon")
-.insert({
-  email: email,
-  codice: codice,
-  tipo: tipoCoupon,
-  titolo: `Coppa ${tipoCoupon.toUpperCase()} omaggio`,
-  redento: false,
-  created_at: new Date().toISOString()
-});
-
-if (!errInsert) {
-  console.log("🎉 COUPON CREATO");
-
-  const { data: confermeDaConsumare, error: errConf } = await sb
-    .from("conferme_coppe")
-    .select("id")
-    .eq("email", email)
-    .eq("consumata", false)
-    .order("id", { ascending: true })
-    .limit(10);
-
-  if (errConf) console.error("❌ Errore lettura conferme:", errConf);
-
-  if (confermeDaConsumare && confermeDaConsumare.length === 10) {
-    const ids = confermeDaConsumare.map(c => c.id);
-
-    const { error: errUpd } = await sb
-      .from("conferme_coppe")
-      .update({ consumata: true })
-      .in("id", ids);
-
-    if (errUpd) console.error("❌ Errore update consumata:", errUpd);
-  }
-
-  await aggiornaFedelta();
-  return; // ⬅️ 🔥 QUI. NON ALTROVE.
-}
-   }
-
-
-  // ✅ 3️⃣ UI
-  countEl.textContent = `${progress}/10`;
-  barEl.style.width = `${(progress / 10) * 100}%`;
-
-if (couponDisponibili > 0) {
   const testo =
-    couponDisponibili === 1
+    tot === 1
       ? "coupon disponibile"
       : "coupon disponibili";
 
-  msgEl.innerHTML = `🎉 <b>Hai ${couponDisponibili} ${testo}!</b>`;
+  msgEl.innerHTML = `🎉 <b>Hai ${tot} ${testo}!</b>`;
   btnEl.style.display = "block";
   btnEl.onclick = () => location.href = "profilo.html#coupon";
-} else {
-    msgEl.textContent =
-      couponTotali > 0
-        ? `Hai già sbloccato ${couponTotali} coupon 🎁 Continua per il prossimo`
-        : `Continua a creare coppe per sbloccare il coupon 🎁`;
 
-    btnEl.style.display = "none";
-  }
+} else {
+
+  msgEl.textContent =
+    couponTotali > 0
+      ? `Hai già sbloccato ${couponTotali} coupon 🎁 Continua per il prossimo`
+      : `Continua a creare coppe per sbloccare il coupon 🎁`;
+
+  btnEl.style.display = "none";
+}
 
   console.log("✅ FEDELTÀ OK:", { confermateTot, progress });
 }
@@ -3114,7 +3013,6 @@ clearBtn.addEventListener("click", () => {
   searchInput.focus();
 });
 
-
 document.getElementById("toggle-preferiti").addEventListener("click", () => {
   mostraSoloPreferiti = !mostraSoloPreferiti;
 
@@ -3269,7 +3167,7 @@ async payload => {
 }
 
 
-// 🔔 REALTIME COUPON – AGGIORNA CARD FEDELTÀ
+// 🔔 REALTIME COUPON – MOSTRA SUBITO POPUP
 const emailCoupon = localStorage.getItem("user_email");
 
 if (emailCoupon) {
@@ -3278,16 +3176,30 @@ if (emailCoupon) {
     .on(
       "postgres_changes",
       {
-        event: "*",
+        event: "INSERT", // 🔥 SOLO quando nasce un nuovo coupon
         schema: "public",
         table: "coupon",
         filter: `email=eq.${emailCoupon}`
       },
       async payload => {
-        console.log("🎁 COUPON realtime:", payload);
 
-        // 🔥 ricalcola SOLO la fedeltà (card)
+        console.log("🎉 NUOVO COUPON RILEVATO:", payload);
+
         await aggiornaFedelta();
+
+        // 🔥 MOSTRA SUBITO IL BOTTONE E MESSAGGIO
+        const btn = document.getElementById("btn-vedi-coupon");
+        const msg = document.getElementById("fedelta-msg");
+
+        if (btn) btn.style.display = "block";
+
+        if (msg) {
+          msg.innerHTML = `
+            🎉 <b>Coupon sbloccato!</b><br>
+            Vai nel profilo per usarlo.
+          `;
+        }
+
       }
     )
     .subscribe();

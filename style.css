@@ -183,7 +183,7 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
   top: 0; left: 0;
   width: 100vw; height: 100vh;
   background: rgba(0,0,0,.35);
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 99999;
@@ -1383,11 +1383,24 @@ body.step-size #riepilogo-mini {
     font-weight: 500;
 }
 
-/* Icone */
-.nav-item img {
-    width: 26px;
-    height: 26px;
-    margin-bottom: 3px;
+.nav-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px; /*modifica distanza testo crea coppa icona */
+}
+
+.nav-item span{
+  line-height:1;
+}
+
+.nav-icon-img{
+  width:24px;
+  height:24px;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;   /* 🔥 AGGIUNGI QUESTO */
 }
 
 /* Badge rosso del carrello */
@@ -4988,47 +5001,74 @@ body.no-scroll {
   letter-spacing: -0.3px;
 }
 
-.icecream-title .brand{
-  background: linear-gradient(90deg,#ff7a00,#ffb347);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+/* ===============================
+   🍨 ICECREAM HERO – BRAND COLORS
+=============================== */
 
-.icecream-title .copyright{
-  font-size: 13px;
-  vertical-align: super;
-  margin-left: 3px;
-  opacity: .5;
-}
-
-.icecream-subtitle{
-  font-size: 15px;
-  color: #555;
-  margin: 0 0 20px 0;
-  font-weight: 500;
-}
 .icecream-hero{
   text-align: center;
   padding: 10px 20px 20px;
 }
 
+/* Titolo principale */
+.icecream-title{
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111;
+  letter-spacing: -.2px;
+}
+
+/* Testo iCEcream con colori logo */
+.icecream-title .brand{
+  background: linear-gradient(
+    90deg,
+    #0F5966 0%,
+    #E78C63 50%,
+    #8C532B 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* © più raffinato */
+.icecream-title .copyright{
+  font-size: 12px;
+  vertical-align: super;
+  margin-left: 2px;
+  color: #8C532B;
+  opacity: .8;
+}
+
+/* Sottotitolo */
+.icecream-subtitle{
+  font-size: 15px;
+  font-weight: 500;
+  color: #0F5966;      /* blu logo */
+  opacity: .85;
+  margin: 0 0 20px 0;
+}
+
+/* Badge */
 .icecream-badge{
   display: inline-block;
   font-size: 12px;
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 999px;
-  background: linear-gradient(90deg,#ff7a00,#ffb347);
-  color: white;
+
+  background: linear-gradient(
+    90deg,
+    #0F5966,
+    #E78C63,
+    #8C532B
+  );
+
+  color: #fff;
   margin-bottom: 12px;
   letter-spacing: .5px;
-}
 
-.icecream-title{
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: #111;
+  box-shadow: 0 4px 14px rgba(15,89,102,.25);
 }
 
 .icecream-title .copyright{

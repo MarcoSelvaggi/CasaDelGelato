@@ -8,6 +8,17 @@
 
   <link rel="stylesheet" href="style.css">
 
+
+
+<style>
+  /* ✅ blocco totale: anche se JS/CSS dopo prova a riaprirlo */
+  .no-coppa-popup #popup-coppa {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+</style>
+
   <!-- LIBRERIE -->
   <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -122,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   <div class="icecream-hero">
     <h1 class="icecream-title">
-      Benvenuto in <span class="brand">iCEcream</span><span class="copyright">©</span>
+      Benvenuto in <span class="brand">Scoopy ice</span><span class="copyright">©</span>
     </h1>
 
     <p class="icecream-subtitle">
@@ -183,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <section id="step-container" style="display:none;"></section>
 
 <!-- POPUP -->
-<div id="popup-coppa">
+<div id="popup-coppa" style="display:none;">
   <div class="popup-content">
     <h2>Come funziona</h2>
 
@@ -205,30 +216,41 @@ document.addEventListener("DOMContentLoaded", function () {
 </div>
 
 <script>
-  const params = new URLSearchParams(window.location.search);
-
-  const fromCrono    = params.get("from") === "cronologia";
-  const fromAllergie = params.get("step") === "size";
+document.addEventListener("DOMContentLoaded", () => {
 
   const popup = document.getElementById("popup-coppa");
+  if (!popup) return;
+
+  const skipOnce = localStorage.getItem("skip_popup_coppa") === "1";
+  const hideForever = localStorage.getItem("hide_popup_coppa") === "1";
+
+  // 🔥 Se arrivo da cronologia → salto una volta
+  if (skipOnce) {
+    localStorage.removeItem("skip_popup_coppa"); // importante
+    popup.remove();
+    return;
+  }
+
+  if (hideForever) {
+    popup.remove();
+    return;
+  }
+
+  popup.style.display = "flex";
+
   const btnOk = document.getElementById("popup-ok");
   const hideCheckbox = document.getElementById("popup-hide-forever");
 
-  const hideForever = localStorage.getItem("hide_popup_coppa") === "1";
-
-  // ❌ condizioni per NON mostrarlo
-  if (fromCrono || fromAllergie || hideForever) {
-    popup.style.display = "none";
-  } else {
-    popup.style.display = "flex";
+  if (btnOk) {
+    btnOk.onclick = () => {
+      if (hideCheckbox?.checked) {
+        localStorage.setItem("hide_popup_coppa", "1");
+      }
+      popup.style.display = "none";
+    };
   }
 
-  btnOk.onclick = () => {
-    if (hideCheckbox.checked) {
-      localStorage.setItem("hide_popup_coppa", "1");
-    }
-    popup.style.display = "none";
-  };
+});
 </script>
 
 <script>
@@ -346,6 +368,13 @@ document.getElementById("riepilogo-mini").style.display = "none";
 
 <!-- ⭐ BOTTOM NAV BAR -->
 <div id="bottom-nav">
+
+<a href="crea-coppa.html" class="nav-item">
+  <img src="icona-crea.png" class="nav-icon-img" alt="Crea">
+  <span>Scoopy ice</span>
+</a>
+
+
 <div class="nav-item" onclick="apriCarrello()">
   <div class="cart-wrapper">
     
@@ -838,6 +867,7 @@ function vaiARegistrazione() {
 </div>
 
 <div id="toast-avviso" class="toast-avviso"></div>
+
 
 </body>
 </html>
