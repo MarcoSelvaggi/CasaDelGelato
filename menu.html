@@ -1599,6 +1599,25 @@ body.allergen-open #top-fixed-bar{
   animation: floatPulse 1.6s ease-in-out;
 }
 
+/* =====================================================
+   🍨 GELATO – SOLO COPPE GRANDI (FORZA OVERRIDE)
+   ===================================================== */
+
+#menu-gelato 
+.product-card:not([data-category="tavolo"]):not([data-category="bimbi"]) 
+.product-img{
+  height: auto !important;
+  aspect-ratio: 3 / 4 !important;
+}
+
+#menu-gelato 
+.product-card:not([data-category="tavolo"]):not([data-category="bimbi"]) 
+.product-img img{
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+
 </style>
 </head>
 
