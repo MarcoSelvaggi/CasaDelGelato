@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="icon" href="favicon.png">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <script src="global.js"></script>
+ <script type="module" src="global.js"></script>
 
 
   <style>
@@ -290,6 +290,19 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+/* 🔥 FIX CENTRATURA VIDEO HERO INFO */
+#hero-info-video{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 100%;
+  height: 100%;
+
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  object-position: center center;
 }
 
 /* contenuto sopra immagine */
@@ -629,12 +642,7 @@ body.popup-open{
 }
 
 
-#site-alert {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
-}
+
 
 /* wrapper mantiene centratura verticale */
 .alert-wrapper {
@@ -1368,113 +1376,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (btn) btn.style.display = "none";
     }
 });
-</script>
-<script type="module">
-import { supabase } from "./supabase.js";
-
-let waitInterval = null;
-let collapseTimeout = null;
-
-function expandWaitBar() {
-  const full = document.getElementById("wait-full");
-  const compact = document.getElementById("wait-compact");
-
-  if (!full || !compact) return;
-
-  full.style.display = "inline";
-  compact.style.display = "none";
-
-  clearTimeout(collapseTimeout);
-  collapseTimeout = setTimeout(collapseWaitBar, 15000);
-}
-
-function collapseWaitBar() {
-  const full = document.getElementById("wait-full");
-  const compact = document.getElementById("wait-compact");
-
-  if (!full || !compact) return;
-
-  full.style.display = "none";
-  compact.style.display = "inline";
-}
-
-async function loadWaitTime() {
-  const { data, error } = await supabase
-    .from("wait_time")
-    .select("*")
-    .eq("id", 1)
-    .single();
-
-  if (error || !data) return;
-
-  const bar = document.getElementById("wait-bar");
-  const txt = document.getElementById("wait-time");
-
-  if (!bar || !txt) return;
-
-  // stop eventuale timer precedente
-  if (waitInterval) {
-    clearInterval(waitInterval);
-    waitInterval = null;
-  }
-
-  if (!data.active || data.minutes <= 0) {
-    bar.style.display = "none";
-    return;
-  }
-
-  const startTime = new Date(data.updated_at).getTime();
-  const totalSeconds = data.minutes * 60;
-
-function tick() {
-  const now = Date.now();
-  const elapsed = Math.floor((now - startTime) / 1000);
-  const remaining = totalSeconds - elapsed;
-
-  if (remaining <= 0) {
-    bar.style.display = "none";
-    clearInterval(waitInterval);
-    waitInterval = null;
-    return;
-  }
-
-  const min = Math.floor(remaining / 60);
-  const sec = remaining % 60;
-  const timeStr = `${min}:${sec.toString().padStart(2, "0")}`;
-
-  // 🔢 aggiorna entrambi i testi
-  txt.textContent = timeStr;
-  document.getElementById("wait-mmss").textContent = timeStr;
-
-  bar.style.display = "flex";
-
-// ⏱️ quando inizia un nuovo minuto → riapre la barra
-if (sec === 59) {
-  expandWaitBar();
-}
-}
-  tick(); // ⏱️ avvio immediato
-  waitInterval = setInterval(tick, 1000);
-}
-
-// 🔴 REALTIME WAIT TIME
-supabase
-  .channel("wait-time-live")
-  .on(
-    "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "wait_time"
-    },
-    payload => {
-      console.log("🔁 wait_time aggiornato realtime:", payload);
-      loadWaitTime();
-    }
-  )
-  .subscribe();
-
-document.addEventListener("DOMContentLoaded", loadWaitTime);
 </script>
 
 
@@ -2283,6 +2184,8 @@ info: {
 
     title.innerHTML = data.title;
     text.innerHTML  = data.text;
+    const content = popup.querySelector(".hero-popup-content");
+if (content) content.scrollTop = 0;
 
     if (img && data.img){
       img.src = data.img;
@@ -2438,11 +2341,14 @@ async function aggiornaDotNotificheHome(){
     return;
   }
 
-  const { data, error } = await supabase
-    .from("notifiche")
-    .select("id")
-    .eq("email", email)
-    .eq("letta", false);
+const { data, error } = await supabase
+  .from("notifiche")
+  .select("id")
+  .eq("email", email)
+  .eq("letta", false);
+
+console.log("🔎 NOTIFICHE TROVATE:", data);
+console.log("📊 NUMERO:", data?.length);
 
   if (error){
     if (avatarBadge) avatarBadge.style.display = "none";
@@ -2476,15 +2382,16 @@ async function aggiornaDotNotificheHome(){
   }
 }
 document.addEventListener("DOMContentLoaded", aggiornaDotNotificheHome);
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const email  = localStorage.getItem("user_email");
   const logged = localStorage.getItem("userLogged") === "1";
 
   if (logged && email){
-    subscribeNotificheHome(email);
+    await aggiornaDotNotificheHome();   // 🔥 carica subito
+    subscribeNotificheHome(email);      // 🔔 realtime
   }
 });
-setInterval(aggiornaDotNotificheHome, 15000);
+
 
 function subscribeNotificheHome(email){
 
@@ -2498,12 +2405,14 @@ function subscribeNotificheHome(email){
         table: "notifiche",
         filter: `email=eq.${email}`
       },
-      async () => {
+      async (payload) => {
+        console.log("🔔 HOME REALTIME:", payload);
         await aggiornaDotNotificheHome();
       }
     )
-    .subscribe();
-
+    .subscribe((status) => {
+      console.log("📡 HOME SUB STATUS:", status);
+    });
 }
 
 function setupAvatarChangeHome(){
