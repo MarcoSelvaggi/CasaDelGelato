@@ -229,6 +229,16 @@
   font-weight: 700;
   font-size: 14px;
 }
+/* 🔒 Blocca doppio tap zoom solo sul keypad PIN */
+.pin-keypad button{
+  touch-action: manipulation;
+}
+
+/* (opzionale ma consigliato) */
+.pin-keypad{
+  user-select: none;
+  -webkit-user-select: none;
+}
 </style>
 </head>
 

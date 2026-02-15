@@ -1418,8 +1418,11 @@ body.overlay-open #lista-coppe {
 
 body.no-scroll{
   overflow: hidden;
-  height: 100vh;
-  touch-action: none; /* 🔥 iOS */
+
+  height: 100vh;   /* fallback */
+  height: 100dvh;  /* 🔥 fix iOS vecchi */
+
+  touch-action: none;
 }
 body.no-scroll #fedelta-box.compact {
   opacity: 0;
@@ -1620,9 +1623,10 @@ body.no-scroll #fedelta-box.compact {
 /* BLOCCO SCROLL */
 body.info-open{
   overflow: hidden;
-  height: 100vh;
-}
 
+  height: 100vh;   /* fallback */
+  height: 100dvh;  /* 🔥 fix iOS vecchi */
+}
 
 .info-tip-title{
   text-align: center;

@@ -614,10 +614,108 @@ body {
   font-size:16px;
 }
 
+.admin-top-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:10px 16px;
+  margin-bottom:12px;
+}
+
+/* 👥 Online */
+#online-counter{
+  font-size:13px;
+  font-weight:600;
+
+  color:#34c759;
+  background:#eaffea;
+
+  padding:4px 10px;
+  border-radius:999px;
+}
+
+/* 🔴 Logout */
+#admin-logout-btn{
+  padding:6px 14px;
+  border-radius:999px;
+  border:none;
+
+  background:#ff3b30;
+  color:#fff;
+
+  font-size:13px;
+  font-weight:700;
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+#admin-logout-btn:active{
+  transform:scale(.95);
+  opacity:.8;
+}
 
 
+/* wrapper azioni */
+.top-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  position:absolute;
+  right:14px;
+  top:10px;
+}
 
+/* BOTTONI ICONA */
+.reload-btn,
+.qr-btn,
+.mail-btn{
+  width:34px;
+  height:34px;
 
+  border-radius:10px;
+  border:none;
+
+  background:#f2f2f7;
+  color:#111;
+
+  font-size:16px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  cursor:pointer;
+  text-decoration:none;
+
+  transition:.15s ease;
+}
+
+/* hover */
+.reload-btn:hover,
+.qr-btn:hover,
+.mail-btn:hover{
+  background:#e5e5ea;
+}
+
+/* active effetto iOS */
+.reload-btn:active,
+.qr-btn:active,
+.mail-btn:active{
+  transform:scale(.92);
+  background:#dcdce0;
+}
+/* 🔒 Blocca doppio tap zoom solo sul keypad PIN */
+.pin-keypad button{
+  touch-action: manipulation;
+}
+
+/* (opzionale ma consigliato) */
+.pin-keypad{
+  user-select: none;
+  -webkit-user-select: none;
+}
 </style>
 
 </head>
@@ -628,19 +726,12 @@ body {
 <div id="top-fixed-bar">
 
 
-  <div id="online-counter"
-     style="
-       position:absolute;
-       left:12px;
-       font-size:13px;
-       font-weight:600;
-       color:#34c759;
-       background:#eaffea;
-       padding:4px 10px;
-       border-radius:999px;
-       box-shadow:0 2px 6px rgba(0,0,0,.1);
-     ">
-  👥 Online: --
+<div class="admin-top-bar">
+  <div id="online-counter">
+    👥 Online: --
+  </div>
+
+  <button id="admin-logout-btn">Logout</button>
 </div>
 
   <div class="top-actions">
@@ -1178,6 +1269,31 @@ input,
 textarea,
 select {
   font-size: 16px !important;
+}
+
+
+#admin-logout-btn{
+  position:absolute;
+  left:12px;
+
+  padding:8px 14px;
+  border-radius:12px;
+  border:none;
+
+  background:#ff3b30;
+  color:#fff;
+
+  font-size:14px;
+  font-weight:600;
+
+  cursor:pointer;
+
+  box-shadow:0 6px 18px rgba(255,59,48,.35);
+  transition:.2s ease;
+}
+
+#admin-logout-btn:active{
+  transform:scale(.95);
 }
 </style>
 
@@ -2830,6 +2946,7 @@ function render(){
 
         const email = u.email || "Anonimo";
         const stats = getStats(email);
+       console.log("EMAIL:", email, "CONFIRM:", u.email_confermata);
 
 // "registrati" = nessun filtro extra
 
@@ -2842,12 +2959,68 @@ if (!matchUtente && !contieneNelleCoppe) return;
 
         const cardCls = u.disiscritto ? "utente-card utente-disiscritto" : "utente-card";
 
+const isConfermato =
+  Boolean(u.email_confermata) ||
+  Boolean(u.confermato_manualmente);
+
 out.innerHTML += `
   <div class="${cardCls}"
        onclick="toggleFilters('${email}')"
        style="cursor:pointer;">
 
     <b>${highlight(email)}</b>
+
+    ${
+      isConfermato
+        ? `
+        <div style="
+          margin-top:6px;
+          display:inline-block;
+          background:#34c759;
+          color:white;
+          padding:4px 10px;
+          border-radius:8px;
+          font-size:12px;
+          font-weight:700;
+        ">
+          Email confermata
+        </div>
+        `
+        : `
+        <div style="
+          margin-top:6px;
+          display:flex;
+          align-items:center;
+          gap:8px;
+        ">
+          <span style="
+            background:#ff3b30;
+            color:white;
+            padding:4px 8px;
+            border-radius:8px;
+            font-size:12px;
+            font-weight:700;
+          ">
+            ⚠ Non confermato
+          </span>
+
+          <button
+            style="
+              background:#007aff;
+              color:white;
+              border:none;
+              padding:4px 8px;
+              border-radius:8px;
+              font-size:12px;
+              cursor:pointer;
+            "
+            onclick="event.stopPropagation(); confermaUtente('${email}')"
+          >
+            Conferma
+          </button>
+        </div>
+        `
+    }
 
     <div class="counter-row">
       <span class="badge badge-blue">Coppe: ${stats.tot}</span>
@@ -3232,6 +3405,32 @@ window.inviaEmailRegistratiDaForm = async function () {
   }
 };
 
+window.confermaUtente = async function(email) {
+
+  if (!email) return;
+
+  const ok = confirm(`Confermare manualmente l'utente?\n\n${email}`);
+  if (!ok) return;
+
+  const { error } = await supabase
+    .from("utenti")
+    .update({
+      confermato_manualmente: true,
+      email_confermata: true   // 🔥 opzionale ma consigliato
+    })
+    .eq("email", email);
+
+  if (error) {
+    console.error(error);
+    alert("Errore conferma utente");
+    return;
+  }
+
+  alert("Utente confermato manualmente ✅");
+
+  await load();
+};
+
 
 window.inviaEmail_Registrati = async function () {
   if (!confirm("Inviare una mail a TUTTI gli utenti registrati?")) return;
@@ -3463,8 +3662,7 @@ function apriBoxEmailRegistrati() {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
-<script type="module">
-import { supabase } from "./supabase.js";
+<script>
 
 async function caricaAvvisoAdmin(){
   const { data, error } = await supabase
@@ -3518,8 +3716,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<script type="module">
-import { supabase } from "./supabase.js";
+<script>
 
 document.addEventListener("DOMContentLoaded", async () => {
   const toggle = document.getElementById("toggle-crea-coppa");
@@ -3621,12 +3818,15 @@ function updatePinDots() {
 
 function checkAdminPin() {
   if (enteredPin === ADMIN_PIN) {
+
     console.log("✅ PIN OK");
+
+    localStorage.setItem("isAdmin", "1");   // 🔥 AGGIUNGI QUESTO
+
     closeAdminPin();
     return;
   }
 
-  // ❌ sbagliato
   enteredPin = "";
   updatePinDots();
 }
@@ -3634,7 +3834,12 @@ function checkAdminPin() {
 document.addEventListener("DOMContentLoaded", () => {
   const keypad = document.querySelector(".pin-keypad");
 
-  openAdminPin(); // mostra subito
+  // 🔐 Controllo se admin è già autenticato
+  if (localStorage.getItem("isAdmin") !== "1") {
+    openAdminPin();
+  } else {
+    closeAdminPin();
+  }
 
   keypad.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
@@ -3657,6 +3862,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+const logoutBtn = document.getElementById("admin-logout-btn");
+
+if(logoutBtn){
+  logoutBtn.addEventListener("click", () => {
+
+    localStorage.removeItem("isAdmin");   // 🔥 rimuove accesso
+    enteredPin = "";                      // reset pin
+    updatePinDots();                      // reset pallini
+
+    openAdminPin();                       // riapre schermata PIN
+
+    console.log("Admin disconnesso");
+  });
+}
+
 function apriSezioneAdmin(idSezione, btn) {
 
   console.log("CLICK SEZIONE:", idSezione);

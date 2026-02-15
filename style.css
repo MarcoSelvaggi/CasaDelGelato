@@ -158,8 +158,13 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 /* === POPUP CREA COPPA === */
 .popup {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+
+  height: 100vh;     /* fallback vecchi browser */
+  height: 100dvh;    /* 🔥 fix iPhone */
+
   background: rgba(0,0,0,.35);
   display: none;
   justify-content: center;
@@ -180,8 +185,14 @@ button:active, .btn:active { transform: scale(0.97); opacity: 0.8; }
 /* === POPUP CREA COPPA === */
 .popup {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  top: 0;
+  left: 0;
+
+  width: 100vw;
+
+  height: 100vh;     /* fallback universale */
+  height: 100dvh;    /* 🔥 fix iPhone vecchi / barra Safari */
+
   background: rgba(0,0,0,.35);
   display: none;
   justify-content: center;
