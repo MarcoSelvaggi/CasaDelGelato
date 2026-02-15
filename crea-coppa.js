@@ -1166,6 +1166,10 @@ setTimeout(() => {
   nascondiBottomNav();
   renderStepGusti();
   updateRiepilogo();
+  // 🔝 Reset scroll quando entro nei gusti
+setTimeout(() => {
+  window.scrollTo(0, 0);
+}, 0);
 
   if (el && el.dataset.mini) {
     el.classList.add("collapsed");
@@ -1719,7 +1723,7 @@ if (step === "riepilogo-mini-open") {
   titoloGustiVisibile = true;
   render();
   updateRiepilogo();
-
+window.scrollTo(0, 0);
 }
 
 function nextStepFromMini() {
@@ -1815,7 +1819,7 @@ function prevStep(){
   titoloGustiVisibile = true;
   render();
   updateRiepilogo();
-
+window.scrollTo(0, 0);
 }
 
 // ---------------- MINI-RIEPILOGO ----------------
@@ -4627,16 +4631,21 @@ function endDrag() {
      TOUCH (SMARTPHONE)
   ========================= */
 
-  sheet.addEventListener("touchstart", (e) => {
-    if (e.touches.length !== 1) return;
-    startDrag(e.touches[0].clientY);
-  }, { passive: true });
+sheet.addEventListener("touchstart", (e) => {
 
-  sheet.addEventListener("touchmove", (e) => {
-    if (!dragging) return;
-    e.preventDefault();
-    moveDrag(e.touches[0].clientY);
-  }, { passive: false });
+  // 🔥 SE STAI TOCCANDO IL BODY → PERMETTI SCROLL
+  if (e.target.closest(".sheet-body")) return;
+
+  if (e.touches.length !== 1) return;
+
+  startDrag(e.touches[0].clientY);
+
+}, { passive: true });
+
+sheet.addEventListener("touchmove", (e) => {
+  if (!dragging) return;
+  moveDrag(e.touches[0].clientY);
+}, { passive: true });
 
   sheet.addEventListener("touchend", endDrag);
 
