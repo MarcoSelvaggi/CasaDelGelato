@@ -5274,3 +5274,22 @@ body.no-scroll {
   transform: translateX(-50%) translateY(0);
 }
 
+/* ===============================
+   DESKTOP → layout come smartphone
+=============================== */
+
+@media (min-width: 769px){
+
+  body{
+    background: #e9e9eb;
+  }
+
+  #coppa-stage{
+    width: 430px !important;
+    margin: 40px auto !important;
+
+    border-radius: 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.12);
+  }
+
+}
