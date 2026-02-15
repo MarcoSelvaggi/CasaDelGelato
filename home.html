@@ -1162,6 +1162,21 @@ body.popup-open{
   box-shadow: 0 3px 8px rgba(0,122,255,.35);
 }
 
+.hero-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition: opacity 1s ease;
+  pointer-events:none;
+}
+
+.hero-video.active{
+  opacity:1;
+}
+
   </style>
 
   <link rel="stylesheet" href="bottom-nav.css">
@@ -1252,7 +1267,13 @@ body.popup-open{
 
 
 <section class="hero hero-after-coppa">
-  <img src="img/hero-menu.jpg" class="hero-img" alt="Menu Casa del Gelato">
+<video id="hero-menu-video-1" class="hero-img hero-video active" muted playsinline preload="auto">
+  <source src="img/menu-video-1.mp4" type="video/mp4">
+</video>
+
+<video id="hero-menu-video-2" class="hero-img hero-video" muted playsinline preload="auto">
+  <source src="img/menu-video-2.mp4" type="video/mp4">
+</video>
 
   <div class="hero-content reveal">
     <p>
@@ -2629,6 +2650,38 @@ document.addEventListener("DOMContentLoaded", () => {
   "
 >
 
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const v1 = document.getElementById("hero-menu-video-1");
+  const v2 = document.getElementById("hero-menu-video-2");
+
+  if (!v1 || !v2) return;
+
+  let current = v1;
+  let next    = v2;
+
+  function switchVideo() {
+
+    next.currentTime = 0;
+    next.play().catch(()=>{});
+
+    next.classList.add("active");
+    current.classList.remove("active");
+
+    // swap riferimenti
+    [current, next] = [next, current];
+  }
+
+  v1.addEventListener("ended", switchVideo);
+  v2.addEventListener("ended", switchVideo);
+
+  // parte il primo
+  v1.play().catch(()=>{});
+
+});
+</script>
 
 </body>
 </html>
