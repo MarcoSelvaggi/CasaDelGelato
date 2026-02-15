@@ -7,7 +7,7 @@
   <title>Crea la tua Coppa</title>
 
   <link rel="stylesheet" href="style.css">
-
+<script type="module" src="global.js"></script>
 
 
 <style>
@@ -305,7 +305,7 @@ document.getElementById("riepilogo-mini").style.display = "none";
     Svuota carrello
 </button>
             <button id="btn-cronologia" onclick="apriCronologia()" style="display:none;">
-                Cronologia coppe
+                Coppe create
             </button>
         </div>
     </div>
@@ -516,10 +516,13 @@ import { supabase } from "./supabase.js";
 let waitInterval = null;
 let collapseTimeout = null;
 
+/* ===============================
+   WAIT BAR UI
+=============================== */
+
 function expandWaitBar() {
   const full = document.getElementById("wait-full");
   const compact = document.getElementById("wait-compact");
-
   if (!full || !compact) return;
 
   full.style.display = "inline";
@@ -532,14 +535,18 @@ function expandWaitBar() {
 function collapseWaitBar() {
   const full = document.getElementById("wait-full");
   const compact = document.getElementById("wait-compact");
-
   if (!full || !compact) return;
 
   full.style.display = "none";
   compact.style.display = "inline";
 }
 
+/* ===============================
+   LOAD WAIT TIME
+=============================== */
+
 async function loadWaitTime() {
+
   const { data, error } = await supabase
     .from("wait_time")
     .select("*")
@@ -553,7 +560,6 @@ async function loadWaitTime() {
 
   if (!bar || !txt) return;
 
-  // stop eventuale timer precedente
   if (waitInterval) {
     clearInterval(waitInterval);
     waitInterval = null;
@@ -567,55 +573,113 @@ async function loadWaitTime() {
   const startTime = new Date(data.updated_at).getTime();
   const totalSeconds = data.minutes * 60;
 
-function tick() {
-  const now = Date.now();
-  const elapsed = Math.floor((now - startTime) / 1000);
-  const remaining = totalSeconds - elapsed;
-
-  if (remaining <= 0) {
-    bar.style.display = "none";
-    clearInterval(waitInterval);
-    waitInterval = null;
-    return;
+  const activatedEl = document.getElementById("wait-activated");
+  if (activatedEl && data.updated_at) {
+    const activatedDate = new Date(data.updated_at);
+    const hh = activatedDate.getHours().toString().padStart(2,"0");
+    const mm = activatedDate.getMinutes().toString().padStart(2,"0");
+    activatedEl.textContent = `(attivata alle ${hh}:${mm})`;
   }
 
-  const min = Math.floor(remaining / 60);
-  const sec = remaining % 60;
-  const timeStr = `${min}:${sec.toString().padStart(2, "0")}`;
+  function tick() {
 
-  // 🔢 aggiorna entrambi i testi
-  txt.textContent = timeStr;
-  document.getElementById("wait-mmss").textContent = timeStr;
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTime) / 1000);
+    const remaining = totalSeconds - elapsed;
 
-  bar.style.display = "flex";
+    if (remaining <= 0) {
+      bar.style.display = "none";
+      clearInterval(waitInterval);
+      waitInterval = null;
+      return;
+    }
 
-// ⏱️ quando inizia un nuovo minuto → riapre la barra
-if (sec === 59) {
-  expandWaitBar();
-}
-}
-  tick(); // ⏱️ avvio immediato
+    const min = Math.floor(remaining / 60);
+    const sec = remaining % 60;
+    const timeStr = `${min}:${sec.toString().padStart(2, "0")}`;
+
+    txt.textContent = timeStr;
+    document.getElementById("wait-mmss").textContent = timeStr;
+
+    bar.style.display = "flex";
+
+    if (sec === 59) expandWaitBar();
+  }
+
+  tick();
   waitInterval = setInterval(tick, 1000);
 }
 
-// 🔴 REALTIME WAIT TIME
+/* ===============================
+   AUTO GESTIONE DINAMICA
+=============================== */
+
+async function autoGestioneWaitTime() {
+
+  const { data: users } = await supabase
+    .from("online_users")
+    .select("session_id")
+    .gt("last_seen", new Date(Date.now() - 30000).toISOString());
+
+  const count = users?.length || 0;
+  console.log("👥 UTENTI CREA COPPA:", count);
+
+  let newMinutes = 0;
+
+  if (count >= 20) newMinutes = 30;
+  else if (count >= 15) newMinutes = 25;
+  else if (count >= 10) newMinutes = 20;
+  else if (count >= 5) newMinutes = 15;
+
+  const { data: current } = await supabase
+    .from("wait_time")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (!current) return;
+
+  if (
+    current.active === (newMinutes > 0) &&
+    current.minutes === newMinutes
+  ) {
+    return;
+  }
+
+  await supabase
+    .from("wait_time")
+    .update({
+      active: newMinutes > 0,
+      minutes: newMinutes,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", 1);
+
+  console.log("⏱ WAIT AUTO AGGIORNATA:", newMinutes);
+}
+
+/* ===============================
+   REALTIME
+=============================== */
+
 supabase
   .channel("wait-time-live")
   .on(
     "postgres_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "wait_time"
-    },
-    payload => {
-      console.log("🔁 wait_time aggiornato realtime:", payload);
-      loadWaitTime();
-    }
+    { event: "*", schema: "public", table: "wait_time" },
+    () => loadWaitTime()
   )
   .subscribe();
 
-document.addEventListener("DOMContentLoaded", loadWaitTime);
+/* ===============================
+   START
+=============================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadWaitTime();
+  autoGestioneWaitTime();              // parte subito
+  setInterval(autoGestioneWaitTime, 20000); // poi ogni 20 sec
+});
 </script>
 
 <!-- ⏱️ WAIT TIME BAR -->
@@ -623,7 +687,6 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   position: fixed;
   bottom: 90px;
   left: 12px;
-  transform: none;
   background: #111;
   color: white;
   padding: 10px 16px;
@@ -634,12 +697,29 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
   z-index: 9999;
   box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 ">
-  <span id="wait-full">
-  Attesa stimata: <span id="wait-time">0</span>
-</span>
-<span id="wait-compact" style="display:none">
-  <span id="wait-mmss">0:00</span>
-</span>
+
+  <!-- 🔥 VERSIONE COMPLETA -->
+  <span id="wait-full" style="display:flex; flex-direction:column; line-height:1.2;">
+    
+    <span>
+      Attesa stimata: <span id="wait-time">0</span>
+    </span>
+
+    <span id="wait-activated" style="
+      font-size:12px;
+      opacity:.7;
+      font-weight:500;
+      margin-top:2px;
+    ">
+    </span>
+
+  </span>
+
+  <!-- 🔥 VERSIONE COMPATTA -->
+  <span id="wait-compact" style="display:none">
+    <span id="wait-mmss">0:00</span>
+  </span>
+
 </div>
 <script>
 
@@ -717,26 +797,28 @@ function nascondiBottomNav() {
 <!-- 🚧 BLOCCO CREA COPPA – COMING SOON -->
 <div id="popup-coming-soon" class="popup-overlay" style="display:none;">
   <div class="popup-box">
-    <h3>🍨 Crea la tua coppa</h3>
 
-    <p>
-      Funzione in arrivo a breve.<br><br>
-      Stiamo preparando un’esperienza speciale
-      per creare la tua coppa personalizzata ✨
-    </p>
+<h3 id="coming-soon-title">🍨 Crea la tua coppa</h3>
 
-    <!-- ✅ BOTTONE TORNA ALLA HOME -->
-<div style="margin-top:12px; font-weight:600;">
-  Casa del Gelato
-</div>
+<p id="coming-soon-message">
+  Funzione in arrivo a breve.<br><br>
+  Stiamo preparando un’esperienza speciale
+  per creare la tua coppa personalizzata ✨
+</p>
 
-<button
-  class="popup-btn secondary"
-  onclick="tornaAllaHome()"
-  style="margin-top:10px;"
->
-  ← Torna alla Home
-</button>
+    <!-- CASA DEL GELATO -->
+    <div style="margin-top:12px; font-weight:600;">
+      Casa del Gelato
+    </div>
+
+    <button
+      class="popup-btn secondary"
+      onclick="tornaAllaHome()"
+      style="margin-top:10px;"
+    >
+      ← Torna alla Home
+    </button>
+
   </div>
 </div>
 
@@ -744,36 +826,39 @@ function nascondiBottomNav() {
 import { supabase } from "./supabase.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  console.log("🧪 check CREA COPPA");
 
   const popup = document.getElementById("popup-coming-soon");
-  if (!popup) {
-    console.warn("❌ popup-coming-soon non trovato");
-    return;
-  }
+  if (!popup) return;
 
   const { data, error } = await supabase
     .from("site_settings")
-    .select("crea_coppa_enabled")
+    .select("crea_coppa_enabled, crea_coppa_title, crea_coppa_message")
     .eq("id", 1)
     .single();
 
-  if (error) {
+  if (error || !data) {
     console.error("Errore Supabase:", error);
     return;
   }
 
-  console.log("📥 valore DB:", data.crea_coppa_enabled);
+  console.log("📥 DB:", data);
 
-  // 🔴 LOGICA CORRETTA
+  // 🚧 SE DISABILITATO → mostra popup
   if (data.crea_coppa_enabled === false) {
-    console.log("🚧 CREA COPPA BLOCCATA");
+
+    const titleEl = document.getElementById("coming-soon-title");
+    const msgEl   = document.getElementById("coming-soon-message");
+
+    if (titleEl && data.crea_coppa_title)
+      titleEl.innerHTML = data.crea_coppa_title;
+
+    if (msgEl && data.crea_coppa_message)
+      msgEl.innerHTML = data.crea_coppa_message.replace(/\n/g,"<br>");
 
     popup.style.display = "flex";
     document.body.style.overflow = "hidden";
-  } else {
-    console.log("✅ CREA COPPA ATTIVA");
   }
+
 });
 </script>
 
@@ -781,6 +866,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 function tornaAllaHome() {
   window.location.href = "home.html";
 }
+
 </script>
 
 <script>

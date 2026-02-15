@@ -6,7 +6,7 @@
 <title>Profilo</title>
 
 <link rel="stylesheet" href="bottom-nav.css">
-<script src="global.js"></script>
+<script type="module" src="global.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
 
 <style>
@@ -1927,7 +1927,7 @@ aggiornaBadgeNotifiche();
 
 setInterval(() => {
   aggiornaBadgeNotifiche();
-}, 15000);
+}, 8000);
 
 
 async function caricaNotificheUtente() {
@@ -2581,7 +2581,7 @@ if (progressAttuale === 9) {
   await creaNotificaSeNonEsiste(
     email,
     `quasi_coupon_${Math.floor(confermeTotali / 10)}`,
-    "🔥 Sei a un passo dal coupon! Ti manca solo 1 coppa confermata."
+    "🔥 Sei a un passo dal coupon! Ti manca solo 1 coppa da confermare."
   );
 }
 

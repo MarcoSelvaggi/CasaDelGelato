@@ -6,7 +6,14 @@
       content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Coppe Create</title>
     <link rel="stylesheet" href="bottom-nav.css">
-    <script src="global.js"></script>
+<script type="module" src="global.js"></script>
+    <script type="module">
+import { startGlobalNotificheListener } from "./global.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+  startGlobalNotificheListener();
+});
+</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>

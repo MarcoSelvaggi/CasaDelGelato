@@ -4755,12 +4755,18 @@ body.blur-bg #blur-overlay {
   isolation: isolate; /* 🔥 QUESTA È LA CHIAVE */
 }
 
-/* OVERLAY */
 #carrello-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.35);
+
   display: none;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;              /* 🔥 QUESTO È IL FIX */
+  box-sizing: border-box;
+
   z-index: 1000;
 
   opacity: 0;
@@ -4775,15 +4781,21 @@ body.blur-bg #blur-overlay {
 
 /* BOX */
 #carrello-box {
-  margin: auto;
-  width: min(420px, 92%);
+  width: 100%;
+  max-width: 380px;           /* 🔥 più stretto */
   max-height: 85vh;
+
   background: #fff;
-  border-radius: 18px;
+  border-radius: 22px;        /* 🔥 più morbido */
+
   overflow: hidden;
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,.35);
 
   transform: translateY(40px);
   opacity: 0;
+
   transition:
     transform 0.35s cubic-bezier(.2,.8,.2,1),
     opacity   0.25s ease;
@@ -5261,3 +5273,4 @@ body.no-scroll {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+

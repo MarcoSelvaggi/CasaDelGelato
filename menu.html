@@ -8,7 +8,7 @@
 <link rel="icon" href="favicon.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="bottom-nav.css">
-<script src="global.js"></script>
+<script type="module" src="global.js"></script>
 
 <style>
 body{
@@ -1285,12 +1285,14 @@ body.allergen-open #top-fixed-bar{
   top: 50%;
   transform: translate(-50%, -50%) scale(.96);
 
-  width: calc(100% - 40px);
-  max-width: 400px;
+  width: 90%;              /* 🔥 più stretto */
+  max-width: 340px;        /* 🔥 limite massimo */
+  padding: 20px;           /* 🔥 un filo meno */
+
+  box-sizing: border-box;  /* importante */
 
   background: #ffffff;
   border-radius: 22px;
-  padding: 22px;
 
   box-shadow: 0 30px 60px rgba(0,0,0,.18);
   opacity: 0;

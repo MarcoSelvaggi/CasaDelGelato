@@ -563,6 +563,61 @@ body {
   box-sizing: border-box;
   max-width: 100%;
 }
+
+.site-lock-box{
+  background:#fff;
+  border-radius:14px;
+  padding:16px;
+  margin:12px 12px 18px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.site-lock-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  cursor:pointer;
+}
+
+#site-lock-arrow{
+  font-size:20px;
+  transition:.25s ease;
+}
+
+.site-lock-content{
+  margin-top:12px;
+  overflow:hidden;
+  transition:max-height .3s ease, opacity .25s ease;
+  max-height:0;
+  opacity:0;
+}
+
+.site-lock-content.open{
+  max-height:400px;
+  opacity:1;
+}
+
+.site-lock-content input,
+.site-lock-content textarea{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  margin-bottom:10px;
+}
+
+
+#admin-alert-box input[type="datetime-local"]{
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  font-size:16px;
+}
+
+
+
+
+
 </style>
 
 </head>
@@ -634,6 +689,77 @@ body {
     </label>
   </div>
 
+  <!-- 🍨 TESTO CREA COPPA -->
+<div class="admin-box site-lock-box">
+
+  <div class="site-lock-header" onclick="toggleCreaCoppaBox()">
+    <div style="font-weight:800;">Testo Popup Crea Coppa</div>
+    <div id="crea-coppa-arrow">⌄</div>
+  </div>
+
+  <div id="crea-coppa-content" class="site-lock-content">
+
+    <input id="crea-coppa-title" type="text"
+      placeholder="Titolo popup"
+    >
+
+    <textarea id="crea-coppa-message"
+      placeholder="Testo popup (puoi andare a capo)"
+    ></textarea>
+
+    <button onclick="salvaCreaCoppaTesto()"
+      style="margin-top:10px; width:100%;">
+      Salva testo popup
+    </button>
+
+  </div>
+
+</div>
+
+<!-- 🚨 SITE LOCK -->
+<div class="admin-setting">
+  <div class="admin-setting-text">
+    <div class="admin-title">🚨 Site Lock</div>
+    <div class="admin-desc">
+      Blocca tutto il sito e mostra un messaggio di emergenza
+    </div>
+  </div>
+
+  <label class="ios-switch">
+    <input type="checkbox" id="toggle-site-lock">
+    <span class="slider"></span>
+  </label>
+</div>
+
+<!-- Box testo Site Lock -->
+<div class="admin-box site-lock-box">
+
+  <!-- HEADER CLICCABILE -->
+  <div class="site-lock-header" onclick="toggleSiteLockBox()">
+    <div style="font-weight:800;">Testo Site Lock</div>
+    <div id="site-lock-arrow">⌄</div>
+  </div>
+
+  <!-- CONTENUTO -->
+  <div id="site-lock-content" class="site-lock-content">
+
+    <input id="site-lock-title" type="text"
+      placeholder="Titolo (es. Sito temporaneamente non disponibile)"
+    >
+
+    <textarea id="site-lock-message"
+      placeholder="Messaggio (es. Stiamo risolvendo un problema tecnico...)"
+    ></textarea>
+
+    <button onclick="salvaSiteLock()"
+      style="margin-top:10px; width:100%; background:#ff3b30;">
+      Salva Site Lock
+    </button>
+
+  </div>
+
+</div>
+
 
 <!-- ⏳ TEMPO DI ATTESA -->
 <div style="text-align:center; margin:20px 0;">
@@ -703,7 +829,7 @@ body {
     style="width:100%;min-height:70px;padding:10px;border-radius:10px;border:1px solid #ccc"
   ></textarea>
 
-  <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+<div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
   <div style="flex:1;">
     <label style="font-size:13px; font-weight:600;">Inizio</label>
     <input type="datetime-local" id="alert-start"
@@ -871,6 +997,16 @@ body {
   transform:translateX(20px);
 }
 
+.admin-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ios-switch {
+  flex-shrink: 0;
+}
+
 .pin-overlay{
   position: fixed;
   inset: 0;
@@ -1036,6 +1172,12 @@ body {
   align-items: center;
   justify-content: center;
   border-radius: 12px;
+}
+/* 📱 FIX ZOOM iOS INPUT */
+input,
+textarea,
+select {
+  font-size: 16px !important;
 }
 </style>
 
@@ -1247,6 +1389,137 @@ Passa a trovarci in gelateria!
 
 <script type="module">
 import { supabase } from "./supabase.js";
+
+window.toggleCreaCoppaBox = function(){
+  const content = document.getElementById("crea-coppa-content");
+  const arrow = document.getElementById("crea-coppa-arrow");
+
+  content.classList.toggle("open");
+
+  arrow.style.transform =
+    content.classList.contains("open")
+      ? "rotate(180deg)"
+      : "rotate(0deg)";
+};
+
+async function caricaCreaCoppaAdmin() {
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("crea_coppa_title, crea_coppa_message")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) return;
+
+  document.getElementById("crea-coppa-title").value =
+    data.crea_coppa_title || "";
+
+  document.getElementById("crea-coppa-message").value =
+    data.crea_coppa_message || "";
+}
+
+window.salvaCreaCoppaTesto = async function () {
+
+  const title = document.getElementById("crea-coppa-title").value.trim();
+  const message = document.getElementById("crea-coppa-message").value.trim();
+
+  const { error } = await supabase
+    .from("site_settings")
+    .update({
+      crea_coppa_title: title || null,
+      crea_coppa_message: message || null,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", 1);
+
+  if (error) {
+    alert("Errore salvataggio testo");
+    return;
+  }
+
+  alert("Testo popup aggiornato ✅");
+};
+
+window.toggleSiteLockBox = function(){
+  const content = document.getElementById("site-lock-content");
+  const arrow = document.getElementById("site-lock-arrow");
+
+  if (!content) return;
+
+  content.classList.toggle("open");
+
+  if (content.classList.contains("open")) {
+    arrow.style.transform = "rotate(180deg)";
+  } else {
+    arrow.style.transform = "rotate(0deg)";
+  }
+};
+
+// ===============================
+// 🚨 SITE LOCK ADMIN (ON/OFF + TESTO)
+// ===============================
+async function caricaSiteLockAdmin() {
+  const { data, error } = await supabase
+    .from("site_lock")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (error || !data) {
+    console.warn("Errore caricaSiteLockAdmin:", error?.message);
+    return;
+  }
+
+  const toggle = document.getElementById("toggle-site-lock");
+  const title  = document.getElementById("site-lock-title");
+  const msg    = document.getElementById("site-lock-message");
+
+  if (toggle) toggle.checked = data.active === true;
+  if (title)  title.value = data.title || "";
+  if (msg)    msg.value = data.message || "";
+}
+
+// bottone SALVA
+window.salvaSiteLock = async function () {
+  const toggle = document.getElementById("toggle-site-lock");
+  const title  = document.getElementById("site-lock-title");
+  const msg    = document.getElementById("site-lock-message");
+
+  const active  = toggle?.checked === true;
+  const newTitle = (title?.value || "").trim();
+  const newMsg   = (msg?.value || "").trim();
+
+  const { error } = await supabase
+    .from("site_lock")
+    .update({
+      active,
+      title: newTitle || null,
+      message: newMsg || null,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", 1);
+
+  if (error) {
+    console.error(error);
+    alert("Errore salvataggio Site Lock");
+    return;
+  }
+
+  alert(active ? "🚨 Site Lock ATTIVO" : "✅ Site Lock DISATTIVATO");
+};
+
+// opzionale: se cambi toggle, salva subito (stile Crea Coppa)
+document.addEventListener("DOMContentLoaded", () => {
+  caricaSiteLockAdmin();
+
+  const toggle = document.getElementById("toggle-site-lock");
+  if (toggle) {
+    toggle.addEventListener("change", () => {
+      // salva al volo anche senza premere bottone
+      window.salvaSiteLock();
+    });
+  }
+});
 
 
 window.salvaSeason = async function(location) {
@@ -3168,7 +3441,10 @@ window.disableWaitTime = async function() {
 
   alert("⛔ Tempo di attesa disattivato");
 };
-
+document.addEventListener("DOMContentLoaded", () => {
+  caricaCreaCoppaAdmin();
+  caricaSiteLockAdmin();
+});
 </script>
 
 <script>
@@ -3265,7 +3541,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   toggle.checked = data.crea_coppa_enabled === true;
-
+caricaCreaCoppaAdmin();
   console.log("🔁 Stato iniziale CREA COPPA:", toggle.checked);
 
   /* 2️⃣ SALVA AL CAMBIO */
