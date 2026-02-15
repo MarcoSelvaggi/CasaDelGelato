@@ -2,7 +2,8 @@
 console.log("JS CARICATO ✔️");
 // 🔑 GARANTISCI guest_id SEMPRE
 if (!localStorage.getItem("guest_id")) {
-  localStorage.setItem("guest_id", "guest_" + crypto.randomUUID());
+  const randomId = "guest_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+  localStorage.setItem("guest_id", randomId);
 }
 // ---------------- STATO ----------------
 let coppaSelezionata = "";
