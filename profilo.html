@@ -885,17 +885,15 @@ body{
 .coppe-icon{
   width:42px;
   height:42px;
-  border-radius:14px;
+
+  border-radius:50%;
+  overflow:hidden;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  font-size:22px;
-
-  background: linear-gradient(135deg,#ffb703,#fb8500);
-  color:#fff;
-
+  background:#fff; /* 🔥 bianco */
   box-shadow: 0 6px 14px rgba(0,0,0,0.18);
 }
 
@@ -971,7 +969,7 @@ body{
 .coupon-icon{
   width:42px;
   height:42px;
-  border-radius:14px;
+  border-radius:50%;   /* 🔥 ora è cerchio */
 
   display:flex;
   align-items:center;
@@ -1611,7 +1609,9 @@ body.no-scroll{
 
 <a href="cronologia.html" id="coppe-card" class="coppe-card">
   <div class="coppe-left">
-    <div class="coppe-icon">🍨</div>
+    <div class="coppe-icon">
+  <img src="img/scoopy-ice.png" alt="Scoopy Ice">
+</div>
 
     <div class="coppe-text">
       <div class="coppe-title">Coppe create</div>

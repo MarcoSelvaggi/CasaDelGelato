@@ -1186,6 +1186,188 @@ body.no-anim .poi-group{
   }
 }
 
+
+/* =========================
+   📸 INSTAGRAM SHEET STYLE
+   ========================= */
+
+.popup-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+
+  display: flex;
+  align-items: flex-end;   /* 🔥 dal basso */
+  justify-content: center;
+
+  z-index: 100000;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+
+.popup-overlay.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* SHEET */
+.popup-sheet{
+  width: 100%;
+  max-width: 480px;
+
+  background: #fff;
+  border-radius: 26px 26px 0 0;
+
+  padding: 20px 18px 28px;
+
+  transform: translateY(100%);
+  transition: transform .45s cubic-bezier(.22,.61,.36,1);
+}
+
+.popup-overlay.show .popup-sheet{
+  transform: translateY(0);
+}
+
+/* HANDLE */
+.popup-handle{
+  width: 42px;
+  height: 4px;
+  border-radius: 999px;
+  background: #d1d1d6;
+  margin: 0 auto 16px;
+}
+
+/* TITLE */
+.popup-title{
+  font-size: 18px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ITEM */
+.popup-item{
+  margin-bottom: 18px;
+}
+
+/* ROW BUTTON */
+.popup-row{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  padding: 10px 14px;
+
+  border-radius: 14px;
+  border: none;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+
+.popup-row:active{
+  transform: scale(0.97);
+}
+
+.popup-row.primary{
+  background: linear-gradient(
+    135deg,
+    #f1d6b6 0%,
+    #e6c7a1 60%,
+    #d8b48a 100%
+  );
+  color: #5c3a1e;   /* marroncino elegante per contrasto */
+}
+
+.popup-row.secondary{
+  background: linear-gradient(
+    135deg,
+    #0f5664 0%,
+    #0f5664 35%,   /* 🔵 più blu */
+    #e88e65 65%,
+    #8b532c 100%
+  );
+  color: #fff;
+}
+
+/* AVATAR TONDO */
+.popup-avatar{
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e5e5ea;
+  flex-shrink: 0;
+}
+
+.popup-avatar img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* TEXT */
+.popup-row-text{
+  flex: 1;
+  text-align: left;
+}
+
+/* DESC */
+.popup-desc{
+  font-size: 12.5px;
+  color: #666;
+  margin-top: 8px;
+  padding-left: 4px;
+  line-height: 1.4;
+}
+
+/* DIVIDER */
+.popup-divider{
+  height: 1px;
+  background: #e5e5ea;
+  margin: 14px 0 18px;
+}
+
+/* CANCEL */
+.popup-cancel{
+  width: 100%;
+  margin-top: 8px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  color: #007aff;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+/* reset completo per button social */
+button.social-btn{
+  border: none;
+  padding: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* 🔥 blocca scroll quando popup aperto */
+body.popup-open{
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* 🔵 blur tutto tranne popup */
+body.popup-open > *:not(#instagram-popup){
+  filter: blur(6px);
+  transition: filter .25s ease;
+}
+
 </style>
 </head>
 
@@ -1202,12 +1384,11 @@ body.no-anim .poi-group{
 
   <!-- SOCIAL -->
 <div class="social-icons">
-  <a
-    class="social-btn instagram"
-    href="https://www.instagram.com/casadelgelato.it?igsh=MW8wZm9kbXo1czN3YQ%3D%3D&utm_source=qr"
-    target="_blank"
-    aria-label="Instagram"
-  ></a>
+<button
+  class="social-btn instagram"
+  id="instagram-btn"
+  aria-label="Instagram"
+></button>
 
   <a
     class="social-btn facebook"
@@ -2919,7 +3100,97 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 </script>
 
+<script>
+window.addEventListener("load", () => {
 
+  const instaBtn = document.getElementById("instagram-btn");
+  const instaPopup = document.getElementById("instagram-popup");
+  const instaSheet = document.querySelector(".popup-sheet");
+
+  if (!instaBtn || !instaPopup || !instaSheet) return;
+
+  // 🔵 APERTURA
+  instaBtn.onclick = function(){
+    instaPopup.classList.add("show");
+    document.body.classList.add("popup-open");
+  };
+
+  // 🔴 CHIUSURA
+  function closePopup(){
+    instaPopup.classList.remove("show");
+    document.body.classList.remove("popup-open");
+  }
+
+  window.chiudiInstagramPopup = closePopup;
+
+  window.apriInstagram = function(username){
+    window.open("https://instagram.com/" + username, "_blank");
+    closePopup();
+  };
+
+  // 👇 CLICK FUORI = CHIUDI
+  instaPopup.addEventListener("click", function(e){
+    if (!instaSheet.contains(e.target)) {
+      closePopup();
+    }
+  });
+
+});
+</script>
+
+<div id="instagram-popup" class="popup-overlay">
+  <div class="popup-sheet">
+
+    <div class="popup-handle"></div>
+
+    <h2 class="popup-title">Scegli il profilo Instagram</h2>
+
+    <div class="popup-item">
+      <button class="popup-row primary"
+        onclick="apriInstagram('casadelgelato.it')">
+
+  <div class="popup-avatar">
+  <img src="img/casadelgelato.png" alt="Casa del Gelato">
+</div>
+
+        <div class="popup-row-text">
+          @casadelgelato.it
+        </div>
+      </button>
+
+      <div class="popup-desc">
+        Il nostro profilo ufficiale con novità, eventi e tutto il mondo Casa del Gelato.
+      </div>
+    </div>
+
+    <div class="popup-divider"></div>
+
+    <div class="popup-item">
+      <button class="popup-row secondary"
+        onclick="apriInstagram('scoopy.ice')">
+
+<div class="popup-avatar">
+  <img src="img/scoopy-ice.png" alt="Scoopy Ice">
+</div>
+
+        <div class="popup-row-text">
+          @scoopy.ice
+        </div>
+      </button>
+
+<div class="popup-desc">
+  La nostra nuova esperienza digitale: crea la tua coppa personalizzata,
+  gustala, condividila e scopri un modo tutto nuovo di vivere il gelato 🍨
+</div>
+    </div>
+
+    <button class="popup-cancel"
+      onclick="chiudiInstagramPopup()">
+      Annulla
+    </button>
+
+  </div>
+</div>
 
 
 </body>

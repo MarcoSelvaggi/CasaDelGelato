@@ -910,10 +910,10 @@ const ALLERGENI_GUSTI = {
   "CREME CARAMEL": ["Latte"],
   "BACIO": ["Latte", "Glutine", "Frutta a guscio", "Uova"],
   "CAFFÈ": ["Latte"],
-  "TIRAMISÙ": ["Latte", "Uova"],
-  "CROCCANTINO AL RUM": ["Latte", "Glutine"],
-  "AMARETTO": ["Latte"],
-  "MALAGA": ["Latte"],
+  "TIRAMISÙ": ["Latte", "Alcol", "Uova"],
+  "CROCCANTINO AL RUM": ["Latte", "Alcol", "Glutine"],
+  "AMARETTO": ["Alcol", "Latte"],
+  "MALAGA": ["Alcol", "Latte"],
   "CHEESECAKE": ["Latte", "Glutine"],
   "COOKIES": ["Latte", "Glutine"],
   "CREMA ANDALUSA": ["Latte", "Uova"],
@@ -953,7 +953,22 @@ const ALLERGENI_TOPPING = {
   "CIOCCOLATO": ["Latte", "Soia"],
   "NOCCIOLA": ["Frutta a guscio", "Soia"],
   "PISTACCHIO": ["Frutta a guscio", "Soia"],
-  "CIOCCOLATO FREDDO": ["Latte"]
+  "CIOCCOLATO FREDDO": ["Latte"],
+  "LIQUORE AMARETTO": ["Alcol"],
+  "LIQUORE AL CAFFE'": ["Alcol"],
+  "LIQUORE AL COCCO": ["Alcol"],
+  "VOV": ["Alcol", "Uova"],
+  "DISARONNO": ["Alcol"],
+  "BAILEYS": ["Alcol"],
+  "COINTREAU": ["Alcol"],
+  "GRAND MARNIER": ["Alcol"],
+  "JACK DANIEL'S": ["Alcol"],
+  "LIMONCELLO": ["Alcol"],
+  "RUM": ["Alcol"],
+  "STRAVECCHIO": ["Alcol"],
+  "VECCHIA ROMAGNA": ["Alcol"],
+  "VODKA": ["Alcol"],
+  "JOGURT NATURALE": ["Latte"]
 };
 
 const ingredientiList = [
@@ -986,7 +1001,8 @@ const extraList = ["COCCO (3pz)","MIX KINDER","PANNA EXTRA"];
 ======================= */
 const ALLERGENI_EXTRA = {
   "MIX KINDER": ["Latte", "Soia", "Glutine"],
-  "PANNA EXTRA": ["Latte"]
+  "PANNA EXTRA": ["Latte"],
+  "COCCO (3PZ)": ["Frutta a guscio"]
 };
 
 // ---------------- PREZZI ----------------

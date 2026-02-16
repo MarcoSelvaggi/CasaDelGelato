@@ -5318,3 +5318,29 @@ body.no-scroll {
   94%  { transform: translateX(-2px); }
   97%  { transform: translateX(2px); }
 }
+
+.tavolo-logo-box{
+  width: 160px;
+  height: 160px;
+
+  margin: 0 auto 40px auto; /* 👈 spazio sotto aumentato */
+
+  border-radius: 50%;
+  overflow: hidden;
+
+  background: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.12),
+    0 4px 12px rgba(0,0,0,0.08);
+}
+
+.tavolo-logo-box img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* riempie tutto il cerchio */
+}
