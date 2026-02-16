@@ -772,12 +772,14 @@ function nascondiBottomNav() {
   flex-direction:column;
 ">
   <div style="font-size:22px;font-weight:700;margin-bottom:12px">
-    🍨 Stiamo preparando la tua coppa
+    Stiamo preparando la tua coppa
   </div>
 
   <div id="loading-text" style="opacity:.6;font-size:14px;margin-bottom:18px">
     Caricamento coppa…
   </div>
+
+  <div id="loading-percent" class="loading-percent">0%</div>
 
   <!-- 🔥 BARRA -->
   <div style="
@@ -795,6 +797,24 @@ function nascondiBottomNav() {
   border-radius:999px;
 "></div>
   </div>
+
+  <!-- 👇 QUI DENTRO, SUBITO DOPO LA BARRA -->
+<div id="slow-network-hint" class="slow-hint">
+  <div class="slow-sub">
+
+    Ci sta mettendo un po’ più del previsto?
+
+    <br><br>
+    Potrebbe essere solo un rallentamento di rete 😊
+
+    <br><br>
+    La tua coppa è comunque al sicuro.
+    Se ricarichi la pagina la troverai nel tuo profilo,
+    nella sezione <b>Coppe create</b>.
+
+  </div>
+</div>
+
 </div>
 <div id="blur-overlay"></div>
 

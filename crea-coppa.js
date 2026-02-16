@@ -1323,8 +1323,8 @@ if (gustoVietato) cls += " item-allergene";
    
 
  html += `
-    <div class="${cls}" 
-     ${disponibile && !gustoVietato ? `onclick="selectGusto('${nome}')"` : ''}>
+<div class="${cls}" data-nome="${nome}"
+ ${disponibile && !gustoVietato ? `onclick="selectGusto('${nome}')"` : ''}>
         <span class="gusto-name">${escapeHtml(nome)}</span>
 
         ${showControls ? `
@@ -1401,49 +1401,45 @@ function openMiniRiepilogoTemporaneo() {
 
 // === AGGIUNTA / RIMOZIONE QUANTITÀ GUSTO ===
 function changeGustoQty(nome, delta) {
+
     const maxTot = max.gusti || 0;
     const corrente = gustiQuantities[nome] || 0;
 
     let nuovo = corrente + delta;
     if (nuovo < 0) nuovo = 0;
 
-    // Totale attuale
-    const totaleCorrente = Object.values(gustiQuantities).reduce((a,b)=>a+b,0);
+    const totaleCorrente = Object.values(gustiQuantities)
+        .reduce((a, b) => a + b, 0);
+
     const totaleDopo = totaleCorrente - corrente + nuovo;
 
-    // ❌ Supera limite → effetto rosso + blink del +
+    // ❌ SUPERA LIMITE
     if (totaleDopo > maxTot) {
+
         limitEffect("gusti", nome);
 
-        const btn = document.querySelector(`button.plus[onclick*="${nome}"]`);
+        // ✅ FIX ESATTO
+        const card = document.querySelector(`.gusto-item[data-nome="${nome}"]`);
+        const btn = card?.querySelector(".gusto-btn.plus");
+
         if (btn) {
             btn.classList.add("limit-blink");
-            setTimeout(()=> btn.classList.remove("limit-blink"), 650);
+            setTimeout(() => {
+                btn.classList.remove("limit-blink");
+            }, 650);
         }
+
         return;
     }
 
-    // Aggiorno quantità
     gustiQuantities[nome] = nuovo;
 
-    // Ricostruisco array gusti
     rebuildSceltiGustiFromQuantities();
-
-    // Aggiorno colori (giallo/verde)
     updateStatusGusti();
-
-    // 🔥 MOSTRARLO SEMPRE IN DYNAMIC ISLAND
-    // - Se aggiungo → mostra nome
-    // - Se diminuisco → mostra nome
-    // - Se arrivo a 0 → mostra nome del gusto coinvolto
     showIsland("gusti", nome);
-
-    // Aggiorna mini riepilogo
     updateRiepilogo();
 
-    // 👉 Se raggiungo il massimo → apri mini riepilogo
     if (totaleDopo === maxTot) {
-        
         gustoInModifica = null;
     }
 
@@ -1569,14 +1565,18 @@ if (step === "extra") {
 
 // ---------------- TOGGLE ----------------
 function limitEffect(step, nome){
-  document.querySelectorAll(".item").forEach(el=>{
-    if(el.textContent.trim().startsWith(nome)){
-      el.classList.add("limit-reached");
-      setTimeout(()=>el.classList.remove("limit-reached"),1500);
-    }
-  });
 
-  // Dynamic island: messaggio di errore sullo step giusto
+  // 🔥 prende SOLO la card con data-nome ESATTO
+  const el = document.querySelector(`.gusto-item[data-nome="${nome}"]`);
+  if (!el) return;
+
+  el.classList.add("limit-reached");
+
+  setTimeout(() => {
+    el.classList.remove("limit-reached");
+  }, 1500);
+
+  // Dynamic island
   showIsland(step, "Limite raggiunto ❗");
 }
 
@@ -3371,8 +3371,27 @@ async function preparaRiepilogoFinale() {
 
   // 1️⃣ LOADING
   mostraLoadingRiepilogo();
+  document.body.classList.add("loading-active");
   setLoadingText("Caricamento coppa…");
   setLoadingProgress(0);
+
+  // ⏳ Messaggio rete lenta dopo 8 secondi
+const slowNetworkTimer = setTimeout(() => {
+  const hint = document.getElementById("slow-network-hint");
+  if (!hint) return;
+
+  hint.style.display = "block";
+  hint.style.opacity = "0";
+  hint.style.transform = "translateY(6px)";
+  hint.style.transition = "all .4s cubic-bezier(.22,.61,.36,1)";
+
+  requestAnimationFrame(() => {
+    hint.style.opacity = "1";
+    hint.style.transform = "translateY(0)";
+  });
+}, 20000);
+
+
   // ⏸️ lascia respirare Safari
 await new Promise(r => requestAnimationFrame(r));
 await new Promise(r => setTimeout(r, 80));
@@ -3394,24 +3413,16 @@ const stage = document.getElementById("coppa-stage");
 
 if (stage) {
 
-  let fakeProgress = 0;
 
-  const fakeProgressInterval = setInterval(() => {
-    fakeProgress += 2;
-    if (fakeProgress > 90) fakeProgress = 90;
-    setLoadingProgress(fakeProgress);
-  }, 120);
-
-  const immaginiPromise = waitForImagesWithProgress(stage, pct => {
-    setLoadingProgress(Math.max(fakeProgress, pct));
-  });
+const immaginiPromise = waitForImagesWithProgress(stage, pct => {
+  setLoadingProgress(pct);
+});
 
   const result = await Promise.race([
     immaginiPromise,
     timeoutPromise(15000)
   ]);
 
-  clearInterval(fakeProgressInterval);
   setLoadingProgress(100);
 
   await new Promise(r => setTimeout(r, 250));
@@ -3426,6 +3437,18 @@ await new Promise(r => requestAnimationFrame(r));
 // 4️⃣ FINE LOADING
 resetBlurTotale();
 nascondiLoadingRiepilogo();
+document.body.classList.remove("loading-active");
+
+
+clearTimeout(slowNetworkTimer);
+clearTimeout(almostReadyTimer);
+
+// 🔥 nascondi eventuale messaggio rete lenta
+const hint = document.getElementById("slow-network-hint");
+if (hint) {
+  hint.style.display = "none";
+}
+
 isLoadingCoppa = false;
 
 // 🔥 FIX SAFARI / WEBKIT definitivo
@@ -3567,15 +3590,19 @@ function setLoadingAlmostReady() {
 }
 function setLoadingProgress(pct) {
   const bar = document.getElementById("loading-bar");
+  const percent = document.getElementById("loading-percent");
+
   if (!bar) return;
 
-  // forza repaint Safari
-  bar.style.width = bar.style.width;
-  bar.getBoundingClientRect();
+  pct = Math.min(100, Math.max(0, Math.round(pct)));
 
   requestAnimationFrame(() => {
     bar.style.width = pct + "%";
   });
+
+  if (percent) {
+    percent.textContent = pct + "%";
+  }
 }
 // ===============================
 // 📸 SALVA COPPA COME IMMAGINE
