@@ -1122,6 +1122,70 @@ body.no-anim .poi-group{
 .open-status.open .text{ color:#1f7a3a; }
 .open-status.closed .text{ color:#b3261e; }
 
+/* ✨ Animazione Scoopy Ice */
+.menu-new-only {
+  animation: scoopyVibe 5s ease-in-out infinite;
+}
+
+@keyframes scoopyVibe {
+  0%, 85%, 100% { transform: translateX(0); }
+
+  88%  { transform: translateX(-2px); }
+  91%  { transform: translateX(2px); }
+  94%  { transform: translateX(-2px); }
+  97%  { transform: translateX(2px); }
+}
+/* Riferimento posizione card */
+.shop-card-bibione{
+  position: relative;
+  overflow: visible;
+}
+
+/* Cerchio flottante */
+.shop-float-img{
+  position: absolute;
+  top: 18px;        /* leggermente sopra la card */
+  right: 16px;
+
+  width: 70px;
+  height: 70px;
+
+  border-radius: 50%;
+  overflow: hidden;
+
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+
+  z-index: 10;
+
+  animation: shopPulse 5s ease-in-out infinite;
+}
+
+/* Immagine dentro */
+.shop-float-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Animazione elegante soft */
+@keyframes shopPulse {
+
+  0%, 85%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+  }
+
+  90% {
+    transform: scale(1.08);
+    box-shadow: 0 14px 32px rgba(0,0,0,0.25);
+  }
+
+  95% {
+    transform: scale(1.04);
+  }
+}
+
 </style>
 </head>
 
@@ -1575,7 +1639,13 @@ body.no-anim .poi-group{
 </div> <!-- info-card -->
 
 <!-- LOCALE 1 -->
-<div class="shop-card">
+<!-- LOCALE 1 -->
+<div class="shop-card shop-card-bibione">
+
+  <!-- 🔵 CERCHIO FLOAT -->
+  <div class="shop-float-img">
+    <img src="img/toogoodtogo.png" alt="Promo">
+  </div>
   <div class="shop-img-slider">
   <img src="img/latinlover-card.jpg" class="shop-img">
   <img src="img/fantasia-card.jpg" class="shop-img">

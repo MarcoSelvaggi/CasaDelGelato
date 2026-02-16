@@ -1506,6 +1506,37 @@ Passa a trovarci in gelateria!
 <script type="module">
 import { supabase } from "./supabase.js";
 
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const toggle = document.getElementById("toggle-crea-coppa");
+  if (!toggle) return;
+
+  const { data, error } = await supabase
+    .from("site_settings")
+    .select("crea_coppa_enabled")
+    .eq("id", 1)
+    .single();
+
+  if (!error && data) {
+    toggle.checked = data.crea_coppa_enabled === true;
+  }
+
+  toggle.addEventListener("change", async () => {
+    const value = toggle.checked;
+
+    const { error } = await supabase
+      .from("site_settings")
+      .update({ crea_coppa_enabled: value })
+      .eq("id", 1);
+
+    if (error) {
+      alert("Errore salvataggio");
+      toggle.checked = !value;
+    }
+  });
+
+});
+
 window.toggleCreaCoppaBox = function(){
   const content = document.getElementById("crea-coppa-content");
   const arrow = document.getElementById("crea-coppa-arrow");
@@ -3716,48 +3747,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<script>
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const toggle = document.getElementById("toggle-crea-coppa");
-  if (!toggle) {
-    console.error("❌ toggle-crea-coppa non trovato");
-    return;
-  }
-
-  /* 1️⃣ CARICA STATO DAL DB */
-  const { data, error } = await supabase
-    .from("site_settings")
-    .select("crea_coppa_enabled")
-    .eq("id", 1)
-    .single();
-
-  if (error) {
-    console.error("Errore lettura crea_coppa", error);
-    return;
-  }
-
-  toggle.checked = data.crea_coppa_enabled === true;
-caricaCreaCoppaAdmin();
-  console.log("🔁 Stato iniziale CREA COPPA:", toggle.checked);
-
-  /* 2️⃣ SALVA AL CAMBIO */
-  toggle.addEventListener("change", async () => {
-    const value = toggle.checked;
-    console.log("💾 Salvo CREA COPPA =", value);
-
-    const { error } = await supabase
-      .from("site_settings")
-      .update({ crea_coppa_enabled: value })
-      .eq("id", 1);
-
-    if (error) {
-      alert("Errore salvataggio");
-      toggle.checked = !value; // rollback
-    }
-  });
-});
-</script>
 
 <!-- 🔐 ADMIN PIN OVERLAY -->
 <div id="admin-pin-overlay" class="pin-overlay" hidden>
