@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segnala un problema – Casa del Gelato</title>
+
+<link rel="stylesheet" href="bottom-nav.css">
+<script type="module" src="global.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,sans-serif;
+  background:#f6f6f7;
+  padding:20px;
+}
+
+.container{
+  max-width:480px;
+  margin:auto;
+}
+
+h1{
+  font-size:22px;
+  margin-bottom:8px;
+}
+
+p{
+  font-size:14px;
+  color:#666;
+  margin-bottom:20px;
+}
+
+textarea{
+  width:100%;
+  min-height:120px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid #ddd;
+  font-size:14px;
+  resize:none;
+  box-sizing:border-box;
+}
+
+button{
+  margin-top:14px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:#007aff;
+  color:#fff;
+  font-weight:700;
+  font-size:15px;
+  cursor:pointer;
+}
+
+button:active{
+  opacity:.7;
+}
+
+.success{
+  margin-top:14px;
+  font-size:14px;
+  color:#34c759;
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Hai riscontrato un problema?</h1>
+  <p>Descrivicelo così possiamo migliorare l’esperienza.</p>
+
+  <textarea id="feedback-text" placeholder="Scrivi qui il problema..."></textarea>
+
+  <button onclick="inviaFeedback()">Invia segnalazione</button>
+
+  <div class="success" id="success-msg">
+    ✅ Grazie! La segnalazione è stata inviata.
+  </div>
+</div>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+window.inviaFeedback = async function(){
+
+  const text = document.getElementById("feedback-text").value.trim();
+  if(!text){
+    alert("Scrivi qualcosa prima di inviare");
+    return;
+  }
+
+  const { error } = await supabase
+    .from("feedback")
+    .insert([
+      {
+        message: text,
+        created_at: new Date()
+      }
+    ]);
+
+  if(error){
+    alert("Errore invio");
+    console.error(error);
+    return;
+  }
+
+  document.getElementById("feedback-text").value = "";
+  document.getElementById("success-msg").style.display = "block";
+};
+</script>
+
+</body>
+</html>
