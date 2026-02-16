@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin – Feedback</title>
+
+<script type="module" src="supabase.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui,-apple-system,sans-serif;
+  background:#f6f6f7;
+  padding:20px;
+}
+
+h1{
+  font-size:22px;
+  margin-bottom:20px;
+}
+
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.date{
+  font-size:12px;
+  color:#888;
+  margin-bottom:6px;
+}
+
+.message{
+  font-size:14px;
+  line-height:1.5;
+}
+
+.empty{
+  color:#888;
+  margin-top:40px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Segnalazioni utenti</h1>
+
+<div id="feedback-list"></div>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+async function caricaFeedback(){
+
+  const { data, error } = await supabase
+    .from("feedback")
+    .select("*")
+    .order("created_at", { ascending:false });
+
+  if(error){
+    console.error(error);
+    return;
+  }
+
+  const container = document.getElementById("feedback-list");
+
+  if(!data || data.length === 0){
+    container.innerHTML =
+      `<div class="empty">Nessuna segnalazione</div>`;
+    return;
+  }
+
+  container.innerHTML = data.map(f => `
+    <div class="card">
+      <div class="date">
+        ${new Date(f.created_at).toLocaleString("it-IT")}
+      </div>
+      <div class="message">
+        ${f.message}
+      </div>
+    </div>
+  `).join("");
+}
+
+caricaFeedback();
+</script>
+
+</body>
+</html>
