@@ -716,6 +716,22 @@ body {
   user-select: none;
   -webkit-user-select: none;
 }
+.admin-feedback-link{
+  max-width: 520px;
+  margin: 0 auto 14px auto;
+  padding: 0 20px;
+}
+
+.admin-feedback-link a{
+  color: #007aff;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.admin-feedback-link a:active{
+  opacity: .6;
+}
 </style>
 
 </head>
@@ -764,13 +780,18 @@ body {
 </div>
 <div id="spacer"></div>
 
+<div class="admin-feedback-link">
+  <a href="admin-feedback.html">
+    Vai ai feedback utenti →
+  </a>
+</div>
 
   <!-- 🍨 TOGGLE CREA COPPA -->
   <div class="admin-setting">
     <div class="admin-setting-text">
       <div class="admin-title">🍨 Crea Coppa</div>
       <div class="admin-desc">
-        Abilita o disabilita la creazione delle coppe sul sito
+        Abilita la creazione delle coppe sul sito
       </div>
     </div>
 
@@ -1632,27 +1653,48 @@ window.salvaSiteLock = async function () {
   const title  = document.getElementById("site-lock-title");
   const msg    = document.getElementById("site-lock-message");
 
-  const active  = toggle?.checked === true;
+  const active   = toggle?.checked === true;
   const newTitle = (title?.value || "").trim();
   const newMsg   = (msg?.value || "").trim();
 
-  const { error } = await supabase
-    .from("site_lock")
-    .update({
-      active,
-      title: newTitle || null,
-      message: newMsg || null,
-      updated_at: new Date().toISOString()
-    })
-    .eq("id", 1);
+  try {
+    const { data, error } = await supabase.functions.invoke(
+      "admin-update-site-lock",
+      {
+        headers: { "x-admin-pin": window.adminPin },
+        body: {
+          active,
+          title: newTitle || null,
+          message: newMsg || null
+        }
+      }
+    );
 
-  if (error) {
-    console.error(error);
+    console.log("SITE LOCK INVOKE →", { data, error });
+
+    // a volte data può arrivare come stringa
+    let payload = data;
+    if (typeof payload === "string") {
+      try { payload = JSON.parse(payload); } catch {}
+    }
+
+    if (error) {
+      console.error("Invoke error:", error);
+      alert("Errore salvataggio Site Lock");
+      return;
+    }
+
+    if (!payload || payload.success !== true) {
+      console.error("Bad payload:", payload);
+      alert("Errore salvataggio Site Lock");
+      return;
+    }
+
+    alert(active ? "🚨 Site Lock ATTIVO" : "✅ Site Lock DISATTIVATO");
+  } catch (e) {
+    console.error("Catch:", e);
     alert("Errore salvataggio Site Lock");
-    return;
   }
-
-  alert(active ? "🚨 Site Lock ATTIVO" : "✅ Site Lock DISATTIVATO");
 };
 
 // opzionale: se cambi toggle, salva subito (stile Crea Coppa)
@@ -1685,29 +1727,59 @@ window.salvaSeason = async function(location) {
   const season_text    = textInput.value.trim() || null;
   const open_time      = openInput.value || null;
   const close_time     = closeInput.value || null;
-// 🚨 controllo orari incompleti
-if ((open_time && !close_time) || (!open_time && close_time)) {
-  alert("Inserisci sia orario apertura che chiusura");
-  return;
-}
-  const { error } = await supabase
-    .from("shop_settings")
-    .update({
-      season_opening,
-      season_text,
-      open_time,
-      close_time,
-      updated_at: new Date().toISOString()
-    })
-    .eq("location", location);
 
-  if (error) {
-    console.error(error);
-    alert("Errore salvataggio ❌");
+  if ((open_time && !close_time) || (!open_time && close_time)) {
+    alert("Inserisci sia apertura che chiusura");
     return;
   }
 
-  alert("Salvato correttamente ✅");
+  try {
+
+    const { data, error } = await supabase.functions.invoke(
+      "admin-update-shop-settings",
+      {
+        headers: {
+          "x-admin-pin": window.adminPin
+        },
+        body: {
+          location,
+          season_opening,
+          season_text,
+          open_time,
+          close_time
+        }
+      }
+    );
+
+    if (error) {
+      console.error("Invoke error:", error);
+      alert("Errore salvataggio ❌");
+      return;
+    }
+
+    // Gestione risposta stringa JSON
+    let result = data;
+
+    if (typeof result === "string") {
+      try {
+        result = JSON.parse(result);
+      } catch (e) {
+        console.error("Parse error:", e);
+      }
+    }
+
+    if (!result?.success) {
+      console.error("Function response:", result);
+      alert("Errore salvataggio ❌");
+      return;
+    }
+
+    alert("Salvato correttamente ✅");
+
+  } catch (err) {
+    console.error("Unexpected error:", err);
+    alert("Errore imprevisto ❌");
+  }
 };
 
 async function loadSeasonAdmin() {
@@ -2168,7 +2240,7 @@ document.getElementById("search-admin").addEventListener("input", e => {
   }
 });
 
-async function load(){
+window.load = async function(){
   const u = await supabase.from("utenti").select("*");
   const c = await supabase.from("coppe").select("*");
 
@@ -2179,7 +2251,7 @@ async function load(){
   await caricaCouponPerTutti(); // 🔥 QUESTA RIGA
   render();
 }
-load();
+// load();  // 🔒 bloccato finché non inserisco PIN corretto
 
 // 🔥 AGGIORNAMENTO IN TEMPO REALE
 supabase
@@ -2961,12 +3033,25 @@ async function inizializzaIngrediti() {
 
 window.toggleDisponibilita = async function(id, nuovoValore) {
 
-    await supabase
-        .from("disponibilita")
-        .update({ disponibile: nuovoValore })
-        .eq("id", id);
+  const { data, error } = await supabase.functions.invoke(
+    "admin-update-disponibilita",
+    {
+      headers: {
+       "x-admin-pin": window.adminPin
+      },
+      body: {
+        id,
+        disponibile: nuovoValore
+      }
+    }
+  );
 
-    window.caricaDisponibilita();
+  if (error || !data?.success) {
+    alert("Errore aggiornamento disponibilità");
+    return;
+  }
+
+  window.caricaDisponibilita();
 };
 
 function render(){
@@ -3647,27 +3732,49 @@ document.addEventListener("click", () => {
 });
 
 window.setWaitTime = async function(minutes) {
-  await supabase
-    .from("wait_time")
-    .update({
-      minutes: minutes,
-      active: true,
-      updated_at: new Date().toISOString()
-    })
-    .eq("id", 1);
+
+  const { data, error } = await supabase.functions.invoke(
+    "admin-update-wait-time",
+    {
+      headers: {
+        "x-admin-pin": window.adminPin
+      },
+      body: {
+        minutes: minutes,
+        active: true
+      }
+    }
+  );
+
+  if (error || !data?.success) {
+    console.error(error);
+    alert("Errore aggiornamento tempo attesa");
+    return;
+  }
 
   alert(`⏳ Tempo di attesa impostato a ${minutes} minuti`);
 };
 
 window.disableWaitTime = async function() {
-  await supabase
-    .from("wait_time")
-    .update({
-      active: false,
-      minutes: 0,
-      updated_at: new Date().toISOString()
-    })
-    .eq("id", 1);
+
+  const { data, error } = await supabase.functions.invoke(
+    "admin-update-wait-time",
+    {
+      headers: {
+        "x-admin-pin": window.adminPin
+      },
+      body: {
+        minutes: 0,
+        active: false
+      }
+    }
+  );
+
+  if (error || !data?.success) {
+    console.error(error);
+    alert("Errore aggiornamento tempo attesa");
+    return;
+  }
 
   alert("⛔ Tempo di attesa disattivato");
 };
@@ -3709,30 +3816,37 @@ async function caricaAvvisoAdmin(){
 }
 
 window.salvaAvviso = async function () {
+
   const enabled = document.getElementById("alert-enabled").checked;
   const text = document.getElementById("alert-text").value.trim();
 
   const start = document.getElementById("alert-start")?.value || null;
   const end   = document.getElementById("alert-end")?.value || null;
 
-  const { error } = await supabase
-    .from("site_alert")
-    .update({
-      enabled,
-      text,
-      start_at: start ? new Date(start).toISOString() : null,
-      end_at: end ? new Date(end).toISOString() : null,
-      updated_at: new Date().toISOString()
-    })
-    .eq("id", 1);
+  const { data, error } = await supabase.functions.invoke(
+    "admin-update-site-alert",
+    {
+      headers: {
+        "x-admin-pin": window.adminPin
+      },
+      body: {
+        enabled,
+        text,
+        start_at: start ? new Date(start).toISOString() : null,
+        end_at: end ? new Date(end).toISOString() : null
+      }
+    }
+  );
 
-  if (error) {
-    console.error(error);
-    alert("Errore salvataggio avviso");
-    return;
-  }
+console.log(data, error);
 
-  alert("Avviso aggiornato ✅");
+if (error) {
+  console.error(error);
+  alert("Errore salvataggio avviso");
+  return;
+}
+
+alert("Avviso aggiornato ✅");
 };
 
 document.addEventListener("DOMContentLoaded", caricaAvvisoAdmin);
@@ -3781,7 +3895,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script>
-const ADMIN_PIN = "115365";
+
 let enteredPin = "";
 
 function openAdminPin() {
@@ -3806,30 +3920,37 @@ function updatePinDots() {
   });
 }
 
-function checkAdminPin() {
-  if (enteredPin === ADMIN_PIN) {
 
-    console.log("✅ PIN OK");
+async function checkAdminPin() {
 
-    localStorage.setItem("isAdmin", "1");   // 🔥 AGGIUNGI QUESTO
+  const { data, error } = await supabase.functions.invoke(
+    "admin-auth-check",
+    {
+      headers: {
+        "x-admin-pin": enteredPin
+      }
+    }
+  );
 
-    closeAdminPin();
+  if (error || !data?.success) {
+    enteredPin = "";
+    updatePinDots();
     return;
   }
 
-  enteredPin = "";
-  updatePinDots();
-}
+  // 🔥 AGGIUNGI QUESTA RIGA
+  window.adminPin = enteredPin;
 
+  localStorage.setItem("isAdmin", "1");
+
+  closeAdminPin();
+
+  await load();
+}
 document.addEventListener("DOMContentLoaded", () => {
   const keypad = document.querySelector(".pin-keypad");
 
-  // 🔐 Controllo se admin è già autenticato
-  if (localStorage.getItem("isAdmin") !== "1") {
-    openAdminPin();
-  } else {
-    closeAdminPin();
-  }
+openAdminPin();
 
   keypad.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
