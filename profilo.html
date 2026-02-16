@@ -1493,6 +1493,25 @@ body.no-scroll{
   97%  { transform: translateX(2px); }
 }
 
+/* 📩 Link feedback sotto coupon */
+.profile-feedback-link{
+  margin-top: 22px;
+  text-align: center;
+}
+
+.profile-feedback-link a{
+  font-size: 13px;
+  color: #007aff; /* blu iOS */
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: opacity .15s ease;
+}
+
+.profile-feedback-link a:active{
+  opacity: .6;
+}
+
 </style>
 </head>
 
@@ -1648,7 +1667,15 @@ body.no-scroll{
   <div id="no-login" class="empty-msg" style="display:none;">
     Nessun accesso effetuato.
   </div>
+
+  <div class="profile-feedback-link">
+  <a href="feedback.html">
+    Hai riscontrato qualche problema? Descrivicelo così possiamo migliorare.
+  </a>
 </div>
+</div>
+
+
 
 <!-- 📩 POPUP CONSENSI -->
 <div id="consensi-backdrop" class="glass-backdrop"></div>

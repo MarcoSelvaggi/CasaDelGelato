@@ -2,30 +2,110 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Admin – Feedback</title>
 
-<script type="module" src="supabase.js"></script>
-
 <style>
+:root{ --topbar-h:56px; }
+
+html, body{
+  max-width:100%;
+  overflow-x:hidden; /* ✅ evita tagli a destra */
+}
+
 body{
   margin:0;
   font-family:system-ui,-apple-system,sans-serif;
   background:#f6f6f7;
-  padding:20px;
+  touch-action:manipulation;
 }
 
-h1{
-  font-size:22px;
-  margin-bottom:20px;
+/* 🔝 TOP BAR */
+#top-fixed-bar{
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  height:var(--topbar-h);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  z-index:9999;
+}
+
+.back-btn{
+  position:absolute;
+  left:16px;
+  font-size:16px;
+  font-weight:700;
+  color:#007aff;
+  text-decoration:none;
+}
+
+#top-fixed-spacer{ height:var(--topbar-h); }
+
+/* 🔎 SEARCH (SOTTO TOP BAR) */
+.search-wrapper{
+  width:100%;
+  box-sizing:border-box;
+  padding:14px 16px 0;        /* ✅ padding safe */
+}
+
+.search-inner{
+  max-width:520px;
+  margin:0 auto;
+  box-sizing:border-box;
+}
+
+.search-input{
+  width:100%;
+  box-sizing:border-box;       /* ✅ fondamentale */
+  padding:10px 14px;
+  border-radius:14px;
+  border:1px solid #ddd;
+  font-size:14px;
+  background:#fff;
+}
+
+.delete-all{
+  margin-top:10px;
+  font-size:13px;
+  color:#ff3b30;
+  text-align:right;
+  cursor:pointer;
+  font-weight:700;
+  user-select:none;
+}
+
+/* CONTENUTO */
+.container{
+  max-width:520px;
+  margin:0 auto;
+  padding:18px 16px 24px;      /* ✅ coerente con search */
+  box-sizing:border-box;
 }
 
 .card{
   background:#fff;
-  border-radius:16px;
+  border-radius:18px;
   padding:16px;
-  margin-bottom:14px;
+  margin-bottom:16px;
   box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  position:relative;
+}
+
+.delete-btn{
+  position:absolute;
+  top:10px;
+  right:10px;
+  border:none;
+  background:transparent;
+  font-size:16px;
+  cursor:pointer;
+  color:#ff3b30;
+  padding:6px;
+  line-height:1;
 }
 
 .date{
@@ -34,61 +114,369 @@ h1{
   margin-bottom:6px;
 }
 
+.user{
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.email{
+  font-size:12px;
+  color:#007aff;
+  margin-bottom:8px;
+  word-break:break-all;
+}
+
 .message{
   font-size:14px;
   line-height:1.5;
+  white-space:pre-wrap;
+}
+
+mark{
+  background:#fff59d;
+  padding:1px 3px;
+  border-radius:4px;
 }
 
 .empty{
   color:#888;
-  margin-top:40px;
+  margin-top:60px;
   text-align:center;
+  font-weight:600;
+}
+
+/* 🔐 LOGIN */
+#admin-login{
+  position:fixed;
+  inset:0;
+  background:#f6f6f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:10000;
+}
+
+.login-box{
+  background:#fff;
+  padding:28px;
+  border-radius:22px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.15);
+  width:320px;
+  text-align:center;
+}
+
+.pin-display{
+  font-size:28px;
+  letter-spacing:8px;
+  margin:10px 0 18px;
+  font-weight:700;
+}
+
+.keypad{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.key{
+  padding:18px 0;
+  border-radius:14px;
+  background:#f2f2f7;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+  user-select:none;
+}
+
+.key:active{ transform:scale(.95); }
+
+.error{
+  margin-top:12px;
+  color:#ff3b30;
+  font-size:14px;
+  display:none;
+  font-weight:700;
+}
+
+@keyframes shake{
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-6px);}
+  50%{transform:translateX(6px);}
+  75%{transform:translateX(-4px);}
+  100%{transform:translateX(0);}
 }
 </style>
 </head>
 
 <body>
 
-<h1>Segnalazioni utenti</h1>
+<!-- 🔐 LOGIN -->
+<div id="admin-login">
+  <div class="login-box">
+    <h2 style="margin:0 0 6px;">Accesso Admin</h2>
+    <div class="pin-display" id="pin-display">○ ○ ○ ○ ○ ○</div>
 
-<div id="feedback-list"></div>
+    <div class="keypad">
+      <div class="key" data-key="1">1</div>
+      <div class="key" data-key="2">2</div>
+      <div class="key" data-key="3">3</div>
+      <div class="key" data-key="4">4</div>
+      <div class="key" data-key="5">5</div>
+      <div class="key" data-key="6">6</div>
+      <div class="key" data-key="7">7</div>
+      <div class="key" data-key="8">8</div>
+      <div class="key" data-key="9">9</div>
+      <div class="key" data-action="clear">C</div>
+      <div class="key" data-key="0">0</div>
+      <div class="key" data-action="ok">✓</div>
+    </div>
+
+    <div class="error" id="admin-error">PIN errato</div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div id="top-fixed-bar">
+  <a href="admin.html" class="back-btn">← Admin</a>
+</div>
+<div id="top-fixed-spacer"></div>
+
+<!-- SEARCH -->
+<div class="search-wrapper">
+  <div class="search-inner">
+    <input
+      type="text"
+      class="search-input"
+      id="search"
+      placeholder="Cerca nei feedback..."
+      autocomplete="off"
+    >
+    <div class="delete-all" id="btn-delete-all">Elimina tutti</div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="feedback-list"></div>
+</div>
 
 <script type="module">
 import { supabase } from "./supabase.js";
 
-async function caricaFeedback(){
+let allFeedback = [];
+let currentQuery = "";
 
-  const { data, error } = await supabase
+function escapeHtml(str){
+  return String(str ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function highlight(text, q){
+  const s = escapeHtml(text);
+  if (!q) return s;
+
+  // escape regex
+  const safe = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return s.replace(new RegExp(safe, "gi"), m => `<mark>${m}</mark>`);
+}
+
+window.caricaFeedback = async function(){
+
+  const { data, error } = await supabase.functions.invoke(
+    "get-feedback-admin",
+    {
+      headers: {
+        "x-admin-pin": window.adminPin
+      }
+    }
+  );
+
+  if (error) {
+    console.error("Errore Edge Function:", error);
+    return;
+  }
+
+  allFeedback = data || [];
+  renderFeedback();
+}
+
+function renderFeedback(){
+  const container = document.getElementById("feedback-list");
+  const q = (currentQuery || "").trim().toLowerCase();
+
+  let list = allFeedback;
+
+  if (q){
+    list = allFeedback.filter(f =>
+      (f.message||"").toLowerCase().includes(q) ||
+      (f.email||"").toLowerCase().includes(q) ||
+      (f.nome||"").toLowerCase().includes(q) ||
+      (f.cognome||"").toLowerCase().includes(q)
+    );
+  }
+
+  if(!list.length){
+    container.innerHTML = `<div class="empty">Nessuna segnalazione</div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(f => {
+const nome = `${(f.nome||"").trim()} ${(f.cognome||"").trim()}`.trim();
+const email = f.email || f.user_email || "";
+const autore = nome || email || "Utente anonimo";
+
+    return `
+      <div class="card" data-id="${escapeHtml(f.id)}">
+        <button class="delete-btn" type="button" data-action="delete-one" title="Elimina">Elimina</button>
+
+        <div class="date">${escapeHtml(new Date(f.created_at).toLocaleString("it-IT"))}</div>
+
+        <div class="user">👤 ${highlight(autore, q)}</div>
+
+       ${email ? `<div class="email">📧 ${highlight(email, q)}</div>` : ""}
+
+        <div class="message">${highlight(f.message, q)}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+/* 🔎 Search */
+document.getElementById("search").addEventListener("input", (e) => {
+  currentQuery = e.target.value || "";
+  renderFeedback();
+});
+
+/* 🗑️ Delete one (event delegation: NON si rompe con highlight) */
+document.getElementById("feedback-list").addEventListener("click", async (e) => {
+  const btn = e.target.closest('[data-action="delete-one"]');
+  if (!btn) return;
+
+  const card = btn.closest(".card");
+  const id = card?.dataset?.id;
+  if (!id) return;
+
+  if(!confirm("Eliminare questo feedback?")) return;
+
+  const { error } = await supabase
     .from("feedback")
-    .select("*")
-    .order("created_at", { ascending:false });
+    .delete()
+    .eq("id", id);
 
-  if(error){
+  if (error){
+    alert("Errore eliminazione");
     console.error(error);
     return;
   }
 
-  const container = document.getElementById("feedback-list");
+  // ✅ aggiorna subito UI
+  allFeedback = allFeedback.filter(f => String(f.id) !== String(id));
+  renderFeedback();
+});
 
-  if(!data || data.length === 0){
-    container.innerHTML =
-      `<div class="empty">Nessuna segnalazione</div>`;
+/* 🗑️ Delete all */
+document.getElementById("btn-delete-all").addEventListener("click", async () => {
+  if(!confirm("Eliminare TUTTI i feedback?")) return;
+
+  const { error } = await supabase
+    .from("feedback")
+    .delete()
+    .not("id", "is", null);
+
+  if (error){
+    alert("Errore eliminazione");
+    console.error(error);
     return;
   }
 
-  container.innerHTML = data.map(f => `
-    <div class="card">
-      <div class="date">
-        ${new Date(f.created_at).toLocaleString("it-IT")}
-      </div>
-      <div class="message">
-        ${f.message}
-      </div>
-    </div>
-  `).join("");
+  allFeedback = [];
+  renderFeedback();
+});
+
+
+</script>
+
+<script>
+/* 🔐 PIN */
+
+const PIN_LENGTH = 6;
+let currentPin = "";
+
+function updateDisplay(){
+  const display = document.getElementById("pin-display");
+  let dots = "";
+  for(let i=0;i<PIN_LENGTH;i++){
+    dots += (i < currentPin.length) ? "● " : "○ ";
+  }
+  display.innerText = dots.trim();
 }
 
-caricaFeedback();
+function clearPin(){
+  currentPin = "";
+  updateDisplay();
+  document.getElementById("admin-error").style.display = "none";
+}
+
+async function checkPin(){
+
+  const { data, error } = await supabase.functions.invoke(
+    "get-feedback-admin",
+    {
+      headers: {
+        "x-admin-pin": currentPin
+      }
+    }
+  );
+
+  if (error){
+    // ❌ PIN SBAGLIATO
+    document.getElementById("admin-error").style.display = "block";
+
+    const box = document.querySelector(".login-box");
+    box.style.animation = "shake .4s";
+
+    setTimeout(()=>{
+      box.style.animation = "";
+      clearPin();
+    }, 400);
+
+    return; // 🔥 BLOCCA QUI
+  }
+
+  // ✅ PIN CORRETTO
+  window.adminPin = currentPin;
+
+  document.getElementById("admin-login").style.display = "none";
+
+  allFeedback = data || [];
+  caricaFeedback();
+}
+
+document.addEventListener("click", (e) => {
+  const key = e.target.closest(".key");
+  if (!key) return;
+
+  const action = key.dataset.action;
+  const digit  = key.dataset.key;
+
+  if (action === "clear") return clearPin();
+  if (action === "ok") return checkPin();
+
+  if (digit != null){
+    if (currentPin.length >= PIN_LENGTH) return;
+    currentPin += digit;
+    updateDisplay();
+    if (currentPin.length === PIN_LENGTH){
+      setTimeout(checkPin, 200);
+    }
+  }
+});
+
+updateDisplay();
 </script>
 
 </body>

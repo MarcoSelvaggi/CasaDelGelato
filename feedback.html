@@ -9,16 +9,49 @@
 <script type="module" src="global.js"></script>
 
 <style>
+:root{
+  --topbar-h: 56px;
+}
+
 body{
   margin:0;
   font-family:system-ui,-apple-system,sans-serif;
   background:#f6f6f7;
-  padding:20px;
 }
 
+/* 🔝 Barra fissa */
+#top-fixed-bar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  z-index: 9999;
+}
+
+.back-btn{
+  position: absolute;
+  left: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #007aff;
+  text-decoration: none;
+}
+
+#top-fixed-spacer{
+  height: var(--topbar-h);
+}
+
+/* CONTENUTO */
 .container{
   max-width:480px;
   margin:auto;
+  padding:20px;
 }
 
 h1{
@@ -66,10 +99,47 @@ button:active{
   color:#34c759;
   display:none;
 }
+
+.error{
+  margin-top:14px;
+  font-size:14px;
+  color:#ff3b30;
+  display:none;
+}
+
+/* 🍞 TOAST */
+.toast{
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 14px;
+  opacity: 0;
+  transition: all .3s ease;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+.toast.show{
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+
 </style>
 </head>
 
 <body>
+
+<!-- 🔝 Barra -->
+<div id="top-fixed-bar">
+  <a href="profilo.html" class="back-btn">← Torna al profilo</a>
+</div>
+<div id="top-fixed-spacer"></div>
 
 <div class="container">
   <h1>Hai riscontrato un problema?</h1>
@@ -80,7 +150,11 @@ button:active{
   <button onclick="inviaFeedback()">Invia segnalazione</button>
 
   <div class="success" id="success-msg">
-    ✅ Grazie! La segnalazione è stata inviata.
+    Grazie! La segnalazione è stata inviata.
+  </div>
+
+  <div class="error" id="error-msg">
+    ❌ Errore durante l’invio. Riprova.
   </div>
 </div>
 
@@ -90,30 +164,54 @@ import { supabase } from "./supabase.js";
 window.inviaFeedback = async function(){
 
   const text = document.getElementById("feedback-text").value.trim();
-  if(!text){
-    alert("Scrivi qualcosa prima di inviare");
-    return;
-  }
+  const successMsg = document.getElementById("success-msg");
+  const errorMsg = document.getElementById("error-msg");
+
+  successMsg.style.display = "none";
+  errorMsg.style.display = "none";
+
+if(!text){
+  showToast("Scrivi qualcosa prima di inviare");
+  return;
+}
+
+  const userEmail = localStorage.getItem("user_email");
+  const nome = localStorage.getItem("user_name");
+  const cognome = localStorage.getItem("user_surname");
 
   const { error } = await supabase
     .from("feedback")
     .insert([
       {
         message: text,
-        created_at: new Date()
+        user_email: userEmail || null,
+        nome: nome || null,
+        cognome: cognome || null
       }
     ]);
 
   if(error){
-    alert("Errore invio");
-    console.error(error);
+    console.error("Errore Supabase:", error);
+    errorMsg.style.display = "block";
     return;
   }
 
   document.getElementById("feedback-text").value = "";
-  document.getElementById("success-msg").style.display = "block";
+  successMsg.style.display = "block";
 };
+
+function showToast(message){
+  const toast = document.getElementById("toast");
+  toast.innerText = message;
+  toast.classList.add("show");
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+  }, 2500);
+}
 </script>
+
+<div id="toast" class="toast"></div>
 
 </body>
 </html>
