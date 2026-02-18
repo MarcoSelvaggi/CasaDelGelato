@@ -374,7 +374,7 @@ document.getElementById("riepilogo-mini").style.display = "none";
 <div id="bottom-nav">
 
 <a href="crea-coppa.html" class="nav-item">
-  <img src="scoopy-ice.png" class="nav-icon-img" alt="Crea">
+  <img src="img/scoopy-ice.png" class="nav-icon-img" alt="Crea">
   <span>Scoopy ice</span>
 </a>
 
@@ -507,6 +507,10 @@ function confermaTavolo() {
 
   document.getElementById("step-tavolo").style.display = "none";
   document.getElementById("step-size").style.display = "block";
+
+  // 🔥 Scrolla in alto PRIMA di mostrare la bottom nav
+  window.scrollTo(0, 0);
+
   mostraBottomNav();
 }
 
