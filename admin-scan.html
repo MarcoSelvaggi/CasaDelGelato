@@ -265,241 +265,238 @@ function mostra(msg, ok = false) {
     box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
 }
 
-async function riscattaCoupon(codice) {
-  console.log("🎟️ RISCATTO COUPON:", codice);
 
-  // 1️⃣ cerco il coupon
-  const { data: couponArr, error } = await supabase
-    .from("coupon")
-    .select("*")
-    .eq("codice", codice)
-    .limit(1);
 
-  if (error || !couponArr || !couponArr.length) {
-    mostra("❌ Coupon NON valido", false);
+async function confermaCoppa(raw) {
+
+
+  const { data, error } = await supabase.functions.invoke(
+    "admin-scan",
+    {
+      body: {
+        pin: adminSessionPin,
+        raw: raw
+      }
+    }
+  );
+
+  console.log("EDGE RESPONSE:", data);
+  console.log("EDGE ERROR:", error);
+
+  // ❌ errore vero
+  if (error) {
+    mostra("❌ Errore server");
     return;
   }
 
-  const coupon = couponArr[0];
+  // 🔁 COPPA GIÀ CONFERMATA
+  if (data?.type === "coppa" && data.already_confirmed) {
 
-  // 2️⃣ carico dati cliente (se esiste)
-  let cliente = null;
-  if (coupon.email) {
-    const { data: utente } = await supabase
-      .from("utenti")
-      .select("nome, cognome, email")
-      .eq("email", coupon.email)
-      .single();
+    const ok = await openConfirm(`
+      ⚠️ Questa coppa è già stata confermata.<br><br>
+      <b>Confermate finora:</b> ${data.coppa.confermate}<br><br>
+      Vuoi confermare di nuovo?
+    `);
 
-    if (utente) cliente = utente;
+    if (!ok) return;
+
+    // 🔥 RICHIAMO EDGE CON force = true
+    const { data: forcedData } = await supabase.functions.invoke(
+      "admin-scan",
+      {
+        body: {
+          pin: adminSessionPin,
+          raw: raw,
+          force: true
+        }
+      }
+    );
+
+    if (!forcedData?.ok) {
+      mostra("❌ Errore conferma");
+      return;
+    }
+
+
+mostra(`
+  ✅ Coppa riconfermata!<br><br>
+
+  <b>${forcedData.coppa.nome}</b><br>
+  (${forcedData.coppa.formato})<br><br>
+
+  🪑 <b>Tavolo:</b> ${forcedData.coppa.tavolo || "-"}<br><br>
+
+  👤 <b>Cliente:</b><br>
+  ${
+    forcedData.cliente
+      ? forcedData.cliente.nome + " " + forcedData.cliente.cognome
+      : "Guest"
+  }<br><br>
+
+  🔁 <b>Confermate totali:</b> ${forcedData.coppa.confermate}
+`, true);
+
+  // ===== SALVA RICONFERMA =====
+const lista = loadLista();
+
+// 🔍 CERCA SE ESISTE GIÀ
+const index = lista.findIndex(x => x.id === forcedData.coppa.id);
+
+if (index !== -1) {
+
+  // 🔁 AGGIORNA CARD ESISTENTE
+  lista[index].confermate = forcedData.coppa.confermate;
+  lista[index].scanned_at = new Date().toISOString();
+  lista[index].cliente = forcedData.cliente || null;
+
+} else {
+
+  // ➕ PRIMA VOLTA → CREA NUOVA CARD
+  lista.unshift({
+    id: forcedData.coppa.id,
+    nome: forcedData.coppa.nome,
+    formato: forcedData.coppa.formato,
+    tavolo: forcedData.coppa.tavolo,
+    confermate: forcedData.coppa.confermate,
+    scanned_at: new Date().toISOString(),
+    data_creazione: forcedData.coppa.data,
+    cliente: forcedData.cliente || null
+  });
+
+  if (lista.length > 100) lista.length = 100;
+}
+
+saveLista(lista);
+renderLista();
+
+  return;
   }
 
-  // 3️⃣ SE GIÀ USATO → mostro dati ma NON aggiorno
-  if (coupon.redento) {
+  // ❌ altro errore
+  if (!data?.ok) {
+    mostra(data?.message || "❌ Errore scan");
+    return;
+  }
+
+  // ✅ COPPA NORMALE
+if (data.type === "coppa") {
+
+  const c = data.coppa;
+  const cliente = data.cliente;
+
+  // ===== SALVA IN CRONOLOGIA =====
+  const lista = loadLista();
+
+  const index = lista.findIndex(x => x.id === c.id);
+
+  if (index !== -1) {
+
+    // aggiorna card esistente
+    lista[index].confermate = c.confermate;
+    lista[index].scanned_at = new Date().toISOString();
+    lista[index].cliente = cliente || null;
+
+  } else {
+
+    // crea nuova card
+    lista.unshift({
+      id: c.id,
+      nome: c.nome,
+      formato: c.formato,
+      tavolo: c.tavolo,
+      confermate: c.confermate,
+      scanned_at: new Date().toISOString(),
+      data_creazione: c.data,
+      cliente: cliente || null
+    });
+
+    if (lista.length > 100) lista.length = 100;
+  }
+
+  saveLista(lista);
+  renderLista();
+
+  mostra(`
+    ✅ Coppa confermata!<br><br>
+    <b>${c.nome}</b><br>
+    (${c.formato})<br><br>
+    🪑 <b>Tavolo:</b> ${c.tavolo || "-"}<br><br>
+    👤 <b>Cliente:</b><br>
+    ${cliente ? cliente.nome + " " + cliente.cognome : "Guest"}
+  `, true);
+}
+
+// 🎟️ COUPON
+if (data.type === "coupon") {
+
+  const c = data.coupon;
+  const cliente = data.cliente;
+
+  if (data.already_used) {
+
     mostra(`
       ⚠️ <b>Coupon già utilizzato</b><br><br>
 
-      🎟️ <b>Tipo:</b> Coppa ${coupon.tipo.toUpperCase()}<br><br>
+      🎟️ <b>Tipo:</b> Coppa ${c.tipo.toUpperCase()}<br><br>
 
+      👤 <b>Cliente:</b><br>
       ${
         cliente
-          ? `
-            👤 <b>Cliente:</b><br>
-            ${cliente.nome} ${cliente.cognome}<br>
-            📧 ${cliente.email}<br><br>
-          `
-          : `
-            👤 <b>Cliente:</b><br>
-            ${coupon.email || "Guest"}<br><br>
-          `
-      }
+          ? cliente.nome + " " + cliente.cognome
+          : (c.email || "Guest")
+      }<br><br>
 
       🕒 <b>Usato il:</b><br>
-      ${coupon.used_at
-        ? new Date(coupon.used_at).toLocaleString("it-IT")
-        : "-"}
+      ${c.used_at ? new Date(c.used_at).toLocaleString("it-IT") : "-"}
     `, false);
 
-    return;
-  }
-
-  // 4️⃣ segno come usato
-  const { error: errUpdate } = await supabase
-    .from("coupon")
-    .update({
-      redento: true,
-      used_at: new Date().toISOString()
-    })
-    .eq("id", coupon.id);
-
-  if (errUpdate) {
-    console.error("❌ Errore update coupon:", errUpdate);
-    mostra("❌ Errore nel riscatto coupon", false);
-    return;
-  }
-
-  // 5️⃣ conferma visiva completa
-  mostra(`
-    ✅ <b>Coupon riscattato!</b><br><br>
-
-    🎟️ <b>Tipo:</b> Coppa ${coupon.tipo.toUpperCase()} omaggio<br><br>
-
-    ${
-      cliente
-        ? `
-          👤 <b>Cliente:</b><br>
-          ${cliente.nome} ${cliente.cognome}<br>
-          📧 ${cliente.email}
-        `
-        : `
-          👤 <b>Cliente:</b><br>
-          ${coupon.email || "Guest"}
-        `
-    }
-  `, true);
-
-  console.log("✅ COUPON RISCATTATO CON SUCCESSO");
-}
-
-async function confermaCoppa( qrToken ) {
-
-    // 1️⃣ CERCO la coppa nel DB
-    const { data, error } = await supabase
-        .from("coppe")
-        .select("*")
-        .eq("qr_token", qrToken)
-        .limit(1);
-
-    if (error || !data || !data.length) {
-        mostra("❌ QR NON valido!");
-        return;
-    }
-
-   const coppa = data[0];
-console.log("🎯 COPPA SCANSIONATA:", coppa);
-    let cliente = null;
-
-if (coppa.email) {
-  const { data: utente } = await supabase
-    .from("utenti")
-    .select("nome, cognome, email")
-    .eq("email", coppa.email)
-    .limit(1);
-
-  if (utente && utente.length) {
-    cliente = utente[0];
-  }
-}
-const dataCoppa = new Date(coppa.data).toLocaleString("it-IT", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit"
-});
-
-const confermate = coppa.confermate || 0;
-
-if (confermate >= 1) {
-const ok = await openConfirm(`
-  Ne sono state ordinate più uguali?<br><br>
-  <b>Confermate finora:</b> ${confermate}
-`);
-
-if (!ok) return;
-}
-
-// 3️⃣ CONFERMO la coppa
-const { error: errUpdate } = await supabase
-  .from("coppe")
-  .update({ confermate: confermate + 1 })
-  .eq("id", coppa.id);
-
-if (errUpdate) {
-  console.error("❌ ERRORE update coppe:", errUpdate);
-  return;
-}
-
-// 4️⃣ SALVO CONFERMA REALE (serve SOLO per i coupon)
-if (coppa.email) {
-  const { error: errConferma } = await supabase
-    .from("conferme_coppe")
-    .insert({
-      email: coppa.email,
-      coppa_id: coppa.id,
-      formato: coppa.formato
-    });
-
-  if (errConferma) {
-    console.error("❌ ERRORE inserimento conferme_coppe:", errConferma);
   } else {
-    console.log("✅ Conferma salvata in conferme_coppe");
+
+    mostra(`
+      ✅ <b>Coupon riscattato!</b><br><br>
+
+      🎟️ <b>Tipo:</b> Coppa ${c.tipo.toUpperCase()} omaggio<br><br>
+
+      👤 <b>Cliente:</b><br>
+      ${
+        cliente
+          ? cliente.nome + " " + cliente.cognome
+          : (c.email || "Guest")
+      }
+    `, true);
   }
 }
-// 🔥 AGGIORNA SUBITO LA FEDELTÀ (FONDAMENTALE)
-if (typeof aggiornaFedelta === "function") {
-  aggiornaFedelta();
 }
 
-        // ===== SALVA NELLA LISTA GIORNALIERA =====
-const lista = loadLista();
+function aggiornaListaGiornaliera(data) {
 
-// 🔍 cerco se la coppa è già in lista
-const esistente = lista.find(x => x.id === coppa.id);
+  const lista = loadLista();
+  const c = data.coppa;
 
-if (esistente) {
-  // ✅ aggiorno solo i dati
-  esistente.confermate = confermate + 1;
-  esistente.scanned_at = new Date().toISOString();
-} else {
-  // ➕ nuova coppa
-  lista.unshift({
-    id: coppa.id,
-    nome: coppa.nome,
-    formato: coppa.formato,
-    tavolo: coppa.tavolo,
-    confermate: confermate + 1,
-    scanned_at: new Date().toISOString(),
-    data_creazione: coppa.data,
-    cliente: cliente || null
-  });
-}
+  const esistente = lista.find(x => x.id === c.id);
 
-// massimo 100 elementi
-if (lista.length > 100) lista.length = 100;
-
-saveLista(lista);
-renderLista();
-
-// tieni massimo 100 voci (opzionale)
-if (lista.length > 100) lista.length = 100;
-
-saveLista(lista);
-renderLista();
-
-mostra(`
-  ✅ Coppa confermata!<br><br>
-
-  <b>${coppa.nome}</b><br>
-  (${coppa.formato})<br><br>
-
-  🪑 <b>Tavolo:</b> ${coppa.tavolo || "-"}<br>
-  🕒 <b>Creata il:</b> ${dataCoppa}<br><br>
-
-  ${
-    cliente
-    ? `
-      👤 <b>Cliente:</b><br>
-      ${cliente.nome} ${cliente.cognome}<br>
-      📧 ${cliente.email}
-    `
-    : `
-      👤 <b>Cliente:</b><br>
-      Guest
-    `
+  if (esistente) {
+    esistente.confermate = c.confermate;
+    esistente.scanned_at = new Date().toISOString();
+  } else {
+    lista.unshift({
+      id: c.id,
+      nome: c.nome,
+      formato: c.formato,
+      tavolo: c.tavolo,
+      confermate: c.confermate,
+      scanned_at: new Date().toISOString(),
+      data_creazione: c.data,
+      cliente: data.cliente || null
+    });
   }
-`, true);
+
+  if (lista.length > 100) lista.length = 100;
+
+  saveLista(lista);
+  renderLista();
 }
+
 
 // ======= LISTA SCAN (persistente fino alle 02:00) =======
 const LS_KEY_LISTA = "adminScan_lista_v1";
@@ -517,18 +514,6 @@ function getNextResetAt2AM() {
   return reset.getTime();
 }
 
-function estraiCodiceCoupon(raw) {
-  try {
-    // se è un URL valido
-    const u = new URL(raw);
-    const c = u.searchParams.get("coupon");
-    return c ? decodeURIComponent(c) : null;
-  } catch (e) {
-    // non è un URL -> provo regex su stringa
-    const m = String(raw).match(/coupon=([^&#]+)/i);
-    return m ? decodeURIComponent(m[1]) : null;
-  }
-}
 
 let confirmResolve = null;
 
@@ -549,14 +534,6 @@ function closeConfirm(result){
 }
 
 async function gestisciScan(raw) {
-  const codice = estraiCodiceCoupon(raw);
-
-  if (codice) {
-    console.log("🎟️ SCAN COUPON:", codice);
-    // STEP 2: qui chiameremo la funzione di riscatto coupon
-    await riscattaCoupon(codice);
-    return;
-  }
 
   console.log("🍨 SCAN COPPA:", raw);
   await confermaCoppa(raw);
@@ -688,13 +665,20 @@ window.startScanner = startScanner;
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  if (isPinValidToday()) {
-    // 🔥 PIN già valido → avvio diretto
-    startScanner();
-  } else {
-    // 🔒 chiedi PIN
+if (isPinValidToday()) {
+
+  adminSessionPin = localStorage.getItem("adminScan_session_pin") || "";
+
+  if (!adminSessionPin) {
     openAdminScanPin();
+    return;
   }
+
+  startScanner();
+
+} else {
+  openAdminScanPin();
+}
 
 });
 </script>
@@ -731,9 +715,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 <script>
 /* ========= CONFIG ========= */
-const ADMIN_PIN = "000000";
 const PIN_KEY = "adminScan_pin_ok_until";
+
 let enteredPin = "";
+let adminSessionPin = ""; // 👈 METTILO QUI
+adminSessionPin = localStorage.getItem("adminScan_session_pin") || "";
 
 /* ========= VALIDITÀ 1 GIORNO ========= */
 function getPinExpireToday() {
@@ -767,18 +753,29 @@ function openAdminScanPin() {
 }
 
 /* ========= CHECK PIN ========= */
-function checkAdminScanPin() {
-  if (enteredPin === ADMIN_PIN) {
-    savePinValid();
-    document.getElementById("admin-pin-overlay").style.display = "none";
-    startScanner(); // 🔥 ORA PARTE
+
+async function checkAdminScanPin() {
+
+  const { data, error } = await supabase.functions.invoke(
+    "admin-scan",
+    {
+      body: {
+        pin: enteredPin,
+        action: "auth"
+      }
+    }
+  );
+
+  if (!data?.ok) {
+    enteredPin = "";
+    updatePinDots();
+    navigator.vibrate?.(100);
     return;
   }
 
-  // PIN errato
-  enteredPin = "";
-  updatePinDots();
-  navigator.vibrate?.(100);
+  adminSessionPin = enteredPin;
+  document.getElementById("admin-pin-overlay").style.display = "none";
+  startScanner();
 }
 
 /* ========= KEYPAD ========= */
