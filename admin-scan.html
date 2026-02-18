@@ -464,6 +464,10 @@ if (data.type === "coupon") {
           : (c.email || "Guest")
       }
     `, true);
+    window.postMessage(
+  { type: "coupon_used", codice: c.codice },
+  "*"
+);
   }
 }
 }
