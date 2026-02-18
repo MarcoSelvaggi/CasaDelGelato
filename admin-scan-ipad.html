@@ -5,96 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Scanner QR - Casa del Gelato</title>
 
-<!-- html5-qrcode -->
+<!-- Libreria per scanner QR -->
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <!-- Supabase -->
 <script type="module" src="supabase.js"></script>
 
 <style>
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    overflow: hidden;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f7f7f7;
-}
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        background:#f7f7f7;
+        margin:0;
+        padding:20px;
+        text-align:center;
+    }
 
-h1 {
-    margin: 12px 0 4px;
-    text-align: center;
-}
+    h1 { margin-top: 12px; }
 
-p {
-    margin: 0 0 12px;
-    text-align: center;
-    opacity: .8;
-}
+    #reader {
+        width: 310px;
+        margin: 0 auto;
+        border-radius: 12px;
+        overflow: hidden;
+    }
 
-/* SCANNER */
-#reader {
-    width: 100vw;
-    height: calc(100vh - 220px);
-    background: #000;
-    overflow: hidden;
-}
+    #risultato {
+        margin-top:20px;
+        background:white;
+        padding:18px;
+        border-radius:12px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.15);
+        font-size:17px;
+    }
 
-#reader video {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover;
-}
+    .ok {
+        color:green;
+        font-weight:bold;
+        font-size:18px;
+    }
+    .error {
+        color:#d60000;
+        font-weight:bold;
+        font-size:18px;
+    }
 
-/* BUTTON */
-#switchCamBtn {
-    margin: 12px auto;
-    padding: 10px 16px;
-    background: #007aff;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    display: block;
-}
+    button {
+        margin-top:20px;
+        padding:10px 16px;
+        background:#007aff;
+        border:none;
+        color:white;
+        font-size:16px;
+        border-radius:10px;
+        cursor:pointer;
+    }
 
-/* RISULTATO */
-#risultato {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  max-height: 45vh;
-  overflow-y: auto;
-
-  background: #fff;
-  padding: 18px 16px 28px;
-  border-radius: 18px 18px 0 0;
-
-  box-shadow: 0 -6px 24px rgba(0,0,0,.18);
-  font-size: 16px;
-
-  display: none;
-  z-index: 9998;
-}
-
-.ok {
-    color: #1e9d3e;
-    font-weight: 700;
-}
-
-.error {
-    color: #d60000;
-    font-weight: 700;
-}
-
-/* ===== PIN OVERLAY ===== */
+    /* ===== OVERLAY ===== */
 .pin-overlay{
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.35);
+  background: rgba(0,0,0,0.35);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -102,21 +72,24 @@ p {
   z-index: 9999;
 }
 
+/* ===== BOX ===== */
 .pin-box{
   width: 300px;
   background: #fff;
   border-radius: 18px;
   padding: 22px 20px 26px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
   text-align: center;
 }
 
+/* ===== TITOLO ===== */
 .pin-box h2{
   margin: 0 0 16px;
   font-size: 18px;
   font-weight: 600;
 }
 
+/* ===== DOTS ===== */
 .pin-dots{
   display: flex;
   justify-content: center;
@@ -129,12 +102,15 @@ p {
   height: 10px;
   border-radius: 50%;
   background: #d1d1d6;
+  transition: background .2s, transform .2s;
 }
 
 .pin-dots span.filled{
   background: #111;
+  transform: scale(1.15);
 }
 
+/* ===== KEYPAD ===== */
 .pin-keypad{
   display: grid;
   grid-template-columns: repeat(3, 74px);
@@ -142,23 +118,116 @@ p {
   justify-content: center;
 }
 
+/* ===== BUTTONS ===== */
 .pin-keypad button{
   width: 74px;
   height: 74px;
   border-radius: 50%;
   border: none;
   background: #f2f2f7;
+  color: #111;
   font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform .1s, background .15s;
+}
+
+/* TAP iOS */
+.pin-keypad button:active{
+  background: #e5e5ea;
+  transform: scale(0.92);
+}
+
+/* TASTO DELETE */
+#pin-del{
+  font-size: 20px;
+}
+
+/* CELLA VUOTA */
+.pin-keypad .empty{
+  background: transparent;
+  pointer-events: none;
+}
+/* ===== CONFIRM OVERLAY ===== */
+.confirm-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+/* ===== BOX ===== */
+.confirm-box{
+  width: 320px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 22px 20px 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+  text-align: center;
+}
+
+/* ICONA */
+.confirm-icon{
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+
+/* TITOLO */
+.confirm-box h3{
+  margin: 0 0 10px;
+  font-size: 18px;
   font-weight: 600;
 }
 
-.pin-keypad button:active{
-  background: #e5e5ea;
-  transform: scale(.92);
+/* TESTO */
+.confirm-box p{
+  font-size: 15px;
+  line-height: 1.4;
+  color: #333;
+  margin: 0 0 18px;
 }
 
-.pin-keypad .empty{
-  background: transparent;
+/* AZIONI */
+.confirm-actions{
+  display: flex;
+  border-top: 1px solid #e5e5ea;
+}
+
+.confirm-actions button{
+  flex: 1;
+  padding: 14px 0;
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-cancel{
+  color: #8e8e93;
+  border-right: 1px solid #e5e5ea;
+}
+
+.btn-ok{
+  color: #007aff;
+  font-weight: 600;
+}
+.badge-confermate{
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 8px;
+
+  background: #e8ffe8;
+  color: #008a00;
+  font-weight: 700;
+  font-size: 14px;
 }
 /* 🔒 Blocca doppio tap zoom solo sul keypad PIN */
 .pin-keypad button{
@@ -170,152 +239,511 @@ p {
   user-select: none;
   -webkit-user-select: none;
 }
+
+#switchCamBtn {
+    display: block;
+    margin: 16px auto 0;
+}
 </style>
 </head>
 
 <body>
 
 <h1>📷 Scanner QR Coppe</h1>
-<p>Inquadra il QR del cliente</p>
+<p>Inquadra il QR del cliente per confermare automaticamente la coppa</p>
 
 <div id="reader"></div>
 
 <button id="switchCamBtn">🔁 Cambia fotocamera</button>
 
-<div id="risultato"></div>
+<div id="risultato" style="display:none;"></div>
+<div id="lista-scan" style="margin-top:16px;"></div>
+
+
 
 <script type="module">
 import { supabase } from "./supabase.js";
-
+let scanLock = false;
 let html5QrCode = null;
+let scannerRunning = false; // 🔥 FIX
 let cameras = [];
 let currentCameraIndex = 0;
-let scanLock = false;
 
-/* ================= UI ================= */
+
 function mostra(msg, ok = false) {
     const box = document.getElementById("risultato");
     box.style.display = "block";
-    box.innerHTML = `<div class="${ok ? "ok" : "error"}">${msg}</div>`;
+    box.innerHTML = `<span class="${ok ? 'ok' : 'error'}">${msg}</span>`;
 }
 
-/* ================= SCAN LOGIC ================= */
-async function gestisciScan(raw) {
-    // coupon
-    if (raw.includes("coupon=")) {
-        mostra("🎟️ Coupon letto", true);
-        return;
+
+
+async function confermaCoppa(raw) {
+
+
+  const { data, error } = await supabase.functions.invoke(
+    "admin-scan",
+    {
+      body: {
+        pin: adminSessionPin,
+        raw: raw
+      }
     }
+  );
 
-    // coppa
-    const { data } = await supabase
-        .from("coppe")
-        .select("*")
-        .eq("qr_token", raw)
-        .limit(1);
+  console.log("EDGE RESPONSE:", data);
+  console.log("EDGE ERROR:", error);
 
-    if (!data || !data.length) {
-        mostra("❌ QR non valido");
-        return;
-    }
+  // ❌ errore vero
+  if (error) {
+    mostra("❌ Errore server");
+    return;
+  }
 
-    const coppa = data[0];
-    const confermate = coppa.confermate || 0;
+  // 🔁 COPPA GIÀ CONFERMATA
+  if (data?.type === "coppa" && data.already_confirmed) {
 
-    await supabase
-        .from("coppe")
-        .update({ confermate: confermate + 1 })
-        .eq("id", coppa.id);
+    const ok = await openConfirm(`
+      ⚠️ Questa coppa è già stata confermata.<br><br>
+      <b>Confermate finora:</b> ${data.coppa.confermate}<br><br>
+      Vuoi confermare di nuovo?
+    `);
 
-    mostra(`✅ Coppa confermata<br><b>${coppa.nome}</b> (${coppa.formato})`, true);
-}
+    if (!ok) return;
 
-/* ================= CAMERA ================= */
-async function loadCameras() {
-    if (cameras.length) return cameras;
-
-    cameras = await Html5Qrcode.getCameras();
-    if (!cameras.length) {
-        alert("Nessuna fotocamera trovata");
-        return [];
-    }
-
-    const backIndex = cameras.findIndex(c =>
-        /back|rear|environment/i.test(c.label)
+    // 🔥 RICHIAMO EDGE CON force = true
+    const { data: forcedData } = await supabase.functions.invoke(
+      "admin-scan",
+      {
+        body: {
+          pin: adminSessionPin,
+          raw: raw,
+          force: true
+        }
+      }
     );
-    if (backIndex !== -1) currentCameraIndex = backIndex;
 
-    if (cameras.length <= 1) {
-        document.getElementById("switchCamBtn")?.remove();
+    if (!forcedData?.ok) {
+      mostra("❌ Errore conferma");
+      return;
     }
 
-    return cameras;
+
+mostra(`
+  ✅ Coppa riconfermata!<br><br>
+
+  <b>${forcedData.coppa.nome}</b><br>
+  (${forcedData.coppa.formato})<br><br>
+
+  🪑 <b>Tavolo:</b> ${forcedData.coppa.tavolo || "-"}<br><br>
+
+  👤 <b>Cliente:</b><br>
+  ${
+    forcedData.cliente
+      ? forcedData.cliente.nome + " " + forcedData.cliente.cognome
+      : "Guest"
+  }<br><br>
+
+  🔁 <b>Confermate totali:</b> ${forcedData.coppa.confermate}
+`, true);
+
+  // ===== SALVA RICONFERMA =====
+const lista = loadLista();
+
+// 🔍 CERCA SE ESISTE GIÀ
+const index = lista.findIndex(x => x.id === forcedData.coppa.id);
+
+if (index !== -1) {
+
+  // 🔁 AGGIORNA CARD ESISTENTE
+  lista[index].confermate = forcedData.coppa.confermate;
+  lista[index].scanned_at = new Date().toISOString();
+  lista[index].cliente = forcedData.cliente || null;
+
+} else {
+
+  // ➕ PRIMA VOLTA → CREA NUOVA CARD
+  lista.unshift({
+    id: forcedData.coppa.id,
+    nome: forcedData.coppa.nome,
+    formato: forcedData.coppa.formato,
+    tavolo: forcedData.coppa.tavolo,
+    confermate: forcedData.coppa.confermate,
+    scanned_at: new Date().toISOString(),
+    data_creazione: forcedData.coppa.data,
+    cliente: forcedData.cliente || null
+  });
+
+  if (lista.length > 100) lista.length = 100;
+}
+
+saveLista(lista);
+renderLista();
+
+  return;
+  }
+
+  // ❌ altro errore
+  if (!data?.ok) {
+    mostra(data?.message || "❌ Errore scan");
+    return;
+  }
+
+  // ✅ COPPA NORMALE
+if (data.type === "coppa") {
+
+  const c = data.coppa;
+  const cliente = data.cliente;
+
+  // ===== SALVA IN CRONOLOGIA =====
+  const lista = loadLista();
+
+  const index = lista.findIndex(x => x.id === c.id);
+
+  if (index !== -1) {
+
+    // aggiorna card esistente
+    lista[index].confermate = c.confermate;
+    lista[index].scanned_at = new Date().toISOString();
+    lista[index].cliente = cliente || null;
+
+  } else {
+
+    // crea nuova card
+    lista.unshift({
+      id: c.id,
+      nome: c.nome,
+      formato: c.formato,
+      tavolo: c.tavolo,
+      confermate: c.confermate,
+      scanned_at: new Date().toISOString(),
+      data_creazione: c.data,
+      cliente: cliente || null
+    });
+
+    if (lista.length > 100) lista.length = 100;
+  }
+
+  saveLista(lista);
+  renderLista();
+
+  mostra(`
+    ✅ Coppa confermata!<br><br>
+    <b>${c.nome}</b><br>
+    (${c.formato})<br><br>
+    🪑 <b>Tavolo:</b> ${c.tavolo || "-"}<br><br>
+    👤 <b>Cliente:</b><br>
+    ${cliente ? cliente.nome + " " + cliente.cognome : "Guest"}
+  `, true);
+}
+
+// 🎟️ COUPON
+if (data.type === "coupon") {
+
+  const c = data.coupon;
+  const cliente = data.cliente;
+
+  if (data.already_used) {
+
+    mostra(`
+      ⚠️ <b>Coupon già utilizzato</b><br><br>
+
+      🎟️ <b>Tipo:</b> Coppa ${c.tipo.toUpperCase()}<br><br>
+
+      👤 <b>Cliente:</b><br>
+      ${
+        cliente
+          ? cliente.nome + " " + cliente.cognome
+          : (c.email || "Guest")
+      }<br><br>
+
+      🕒 <b>Usato il:</b><br>
+      ${c.used_at ? new Date(c.used_at).toLocaleString("it-IT") : "-"}
+    `, false);
+
+  } else {
+
+    mostra(`
+      ✅ <b>Coupon riscattato!</b><br><br>
+
+      🎟️ <b>Tipo:</b> Coppa ${c.tipo.toUpperCase()} omaggio<br><br>
+
+      👤 <b>Cliente:</b><br>
+      ${
+        cliente
+          ? cliente.nome + " " + cliente.cognome
+          : (c.email || "Guest")
+      }
+    `, true);
+  }
+}
+}
+
+function aggiornaListaGiornaliera(data) {
+
+  const lista = loadLista();
+  const c = data.coppa;
+
+  const esistente = lista.find(x => x.id === c.id);
+
+  if (esistente) {
+    esistente.confermate = c.confermate;
+    esistente.scanned_at = new Date().toISOString();
+  } else {
+    lista.unshift({
+      id: c.id,
+      nome: c.nome,
+      formato: c.formato,
+      tavolo: c.tavolo,
+      confermate: c.confermate,
+      scanned_at: new Date().toISOString(),
+      data_creazione: c.data,
+      cliente: data.cliente || null
+    });
+  }
+
+  if (lista.length > 100) lista.length = 100;
+
+  saveLista(lista);
+  renderLista();
+}
+
+
+// ======= LISTA SCAN (persistente fino alle 02:00) =======
+const LS_KEY_LISTA = "adminScan_lista_v1";
+const LS_KEY_RESET = "adminScan_resetAt_v1";
+
+function getNextResetAt2AM() {
+  const now = new Date();
+  const reset = new Date(now);
+  reset.setHours(2, 0, 0, 0); // 02:00
+
+  // se sono già passate le 02:00 di oggi -> reset domani alle 02:00
+  if (now.getTime() >= reset.getTime()) {
+    reset.setDate(reset.getDate() + 1);
+  }
+  return reset.getTime();
+}
+
+
+let confirmResolve = null;
+
+function openConfirm(message){
+  return new Promise(resolve => {
+    confirmResolve = resolve;
+    document.getElementById("confirm-text").innerHTML = message;
+    document.getElementById("confirm-overlay").style.display = "flex";
+  });
+}
+
+function closeConfirm(result){
+  document.getElementById("confirm-overlay").style.display = "none";
+  if (confirmResolve) {
+    confirmResolve(result);
+    confirmResolve = null;
+  }
+}
+
+async function gestisciScan(raw) {
+
+  console.log("🍨 SCAN COPPA:", raw);
+  await confermaCoppa(raw);
+}
+
+function ensureResetSchedule() {
+  const now = Date.now();
+  const resetAt = Number(localStorage.getItem(LS_KEY_RESET)) || 0;
+
+  // se non esiste, o è scaduto -> svuota lista e riprogramma
+  if (!resetAt || now >= resetAt) {
+    localStorage.setItem(LS_KEY_LISTA, JSON.stringify([]));
+    localStorage.setItem(LS_KEY_RESET, String(getNextResetAt2AM()));
+  }
+}
+
+function loadLista() {
+  ensureResetSchedule();
+  try {
+    return JSON.parse(localStorage.getItem(LS_KEY_LISTA) || "[]") || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLista(arr) {
+  localStorage.setItem(LS_KEY_LISTA, JSON.stringify(arr));
+}
+
+function formatOra(d) {
+  const dt = new Date(d);
+  return dt.toLocaleString("it-IT", { day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit" });
+}
+
+function renderLista() {
+  const box = document.getElementById("lista-scan");
+  if (!box) return;
+
+  const arr = loadLista();
+  if (!arr.length) {
+    box.innerHTML = `<div style="opacity:.65; font-size:14px;">Nessuna coppa scannerizzata oggi.</div>`;
+    return;
+  }
+
+  box.innerHTML = `
+    <div style="text-align:left; max-width:520px; margin:0 auto;">
+      <h3 style="margin:0 0 10px; font-size:16px;">📌 Coppe scannerizzate (oggi)</h3>
+      ${arr.map(x => `
+        <div style="
+          background:#fff;
+          border-radius:12px;
+          padding:12px 14px;
+          margin-bottom:10px;
+          box-shadow:0 2px 8px rgba(0,0,0,0.08);
+        ">
+          <div style="display:flex; justify-content:space-between; gap:10px;">
+            <b>${x.nome || "Coppa"}</b>
+            <span style="opacity:.7; font-size:13px;">${formatOra(x.scanned_at)}</span>
+          </div>
+          <div style="margin-top:6px; font-size:14px; line-height:1.35;">
+            <div><b>Formato:</b> ${x.formato || "-"}</div>
+            <div><b>Tavolo:</b> ${x.tavolo || "-"}</div>
+            <div>
+  <b>Confermate:</b>
+  <span class="badge-confermate">${x.confermate || 0}</span>
+</div>
+          </div>
+          ${x.cliente ? `
+            <div style="margin-top:8px; font-size:13px; opacity:.9;">
+              <div><b>Cliente:</b> ${x.cliente.nome || "-"} ${x.cliente.cognome || ""}</div>
+              <div><b>Email:</b> ${x.cliente.email || "-"}</div>
+              <div><b>Creata:</b> ${x.data_creazione ? formatOra(x.data_creazione) : "-"}</div>
+            </div>
+          ` : ""}
+        </div>
+      `).join("")}
+      <div style="opacity:.6; font-size:12px; margin-top:6px;">
+        Reset automatico alle 02:00.
+      </div>
+    </div>
+  `;
+}
+
+// chiamala all’avvio pagina
+renderLista();
+
+async function loadCameras() {
+  if (cameras.length) return cameras;
+
+  cameras = await Html5Qrcode.getCameras();
+  if (!cameras.length) {
+    alert("Nessuna fotocamera trovata");
+    return [];
+  }
+
+  // preferisci la posteriore
+  const backIndex = cameras.findIndex(c =>
+    /back|rear|environment/i.test(c.label)
+  );
+
+  if (backIndex !== -1) {
+    currentCameraIndex = backIndex;
+  }
+
+  return cameras;
+}
+
+async function startScanner() {
+
+  if (scannerRunning) return;
+
+  if (!html5QrCode) {
+    html5QrCode = new Html5Qrcode("reader");
+  }
+
+  const cams = await loadCameras();
+  if (!cams.length) return;
+
+  const cameraId = cams[currentCameraIndex].id;
+
+  scannerRunning = true;
+
+  html5QrCode.start(
+    cameraId,
+    {
+      fps: 10,
+      qrbox: (w, h) => {
+        const size = Math.min(w, h) * 0.75; // box grande
+        return { width: size, height: size };
+      }
+    },
+    async qrCodeMessage => {
+      if (scanLock) return;
+      scanLock = true;
+
+      await gestisciScan(qrCodeMessage);
+
+      await html5QrCode.stop();
+      scannerRunning = false;
+
+      setTimeout(() => {
+        scanLock = false;
+        startScanner();
+      }, 1200);
+    }
+  );
 }
 
 async function switchCamera() {
-    if (!cameras.length) return;
 
-    currentCameraIndex = (currentCameraIndex + 1) % cameras.length;
-
-    try {
-        if (html5QrCode?.isScanning) {
-            await html5QrCode.stop();
-        }
-    } catch {}
-
-    scanLock = false;
-window.openAdminPin = openAdminPin;
-window.closeAdminPin = closeAdminPin;
-window.updatePinDots = updatePinDots;
-window.checkPin = checkPin;
+if (!cameras.length) {
+  await loadCameras();
+  if (!cameras.length) return;
 }
 
-/* ================= START SCANNER ================= */
-async function startScanner() {
-      if (!isPinValidToday()) {
-    openAdminPin();
+  currentCameraIndex =
+    (currentCameraIndex + 1) % cameras.length;
+
+  try {
+    if (html5QrCode?.isScanning) {
+      await html5QrCode.stop();
+      scannerRunning = false;
+    }
+  } catch {}
+
+  startScanner();
+}
+
+window.startScanner = startScanner;
+window.openConfirm = openConfirm;
+window.closeConfirm = closeConfirm;
+window.startScanner = startScanner;
+
+document.getElementById("switchCamBtn")
+  ?.addEventListener("click", switchCamera);
+ </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+if (isPinValidToday()) {
+
+  adminSessionPin = localStorage.getItem("adminScan_session_pin") || "";
+
+  if (!adminSessionPin) {
+    openAdminScanPin();
     return;
   }
-    if (!html5QrCode) {
-        html5QrCode = new Html5Qrcode("reader");
-    }
 
-    const cams = await loadCameras();
-    if (!cams.length) return;
+  startScanner();
 
-    const cameraId = cams[currentCameraIndex].id;
-
-    html5QrCode.start(
-        cameraId,
-        {
-            fps: 10,
-            qrbox: (w, h) => {
-                const size = Math.min(w, h) * 0.85;
-                return { width: size, height: size };
-            }
-        },
-        async msg => {
-            if (scanLock) return;
-            scanLock = true;
-
-            await gestisciScan(msg);
-            await html5QrCode.stop();
-
-            setTimeout(() => {
-                scanLock = false;
-            }, 1200);
-        }
-    );
+} else {
+  openAdminScanPin();
 }
-window.startScanner = startScanner;
-/* ================= INIT ================= */
-document.getElementById("switchCamBtn")
-    ?.addEventListener("click", switchCamera);
 
-
+});
 </script>
 
-<!-- 🔐 ADMIN PIN OVERLAY -->
+<!-- 🔐 ADMIN SCAN PIN OVERLAY -->
 <div id="admin-pin-overlay" class="pin-overlay" style="display:none">
   <div class="pin-box">
     <h2>Inserisci PIN Admin</h2>
@@ -346,10 +774,14 @@ document.getElementById("switchCamBtn")
 </div>
 
 <script>
-/* ====== PIN VALIDITÀ GIORNALIERA ====== */
-const ADMIN_PIN = "000000";
+/* ========= CONFIG ========= */
 const PIN_KEY = "adminScan_pin_ok_until";
 
+let enteredPin = "";
+let adminSessionPin = ""; // 👈 METTILO QUI
+adminSessionPin = localStorage.getItem("adminScan_session_pin") || "";
+
+/* ========= VALIDITÀ 1 GIORNO ========= */
 function getPinExpireToday() {
   const d = new Date();
   d.setHours(23, 59, 59, 999);
@@ -364,86 +796,97 @@ function isPinValidToday() {
 function savePinValid() {
   localStorage.setItem(PIN_KEY, String(getPinExpireToday()));
 }
-</script>
 
-<script>
-/* ====== STATO ====== */
-let enteredPin = "";
-
-/* ====== UI ====== */
-function openAdminPin() {
-  enteredPin = "";
-  updatePinDots();
-  document.getElementById("admin-pin-overlay").style.display = "flex";
-}
-
-function closeAdminPin() {
-  document.getElementById("admin-pin-overlay").style.display = "none";
-}
-
+/* ========= UI ========= */
 function updatePinDots() {
-  document.querySelectorAll(".pin-dots span").forEach((dot, i) => {
-    dot.classList.toggle("filled", i < enteredPin.length);
+  const dots = document.querySelectorAll(".pin-dots span");
+  dots.forEach((d, i) => {
+    d.classList.toggle("filled", i < enteredPin.length);
   });
 }
 
-/* ====== CHECK PIN ====== */
-function checkPin() {
-  if (enteredPin === ADMIN_PIN) {
-    savePinValid();
-    closeAdminPin();
-    window.startScanner(); // ✅ chiama quella esposta dal module
-    return;
-  }
-
-  // ❌ PIN errato
+function openAdminScanPin() {
+  const overlay = document.getElementById("admin-pin-overlay");
+  overlay.style.display = "flex";
   enteredPin = "";
   updatePinDots();
-  navigator.vibrate?.(100);
 }
-document.addEventListener("DOMContentLoaded", () => {
-  if (!isPinValidToday()) {
-    openAdminPin();   // 🔐 MOSTRA PIN
-  } else {
-    window.startScanner(); // 📷 parte diretto se già valido
-  }
-});
-document.addEventListener("DOMContentLoaded", () => {
-  const keypad = document.querySelector(".pin-keypad");
-  if (!keypad) {
-    console.error("❌ pin-keypad non trovata");
+
+/* ========= CHECK PIN ========= */
+
+async function checkAdminScanPin() {
+
+  const { data, error } = await supabase.functions.invoke(
+    "admin-scan",
+    {
+      body: {
+        pin: enteredPin,
+        action: "auth"
+      }
+    }
+  );
+
+  if (!data?.ok) {
+    enteredPin = "";
+    updatePinDots();
+    navigator.vibrate?.(100);
     return;
   }
 
-  keypad.addEventListener("click", (e) => {
+  adminSessionPin = enteredPin;
+  document.getElementById("admin-pin-overlay").style.display = "none";
+  startScanner();
+}
+
+/* ========= KEYPAD ========= */
+document.addEventListener("DOMContentLoaded", () => {
+  const keypad = document.querySelector(".pin-keypad");
+  if (!keypad) return;
+
+  keypad.addEventListener("click", e => {
     const btn = e.target.closest("button");
     if (!btn || btn.classList.contains("empty")) return;
 
-    // ⌫ cancella
     if (btn.id === "pin-del") {
       enteredPin = enteredPin.slice(0, -1);
       updatePinDots();
       return;
     }
 
-    // numero
     const n = btn.dataset.n;
     if (!n || enteredPin.length >= 6) return;
 
     enteredPin += n;
     updatePinDots();
 
-    // se 6 cifre → verifica
     if (enteredPin.length === 6) {
-      setTimeout(checkPin, 120);
+      setTimeout(checkAdminScanPin, 120);
     }
   });
-});
 
-window.openAdminPin = openAdminPin;
-window.isPinValidToday = isPinValidToday;
+  // 🔐 controllo iniziale
+  if (isPinValidToday()) {
+    startScanner();
+  } else {
+    openAdminScanPin();
+  }
+});
 </script>
 
+<!-- ⚠️ POPUP COPPA GIÀ CONFERMATA -->
+<div id="confirm-overlay" class="confirm-overlay" style="display:none">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+
+    <h3>Coppa già confermata</h3>
+    <p id="confirm-text"></p>
+
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="closeConfirm(false)">Annulla</button>
+      <button class="btn-ok" onclick="closeConfirm(true)">Conferma</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
