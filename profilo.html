@@ -2778,21 +2778,25 @@ await aggiornaBadgeNotifiche();
 await aggiornaStatNotificheProfilo();
 
 // 🔐 DATI SICURI DA EDGE
-// 🔥 prima verifica se creare coupon
 const { data } = await supabase.functions.invoke(
   "get-profile-data",
   { body: { email } }
 );
 
-if (data?.ok) {
-  document.getElementById("coppe-count").textContent = data.coppe_count;
-  document.getElementById("stat-coupon-ok").textContent = data.coupon_disponibili;
-  document.getElementById("stat-coupon-used").textContent = data.coupon_usati;
-  document.getElementById("stat-notif").textContent = data.notifiche_non_lette;
+if (!data || !data.ok) {
+  console.error("Errore caricamento profilo");
+  return;
 }
 
-  renderCoupons(data.coupon_list); // 🔥 importantissimo
-  document.getElementById("coupon-count").textContent = data.coupon_disponibili;
+// ✅ aggiorna numeri
+document.getElementById("coppe-count").textContent = data.coppe_count ?? 0;
+document.getElementById("stat-coupon-ok").textContent = data.coupon_disponibili ?? 0;
+document.getElementById("stat-coupon-used").textContent = data.coupon_usati ?? 0;
+document.getElementById("stat-notif").textContent = data.notifiche_non_lette ?? 0;
+
+// ✅ render coupon
+renderCoupons(data.coupon_list ?? []);
+document.getElementById("coupon-count").textContent = data.coupon_disponibili ?? 0;
 
 
 
