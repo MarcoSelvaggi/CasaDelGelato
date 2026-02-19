@@ -2472,6 +2472,28 @@ async function getCouponNonUsati(email) {
   return data || [];
 }
 
+
+function incrementaFedeltaLocale() {
+
+  const countEl = document.getElementById("fedelta-count");
+  const barEl   = document.getElementById("fedelta-bar");
+
+  if (!countEl || !barEl) return;
+
+  const parts = countEl.textContent.split("/");
+  let progress = parseInt(parts[0]) || 0;
+
+  progress++;
+
+  if (progress > 10) {
+    progress = 1; // reset visivo
+  }
+
+  countEl.textContent = `${progress}/10`;
+  barEl.style.width = `${(progress / 10) * 100}%`;
+}
+
+
 window.aggiornaFedelta = async function aggiornaFedelta() {
 console.log("🔄 aggiornaFedelta chiamata");
   const email = localStorage.getItem("user_email");
@@ -3235,7 +3257,7 @@ if (emailCoupon) {
     .subscribe();
 }
 
-// 🔥 REALTIME FEDELTÀ – VERSIONE CORRETTA
+// 🔥 REALTIME FEDELTÀ – FIX DEFINITIVO
 const emailFedelta = localStorage.getItem("user_email");
 
 if (emailFedelta) {
@@ -3252,26 +3274,32 @@ if (emailFedelta) {
 
         const nuova = payload.new;
 
-        // Filtra solo il tuo utente
         if (nuova.email !== emailFedelta) return;
 
-        // Aggiorna totale conferme per quella coppa
-        const { count } = await supabase
-          .from("conferme_coppe")
-          .select("*", { count: "exact", head: true })
-          .eq("coppa_id", nuova.coppa_id)
-          .eq("email", emailFedelta);
+        console.log("🔥 Nuova conferma realtime:", nuova);
 
+        // 🔥 aggiorna solo quella coppa SENZA rifare tutto
         const idx = coppe.findIndex(
-          c => Number(c.id) === Number(nuova.coppa_id)
+          c =>
+            String(c.id) === String(nuova.coppa_id) ||
+            String(c.qr_token) === String(nuova.coppa_id)
         );
 
-        if (idx !== -1) {
-          coppe[idx].confermate = count || 0;
-        }
+if (idx !== -1) {
 
-        renderLista();
-        await aggiornaFedelta();
+  coppe[idx].confermate =
+    (coppe[idx].confermate || 0) + 1;
+
+  renderLista();
+}
+
+// ⚡ aggiorna barra subito in locale
+incrementaFedeltaLocale();
+
+// 🔁 poi sincronizza col server con calma
+setTimeout(() => {
+  aggiornaFedelta();
+}, 800);
       }
     )
     .subscribe();

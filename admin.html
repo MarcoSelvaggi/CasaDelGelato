@@ -2210,6 +2210,8 @@ window.load = async function(){
 
   UTENTI = data.utenti || [];
   COPPE = data.coppe || [];
+  window.COPPE = COPPE;
+  window.UTENTI = UTENTI;
 
   // ricostruisco mappa coupon
   COUPON_PER_EMAIL = {};
@@ -2277,22 +2279,24 @@ supabase
 
 
 function matchSearch(user) {
+    if (!user || typeof user !== "object") return false;
     if (!filtro) return true;
 
     const search = filtro.toLowerCase();
 
-    // 🔍 Campi utente
+    const nome = (user.nome || "").toLowerCase();
+    const cognome = (user.cognome || "").toLowerCase();
+    const email = (user.email || "").toLowerCase();
+
     if (
-        (user.nome || "").toLowerCase().includes(search) ||
-        (user.cognome || "").toLowerCase().includes(search) ||
-        (user.email || "").toLowerCase().includes(search)
+        nome.includes(search) ||
+        cognome.includes(search) ||
+        email.includes(search)
     ) return true;
 
-    // 🔍 Cerchiamo nelle coppe
-    const stats = getStats(user.email || "Anonimo");
+    const stats = getStats(email || "Anonimo");
 
     for (const c of stats.list) {
-        // unisco tutta la coppa in testo unico
         const testo = [
             c.nome,
             c.formato,
@@ -2335,16 +2339,21 @@ function coppaMatchSearch(c) {
 
 
 function getStats(email){
-    const list = COPPE.filter(c => (c.email || "Anonimo") === email);
+
+    const e = (email || "Anonimo").toLowerCase().trim();
+
+    const list = COPPE.filter(c =>
+        (c.email || "Anonimo").toLowerCase().trim() === e
+    );
 
     const tot = list.length;
 
-    // 🔥 SOMMA DELLE CONFERME REALI
-const conf = list.reduce((sum, c) => {
-    return sum + (Number(c.confirm_count) || 0);
-}, 0);
+    const conf = list.reduce((sum, c) => {
+        return sum + (Number(c.confirm_count) || 0);
+    }, 0);
 
     const elim = list.filter(c => c.eliminata).length;
+
     const coupon = COUPON_PER_EMAIL[email] ?? 0;
 
     return { tot, conf, elim, coupon, list };
@@ -3016,9 +3025,11 @@ function render(){
     const out = document.getElementById("admin-list");
     out.innerHTML = "";
 
-    UTENTI.forEach(u => {
+  UTENTI
+  .filter(u => u && typeof u === "object" && u.email)
+  .forEach(u => {
 
-        const email = u.email || "Anonimo";
+        const email = u.email.toLowerCase().trim();
         const stats = getStats(email);
        console.log("EMAIL:", email, "CONFIRM:", u.email_confermata);
 
@@ -3117,7 +3128,12 @@ out.innerHTML += `
 `;
     });
 
-    UTENTI.forEach(u => renderCoppe(u.email));
+UTENTI
+  .filter(u => u && typeof u === "object" && typeof u.email === "string")
+  .forEach(u => {
+    const email = u.email.toLowerCase().trim();
+    renderCoppe(email);
+  });
 }
 
 window.filtroConfermate = window.filtroConfermate || {};
@@ -3163,9 +3179,9 @@ box.innerHTML = `
     <div class="utente-details">
         <b>Nome:</b> ${highlight(u?.nome || "-")}<br>
         <b>Cognome:</b> ${highlight(u?.cognome || "-")}<br>
-    <b>Email:</b>
+<b>Email:</b>
 ${
-  u?.consenso_promozioni === true
+  u && u.consenso_promozioni === true
     ? `
       <a href="mailto:${u.email}"
          class="mail-link"
@@ -3176,7 +3192,7 @@ ${
     : `
       <span class="mail-disabled"
             title="Il cliente non ha accettato comunicazioni">
-        ${highlight(u.email)} <span class="mail-no">🚫</span>
+        ${highlight(email)} <span class="mail-no">🚫</span>
       </span>
     `
 }

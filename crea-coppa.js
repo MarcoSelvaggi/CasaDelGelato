@@ -23,7 +23,30 @@ let _onConfirmRimuovi = null;
 let nuvolaInstagramTimer = null;
 let flussoRiepilogoAttivo = false;
 
+// 🔥 GESTIONE INGRESSO SPECIALE (Allergie / Usa Coppa)
+document.addEventListener("DOMContentLoaded", () => {
 
+  if (localStorage.getItem("saltaOrigine")) {
+
+    localStorage.removeItem("saltaOrigine");
+
+    const originOverlay = document.getElementById("coppa-origin-overlay");
+    if (originOverlay) originOverlay.style.display = "none";
+
+    const stepTavolo = document.getElementById("step-tavolo");
+    if (stepTavolo) stepTavolo.style.display = "none";
+
+    const stepSize = document.getElementById("step-size");
+    if (stepSize) stepSize.style.display = "block";
+
+    tavoloSelezionato = "DA CASA";
+
+    mostraBottomNav();
+
+    return; // 🔥 BLOCCA IL RESTO
+  }
+
+});
 
 // 🔥 SE ARRIVO DA "USA QUESTA COPPA"
 document.addEventListener("DOMContentLoaded", () => {
@@ -1583,17 +1606,22 @@ if (step === "extra") {
 // ---------------- TOGGLE ----------------
 function limitEffect(step, nome){
 
-  // 🔥 prende SOLO la card con data-nome ESATTO
-  const el = document.querySelector(`.gusto-item[data-nome="${nome}"]`);
+  let el = null;
+
+  if (step === "gusti") {
+    el = document.querySelector(`.gusto-item[data-nome="${nome}"]`);
+  } else {
+    el = document.querySelector(`.item[onclick*="${nome}"]`);
+  }
+
   if (!el) return;
 
   el.classList.add("limit-reached");
 
   setTimeout(() => {
     el.classList.remove("limit-reached");
-  }, 1500);
+  }, 600);
 
-  // Dynamic island
   showIsland(step, "Limite raggiunto ❗");
 }
 
@@ -4217,26 +4245,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
-  const step = params.get("step");
+  const stepParam = params.get("step");
 
-  if (step === "size") {
+  if (stepParam === "size") {
     console.log("➡️ Accesso diretto alla scelta formato");
 
-    // nascondi tavolo
-    const tavolo = document.getElementById("step-tavolo");
-    if (tavolo) tavolo.style.display = "none";
+    // 🔄 reset stato interno
+    step = "size";
 
-    // nascondi step container (gusti ecc)
-    const container = document.getElementById("step-container");
-    if (container) container.style.display = "none";
-
-    // mostra selezione formato
-    const size = document.getElementById("step-size");
-    if (size) size.style.display = "block";
-
-    // titolo coerente
-    const title = document.getElementById("step-title");
-    if (title) title.classList.add("hidden");
+    // 🧠 usa la funzione ufficiale
+    showSizeScreen();
   }
 });
 function mostraBottomNav() {
