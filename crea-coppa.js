@@ -4377,6 +4377,13 @@ function ascoltaConfermaCoppaRealtime(qrToken) {
     )
     .subscribe();
 }
+
+
+// 🔥 Logo condiviso globale
+const sharedLogo = new Image();
+sharedLogo.src = "img/scoopy-ice.png";
+
+
 async function generaCoppaInstagramStory() {
   const stage = document.getElementById("coppa-stage");
   if (!stage) return null;
@@ -4461,49 +4468,33 @@ ctx.fillText(
 );
 
 
-// 🟣 LOGO
+// 🟣 LOGO (versione stabile)
 
-const logo = new Image();
-logo.src = "img/logo.png";
+if (sharedLogo.complete) {
 
-return new Promise(res => {
+  const logoSize = 100;
+  const logoX = padding;
+  const logoY = canvas.height - padding - logoSize;
 
-  logo.onload = () => {
+  ctx.save();
 
-    const logoSize = 100;
-    const logoX = padding;
-    const logoY = canvas.height - padding - logoSize;
+  ctx.beginPath();
+  ctx.arc(
+    logoX + logoSize/2,
+    logoY + logoSize/2,
+    logoSize/2,
+    0,
+    Math.PI * 2
+  );
+  ctx.closePath();
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.fill();
+  ctx.clip();
 
-    ctx.save();
+  ctx.drawImage(sharedLogo, logoX, logoY, logoSize, logoSize);
 
-    // cerchio bianco morbido
-    ctx.beginPath();
-    ctx.arc(
-      logoX + logoSize/2,
-      logoY + logoSize/2,
-      logoSize/2,
-      0,
-      Math.PI * 2
-    );
-    ctx.closePath();
-    ctx.fillStyle = "rgba(255,255,255,0.95)";
-    ctx.fill();
-
-    ctx.clip();
-    ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
-
-    ctx.restore();
-
-    // 👉 genera immagine SOLO dopo aver disegnato il logo
-    canvas.toBlob(blob => res(blob), "image/png");
-  };
-
-  // 🔥 fallback: se il logo non carica in 1 secondo
-  setTimeout(() => {
-    canvas.toBlob(blob => res(blob), "image/png");
-  }, 1000);
-
-});
+  ctx.restore();
+}
 
 
   return new Promise(res =>
