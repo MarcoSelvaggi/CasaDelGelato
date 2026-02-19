@@ -23,14 +23,27 @@ let _onConfirmRimuovi = null;
 let nuvolaInstagramTimer = null;
 let flussoRiepilogoAttivo = false;
 
-// 🔥 SE ARRIVO DA "USA QUESTA COPPA" → NASCONDI STEP TAVOLO
+
+
+// 🔥 SE ARRIVO DA "USA QUESTA COPPA"
 document.addEventListener("DOMContentLoaded", () => {
+
   if (localStorage.getItem("coppaDaUsare")) {
+
+    // 🔹 Nascondi step tavolo (come prima)
     const stepTavolo = document.getElementById("step-tavolo");
     if (stepTavolo) {
       stepTavolo.style.display = "none";
     }
+
+    // 🔹 🔥 NASCONDI ANCHE IL NUOVO OVERLAY
+    const originOverlay = document.getElementById("coppa-origin-overlay");
+    if (originOverlay) {
+      originOverlay.style.display = "none";
+    }
+
   }
+
 });
 // =======================
 // DISPONIBILITÀ INGREDIENTI
@@ -4387,6 +4400,7 @@ sharedLogo.src = "img/scoopy-ice.png";
 async function generaCoppaInstagramStory() {
   const stage = document.getElementById("coppa-stage");
   if (!stage) return null;
+
 
   // crea canvas 9:16
   const canvas = document.createElement("canvas");

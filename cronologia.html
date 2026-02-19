@@ -2410,15 +2410,11 @@ await aggiornaFedelta();
     }
 
 function usaQuestaCoppa(idx) {
-    const c = coppe[idx];
-    if (!c) return alert("Errore");
+  const c = coppe[idx];
+  if (!c) return alert("Errore");
 
-    localStorage.setItem("coppaDaUsare", JSON.stringify(c));
-
-    // 🔥 SKIP POPUP UNA SOLA VOLTA
-    localStorage.setItem("skip_popup_coppa", "1");
-
-    window.location.href = "crea-coppa.html?step=gusti";
+  localStorage.setItem("coppaDaUsare", JSON.stringify(c));
+  window.location.href = "crea-coppa.html";
 }
 
     function getCoppeFiltrateEOrdinate() {
@@ -3476,7 +3472,7 @@ document.addEventListener("DOMContentLoaded", loadWaitTime);
     class="overlay-instagram-btn"
     onclick="condividiSuInstagram()"
   >
-    📸 Condividi su Instagram
+    Condividi
   </button>
 
   <button id="coppa-overlay-close">
@@ -3558,12 +3554,13 @@ document.addEventListener("DOMContentLoaded", () => {
     text-align: center;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   ">
-    <h3 style="margin-bottom:10px;">📸 Condividi su Instagram</h3>
+    <h3 style="margin-bottom:10px;">📸 Condividi la tua coppa!</h3>
 
-    <p style="font-size:14px; line-height:1.4;">
-      Condividi la tua coppa su Instagram e tagga  
-      <b>@casadelgelato.it</b> 🍨
-    </p>
+<p style="font-size:14px; line-height:1.4;">
+  Condividi la tua coppa su Instagram e tagga  
+  <b>@casadelgelato.it</b> 🍨  
+  oppure condividila con chi vuoi.
+</p>
 
     <div style="margin-top:18px; display:flex; gap:10px;">
       <button onclick="chiudiPopupInstagram()"
@@ -3574,7 +3571,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <button onclick="chiudiPopupInstagram(); _eseguiCondivisioneInstagram();"
         style="flex:1; padding:10px; border-radius:10px; border:none;
                background:#ff2d55; color:#fff; font-weight:700;">
-        Apri Instagram
+        Apri menu
       </button>
     </div>
   </div>
