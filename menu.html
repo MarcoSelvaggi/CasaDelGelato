@@ -813,8 +813,8 @@ body{
 /* CARD BLOCCATA PER ALLERGENI */
 .product-card.allergen-blocked {
   position: relative;
-  opacity: 0.35;
-  filter: grayscale(100%);
+  opacity: 1;              /* quasi normale */
+  filter: grayscale(10%);  /* leggermente spenta */
   pointer-events: none;
 }
 
@@ -1763,7 +1763,7 @@ body.allergen-open #top-fixed-bar{
   <div class="product-card"
     data-price="3.00"
     data-category="caffetteria"
-    data-best="false">
+    data-best="true">
     <div class="product-img">
       <img src="img/caffe-gelato.jpg" alt="Caffè con gelato">
     </div>
@@ -2315,7 +2315,7 @@ data-only-day="sunday">
 </div>
 
 
-<div class="product-card" data-price="5.00" data-category="bibite" data-best="false">
+<div class="product-card" data-price="5.00" data-category="bibite" data-best="true">
  <div class="product-img">
   <img src="img/spremuta-arancia.jpg" alt="Spremuta d’Arancia">
 </div>
@@ -2637,12 +2637,12 @@ data-only-day="sunday">
   <div class="product-info"><h3>Averna</h3><span class="price">€ 4,50</span></div>
 </div>
 
-<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="true">
   <div class="product-img"><img src="img/montenegro.jpg" alt="Montenegro"></div>
   <div class="product-info"><h3>Montenegro</h3><span class="price">€ 4,50</span></div>
 </div>
 
-<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="true">
   <div class="product-img"><img src="img/frangelico.jpg" alt="Frangelico"></div>
   <div class="product-info"><h3>Frangelico</h3><span class="price">€ 4,50</span></div>
 </div>
@@ -2672,7 +2672,7 @@ data-only-day="sunday">
   <div class="product-info"><h3>Amaretto di Saronno</h3><span class="price">€ 4,50</span></div>
 </div>
 
-<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="false">
+<div class="product-card" data-price="4.50" data-category="superalcolici" data-best="true">
   <div class="product-img"><img src="img/bottiglia-baileys.jpg" alt="Baileys"></div>
   <div class="product-info"><h3>Baileys</h3><span class="price">€ 4,50</span></div>
 </div>
@@ -3078,7 +3078,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="20.00" data-category="crema" data-best="false" data-allergeni="glutine,latte, frutta a guscio, alcol">
+<div class="product-card" data-price="20.00" data-category="crema" data-best="true" data-allergeni="glutine,latte, frutta a guscio, alcol">
   <div class="product-img">
     <img src="img/coppa-latinlover.jpg" alt="Latin Lover Cup">
   </div>
@@ -3112,7 +3112,7 @@ data-only-day="sunday">
 </div>
 
 
-<div class="product-card" data-price="8.50" data-category="crema" data-best="false" data-allergeni="glutine,latte, frutta a guscio">
+<div class="product-card" data-price="8.50" data-category="crema" data-best="true" data-allergeni="glutine,latte, frutta a guscio">
   <div class="product-img">
     <img src="img/coppa-nocciola.jpg" alt="Coppa Nocciola">
   </div>
@@ -3269,7 +3269,7 @@ data-only-day="sunday">
   </div>
 </div>
 
-<div class="product-card" data-price="20.00" data-category="frutta" data-best="false" data-allergeni="latte, frutta a guscio">
+<div class="product-card" data-price="20.00" data-category="frutta" data-best="true" data-allergeni="latte, frutta a guscio">
   <div class="product-img">
     <img src="img/coppa-fantasia.jpg" alt="Fantasia Cup">
   </div>
@@ -3661,7 +3661,7 @@ data-only-day="sunday">
   <div class="product-card"
        data-price="6.00"
        data-category="bimbi"
-       data-best="false"
+       data-best="true"
        data-allergeni="glutine,latte">
 
     <div class="product-img">

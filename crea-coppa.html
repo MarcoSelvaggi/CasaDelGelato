@@ -168,21 +168,21 @@ document.addEventListener("DOMContentLoaded", function () {
     <div class="menu-item" onclick="selectSize('PICCOLA', 2,1,1,1)">
       <div class="formato-titolo">PICCOLA • €7,50</div>
       <div class="formato-dettagli">
-        2 gusti · 1 granella · 1 topping · 1 ingrediente
+        2 gusti · 1 granella · 1 topping · 1 decorazione
       </div>
     </div>
 
     <div class="menu-item" onclick="selectSize('MEDIA', 3,2,2,1)">
       <div class="formato-titolo">MEDIA • €9,00</div>
       <div class="formato-dettagli">
-        3 gusti · 2 granelle · 2 topping · 1 ingrediente
+        3 gusti · 2 granelle · 2 topping · 1 decorazione
       </div>
     </div>
 
     <div class="menu-item" onclick="selectSize('GRANDE', 4,2,2,2)">
       <div class="formato-titolo">GRANDE • €12,00</div>
       <div class="formato-dettagli">
-        4 gusti · 2 granelle · 2 topping · 2 ingredienti
+        4 gusti · 2 granelle · 2 topping · 2 decorazioni
       </div>
     </div>
 
@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     <p class="popup-text">
       Scegli il formato della coppa, poi personalizzala con gusti, granelle,
-      topping, ingredienti ed extra.<br>
+      topping, decorazioni ed extra.<br>
       Alla fine conferma e mostra la coppa al cameriere.<br>
       <span style="opacity:.7">(Panna montata inclusa nel prezzo)</span>
     </p>
@@ -915,10 +915,11 @@ function vaiARegistrazione() {
     <!-- BODY SCROLLABILE -->
 <div class="sheet-body">
 
-      <p>
-        👀 <b>Guarda il numero del tuo tavolo</b> e selezionalo dall’elenco.
-      </p>
-
+<p>
+  👀 <b>Guarda il numero del tuo tavolo</b> e selezionalo dall’elenco.<br><br>
+  🏠 Se stai creando la coppa <b>da casa</b>, clicca il pulsante dedicato
+  nella schermata iniziale per proseguire direttamente.
+</p>
       <p>
         ⚠️ Se necessario consulta gli <b>allergeni</b>.  
         In ogni caso ti consigliamo sempre di <b>chiedere al personale di sala</b>.
@@ -934,7 +935,7 @@ function vaiARegistrazione() {
         <li><b>Gusti</b></li>
         <li><b>Granelle</b></li>
         <li><b>Topping</b></li>
-        <li><b>Ingredienti</b></li>
+        <li><b>Decorazioni</b></li>
         <li><b>Extra</b> (facoltativi)</li>
       </ul>
 
@@ -982,6 +983,55 @@ function vaiARegistrazione() {
 
 <div id="toast-avviso" class="toast-avviso"></div>
 
+
+
+<div id="coppa-origin-overlay" class="coppa-origin-overlay">
+  <div class="coppa-origin-card">
+
+    <!-- 🔵 LOGO TONDO -->
+    <div class="coppa-origin-logo">
+      <img src="img/scoopy-ice.png" alt="Scoopy Ice">
+    </div>
+
+    <h2>Da dove stai creando la tua coppa?</h2>
+
+    <button class="coppa-origin-btn home" onclick="creaDaCasa()">
+      Da casa
+    </button>
+
+    <button class="coppa-origin-btn locale" onclick="creaInLocale()">
+      In locale
+    </button>
+
+<button class="info-dup-btn" onclick="apriInfoTavolo()">
+  Come funziona? Clicca qui
+</button>
+
+  </div>
+</div>
+
+<script>
+function apriInfoTavolo() {
+
+  const originOverlay = document.getElementById("coppa-origin-overlay");
+  const infoBtn = document.getElementById("info-tavolo-btn");
+  const closeBtn = document.getElementById("chiudi-info-tavolo");
+
+  if (!originOverlay || !infoBtn || !closeBtn) return;
+
+  // Nasconde popup iniziale
+  originOverlay.style.display = "none";
+
+  // Apre lo sheet usando il bottone originale
+  infoBtn.click();
+
+  // Quando chiudi lo sheet → riapri popup iniziale
+  closeBtn.addEventListener("click", function riapri() {
+    originOverlay.style.display = "flex";
+    closeBtn.removeEventListener("click", riapri);
+  });
+}
+</script>
 
 </body>
 </html>

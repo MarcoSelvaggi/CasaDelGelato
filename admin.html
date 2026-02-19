@@ -1437,7 +1437,7 @@ select {
 </div>
 
 <div id="stat-ingredienti" class="stat-list">
-  <h4>🍓 Ingredienti</h4>
+  <h4>🍓 Decorazioni</h4>
   <div class="stat-items"></div>
 </div>
 
@@ -1939,131 +1939,82 @@ window.openAggiungiUI = function(id){
 };
 
 window.applyAnnulla = async function(id) {
-  console.log("APPLY ANNULLA → ID", id);
 
   const st = getAnnullaState(id);
+  const qty = Math.max(1, Number(st.qty || 1));
 
-  // 1️⃣ Leggo coppa dal DB
-  const { data, error } = await supabase
-    .from("coppe")
-    .select("confermate, email")
-    .eq("id", id)
-    .single();
-
-  if (error || !data) {
-    console.warn("Coppa non trovata", id);
-    return;
-  }
-
-  const max = Number(data.confermate) || 0;
-  if (max === 0) return;
-
-  // 2️⃣ USO qty selezionata
-  const qty = Math.min(max, Math.max(1, Number(st.qty || 1)));
-
-  // 🔒 BLOCCO se andrei sotto conferme già usate per coupon
-  if (data.email) {
-
-    const { count: couponCount, error: cErr } = await supabase
-      .from("coupon")
-      .select("*", { count: "exact", head: true })
-      .eq("email", data.email);
-
-    if (cErr) {
-      console.warn("Errore count coupon", cErr);
-      alert("Errore controllo coupon, riprova");
-      return;
+  const { data, error } = await supabase.functions.invoke(
+    "admin-update-coppa",
+    {
+      headers: {
+        "x-admin-pin": window.adminPin
+      },
+      body: {
+        id,
+        action: "remove",
+        qty
+      }
     }
+  );
 
-    const locked = (couponCount || 0) * 10;
+if (error || !data?.success) {
 
-    if ((max - qty) < locked) {
-      alert(`⛔ Non puoi annullare: ${locked} conferme sono già usate per coupon.`);
-      return;
+  let msg = "Operazione non consentita";
+
+  // 🔥 Caso Edge 400 con messaggio custom
+  if (error?.context) {
+    try {
+      const parsed = await error.context.json();
+      if (parsed?.error) {
+        msg = parsed.error;
+      }
+    } catch (e) {
+      console.warn("Errore parsing context", e);
     }
   }
 
-  const nuovoValore = max - qty;
+  alert("⛔ " + msg);
+  console.error("ERRORE EDGE:", error);
 
-  // 3️⃣ Update DB
-  await supabase
-    .from("coppe")
-    .update({ confermate: nuovoValore })
-    .eq("id", id);
+  return;
+}
 
-  // 🔥 RIMUOVO conferme reali (serve per fedeltà)
-  if (data.email) {
-
-    for (let i = 0; i < qty; i++) {
-
-      // prendo una conferma non consumata
-      const { data: conferma } = await supabase
-        .from("conferme_coppe")
-        .select("id")
-        .eq("email", data.email)
-        .eq("coppa_id", id)
-        .limit(1)
-        .single();
-
-      if (!conferma) break;
-
-      await supabase
-        .from("conferme_coppe")
-        .delete()
-        .eq("id", conferma.id);
-    }
-  }
-
-  // 4️⃣ Reset stato UI
   st.open = false;
   st.qty = 1;
 
-  // 5️⃣ Ricarico solo l’utente giusto
-  renderCoppe(data.email || "Anonimo");
+  await load(); // 🔥 ricarica tutto
 };
 
 // ✅ APPLICA AUMENTO CONFERME
 window.applyAggiungi = async function(id) {
 
   const st = getAggiungiState(id);
-
-  const { data, error } = await supabase
-    .from("coppe")
-    .select("confermate, email, formato")
-    .eq("id", id)
-    .single();
-
-  if (error || !data) {
-    console.warn("Errore lettura coppa", error);
-    return;
-  }
-
-  const current = Number(data.confermate) || 0;
   const qty = Math.max(1, Number(st.qty || 1));
 
-  // 1️⃣ aggiorno contatore coppa
-  await supabase
-    .from("coppe")
-    .update({ confermate: current + qty })
-    .eq("id", id);
-
-  // 2️⃣ salvo le conferme reali (come fa lo scan)
-  if (data.email) {
-    for (let i = 0; i < qty; i++) {
-      await supabase
-        .from("conferme_coppe")
-        .insert({
-          email: data.email,
-          coppa_id: id,
-          formato: data.formato
-        });
+  const { data, error } = await supabase.functions.invoke(
+    "admin-update-coppa",
+    {
+      headers: {
+        "x-admin-pin": window.adminPin
+      },
+      body: {
+        id,
+        action: "add",
+        qty
+      }
     }
+  );
+
+  if (error || !data?.success) {
+    console.error(error);
+    alert("Errore aggiunta conferma");
+    return;
   }
 
   st.open = false;
   st.qty = 1;
 
-  await load(); // ricarica tutto correttamente
+  await load(); // 🔥 ricarica
 };
 
 window.handleAnnullaClick = function(id, multi) {
@@ -2241,16 +2192,34 @@ document.getElementById("search-admin").addEventListener("input", e => {
 });
 
 window.load = async function(){
-  const u = await supabase.from("utenti").select("*");
-  const c = await supabase.from("coppe").select("*");
 
-  if (!u.error) UTENTI = u.data;
-  window._UTENTI = UTENTI;
-  if (!c.error) COPPE = c.data;
+  const { data, error } = await supabase.functions.invoke(
+    "admin-get-data",
+    {
+      headers: {
+        "x-admin-pin": window.adminPin
+      }
+    }
+  );
 
-  await caricaCouponPerTutti(); // 🔥 QUESTA RIGA
+  if (error || !data) {
+    console.error("Errore admin-get-data:", error);
+    alert("Errore caricamento dati admin");
+    return;
+  }
+
+  UTENTI = data.utenti || [];
+  COPPE = data.coppe || [];
+
+  // ricostruisco mappa coupon
+  COUPON_PER_EMAIL = {};
+  (data.coupon || []).forEach(c => {
+    const email = c.email || "Anonimo";
+    COUPON_PER_EMAIL[email] = (COUPON_PER_EMAIL[email] || 0) + 1;
+  });
+
   render();
-}
+};
 // load();  // 🔒 bloccato finché non inserisco PIN corretto
 
 // 🔥 AGGIORNAMENTO IN TEMPO REALE
@@ -2371,9 +2340,9 @@ function getStats(email){
     const tot = list.length;
 
     // 🔥 SOMMA DELLE CONFERME REALI
-    const conf = list.reduce((sum, c) => {
-        return sum + (Number(c.confermate) || 0);
-    }, 0);
+const conf = list.reduce((sum, c) => {
+    return sum + (Number(c.confirm_count) || 0);
+}, 0);
 
     const elim = list.filter(c => c.eliminata).length;
     const coupon = COUPON_PER_EMAIL[email] ?? 0;
@@ -2597,31 +2566,20 @@ function renderStatList(containerId, dataObj) {
 
 window.toggleConferma = async function (id) {
 
-  const c = COPPE.find(x => x.id === id);
-  if (!c) return;
+  const { data, error } = await supabase.functions.invoke(
+    "admin-update-coppa",
+    {
+      headers: { "x-admin-pin": window.adminPin },
+      body: { id, action: "add", qty: 1 }
+    }
+  );
 
-  const nuovoValore = (Number(c.confermate) || 0) + 1;
-
-  // 1️⃣ aggiorno contatore coppa
-  await supabase
-    .from("coppe")
-    .update({ confermate: nuovoValore })
-    .eq("id", id);
-
-  // 2️⃣ salvo conferma reale per fedeltà
-  if (c.email) {
-    await supabase
-      .from("conferme_coppe")
-      .insert({
-        email: c.email,
-        coppa_id: c.id,
-        formato: c.formato
-      });
+  if (error || !data?.success) {
+    alert("Errore conferma");
+    return;
   }
 
   await load();
-
-  return false;
 };
 
 
@@ -3177,8 +3135,8 @@ if (filtro) {
     arr = arr.filter(c => coppaMatchSearch(c));
 }
 
-   if (window.filtroConfermate[email]) {
-    arr = arr.filter(c => Number(c.confermate) > 0);
+if (window.filtroConfermate[email]) {
+    arr = arr.filter(c => Number(c.confirm_count) > 0);
 }
     if (window.filtroEliminate[email]) {
         arr = arr.filter(c => c.eliminata);
@@ -3264,7 +3222,7 @@ arr.forEach(c => {
 
    const coppaCls =
   c.eliminata ? "coppa-box coppa-eliminata" :
-  (Number(c.confermate) || 0) > 0 ? "coppa-box coppa-confermata" :
+(Number(c.confirm_count) || 0) > 0 ? "coppa-box coppa-confermata" :
   "coppa-box";
 
    const icon = collapsed ? "👁️" : "✖️";
@@ -3290,7 +3248,7 @@ if (filtro && !primoRisultato) {
 </span>
 </div>
 
-            ${c.confermate > 0 ? `
+${(Number(c.confirm_count) || 0) > 0 ? `
     <div style="
         margin-top:6px;
         display:inline-block;
@@ -3301,13 +3259,31 @@ if (filtro && !primoRisultato) {
         font-size:13px;
         font-weight:700;
     ">
-        ✔ Confermata${c.confermate > 1 ? ` x${c.confermate}` : ""}
+        ✔ Confermata${c.confirm_count > 1 ? ` x${c.confirm_count}` : ""}
     </div>
+
+    ${c.last_confirm_at ? `
+        <div style="
+            margin-top:6px;
+            font-size:12px;
+            color:#555;
+            font-weight:600;
+            cursor:pointer;
+            text-decoration:underline;
+        "
+        onclick="event.stopPropagation(); mostraCronologiaConferme(${c.id})">
+            📅 Ultima conferma: ${formatDate(c.last_confirm_at)}
+        </div>
+    ` : ""}
 ` : ""}
 
             ${collapsed ? "" : `
                 <div style="margin-top:8px;">
                     <b>Data creazione:</b> ${highlight(formatDate(c.data))}<br>
+                    ${c.eliminata && c.data_eliminazione ? `
+  <b style="color:#ff3b30;">Eliminata il:</b> 
+  ${highlight(formatDate(c.data_eliminazione))}<br><br>
+` : ""}
 
                     <b>Formato:</b> ${highlight(c.formato)} 
                     ${
@@ -3320,7 +3296,7 @@ if (filtro && !primoRisultato) {
                     <b>Gusti:</b> ${highlight(gusti.join(", ") || "-")}<br>
                     <b>Granelle:</b> ${highlight(granelle.join(", ") || "-")}<br>
                     <b>Topping:</b> ${highlight(topping.join(", ") || "-")}<br>
-                    <b>Ingredienti:</b> ${highlight(ingr.join(", ") || "-")}<br>
+                    <b>Decorazioni:</b> ${highlight(ingr.join(", ") || "-")}<br>
 
                     <b>Extra:</b> ${
                         extra.length
@@ -4062,6 +4038,71 @@ window.resetOrari = async function(location){
 };
 
 
+window.mostraCronologiaConferme = async function(coppaId){
+
+  const popup = document.getElementById("popup-conferme");
+  const content = document.getElementById("popup-conferme-content");
+
+  popup.style.display = "flex";
+  content.innerHTML = "Caricamento...";
+
+  const { data, error } = await supabase
+    .from("conferme_coppe")
+    .select("created_at")
+    .eq("coppa_id", coppaId)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) {
+    content.innerHTML = "Errore caricamento.";
+    return;
+  }
+
+  if (!data.length) {
+    content.innerHTML = "Nessuna conferma trovata.";
+    return;
+  }
+
+content.innerHTML = data.map((conf, index) => {
+
+  const numero = data.length - index; // progressivo reale
+
+  return `
+    <div style="
+      padding:10px 0;
+      border-bottom:1px solid #eee;
+      font-size:14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    ">
+      <span>
+        ${new Date(conf.created_at).toLocaleString("it-IT", {
+          day:"2-digit",
+          month:"2-digit",
+          year:"numeric",
+          hour:"2-digit",
+          minute:"2-digit"
+        })}
+      </span>
+
+      <span style="
+        font-weight:700;
+        color:#007aff;
+        min-width:40px;
+        text-align:right;
+      ">
+        #${numero}
+      </span>
+    </div>
+  `;
+
+}).join("");
+};
+
+window.chiudiCronologiaConferme = function(){
+  document.getElementById("popup-conferme").style.display = "none";
+};
+
 </script>
 
 <div id="admin-locali" class="admin-section-content hidden">
@@ -4172,7 +4213,41 @@ window.resetOrari = async function(location){
 
 </div>
 
-
+<div id="popup-conferme" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(6px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+">
+  <div style="
+    background:white;
+    width:90%;
+    max-width:400px;
+    border-radius:18px;
+    padding:20px;
+    max-height:70vh;
+    overflow:auto;
+  ">
+    <h3 style="margin-top:0;">📅 Cronologia conferme</h3>
+    <div id="popup-conferme-content"></div>
+    <button onclick="chiudiCronologiaConferme()"
+      style="
+        margin-top:15px;
+        width:100%;
+        background:#007aff;
+        color:white;
+        border:none;
+        padding:10px;
+        border-radius:10px;
+      ">
+      Chiudi
+    </button>
+  </div>
+</div>
 
 
 

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Accedi - Casa del Gelato</title>
 <link rel="stylesheet" href="bottom-nav.css">
-<script type="module" src="global.js"></script>
+ <script type="module" src="global.js"></script>
 
 
 <!-- Import Supabase -->
@@ -339,7 +339,7 @@
 
     <p style="margin-top:14px;font-size:14px">
       Non hai un account?
-      <a href="login.html?mode=register">Registrati</a>
+<a href="#" onclick="showRegister(); return false;">Registrati</a>
     </p>
 </div>
 
@@ -411,32 +411,10 @@
 
     <p style="margin-top:14px;font-size:14px">
       Hai già un account?
-      <a href="login.html">Accedi</a>
+      <a href="#" onclick="showLogin(); return false;">Accedi</a>
     </p>
 </div>
-<!-- 🔁 SWITCH ACCEDI / REGISTRATI -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const mode = params.get("mode");
 
-  const loginBox = document.getElementById("login-box");
-  const registerBox = document.getElementById("register-box");
-  const title = document.getElementById("page-title");
-
-  if (!loginBox || !registerBox || !title) return;
-
-  if (mode === "register") {
-    loginBox.style.display = "none";
-    registerBox.style.display = "block";
-    title.textContent = "Registrati";
-  } else {
-    loginBox.style.display = "block";
-    registerBox.style.display = "none";
-    title.textContent = "Accedi";
-  }
-});
-</script>
 <!-- Script di login con controllo Supabase -->
 <script type="module">
 import { supabase } from "./supabase.js";
@@ -577,20 +555,26 @@ localStorage.setItem("user_name", data.nome || "");
 localStorage.setItem("user_surname", data.cognome || "");
   localStorage.setItem("userLogged", "1");
 
-  // 🔗 COLLEGA COPPE CREATE DA OSPITE (DOPO LOGIN OK)
-  const guest_id = localStorage.getItem("guest_id");
+// 🔗 COLLEGA COPPE CREATE DA OSPITE (DOPO LOGIN OK)
+const guest_id = localStorage.getItem("guest_id");
 
-  if (guest_id) {
-    const { error: linkErr } = await supabase
-      .from("coppe")
-      .update({ email: data.email })
-      .eq("guest_id", guest_id)
-      .is("email", null);
+console.log("🧠 GUEST ID AL LOGIN:", guest_id);
+console.log("📧 EMAIL DA ASSEGNARE:", data.email);
 
-    if (linkErr) {
-      console.error("Errore collegamento coppe guest:", linkErr);
-    }
+if (guest_id) {
+
+  const { error: linkErr } = await supabase
+    .from("coppe")
+    .update({ email: data.email })
+    .eq("guest_id", guest_id)
+    .is("email", null);
+
+  console.log("🔎 LINK ERROR:", linkErr);
+
+  if (!linkErr) {
+    console.log("✅ UPDATE COPPE ESEGUITO");
   }
+}
 
 mostraPopup(
   "Accesso effettuato",
@@ -957,6 +941,9 @@ await supabase
   );
 };
 </script>
+
+
+
 <!-- 🔐 PASSWORD DIMENTICATA -->
 <div id="forgot-backdrop" class="popup-backdrop">
   <div class="popup-card">
@@ -982,6 +969,36 @@ await supabase
     </button>
   </div>
 </div>
+
+
+<script>
+function showRegister(){
+  document.getElementById("login-box").style.display = "none";
+  document.getElementById("register-box").style.display = "block";
+  document.getElementById("page-title").textContent = "Registrati";
+}
+
+function showLogin(){
+  document.getElementById("login-box").style.display = "block";
+  document.getElementById("register-box").style.display = "none";
+  document.getElementById("page-title").textContent = "Accedi";
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const hash = window.location.hash;
+  const mode = new URLSearchParams(window.location.search).get("mode");
+
+  if (hash === "#register" || mode === "register") {
+    showRegister();
+  }
+
+});
+</script>
+
+
 
 </body>
 </html>

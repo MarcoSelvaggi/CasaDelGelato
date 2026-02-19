@@ -88,7 +88,7 @@ window.addEventListener("load", () => {
   const screen = document.getElementById("language-screen");
 
   const isHome =
-    location.pathname.endsWith("index.html") ||
+    location.pathname.endsWith("home.html") ||
     location.pathname === "/" ||
     location.pathname === "";
 

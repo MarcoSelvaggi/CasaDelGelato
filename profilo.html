@@ -1766,30 +1766,7 @@ body.no-scroll{
 <script type="module">
 import { supabase } from "./supabase.js";
 
-window.inviaNotificaTest = async function () {
-  const email = localStorage.getItem("user_email");
-  if (!email) {
-    alert("Devi essere loggato per la notifica test");
-    return;
-  }
 
-  const { error } = await supabase
-    .from("notifiche")
-    .insert({
-      email: email,
-      tipo: "test",
-      messaggio: "🔔 Questa è una notifica di prova",
-      letta: false
-    });
-
-  if (error) {
-    console.error("Errore notifica test:", error);
-    alert("Errore invio notifica");
-    return;
-  }
-
-  console.log("✅ Notifica di prova inviata");
-}
 
 /* ===============================
    UTILS
@@ -2450,22 +2427,7 @@ document.addEventListener("click", async e => {
 /* ===============================
    CONTEGGI
 ================================ */
-async function aggiornaNumeroCoppe(email){
-  const { data, error } = await supabase
-    .from("coppe")
-    .select("id")
-    .eq("email", email)
-    .or("eliminata.is.null,eliminata.eq.false");
 
-  if (error){
-    console.error("Errore conteggio coppe:", error);
-    return;
-  }
-
-  const count = data ? data.length : 0;
-  const badge = document.getElementById("coppe-count");
-  if (badge) badge.textContent = count;
-}
 
 function bloccaScrollPagina() {
   document.body.classList.add("no-scroll");
@@ -2475,269 +2437,11 @@ function sbloccaScrollPagina() {
   document.body.classList.remove("no-scroll");
 }
 
-async function aggiornaNumeroCoupon(email){
-  const { data, error } = await supabase
-    .from("coupon")
-    .select("id, nome, tipo, redento")
-    .eq("email", email);
 
-  if (error) return;
-
-  const disponibili = data.filter(c => !c.redento).length;
-  const usati = data.filter(c => c.redento).length;
-
-  // badge grande (già esistente)
-  const badge = document.getElementById("coupon-count");
-  if (badge) badge.textContent = disponibili;
-
-  // 🔎 micro stats account
-  const statOk = document.getElementById("stat-coupon-ok");
-  const statUsed = document.getElementById("stat-coupon-used");
-
-  if (statOk) statOk.textContent = disponibili;
-  if (statUsed) statUsed.textContent = usati;
-}
 
 /* ===============================
    COUPON
 ================================ */
-async function caricaCoupon(email){
-  const { data: coupons, error } = await supabase
-    .from("coupon")
-    .select("*")
-    .eq("email", email)
-    .order("created_at", { ascending: false });
-
-  console.log("Coupon caricati:", coupons, error);
-  renderCoupons(coupons || []);
-}
-
-async function creaNotificaSeNonEsiste(email, tipo, messaggio){
-  const { data } = await supabase
-    .from("notifiche")
-    .select("id")
-    .eq("email", email)
-    .eq("tipo", tipo)
-    .limit(1);
-
-  if (data && data.length > 0) return;
-
-  await supabase.from("notifiche").insert({
-    email,
-    tipo,
-    messaggio,
-    letta: false
-  });
-}
-
-// 🔥 NOTIFICA 5 COPPE (META' STRADA)
-async function controllaMetaCoupon(email){
-
-  const { data: conferme } = await supabase
-    .from("conferme_coppe")
-    .select("id")
-    .eq("email", email);
-
-  if (!conferme) return;
-
-  const totale = conferme.length;
-
-  // 🎯 SOLO quando arriva esattamente a 5
-  if (totale !== 5) return;
-
-  // ❌ evita doppioni
-  const { data: esiste } = await supabase
-    .from("notifiche")
-    .select("id")
-    .eq("email", email)
-    .eq("tipo", "meta_coupon")
-    .limit(1);
-
-  if (esiste && esiste.length > 0) return;
-
-  // ✅ crea notifica
-  await supabase.from("notifiche").insert({
-    email,
-    tipo: "meta_coupon",
-    messaggio: "🔥 Sei a metà strada per il coupon! Continua così 🍨",
-    letta: false
-  });
-
-  console.log("🎯 Notifica metà coupon creata");
-}
-
-
-
-let couponLock = false;
-
-async function verificaECreaCoupon(email) {
-
-  if (couponLock) {
-    console.log("🔒 LOCK ATTIVO - salto");
-    return;
-  }
-
-  couponLock = true;
-
-  try {
-
-    console.log("🚨 verificaECreaCoupon START", email);
-
-    // 1️⃣ conferme già consumate
-    const { data: utente } = await supabase
-      .from("utenti")
-      .select("conferme_consumate")
-      .eq("email", email)
-      .single();
-
-    const confermeUsate = utente?.conferme_consumate || 0;
-
-    // 2️⃣ tutte le conferme
-    const { data: conferme = [] } = await supabase
-      .from("conferme_coppe")
-      .select("formato")
-      .eq("email", email)
-      .order("created_at", { ascending: true });
-
-    const confermeTotali = conferme.length;
-
-    console.log("CONFERME TOTALI:", confermeTotali);
-    console.log("CONSUMATE:", confermeUsate);
-
-    // 🔔 NOTIFICHE 5 e 9 (SEMPRE ATTIVE)
-const progressAttuale = confermeTotali % 10;
-
-console.log("📊 PROGRESS ATTUALE:", progressAttuale);
-
-if (progressAttuale === 5) {
-  console.log("🔔 CREO NOTIFICA 5");
-  await creaNotificaSeNonEsiste(
-    email,
-    `meta_coupon_${Math.floor(confermeTotali / 10)}`,
-    "🍨 Wow! Sei a metà strada per sbloccare il tuo coupon omaggio!"
-  );
-}
-
-if (progressAttuale === 9) {
-  console.log("🔔 CREO NOTIFICA 9");
-  await creaNotificaSeNonEsiste(
-    email,
-    `quasi_coupon_${Math.floor(confermeTotali / 10)}`,
-    "🔥 Sei a un passo dal coupon! Ti manca solo 1 coppa da confermare."
-  );
-}
-
-    // 🔢 blocchi completati
-    const blocchiCompletati = Math.floor(confermeTotali / 10);
-    const blocchiGiaUsati = Math.floor(confermeUsate / 10);
-
-    console.log("BLOCCHI COMPLETATI:", blocchiCompletati);
-    console.log("BLOCCHI GIÀ USATI:", blocchiGiaUsati);
-
-    if (blocchiCompletati <= blocchiGiaUsati) {
-      console.log("⛔ Nessun nuovo blocco");
-      return;
-    }
-
-    // 🔒 doppio controllo dal DB aggiornato
-    const { data: utenteAgg } = await supabase
-      .from("utenti")
-      .select("conferme_consumate")
-      .eq("email", email)
-      .single();
-
-    const confermeUsateAgg = utenteAgg?.conferme_consumate || 0;
-    const blocchiGiaUsatiAgg = Math.floor(confermeUsateAgg / 10);
-
-    if (blocchiCompletati <= blocchiGiaUsatiAgg) {
-      console.log("⛔ Blocco già gestito da altra pagina");
-      return;
-    }
-
-    // 3️⃣ estrai blocco da 10
-    const start = confermeUsateAgg;
-    const end = confermeUsateAgg + 10;
-
-    const blocco = conferme
-      .slice(start, end)
-      .map(c => c.formato?.trim().toUpperCase())
-      .filter(Boolean);
-
-    const count = { PICCOLA: 0, MEDIA: 0, GRANDE: 0 };
-
-    blocco.forEach(f => {
-      if (count[f] !== undefined) count[f]++;
-    });
-
-    let formatoVincente = "PICCOLA";
-    let max = -1;
-
-    for (const f in count) {
-      if (count[f] > max) {
-        max = count[f];
-        formatoVincente = f;
-      }
-    }
-
-    console.log("🏆 FORMATO VINCENTE:", formatoVincente);
-
-    // 🎁 CREA COUPON
-    const { error: errCoupon } = await supabase
-      .from("coupon")
-      .insert({
-        email,
-        codice: "cp_" + crypto.randomUUID(),
-        tipo: formatoVincente.toLowerCase(),
-        titolo: `Coppa ${formatoVincente} omaggio`,
-        redento: false
-      });
-
-    if (errCoupon) {
-      console.error("❌ ERRORE COUPON:", errCoupon);
-      return;
-    }
-
-    console.log("🎉 COUPON CREATO OK");
-
-    // 🔔 CREA NOTIFICA COUPON
-    const { error: errNotif } = await supabase
-      .from("notifiche")
-      .insert({
-        email,
-        tipo: `coupon_sbloccato_${blocchiCompletati}`,
-        messaggio: `🎉 Hai sbloccato un coupon: Coppa ${formatoVincente} omaggio`,
-        letta: false
-      });
-
-    if (errNotif) {
-      console.error("❌ ERRORE NOTIFICA:", errNotif);
-    } else {
-      console.log("🔔 NOTIFICA COUPON CREATA CORRETTAMENTE");
-    }
-
-    // ✅ aggiorna conferme consumate
-    const nuovoConsumate = confermeUsateAgg + 10;
-
-    const { error: errUpdate } = await supabase
-      .from("utenti")
-      .update({ conferme_consumate: nuovoConsumate })
-      .eq("email", email);
-
-    if (errUpdate) {
-      console.error("❌ ERRORE UPDATE CONSUMATE:", errUpdate);
-    } else {
-      console.log("✅ CONFERME AGGIORNATE A:", nuovoConsumate);
-    }
-
-  } catch (err) {
-    console.error("❌ ERRORE GENERALE verificaECreaCoupon:", err);
-  } finally {
-    couponLock = false;
-    console.log("🔓 LOCK RILASCIATO");
-  }
-}
-
-
 
 
 function subscribeConfermeRealtime(email){
@@ -2752,12 +2456,19 @@ function subscribeConfermeRealtime(email){
         filter: `email=eq.${email}`
       },
       async () => {
-        console.log("🔁 Nuova conferma → ricontrollo coupon");
-        await verificaECreaCoupon(email);
-        await controllaMetaCoupon(email);
-        await aggiornaNumeroCoupon(email);
-        await caricaCoupon(email);
-        await aggiornaBadgeNotifiche();
+        console.log("🔁 Nuova conferma → ricarico dati profilo");
+
+        const { data } = await supabase.functions.invoke(
+          "get-profile-data",
+          { body: { email } }
+        );
+
+        if (data?.ok) {
+          renderCoupons(data.coupon_list);
+          document.getElementById("coupon-count").textContent = data.coupon_disponibili;
+          document.getElementById("stat-coupon-ok").textContent = data.coupon_disponibili;
+          document.getElementById("stat-coupon-used").textContent = data.coupon_usati;
+        }
       }
     )
     .subscribe();
@@ -2909,27 +2620,82 @@ window.debugScadenza = function(dataFinta){
 let couponChannel = null;
 
 function subscribeCouponRealtime(email) {
-  if (couponChannel) supabase.removeChannel(couponChannel);
+
+  console.log("🟢 Subscribing coupon realtime per:", email);
+
+  if (couponChannel) {
+    supabase.removeChannel(couponChannel);
+  }
 
   couponChannel = supabase
-    .channel("coupon-realtime")
-.on(
-  "postgres_changes",
-  {
-    event: "UPDATE",
-    schema: "public",
-    table: "coupon"
-  },
-  async payload => {
-    if (payload?.new?.email !== email) return;
+    .channel("coupon-realtime-test")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "coupon"
+      },
+      async payload => {
 
-    // 🔁 ricarica TUTTI i coupon (così li riordina)
-    await caricaCoupon(email);
-    await aggiornaNumeroCoupon(email);
-  }
-)
+       const row = payload.new || payload.old;
+if (!row || row.email !== email) return;
+
+        console.log("🔥 REALTIME EVENT:", payload);
+
+        // 🔥 RICARICO DATI SICURI
+        const { data } = await supabase.functions.invoke(
+          "get-profile-data",
+          { body: { email } }
+        );
+
+        if (data?.ok) {
+          renderCoupons(data.coupon_list);
+
+          document.getElementById("coupon-count").textContent =
+            data.coupon_disponibili;
+
+          document.getElementById("stat-coupon-ok").textContent =
+            data.coupon_disponibili;
+
+          document.getElementById("stat-coupon-used").textContent =
+            data.coupon_usati;
+        }
+
+      }
+    )
+    .subscribe(status => {
+      console.log("📡 Channel status:", status);
+    });
+} 
+
+function subscribeNotificheRealtime(email){
+  console.log("🚀 Avvio realtime notifiche per:", email);
+
+  supabase
+    .channel("notifiche-realtime")
+    .on(
+      "postgres_changes",
+      {
+        event: "*",
+        schema: "public",
+        table: "notifiche",
+        filter: `email=eq.${email}`
+      },
+      async () => {
+        console.log("🔔 Nuova notifica realtime");
+
+        await aggiornaBadgeNotifiche();
+      }
+    )
     .subscribe();
 }
+
+
+
+
+
+
 /* ===============================
    PROFILO BOOT
 ================================ */
@@ -3001,21 +2767,36 @@ if (!logged || !email){
   return;
 }
 
-  await aggiornaBadgeNotifiche();
-  await aggiornaStatNotificheProfilo();
-  await aggiornaNumeroCoppe(email);
-  await verificaECreaCoupon(email);
-  await aggiornaNumeroCoupon(email);
-  await caricaCoupon(email);
+await aggiornaBadgeNotifiche();
+await aggiornaStatNotificheProfilo();
 
-  // mostra sezione coupon sempre (anche se 0, ma con badge 0)
-  couponSection.style.display = "block";
+// 🔐 DATI SICURI DA EDGE
+// 🔥 prima verifica se creare coupon
+const { data } = await supabase.functions.invoke(
+  "get-profile-data",
+  { body: { email } }
+);
 
+if (data?.ok) {
+  document.getElementById("coppe-count").textContent = data.coppe_count;
+  document.getElementById("stat-coupon-ok").textContent = data.coupon_disponibili;
+  document.getElementById("stat-coupon-used").textContent = data.coupon_usati;
+  document.getElementById("stat-notif").textContent = data.notifiche_non_lette;
+}
+
+  renderCoupons(data.coupon_list); // 🔥 importantissimo
+  document.getElementById("coupon-count").textContent = data.coupon_disponibili;
+
+
+
+// mostra sezione coupon sempre (anche se 0, ma con badge 0)
+couponSection.style.display = "block";
 
 // 🔥 avatar sincronizzato con login/logout
 aggiornaAvatarProfilo();
- subscribeCouponRealtime(email);
+subscribeCouponRealtime(email);
 subscribeConfermeRealtime(email);
+subscribeNotificheRealtime(email);
 });
 
 /* ===============================
@@ -3143,13 +2924,10 @@ if (backdrop) {
 const btnRegister = document.getElementById("menu-register");
 
 if (btnRegister) {
-  btnRegister.addEventListener("click", () => {
-    // chiudi menu
-    closeMenu();
-
-    // vai alla registrazione
-    window.location.href = "login.html?mode=register";
-  });
+btnRegister.addEventListener("click", () => {
+  closeMenu();
+  window.location.href = "login.html#register";
+});
 }
 // ===== MODIFICA PROFILO =====
 const editProfileBtn = document.getElementById("menu-edit-profile");

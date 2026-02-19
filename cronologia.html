@@ -2195,23 +2195,31 @@ async function eliminaTutteCoppe() {
       coppe = coppe.map(c => ({
         ...c,
         eliminata: true,
-        data_eliminazione: new Date().toLocaleString("sv-SE")
+        data_eliminazione: new Date().toISOString()
       }));
 
       localStorage.setItem("cronologiaCoppe", JSON.stringify(coppe));
 
-      if (window.supabase) {
-        const email = localStorage.getItem("user_email");
-        if (email) {
-          await supabase
-            .from("coppe")
-            .update({
-              eliminata: true,
-              data_eliminazione: new Date().toLocaleString("sv-SE")
-            })
-            .eq("email", email);
+if (window.supabase) {
+  const email = localStorage.getItem("user_email");
+
+  if (email) {
+
+    const daEliminare = coppe.filter(c => c.id);
+
+    for (const c of daEliminare) {
+      await supabase.functions.invoke(
+        "delete-coppa",
+        {
+          body: {
+            id: c.id,
+            email
+          }
         }
-      }
+      );
+    }
+  }
+}
 
       renderLista();
       await aggiornaFedelta();
@@ -2225,7 +2233,7 @@ async function tieniSoloPreferiti() {
     testo: "Verranno eliminate tutte le coppe che non hai contrassegnato con ⭐",
     onConfirm: async () => {
 
-      const now = new Date().toLocaleString("sv-SE");
+      const now = new Date().toISOString()
 
       coppe = coppe.map(c => {
         if (c.preferito) return c;
@@ -2248,13 +2256,15 @@ if (window.supabase) {
     );
 
     for (const c of daEliminare) {
-      await supabase
-        .from("coppe")
-        .update({
-          eliminata: true,
-          data_eliminazione: now
-        })
-        .eq("id", c.id);
+await supabase.functions.invoke(
+  "delete-coppa",
+  {
+    body: {
+      id: c.id,
+      email
+    }
+  }
+);
     }
   }
 }
@@ -2303,15 +2313,17 @@ async function eliminaCoppa(idx, confermata = false) {
   }
 
   // 🔥 SOFT DELETE SUPABASE
-  if (c.id && window.supabase) {
-    await supabase
-      .from("coppe")
-      .update({
-        eliminata: true,
-        data_eliminazione: new Date().toISOString()
-      })
-      .eq("id", c.id);
-  }
+if (c.id && window.supabase) {
+  await supabase.functions.invoke(
+    "delete-coppa",
+    {
+      body: {
+        id: c.id,
+        email: c.email
+      }
+    }
+  );
+}
 
 // ✅ elimina localmente
 c.eliminata = true;
@@ -2361,34 +2373,32 @@ await aggiornaFedelta();
 
 // 3️⃣ Aggiorna anche su Supabase (così admin vede il nome nuovo)
 if (window.supabase) {
-    try {
-        let error = null;
+  try {
 
-        if (c.id) {
-            // Caso coppe nuove → identificazione certa tramite ID
-            ({ error } = await supabase
-                .from("coppe")
-                .update({ nome: nomePulito })
-                .eq("id", c.id));
-        } else {
-            // Coppe vecchie senza id → identifico tramite guest_id + data
-            ({ error } = await supabase
-                .from("coppe")
-                .update({ nome: nomePulito })
-                .eq("guest_id", c.guest_id || null)
-                .eq("data", c.data));
-        }
+    const email = localStorage.getItem("user_email");
 
-        if (error) {
-            console.error("Errore Supabase rename:", error);
-            alert("⚠️ Nome aggiornato solo localmente. Errore Supabase.");
+    const { data, error } = await supabase.functions.invoke(
+      "update-coppa-name",
+      {
+        body: {
+          email,
+          coppa_id: c.id,
+          nuovo_nome: nomePulito
         }
-    } catch (err) {
-        console.error(err);
-        alert("⚠️ Errore di rete durante la rinomina (Supabase).");
+      }
+    );
+
+    if (error || !data?.ok) {
+      console.error("Errore Edge rename:", error || data);
+      alert("⚠️ Nome aggiornato solo localmente.");
     }
-}
 
+  } catch (err) {
+    console.error("Errore rete:", err);
+  }
+}
+renderLista();
+await aggiornaFedelta();
    showToast("Nome coppa aggiornato ✓");
 }
 
@@ -2467,96 +2477,56 @@ async function getCouponNonUsati(email) {
 }
 
 window.aggiornaFedelta = async function aggiornaFedelta() {
-console.log("🚨 aggiornaFedelta chiamata", new Date().toLocaleTimeString());
+console.log("🔄 aggiornaFedelta chiamata");
   const email = localStorage.getItem("user_email");
+  if (!email) return;
 
   const countEl = document.getElementById("fedelta-count");
   const barEl   = document.getElementById("fedelta-bar");
   const msgEl   = document.getElementById("fedelta-msg");
   const btnEl   = document.getElementById("btn-vedi-coupon");
 
- if (!countEl || !barEl) {
-  console.warn("⛔ Fedeltà DOM non pronto");
-  return;
-}
-  // 🔄 Mostra loader
-msgEl.innerHTML = `
-  <div class="fedelta-loading">
-    <div class="mini-spinner"></div>
-    <span>Caricamento...</span>
-  </div>
-`;
-console.log("🟢 aggiornaFedelta ATTIVA – DOM OK");
-  // 🔴 non loggato
-  if (!email) {
-  console.log("🟢 UTENTE OK, SUPABASE OK");
-    countEl.textContent = "0/10";
-    barEl.style.width = "0%";
-    msgEl.textContent = "Accedi per accumulare punti fedeltà 🎁";
-    btnEl.style.display = "none";
+  const { data, error } = await supabase.functions.invoke(
+    "get-cronologia-data",
+    { body: { email } }
+  );
+
+  if (error || !data?.ok) {
+    console.error("Errore Edge fedeltà:", error);
     return;
   }
 
-  // ✅ 1️⃣ CONTEGGIO REALE DELLE CONFERME
-  const { count: confermateTot, error } = await window.supabase
-    .from("conferme_coppe")
-    .select("*", { count: "exact", head: true })
-    .eq("email", email)
+  const confermateTot = data.confermateTot || 0;
+  const progress = confermateTot % 10;
 
-  if (error) {
-    console.error("Errore conteggio conferme:", error);
-    return;
-  }
+  countEl.textContent = `${progress}/10`;
+  barEl.style.width = `${(progress / 10) * 100}%`;
 
-  // ✅ 2️⃣ COUPON
-  const { data: coupon } = await window.supabase
-    .from("coupon")
-    .select("id, redento, nome, tipo, created_at")
-    .eq("email", email)
+const blocchiTotali = Math.floor(confermateTot / 10);
+const couponUsati = data.couponUsati || 0;
 
-const couponTotali = coupon.length;
-const couponDisponibili = coupon.filter(c => !c.redento).length;
+const couponDisponibiliUI = Math.max(0, blocchiTotali - couponUsati);
 
-// 🔥 blocchi maturati SOLO dalle conferme
-const blocchiMaturati = Math.floor(confermateTot / 10);
+if (couponDisponibiliUI > 0) {
 
-// 🔥 blocchi già trasformati in coupon reali
-const blocchiCouponCreati = couponTotali;
+  const parola = couponDisponibiliUI === 1
+    ? "coupon disponibile"
+    : "coupon disponibili";
 
-// 🔥 coupon che dovrebbero esserci ma non ancora creati
-const couponVirtuali = blocchiMaturati - blocchiCouponCreati;
+  msgEl.innerHTML = `
+    🎉 <b>Hai ${couponDisponibiliUI} ${parola}!</b>
+  `;
 
-// 🔢 progress reale
-const progress = confermateTot % 10;
-
-countEl.textContent = `${progress}/10`;
-barEl.style.width = `${(progress / 10) * 100}%`;
-
-if (couponDisponibili > 0 || couponVirtuali > 0) {
-
-  const tot = couponDisponibili + couponVirtuali;
-
-  const testo =
-    tot === 1
-      ? "coupon disponibile"
-      : "coupon disponibili";
-
-  msgEl.innerHTML = `🎉 <b>Hai ${tot} ${testo}!</b>`;
   btnEl.style.display = "block";
-  btnEl.onclick = () => location.href = "profilo.html#coupon";
 
 } else {
 
   msgEl.textContent =
-    couponTotali > 0
-      ? `Hai già sbloccato ${couponTotali} coupon 🎁 Continua per il prossimo`
-      : `Continua a creare coppe per sbloccare il coupon 🎁`;
+    "Continua a creare coppe per sbloccare il coupon 🎁";
 
   btnEl.style.display = "none";
 }
-
-  console.log("✅ FEDELTÀ OK:", { confermateTot, progress });
-}
+};
 
 
 async function aggiornaStatoCoupon() {
@@ -2755,7 +2725,7 @@ const extraText = formatExtra(c.extra);
                 `Gusti: ${gustiText}`,
                 `Granelle: ${granelleText || "-"}`,
                 `Topping: ${toppingText || "-"}`,
-                `Ingredienti: ${ingredientiText || "-"}`
+                `Decorazioni: ${ingredientiText || "-"}`
             ].join("\n");
 
            const div = document.createElement("div");
@@ -2828,7 +2798,7 @@ ${c.coppa_img ? `
 <div class="small"><b>Gusti:</b> ${evidenzia(gustiText)}</div>
 <div class="small"><b>Granelle:</b> ${evidenzia(granelleText)}</div>
 <div class="small"><b>Topping:</b> ${evidenzia(toppingText)}</div>
-<div class="small"><b>Ingredienti:</b> ${evidenzia(ingredientiText)}</div>
+<div class="small"><b>Decorazioni:</b> ${evidenzia(ingredientiText)}</div>
 <div class="small"><b>Extra:</b> ${evidenzia(extraText || "-")}</div>
 </div>
 
@@ -3075,7 +3045,15 @@ document.getElementById("ordine-select").addEventListener("change", e => {
 
 // 🔥 PRIMO RENDER
 renderLista();
+
+// 🎁 Vedi coupon → vai a profilo
+document.getElementById("btn-vedi-coupon")
+  ?.addEventListener("click", () => {
+    window.location.href = "profilo.html#coupon";
+  });
 </script>
+
+
 <script type="module">
 import { supabase } from "./supabase.js";
 window.supabase = supabase;
@@ -3086,36 +3064,33 @@ window.supabase = supabase;
 window.supabaseOffset = 0;
 window.SUPABASE_PAGE_SIZE = 5;
 
+window.supabaseOffset = 0;
+window.SUPABASE_PAGE_SIZE = 5;
+
 window.getCoppeSupabaseUtente = async function(email, append = false) {
+  if (!email) return [];
 
-    if (!email) return [];
+  const offset = window.supabaseOffset;
+  const limit  = window.SUPABASE_PAGE_SIZE;
 
-    let query = supabase
-        .from("coppe")
-        .select("*")
-        .eq("email", email)
-        .or("eliminata.is.null,eliminata.eq.false")
-        .order("id", { ascending: false })
-        .range(
-            window.supabaseOffset,
-            window.supabaseOffset + SUPABASE_PAGE_SIZE - 1
-        );
+  const { data, error } = await supabase.functions.invoke("get-cronologia-data", {
+    body: { email, offset, limit }
+  });
 
-    const { data, error } = await query;
+  if (error || !data?.ok) {
+    console.error("Errore Edge get-cronologia-data:", error || data);
+    return [];
+  }
 
-    if (error) {
-        console.error("Errore Supabase:", error);
-        return [];
-    }
+  // aggiorno offset come prima
+  if (!append) {
+    window.supabaseOffset = limit;
+  } else {
+    window.supabaseOffset += limit;
+  }
 
-    if (!append) {
-        window.supabaseOffset = SUPABASE_PAGE_SIZE;
-    } else {
-        window.supabaseOffset += SUPABASE_PAGE_SIZE;
-    }
-
-    return data || [];
-}
+  return data.items || [];
+};
 
 /* ------------------------------------------
    🔥 2) UNISCE le coppe locali con quelle Supabase
@@ -3174,31 +3149,50 @@ caricaCoppeComplete().then(all => {
 const emailUtente = localStorage.getItem("user_email");
 
 if (emailUtente) {
-  supabase
-    .channel("coppe-realtime-cronologia")
-    .on(
-      "postgres_changes",
-      {
-        event: "UPDATE",
-        schema: "public",
-        table: "coppe",
-        filter: `email=eq.${emailUtente}`
-      },
-async payload => {
+supabase
+  .channel("coppe-realtime-cronologia")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "coppe",
+      filter: `email=eq.${emailUtente}`
+    },
+    async payload => {
 
-  const updated = payload.new;
+      const tipo = payload.eventType;
+      const record = payload.new;
 
-  // aggiorno SOLO la coppa modificata in memoria
-  const idx = coppe.findIndex(c => c.id === updated.id);
+      console.log("🔄 Realtime:", tipo);
+
+      if (tipo === "INSERT") {
+        // 🔥 aggiungi solo quella nuova in testa
+        coppe.unshift(record);
+      }
+if (tipo === "UPDATE") {
+
+  const idx = coppe.findIndex(c => c.id === record.id);
+
   if (idx !== -1) {
-    coppe[idx] = { ...coppe[idx], ...updated };
-  }
+    coppe[idx] = {
+      ...coppe[idx],
+      nome: record.nome
+    };
 
-  renderLista();
-  await aggiornaFedelta();
+    renderLista();
+  }
 }
-    )
-    .subscribe();
+
+      if (tipo === "DELETE") {
+        coppe = coppe.filter(c => c.id !== payload.old.id);
+      }
+
+      renderLista();        // ⚡ super veloce ora
+      await aggiornaFedelta();
+    }
+  )
+  .subscribe();
 }
 
 
@@ -3240,7 +3234,7 @@ if (emailCoupon) {
     .subscribe();
 }
 
-// 🔥 REALTIME FEDELTÀ – CONFERME COPPE
+// 🔥 REALTIME FEDELTÀ – VERSIONE CORRETTA
 const emailFedelta = localStorage.getItem("user_email");
 
 if (emailFedelta) {
@@ -3249,13 +3243,33 @@ if (emailFedelta) {
     .on(
       "postgres_changes",
       {
-        event: "*",
+        event: "INSERT",
         schema: "public",
-        table: "conferme_coppe",
-        filter: `email=eq.${emailFedelta}`
+        table: "conferme_coppe"
       },
       async payload => {
-        console.log("🎯 FEDELTÀ realtime:", payload);
+
+        const nuova = payload.new;
+
+        // Filtra solo il tuo utente
+        if (nuova.email !== emailFedelta) return;
+
+        // Aggiorna totale conferme per quella coppa
+        const { count } = await supabase
+          .from("conferme_coppe")
+          .select("*", { count: "exact", head: true })
+          .eq("coppa_id", nuova.coppa_id)
+          .eq("email", emailFedelta);
+
+        const idx = coppe.findIndex(
+          c => Number(c.id) === Number(nuova.coppa_id)
+        );
+
+        if (idx !== -1) {
+          coppe[idx].confermate = count || 0;
+        }
+
+        renderLista();
         await aggiornaFedelta();
       }
     )

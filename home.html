@@ -1271,6 +1271,15 @@ body.popup-open{
   97%  { transform: translateX(2px); }
 }
 
+#menu-notifiche {
+  color: #007aff;
+  font-weight: 600;
+  transition: opacity .2s ease;
+}
+
+#menu-notifiche:active {
+  opacity: 0.6;
+}
   </style>
 
   <link rel="stylesheet" href="bottom-nav.css">
@@ -1907,7 +1916,7 @@ function chiudiPopupBenvenuto(){
 
 function vaiAllaRegistrazione(){
   chiudiPopupBenvenuto();
-  window.location.href = "/login?mode=register";
+  window.location.href = "/login.html#register";
 }
 </script>
 
@@ -2130,7 +2139,7 @@ text: `
   <div class="popup-steps-card">
     <div>✨ Scegli il formato</div>
     <div>🍨 Seleziona i gusti</div>
-    <div>🍫 Aggiungi topping, ingredienti ed extra</div>
+    <div>🍫 Aggiungi topping, decorazioni ed extra</div>
     <div>🚀 Condividi la tua coppa</div>
   </div>
 
@@ -2425,13 +2434,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🟠 REGISTRATI
-  if (registerBtn){
-    registerBtn.addEventListener("click", () => {
-      closeProfileMenu();
-      window.location.href = "/login.html?mode=register";
-    });
-  }
+// 🟠 REGISTRATI
+if (registerBtn){
+  registerBtn.addEventListener("click", () => {
+    closeProfileMenu();
+    window.location.href = "/login.html#register";
+  });
+}
 
   // 🟢 ACCEDI
   if (loginBtn){

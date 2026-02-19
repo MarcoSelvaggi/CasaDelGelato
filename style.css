@@ -5320,20 +5320,15 @@ body.no-scroll {
 }
 
 .tavolo-logo-box{
-  width: 160px;
-  height: 160px;
-
-  margin: 0 auto 40px auto; /* 👈 spazio sotto aumentato */
-
+  width: 120px;
+  height: 120px;
+  margin: -25px auto 40px auto;
   border-radius: 50%;
   overflow: hidden;
-
   background: #fff;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   box-shadow:
     0 10px 30px rgba(0,0,0,0.12),
     0 4px 12px rgba(0,0,0,0.08);
@@ -5448,3 +5443,126 @@ body.loading-active #bottom-nav{
   color: #fff;
 }
 
+/* 🔒 Blocca doppio tap zoom in crea coppa */
+#step-container button,
+.gusto-item,
+.gusto-btn,
+.menu-item,
+.tavolo-btn {
+  touch-action: manipulation;
+}
+
+
+.coppa-origin-overlay{
+  position: fixed;
+  inset: 0;
+  background: #f6f6f7;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999999;
+}
+
+.coppa-origin-card{
+  text-align: center;
+  padding: 30px;
+  width: 90%;
+  max-width: 360px;
+}
+
+.coppa-origin-card h2{
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 30px;
+}
+
+.coppa-origin-btn{
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 14px;
+
+  border-radius: 16px;
+  border: none;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+
+.coppa-origin-btn:active{
+  transform: scale(.96);
+}
+
+.coppa-origin-btn.home{
+  background: #007aff;
+  color: #fff;
+}
+
+.coppa-origin-btn.locale{
+  background: #fff;
+  border: 1px solid #ddd;
+  color: #111;
+}
+
+.coppa-origin-logo{
+  width: 150px;
+  height: 150px;
+
+  margin: -200px auto 30px;  /* 🔥 qui alzi il logo */
+
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f2f2f7;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+.coppa-origin-logo img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* 🔥 riempie tutto il cerchio */
+  display: block;
+}
+
+.info-dup-btn{
+  background: none;
+  border: none;
+  color: #007aff;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 18px;
+  cursor: pointer;
+}
+
+.info-dup-btn:active{
+  opacity: .6;
+}
+
+#popup-ok{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  width:100%;
+  margin-top:14px;
+  padding:14px 18px;
+
+  border:none !important;
+  border-radius:14px;
+
+  background:#D6B98C !important;   /* sabbia */
+  color:#3b2f1f !important;
+
+  font-size:16px;
+  font-weight:700;
+
+  box-shadow:0 6px 18px rgba(214,185,140,.35);
+  cursor:pointer;
+}

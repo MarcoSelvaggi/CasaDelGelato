@@ -362,10 +362,21 @@ document.getElementById("feedback-list").addEventListener("click", async (e) => 
 
   if(!confirm("Eliminare questo feedback?")) return;
 
-  const { error } = await supabase
-    .from("feedback")
-    .delete()
-    .eq("id", id);
+const { data, error } = await supabase.functions.invoke(
+  "delete-feedback-admin",
+  {
+    headers: {
+      "x-admin-pin": window.adminPin
+    },
+    body: { id }
+  }
+);
+
+if (error || !data?.success){
+  alert("Errore eliminazione");
+  console.error(error);
+  return;
+}
 
   if (error){
     alert("Errore eliminazione");
@@ -382,10 +393,14 @@ document.getElementById("feedback-list").addEventListener("click", async (e) => 
 document.getElementById("btn-delete-all").addEventListener("click", async () => {
   if(!confirm("Eliminare TUTTI i feedback?")) return;
 
-  const { error } = await supabase
-    .from("feedback")
-    .delete()
-    .not("id", "is", null);
+await supabase.functions.invoke(
+  "delete-feedback-admin-all",
+  {
+    headers: {
+      "x-admin-pin": window.adminPin
+    }
+  }
+);
 
   if (error){
     alert("Errore eliminazione");

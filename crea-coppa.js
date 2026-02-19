@@ -1490,8 +1490,12 @@ if (title) {
   if (step === "gusti")        title.textContent = "Gusti";
   else if (step === "granelle")title.textContent = "Granelle";
   else if (step === "topping") title.textContent = "Topping";
-  else if (step === "ingredienti") title.textContent = "Ingredienti";
-  else if (step === "extra")   title.textContent = "Extra";
+  else if (step === "ingredienti") title.textContent = "Decorazioni";
+  else if (step === "extra")
+  title.innerHTML = `
+    Extra
+    <div class="step-sub">(facoltativi)</div>
+  `;
   else                         title.textContent = "";
 
   if (titoloGustiVisibile) {
@@ -1898,7 +1902,7 @@ const btnHtml = (ready && !isLoadingCoppa)
     ${riga("Gusti", gustiCompatti)}
     ${riga("Granelle", scelti.granelle)}
     ${riga("Topping", scelti.topping)}
-    ${riga("Ingredienti", scelti.ingredienti)}
+    ${riga("Decorazioni", scelti.ingredienti)}
     ${riga("Extra", scelti.extra)}
     ${btnHtml}
   `;
@@ -1936,7 +1940,7 @@ function shareRiepilogo(){
     `Gusti: ${safeJoin(scelti.gusti)}\n`+
     `Granelle: ${safeJoin(scelti.granelle)}\n`+
     `Topping: ${safeJoin(scelti.topping)}\n`+
-    `Ingredienti: ${safeJoin(scelti.ingredienti)}\n`+
+    `Decorazioni: ${safeJoin(scelti.ingredienti)}\n`+
     `Extra: ${safeJoin(scelti.extra)}`;
 
   navigator.share ? navigator.share({text}) : alert(text);
@@ -2522,7 +2526,7 @@ area.innerHTML = `
 
 <button
   class="next-btn riepilogo-registrati"
-  onclick="vaiARegistrazione()"
+onclick="apriRegistrazione()"
 >
   Registrati
 </button>
@@ -2604,7 +2608,7 @@ area.innerHTML = `
 
   <p><b>Granelle:</b> ${safeJoin(scelti.granelle)}</p>
   <p><b>Topping:</b> ${safeJoin(scelti.topping)}</p>
-  <p><b>Ingredienti:</b> ${safeJoin(scelti.ingredienti)}</p>
+  <p><b>Decorazioni:</b> ${safeJoin(scelti.ingredienti)}</p>
 
   <p><b>Extra:</b> 
     ${
@@ -3241,19 +3245,29 @@ function mostraPopupPreRiepilogo(onContinue) {
   };
 }
 
+let scrollPosition = 0;
+
 function mostraLoadingRiepilogo() {
   const el = document.getElementById("loading-riepilogo");
   const bar = document.getElementById("loading-bar");
 
   if (!el || !bar) return;
 
+  // 🔒 Salvo posizione scroll
+  scrollPosition = window.scrollY;
+
+  // 🔒 Blocco totale pagina (iOS safe)
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${scrollPosition}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+
   el.style.display = "flex";
   bar.style.width = "0%";
 
-  // 🔥 repaint forzato
   bar.getBoundingClientRect();
 
-  // primo frame visibile
   requestAnimationFrame(() => {
     bar.style.width = "5%";
   });
@@ -3262,7 +3276,17 @@ function mostraLoadingRiepilogo() {
 function nascondiLoadingRiepilogo() {
   const el = document.getElementById("loading-riepilogo");
   if (el) el.style.display = "none";
+
+  // 🔓 Ripristino scroll
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+
+  window.scrollTo(0, scrollPosition);
 }
+
 function waitForImagesWithProgress(container, onProgress) {
   const imgs = Array.from(container.querySelectorAll("img"));
   const total = imgs.length;
@@ -4029,7 +4053,7 @@ window.aggiornaCarrelloUI = function() {
             <div><b>Gusti:</b> ${gustiFormattati || "-"}</div>
             <div><b>Granelle:</b> ${coppa.granelle.join(", ") || "-"}</div>
             <div><b>Topping:</b> ${coppa.topping.join(", ") || "-"}</div>
-            <div><b>Ingredienti:</b> ${coppa.ingredienti.join(", ") || "-"}</div>
+            <div><b>Decorazioni:</b> ${coppa.ingredienti.join(", ") || "-"}</div>
             <div><b>Extra:</b> ${
     coppa.extra.length
         ? coppa.extra
@@ -4266,59 +4290,7 @@ function mostraNuvolaInstagram() {
 }
 
 function apriRegistrazione() {
-  flussoRiepilogoAttivo = false;
-
-if (nuvolaInstagramTimer) {
-  clearTimeout(nuvolaInstagramTimer);
-  nuvolaInstagramTimer = null;
-}
-  // 🔥 segna che veniamo dal riepilogo
-  localStorage.setItem("returnToRiepilogo", "1");
-
-  // ✅ NASCONDI NUVOLA mentre ti registri
-  nascondiNuvolaInstagram();
-
-  document.getElementById("step-size").style.display = "none";
-  document.getElementById("step-container").style.display = "none";
-  document.getElementById("step-title").style.display = "none";
- 
-
-  document.getElementById("reg-box").style.display = "block";
-}
-
-// CHIUDI MODULO
-function chiudiRegistrazione() {
-
-  // 🔥 ESCI DALLA REGISTRAZIONE
-  document.getElementById("reg-box").style.display = "none";
-  document.getElementById("step-container").style.display = "block";
-  document.getElementById("step-title").style.display = "block";
-
-  // 🔥 NON riattivare automaticamente il flusso
-  flussoRiepilogoAttivo = false;
-
-  // 🔥 BLOCCA QUALSIASI TIMER PENDENTE
-  if (nuvolaInstagramTimer) {
-    clearTimeout(nuvolaInstagramTimer);
-    nuvolaInstagramTimer = null;
-  }
-
-  // 🔥 NASCONDI SEMPRE LA NUVOLA
-  nascondiNuvolaInstagram();
-
-  // ✅ SOLO SE SEI DAVVERO NEL RIEPILOGO FINALE
-  if (document.body.classList.contains("step-riepilogo")) {
-
-    // riattiva flusso
-    flussoRiepilogoAttivo = true;
-
-    // riavvia timer NUVOLA (20s)
-    nuvolaInstagramTimer = setTimeout(() => {
-      if (flussoRiepilogoAttivo) {
-        mostraNuvolaInstagram();
-      }
-    }, 20000);
-  }
+  window.location.href = "/login.html#register";
 }
 
 function forzaCoppaNonConfermata() {
@@ -4739,3 +4711,46 @@ function mostraToast(messaggio){
   }, 2000);
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+
+  const overlay = document.getElementById("carrello-overlay");
+  const box = document.getElementById("carrello-box");
+
+  if (!overlay || !box) return;
+
+  overlay.addEventListener("click", (e) => {
+    // se clicco fuori dal box → chiudi
+    if (!box.contains(e.target)) {
+      chiudiCarrello();
+    }
+  });
+
+});
+
+
+function creaDaCasa(){
+
+  // 🔥 imposta tavolo vero
+  tavoloSelezionato = "DA CASA";
+
+  // chiudi overlay
+  document.getElementById("coppa-origin-overlay").style.display = "none";
+
+  // nascondi selezione tavolo
+  document.getElementById("step-tavolo").style.display = "none";
+
+  // vai a formato
+  document.getElementById("step-size").style.display = "block";
+
+  window.scrollTo(0,0);
+  mostraBottomNav();
+}
+
+function creaInLocale(){
+
+  tavoloSelezionato = null;
+
+  document.getElementById("coppa-origin-overlay").style.display = "none";
+
+  // lascia visibile step tavolo (che già è il default)
+}
