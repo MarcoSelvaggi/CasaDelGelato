@@ -29,7 +29,7 @@ async function linkCoppeAnonimeAEmail(email) {
 
   const { error } = await supabase
     .from("coppe")
-    .update({ email })
+    .update({ email: email.trim().toLowerCase() })
    .eq("guest_id", guest_id)
    .or("email.is.null,email.eq.");
 
@@ -48,7 +48,7 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
   const { data: existing, error: checkError } = await supabase
     .from("utenti")
     .select("email, disiscritto")
-    .eq("email", email);
+    .eq("email", email.trim().toLowerCase());
 
   if (checkError) {
     return { success: false, error: checkError.message };
@@ -66,7 +66,7 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
           disiscritto: false,
           data_disiscrizione: null,
         })
-        .eq("email", email);
+       .eq("email", email.trim().toLowerCase());
 
       if (updError) {
         return { success: false, error: updError.message };
@@ -82,15 +82,15 @@ export async function salvaRegistrazioneSupabase(nome, cognome, email) {
   }
 
   // 3️⃣ Non esiste → inserisco nuovo utente
-  const { error: insertError } = await supabase.from("utenti").insert([
-    {
-      nome,
-      cognome,
-      email,
-      disiscritto: false,
-      data_disiscrizione: null,
-    },
-  ]);
+const { error: insertError } = await supabase.from("utenti").insert([
+  {
+    nome,
+    cognome,
+    email: email.trim().toLowerCase(),
+    disiscritto: false,
+    data_disiscrizione: null,
+  },
+]);
 
   if (insertError) {
     return { success: false, error: insertError.message };
@@ -109,6 +109,7 @@ export async function salvaCoppaSupabase(coppa) {
 
     // 🔥 1. Recupero email dell’utente loggato
     let email = localStorage.getItem("user_email");
+    if (email) email = email.trim().toLowerCase();
     let guest_id = getGuestID();
 
     // 🔥 2. Se NON loggato → salvo come anonimo
