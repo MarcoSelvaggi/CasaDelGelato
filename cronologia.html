@@ -2632,14 +2632,19 @@ btn.disabled = true;
 
   try {
 
-    let query = supabase
-      .from("coppe")
-      .select("coppa_img")
-      .limit(1);
+let query = supabase
+  .from("coppe")
+  .select("coppa_img")
+  .limit(1);
 
-    query = query.or(
-      `id.eq.${identifier},qr_token.eq.${identifier}`
-    );
+if (identifier && identifier !== "undefined" && identifier !== "null") {
+  query = query.or(
+    `id.eq.${identifier},qr_token.eq.${identifier}`
+  );
+} else {
+  console.warn("Identifier non valido:", identifier);
+  return;
+}
 
     const { data, error } = await query;
 
