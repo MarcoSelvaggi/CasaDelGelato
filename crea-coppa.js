@@ -908,7 +908,7 @@ const ALLERGENI_GUSTI = {
   "YOGURT": ["Latte"],
   "YOGURT FRAGOLINE": ["Latte"],
   "CREME CARAMEL": ["Latte"],
-  "BACIO": ["Latte", "Glutine", "Frutta a guscio", "Uova"],
+  "BACIO": ["Latte", "Glutine", "Frutta a guscio"],
   "CAFFÈ": ["Latte"],
   "TIRAMISÙ": ["Latte", "Alcol", "Uova"],
   "CROCCANTINO AL RUM": ["Latte", "Alcol", "Glutine"],
@@ -4412,12 +4412,13 @@ const coppaCanvas = await html2canvas(stage, {
 
   ctx.drawImage(coppaCanvas, x, y, w, h);
 
+
 // ✍️ WATERMARK Casa del Gelato
 const padding = 60;
 
 // 🔥 Testi
-const line1 = "© Scoopy ice by Casa del Gelato";
-const line2 = "www.casa-del-gelato.it";
+const line1 = "Tagga: @casadelgelato.it";
+const line2 = " © Scoopy ice by Casa del Gelato";
 
 // Allineamento
 ctx.textAlign = "right";
@@ -4433,24 +4434,71 @@ ctx.fillStyle = "rgba(0,0,0,0.65)";
 ctx.fillText(
   line1,
   canvas.width - padding,
-  canvas.height - padding - 40
+  canvas.height - padding - 80
 );
 
 // Seconda riga (più leggera)
-ctx.font = "400 28px -apple-system, system-ui, sans-serif";
-ctx.fillStyle = "rgba(0,0,0,0.45)";
+ctx.font = "500 28px -apple-system, system-ui, sans-serif";
+ctx.fillStyle = "rgba(0,0,0,0.6)";
 ctx.fillText(
   line2,
   canvas.width - padding,
-  canvas.height - padding
+  canvas.height - padding - 40
 );
 
 // Reset shadow
 ctx.shadowBlur = 0;
+
+// Terza riga 
+const line3 = "www.casa-del-gelato.it";
+
+ctx.font = "400 28px -apple-system, system-ui, sans-serif";
+ctx.fillStyle = "rgba(0,0,0,0.45)";
+ctx.fillText(
+  line3,
+  canvas.width - padding,
+  canvas.height - padding
+);
+
+
+// 🟣 LOGO NON BLOCCANTE
+
+const logo = new Image();
+logo.src = "img/scoopy-ice.png";
+
+logo.onload = () => {
+
+  const logoSize = 100;
+  const logoX = padding;
+  const logoY = canvas.height - padding - logoSize;
+
+  ctx.save();
+
+  // sfondo bianco tondo
+  ctx.beginPath();
+  ctx.arc(
+    logoX + logoSize/2,
+    logoY + logoSize/2,
+    logoSize/2,
+    0,
+    Math.PI * 2
+  );
+  ctx.closePath();
+  ctx.fillStyle = "rgba(255,255,255,0.9)";
+  ctx.fill();
+
+  ctx.clip();
+  ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
+  ctx.restore();
+};
+
+
   return new Promise(res =>
     canvas.toBlob(blob => res(blob), "image/png")
   );
 }
+
+
 
 let toastTimeout = null;
 
