@@ -3629,6 +3629,11 @@ window.addEventListener("scroll", () => {
 </script>
 
 <script>
+
+// 🔥 Logo condiviso globale
+const sharedLogo = new Image();
+sharedLogo.src = "img/scoopy-ice.png";
+
 async function generaCoppaInstagramStory(stageEl) {
   if (!stageEl) return null;
 
@@ -3665,24 +3670,81 @@ async function generaCoppaInstagramStory(stageEl) {
     h
   );
 
-  // 🔥 WATERMARK
+// ✍️ WATERMARK Casa del Gelato
+const padding = 60;
+
+// 🔥 Testi
+const line1 = "Tagga: @casadelgelato.it";
+const line2 = " © Scoopy ice by Casa del Gelato";
+
+// Allineamento
 ctx.textAlign = "right";
-ctx.fillStyle = "rgba(0,0,0,0.55)";
+ctx.textBaseline = "bottom";
 
-ctx.font = "bold 36px -apple-system, sans-serif";
+// Ombra leggera per leggibilità
+ctx.shadowColor = "rgba(0,0,0,0.25)";
+ctx.shadowBlur = 12;
+
+// Prima riga (più importante)
+ctx.font = "600 36px -apple-system, system-ui, sans-serif";
+ctx.fillStyle = "rgba(0,0,0,0.65)";
 ctx.fillText(
-
-  "© iCEcream by Casa del Gelato",
-  canvas.width - 60,
-  canvas.height - 120
+  line1,
+  canvas.width - padding,
+  canvas.height - padding - 80
 );
 
-ctx.font = "26px -apple-system, sans-serif";
+// Seconda riga (più leggera)
+ctx.font = "500 28px -apple-system, system-ui, sans-serif";
+ctx.fillStyle = "rgba(0,0,0,0.6)";
 ctx.fillText(
-  "www.casa-del-gelato.it",
-  canvas.width - 60,
-  canvas.height - 70
+  line2,
+  canvas.width - padding,
+  canvas.height - padding - 40
 );
+
+// Reset shadow
+ctx.shadowBlur = 0;
+
+// Terza riga 
+const line3 = "www.casa-del-gelato.it";
+
+ctx.font = "400 28px -apple-system, system-ui, sans-serif";
+ctx.fillStyle = "rgba(0,0,0,0.45)";
+ctx.fillText(
+  line3,
+  canvas.width - padding,
+  canvas.height - padding
+);
+
+
+// 🟣 LOGO (versione stabile)
+
+if (sharedLogo.complete) {
+
+  const logoSize = 100;
+  const logoX = padding;
+  const logoY = canvas.height - padding - logoSize;
+
+  ctx.save();
+
+  ctx.beginPath();
+  ctx.arc(
+    logoX + logoSize/2,
+    logoY + logoSize/2,
+    logoSize/2,
+    0,
+    Math.PI * 2
+  );
+  ctx.closePath();
+  ctx.fillStyle = "rgba(255,255,255,0.95)";
+  ctx.fill();
+  ctx.clip();
+
+  ctx.drawImage(sharedLogo, logoX, logoY, logoSize, logoSize);
+
+  ctx.restore();
+}
 
   return new Promise(res =>
     canvas.toBlob(blob => res(blob), "image/png")
