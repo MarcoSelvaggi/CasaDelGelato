@@ -568,10 +568,16 @@ body {
 .popup-overlay{
   position:fixed;
   inset:0;
+
+  padding:20px;              /* 🔥 MARGINE LATERALE */
+  box-sizing:border-box;
+
   background:rgba(0,0,0,.45);
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   z-index:9999;
 }
 
@@ -1280,6 +1286,102 @@ body.popup-open{
 #menu-notifiche:active {
   opacity: 0.6;
 }
+
+
+
+
+
+
+/* =========================
+   🔒 LOGOUT CONFIRM (DEDICATO)
+   non tocca altri popup
+========================= */
+
+/* overlay logout */
+#logout-confirm-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;                /* margine laterale */
+  box-sizing: border-box;
+  z-index: 12000;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease;
+}
+
+#logout-confirm-overlay.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* box logout */
+#logout-confirm-box{
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px 20px 18px;
+  text-align: center;
+  box-shadow: 0 18px 45px rgba(0,0,0,.25);
+}
+
+/* titolo / testo */
+#logout-confirm-title{
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+#logout-confirm-text{
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+}
+
+/* bottoni */
+#logout-confirm-actions{
+  display: flex;
+  gap: 10px;
+}
+
+.logout-btn{
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.logout-btn.secondary{
+  background: #eee;
+  color: #111;
+}
+
+.logout-btn.danger{
+  background: #ff3b30;
+  color: #fff;
+}
+
+.logout-btn:active{
+  transform: scale(.98);
+}
+
+/* blocca scroll SOLO quando overlay logout è aperto */
+body.logout-open{
+  overflow: hidden;
+}
+
+
+
+
   </style>
 
   <link rel="stylesheet" href="bottom-nav.css">
@@ -2653,37 +2755,70 @@ function setupAvatarChangeHome(){
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-
   const logoutBtn = document.getElementById("menu-logout");
   if (!logoutBtn) return;
 
-  logoutBtn.addEventListener("click", async () => {
+  const overlay = document.getElementById("logout-confirm-overlay");
+  const btnOk   = document.getElementById("logout-ok");
+  const btnNo   = document.getElementById("logout-cancel");
 
-    try {
-      // 🔐 Logout Supabase
-      await supabase.auth.signOut();
-    } catch (err) {
-      console.warn("Errore logout supabase:", err);
-    }
+  function openLogoutConfirm(){
+    overlay.classList.add("show");
+    document.body.classList.add("logout-open");
+  }
 
-    // 🧹 Pulisce localStorage
-    localStorage.removeItem("userLogged");
-    localStorage.removeItem("user_email");
+  function closeLogoutConfirm(){
+    overlay.classList.remove("show");
+    document.body.classList.remove("logout-open");
+  }
 
-    // 🔔 Nasconde badge notifiche
-    const badge = document.getElementById("profile-notif-badge");
-    if (badge) badge.style.display = "none";
-
-    // 👤 Reset avatar
-    aggiornaAvatarHome();
-
-    // ❌ Chiude menu
-    closeProfileMenu();
-
-    // 🔄 Redirect alla home ufficiale
-    window.location.href = "/home.html";
+  // apri popup invece di logout diretto
+  logoutBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openLogoutConfirm();
   });
 
+  // annulla
+  btnNo.addEventListener("click", closeLogoutConfirm);
+
+  // click fuori chiude
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) closeLogoutConfirm();
+  });
+
+  // ESC chiude
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeLogoutConfirm();
+  });
+
+// conferma logout
+btnOk.addEventListener("click", async () => {
+
+  closeLogoutConfirm();
+
+  try {
+    await supabase.auth.signOut();
+  } catch (err) {
+    console.warn("Errore logout supabase:", err);
+  }
+
+  localStorage.removeItem("userLogged");
+  localStorage.removeItem("user_email");
+
+  const badge = document.getElementById("profile-notif-badge");
+  if (badge) badge.style.display = "none";
+
+  aggiornaAvatarHome?.();
+  closeProfileMenu?.();
+
+  // 🔥 popup elegante come in profilo
+  mostraPopup(
+    "Logout effettuato",
+    "Sei uscito correttamente dal tuo profilo.",
+    "home.html"
+  );
+});
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -2796,7 +2931,53 @@ document.addEventListener("DOMContentLoaded", () => {
   v1.play().catch(()=>{});
 
 });
+
+function mostraPopup(titolo, messaggio, redirectUrl) {
+
+  const overlay = document.createElement("div");
+  overlay.className = "popup-overlay";
+  overlay.style.display = "flex";
+
+  const box = document.createElement("div");
+  box.className = "popup-box";
+
+  box.innerHTML = `
+    <h2>${titolo}</h2>
+    <p>${messaggio}</p>
+    <div class="popup-actions">
+      <button class="popup-btn primary">OK</button>
+    </div>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  document.body.classList.add("popup-open");
+
+  box.querySelector("button").addEventListener("click", () => {
+    document.body.classList.remove("popup-open");
+    overlay.remove();
+
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  });
+}
 </script>
+
+<!-- 🔒 LOGOUT CONFIRM (DEDICATO) -->
+<div id="logout-confirm-overlay">
+  <div id="logout-confirm-box">
+    <h2 id="logout-confirm-title">Sei sicuro?</h2>
+    <p id="logout-confirm-text">
+      Vuoi uscire dal tuo account?
+    </p>
+
+    <div id="logout-confirm-actions">
+      <button class="logout-btn secondary" id="logout-cancel">Annulla</button>
+      <button class="logout-btn danger" id="logout-ok">Logout</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
