@@ -2315,10 +2315,10 @@ info: {
     const content = popup.querySelector(".hero-popup-content");
 if (content) content.scrollTop = 0;
 
-    if (img && data.img){
-      img.src = data.img;
-      img.style.display = "block";
-    }
+if (img && data.img){
+  img.src = data.img + "?v=" + Date.now();
+  img.style.display = "block";
+}
 
     if (startBtn){
       if (data.cta){
