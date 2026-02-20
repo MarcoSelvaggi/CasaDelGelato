@@ -146,36 +146,35 @@ if (!utente) {
 
   try {
     // 2️⃣ aggiorna TUTTE le tabelle collegate
-    await supabase.from("coppe")
-      .update({ email: emailNuova })
-      .eq("email", emailVecchia);
+await supabase.from("coppe")
+  .update({ email: emailNuova })
+  .ilike("email", emailVecchia);
 
-    await supabase.from("conferme_coppe")
-      .update({ email: emailNuova })
-      .eq("email", emailVecchia);
+await supabase.from("conferme_coppe")
+  .update({ email: emailNuova })
+  .ilike("email", emailVecchia);
 
-    await supabase.from("coupon")
-      .update({ email: emailNuova })
-      .eq("email", emailVecchia);
+await supabase.from("coupon")
+  .update({ email: emailNuova })
+  .ilike("email", emailVecchia);
 
-    await supabase.from("notifiche")
-      .update({ email: emailNuova })
-      .eq("email", emailVecchia);
+await supabase.from("notifiche")
+  .update({ email: emailNuova })
+  .ilike("email", emailVecchia);
 
-    await supabase.from("disponibilita")
-      .update({ email: emailNuova })
-      .eq("email", emailVecchia);
+await supabase.from("disponibilita")
+  .update({ email: emailNuova })
+  .ilike("email", emailVecchia);
 
-    // 3️⃣ aggiorna UTENTE
-    await supabase
-      .from("utenti")
-      .update({
-        email: emailNuova,
-        new_email: null,
-        email_change_token: null,
-        email_change_expires_at: null
-      })
-      .eq("email", emailVecchia);
+await supabase
+  .from("utenti")
+  .update({
+    email: emailNuova,
+    new_email: null,
+    email_change_token: null,
+    email_change_expires_at: null
+  })
+  .ilike("email", emailVecchia);
 
   } catch (err){
     console.error(err);
