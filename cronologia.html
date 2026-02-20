@@ -3258,49 +3258,58 @@ if (emailCoupon) {
 }
 
 // 🔥 REALTIME FEDELTÀ – FIX DEFINITIVO
-const emailFedelta = localStorage.getItem("user_email");
+const emailFedelta = (localStorage.getItem("user_email") || "")
+  .trim()
+  .toLowerCase();
 
 if (emailFedelta) {
   supabase
     .channel("realtime-fedelta")
-    .on(
-      "postgres_changes",
-      {
-        event: "INSERT",
-        schema: "public",
-        table: "conferme_coppe"
-      },
-      async payload => {
+.on(
+  "postgres_changes",
+  {
+    event: "INSERT",
+    schema: "public",
+    table: "conferme_coppe",
+    filter: `email=eq.${emailFedelta}`
+  },
+async payload => {
 
-        const nuova = payload.new;
+  const nuova = payload.new;
 
-        if (nuova.email !== emailFedelta) return;
+  if (
+    nuova.email?.trim().toLowerCase() !==
+    emailFedelta?.trim().toLowerCase()
+  ) return;
 
-        console.log("🔥 Nuova conferma realtime:", nuova);
+  console.log("🔥 Nuova conferma realtime:", nuova);
 
-        // 🔥 aggiorna solo quella coppa SENZA rifare tutto
-        const idx = coppe.findIndex(
-          c =>
-            String(c.id) === String(nuova.coppa_id) ||
-            String(c.qr_token) === String(nuova.coppa_id)
-        );
+  const idx = coppe.findIndex(
+    c =>
+      String(c.id) === String(nuova.coppa_id) ||
+      String(c.qr_token) === String(nuova.coppa_id)
+  );
 
-if (idx !== -1) {
+  if (idx !== -1) {
+    coppe[idx].confermate =
+      (coppe[idx].confermate || 0) + 1;
 
-  coppe[idx].confermate =
-    (coppe[idx].confermate || 0) + 1;
+    renderLista();
+  }
 
-  renderLista();
+  // ⚡ aggiorna barra subito in locale
+  incrementaFedeltaLocale();
+
+  // 🔥 QUESTA È LA RIGA CHE MANCAVA
+  await supabase.functions.invoke("get-profile-data", {
+    body: { email: emailFedelta }
+  });
+
+  // 🔁 poi sincronizza col server con calma
+  setTimeout(() => {
+    aggiornaFedelta();
+  }, 800);
 }
-
-// ⚡ aggiorna barra subito in locale
-incrementaFedeltaLocale();
-
-// 🔁 poi sincronizza col server con calma
-setTimeout(() => {
-  aggiornaFedelta();
-}, 800);
-      }
     )
     .subscribe();
 }

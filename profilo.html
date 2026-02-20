@@ -1517,6 +1517,42 @@ body.no-scroll{
   opacity: .6;
 }
 
+/* 🔔 CONFIRM centrato e sempre visibile */
+#ui-confirm-backdrop{
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: .2s ease;
+  z-index: 10000;
+}
+
+#ui-confirm-backdrop.show{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#ui-confirm{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(.96);
+  width: 300px;
+  max-width: calc(100vw - 28px);
+  opacity: 0;
+  pointer-events: none;
+  transition: .22s ease;
+  z-index: 10001;
+}
+
+#ui-confirm.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+
+
 </style>
 </head>
 
@@ -1793,7 +1829,8 @@ window.chiudiPopupDisiscrizione = function(){
 };
 
 window.eliminaTutteNotifiche = async function () {
-  const ok = confirm("Vuoi eliminare TUTTE le notifiche?");
+
+const ok = await confirm("Vuoi eliminare TUTTE le notifiche?");
   if (!ok) return;
 
   const email = localStorage.getItem("user_email");
@@ -1802,35 +1839,26 @@ window.eliminaTutteNotifiche = async function () {
     return;
   }
 
-  console.log("🗑 Elimino notifiche per:", email);
+  const emailNorm = email.trim().toLowerCase();
 
   const { error } = await supabase
     .from("notifiche")
     .delete()
-    .eq("email", email);
+    .ilike("email", emailNorm);
 
   if (error) {
-    console.error("❌ Errore eliminazione notifiche:", error);
+    console.error("Errore eliminazione notifiche:", error);
     alert("Errore eliminazione notifiche");
     return;
   }
 
-  // ✅ svuota UI
-  const list = document.getElementById("notifiche-list");
-  if (list) {
-    list.innerHTML = `
-      <div class="notification-item">
-        🔕 Nessuna notifica al momento
-      </div>
-    `;
-  }
+  await caricaNotificheUtente();
+  await aggiornaBadgeNotifiche();
+  await aggiornaStatNotificheProfilo();
 
-  // ✅ nasconde badge
-  const badge = document.getElementById("notifiche-count");
-  if (badge) badge.style.display = "none";
-
-  console.log("✅ Notifiche eliminate correttamente");
+  console.log("Notifiche eliminate correttamente");
 };
+
 
 function abilitaSwipeNotifiche() {
   document.querySelectorAll(".notification-swipe").forEach(wrapper => {
@@ -1886,11 +1914,13 @@ async function aggiornaStatNotificheProfilo() {
     return;
   }
 
-  const { data, error } = await supabase
-    .from("notifiche")
-    .select("id")
-    .eq("email", email)
-    .eq("letta", false);
+const emailNorm = (email || "").trim().toLowerCase();
+
+const { data, error } = await supabase
+  .from("notifiche")
+  .select("id")
+  .ilike("email", emailNorm)   // 🔥 CAMBIATO
+  .eq("letta", false);
 
   if (error) return;
 
@@ -1913,11 +1943,13 @@ async function aggiornaBadgeNotifiche(){
     return;
   }
 
-  const { data, error } = await supabase
-    .from("notifiche")
-    .select("id")
-    .eq("email", email)
-    .eq("letta", false);
+const emailNorm = (email || "").trim().toLowerCase();
+
+const { data, error } = await supabase
+  .from("notifiche")
+  .select("id")
+  .ilike("email", emailNorm)   // 🔥 CAMBIATO
+  .eq("letta", false);
 
   if (error){
     console.error("Errore badge notifiche:", error);
@@ -1956,20 +1988,24 @@ setInterval(() => {
 }, 8000);
 
 
-async function caricaNotificheUtente() {
+window.caricaNotificheUtente = async function () {
   const email = localStorage.getItem("user_email");
   if (!email) return;
 
-  const list = document.getElementById("notifiche-list");
+  const list = document.getElementById("notifiche-list");  // 🔥 QUESTA MANCAVA
   if (!list) return;
 
-  list.innerHTML = "⏳ Caricamento…";
+  const emailNorm = email.trim().toLowerCase();
+
+  console.log("🔎 caricaNotifiche emailNorm:", emailNorm);
 
   const { data, error } = await supabase
     .from("notifiche")
     .select("*")
-    .eq("email", email)
+    .ilike("email", emailNorm)
     .order("created_at", { ascending: false });
+
+  console.log("🔔 notifiche trovate:", data);
 
   if (error) {
     list.innerHTML = "❌ Errore caricamento notifiche";
@@ -1987,39 +2023,40 @@ async function caricaNotificheUtente() {
 
   list.innerHTML = "";
 
-data.forEach(n => {
-  const wrapper = document.createElement("div");
-  wrapper.className = "notification-swipe";
-  wrapper.dataset.id = n.id;
+  data.forEach(n => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "notification-swipe";
+    wrapper.dataset.id = n.id;
 
-  const content = document.createElement("div");
-  content.className = "notification-item";
-  if (n.letta === false) content.classList.add("unread");
+    const content = document.createElement("div");
+    content.className = "notification-item";
+    if (n.letta === false) content.classList.add("unread");
 
-  const dataNotifica = new Date(n.created_at).toLocaleString("it-IT", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
+    const dataNotifica = new Date(n.created_at).toLocaleString("it-IT", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    content.innerHTML = `
+      <div style="font-size:14px;">${n.messaggio}</div>
+      <div style="font-size:11px; opacity:.6; margin-top:4px;">
+        ${dataNotifica}
+      </div>
+    `;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "notif-delete";
+    deleteBtn.textContent = "Elimina";
+
+    wrapper.appendChild(deleteBtn);
+    wrapper.appendChild(content);
+    list.appendChild(wrapper);
   });
 
-  content.innerHTML = `
-    <div style="font-size:14px;">${n.messaggio}</div>
-    <div style="font-size:11px; opacity:.6; margin-top:4px;">
-      ${dataNotifica}
-    </div>
-  `;
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.className = "notif-delete";
-  deleteBtn.textContent = "Elimina";
-
-wrapper.appendChild(deleteBtn); // 🔴 SOTTO (nascosto)
-wrapper.appendChild(content);   // ⚪ SOPRA (scorre)
-  list.appendChild(wrapper);
   abilitaSwipeNotifiche();
-});
 }
 
 // ===============================
@@ -2379,11 +2416,13 @@ document.body.classList.add("no-scroll");
     const email = localStorage.getItem("user_email");
     if (!email) return;
 
-    await supabase
-      .from("notifiche")
-      .update({ letta: true })
-      .eq("email", email)
-      .eq("letta", false);
+const emailNorm = (email || "").trim().toLowerCase();
+
+await supabase
+  .from("notifiche")
+  .update({ letta: true })
+  .ilike("email", emailNorm)   // 🔥 CAMBIATO
+  .eq("letta", false);
 
     await aggiornaBadgeNotifiche();
 
@@ -2452,6 +2491,7 @@ function sbloccaScrollPagina() {
 
 
 function subscribeConfermeRealtime(email){
+
   supabase
     .channel("conferme-coppe-realtime")
     .on(
@@ -2460,25 +2500,48 @@ function subscribeConfermeRealtime(email){
         event: "INSERT",
         schema: "public",
         table: "conferme_coppe",
-        filter: `email=eq.${email}`
+        filter: `email=eq.${email.toLowerCase()}`
       },
-      async () => {
-        console.log("🔁 Nuova conferma → ricarico dati profilo");
+async () => {
 
-        const { data } = await supabase.functions.invoke(
-          "get-profile-data",
-          { body: { email } }
-        );
+  console.log("🔥 EVENTO CONFERMA ARRIVATO");
+
+  const { data } = await supabase.functions.invoke(
+    "get-profile-data",
+    { body: { email } }
+  );
+        console.log("EDGE RESPONSE:", data);
 
         if (data?.ok) {
+
+          // 🎟️ Coupon
           renderCoupons(data.coupon_list);
-          document.getElementById("coupon-count").textContent = data.coupon_disponibili;
-          document.getElementById("stat-coupon-ok").textContent = data.coupon_disponibili;
-          document.getElementById("stat-coupon-used").textContent = data.coupon_usati;
+          document.getElementById("coupon-count").textContent =
+            data.coupon_disponibili ?? 0;
+
+          document.getElementById("stat-coupon-ok").textContent =
+            data.coupon_disponibili ?? 0;
+
+          document.getElementById("stat-coupon-used").textContent =
+            data.coupon_usati ?? 0;
+
+          // 🔔 Notifiche aggiornate dalla edge
+          document.getElementById("stat-notif").textContent =
+            data.notifiche_non_lette ?? 0;
+
+          if (data?.created_notifiche?.length) {
+            await caricaNotificheUtente();
+            await aggiornaBadgeNotifiche();
+            await aggiornaStatNotificheProfilo();
+          }
         }
+
       }
     )
-    .subscribe();
+    .subscribe(status => {
+      console.log("📡 Conferme channel status:", status);
+    });
+
 }
 
 function renderCoupons(coupons){
@@ -2645,8 +2708,8 @@ function subscribeCouponRealtime(email) {
       },
       async payload => {
 
-       const row = payload.new || payload.old;
-if (!row || row.email !== email) return;
+const row = payload.new || payload.old;
+if (!row || row.email?.toLowerCase() !== email.toLowerCase()) return;
 
         console.log("🔥 REALTIME EVENT:", payload);
 
@@ -2656,18 +2719,25 @@ if (!row || row.email !== email) return;
           { body: { email } }
         );
 
-        if (data?.ok) {
-          renderCoupons(data.coupon_list);
+if (data?.ok) {
 
-          document.getElementById("coupon-count").textContent =
-            data.coupon_disponibili;
+  // 🎟️ Coupon
+  renderCoupons(data.coupon_list);
 
-          document.getElementById("stat-coupon-ok").textContent =
-            data.coupon_disponibili;
+  document.getElementById("coupon-count").textContent =
+    data.coupon_disponibili ?? 0;
 
-          document.getElementById("stat-coupon-used").textContent =
-            data.coupon_usati;
-        }
+  document.getElementById("stat-coupon-ok").textContent =
+    data.coupon_disponibili ?? 0;
+
+  document.getElementById("stat-coupon-used").textContent =
+    data.coupon_usati ?? 0;
+
+  // 🔔 NOTIFICHE (QUESTO MANCAVA)
+  document.getElementById("stat-notif").textContent =
+    data.notifiche_non_lette ?? 0;
+
+}
 
       }
     )
@@ -2677,22 +2747,34 @@ if (!row || row.email !== email) return;
 } 
 
 function subscribeNotificheRealtime(email){
-  console.log("🚀 Avvio realtime notifiche per:", email);
+
+  const emailNorm = email.trim().toLowerCase();
 
   supabase
     .channel("notifiche-realtime")
     .on(
       "postgres_changes",
       {
-        event: "*",
+        event: "INSERT",
         schema: "public",
-        table: "notifiche",
-        filter: `email=eq.${email}`
+        table: "notifiche"
       },
-      async () => {
-        console.log("🔔 Nuova notifica realtime");
+      async payload => {
+
+        const newRow = payload.new;
+
+        if (newRow.email?.trim().toLowerCase() !== emailNorm) return;
+
+        console.log("🔥 Nuova notifica ricevuta:", newRow);
 
         await aggiornaBadgeNotifiche();
+        await aggiornaStatNotificheProfilo();
+
+        const popup = document.getElementById("notifiche-popup");
+        if (popup && popup.classList.contains("show")) {
+          await caricaNotificheUtente();
+        }
+
       }
     )
     .subscribe();
@@ -2702,12 +2784,11 @@ function subscribeNotificheRealtime(email){
 
 
 
-
 /* ===============================
    PROFILO BOOT
 ================================ */
 document.addEventListener("DOMContentLoaded", async () => {
-  const email = localStorage.getItem("user_email");
+  const email = localStorage.getItem("user_email")?.trim().toLowerCase();
   const logged = localStorage.getItem("userLogged") === "1";
 
   // 🔒 BLOCCA INPUT AVATAR SE NON LOGGATO
@@ -2787,6 +2868,10 @@ if (!data || !data.ok) {
   console.error("Errore caricamento profilo");
   return;
 }
+
+await caricaNotificheUtente();
+await aggiornaBadgeNotifiche();
+await aggiornaStatNotificheProfilo();
 
 // ✅ aggiorna numeri
 document.getElementById("coppe-count").textContent = data.coppe_count ?? 0;
@@ -3254,6 +3339,8 @@ window.mostraPopup = function(titolo, messaggio, redirect = null){
     }
   };
 };
+
+
 </script>
 
 <script>
@@ -3368,8 +3455,79 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const backdrop = document.getElementById("ui-confirm-backdrop");
+  const popup = document.getElementById("ui-confirm");
+  const title = document.getElementById("ui-confirm-title");
+  const message = document.getElementById("ui-confirm-message");
+  const btnOk = document.getElementById("ui-confirm-ok");
+  const btnCancel = document.getElementById("ui-confirm-cancel");
+
+  if (!backdrop || !popup || !title || !message) return;
+
+  window.confirm = function(text){
+
+    return new Promise(resolve => {
+
+      title.textContent = "Conferma";
+      message.textContent = text;
+
+      document.body.classList.add("no-scroll");
+      backdrop.classList.add("show");
+      popup.classList.add("show");
+
+      function close(result){
+        backdrop.classList.remove("show");
+        popup.classList.remove("show");
+        document.body.classList.remove("no-scroll");
+
+        btnOk.onclick = null;
+        btnCancel.onclick = null;
+        backdrop.onclick = null;
+
+        resolve(result);
+      }
+
+      btnOk.onclick = () => close(true);
+      btnCancel.onclick = () => close(false);
+      backdrop.onclick = () => close(false);
+
+    });
+
+  };
+
+});
+
 </script>
 
+<!-- 🔔 CUSTOM CONFIRM -->
+<div id="ui-confirm-backdrop" class="glass-backdrop"></div>
+
+<div id="ui-confirm" class="glass-menu"
+     style="right:auto; left:50%; width:300px;">
+
+  <div id="ui-confirm-title"
+       style="font-size:16px;font-weight:800;text-align:center;margin-bottom:8px;">
+  </div>
+
+  <div id="ui-confirm-message"
+       style="font-size:14px;color:#555;text-align:center;margin-bottom:18px;">
+  </div>
+
+  <div style="display:flex; gap:10px;">
+    <button id="ui-confirm-cancel"
+      style="flex:1;padding:10px;border-radius:12px;border:none;background:#e5e5ea;font-weight:700;">
+      Annulla
+    </button>
+
+    <button id="ui-confirm-ok"
+      style="flex:1;padding:10px;border-radius:12px;border:none;background:#ff3b30;color:#fff;font-weight:800;">
+      OK
+    </button>
+  </div>
+</div>
 
 </body>
 </html>

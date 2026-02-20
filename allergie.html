@@ -309,10 +309,11 @@ function renderAllergeni() {
 
     <!-- 🍨 TORNA ALLA COPPA -->
     <div style="text-align:center; margin-top:24px;">
-      <a href="crea-coppa.html?step=size"
-         class="btn-torna-coppa">
-        Inizia
-      </a>
+<a href="crea-coppa.html"
+   onclick="localStorage.setItem('saltaOrigine','1')"
+   class="btn-torna-coppa">
+  Inizia
+</a>
     </div>
   `;
 }

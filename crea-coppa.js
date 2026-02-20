@@ -180,7 +180,7 @@ const MAP_INGREDIENTI_IMG = {
   "MIKADO": "img/mikado.png",
   "AFTER EIGHT": "img/after-eight.png",
   "BOUNTY": "img/bounty.png",
-  "KIT KAT": "img/kit-kat.png",
+  "KITKAT": "img/kit-kat.png",
   "DUPLO": "img/duplo.png",
   "CIOCCOLATINI": "img/cioccolatini.png"
 };

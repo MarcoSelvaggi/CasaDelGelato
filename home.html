@@ -2469,10 +2469,12 @@ async function aggiornaDotNotificheHome(){
     return;
   }
 
+const emailNorm = (email || "").trim().toLowerCase();
+
 const { data, error } = await supabase
   .from("notifiche")
   .select("id")
-  .eq("email", email)
+  .ilike("email", emailNorm)   // 🔥 FIX
   .eq("letta", false);
 
 console.log("🔎 NOTIFICHE TROVATE:", data);
@@ -2523,6 +2525,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function subscribeNotificheHome(email){
 
+  const emailNorm = (email || "").trim().toLowerCase();
+
   supabase
     .channel("notifiche-home-realtime")
     .on(
@@ -2530,11 +2534,18 @@ function subscribeNotificheHome(email){
       {
         event: "*",
         schema: "public",
-        table: "notifiche",
-        filter: `email=eq.${email}`
+        table: "notifiche"
       },
       async (payload) => {
+
+        const row = payload.new || payload.old;
+        if (!row) return;
+
+        // 🔥 confronto case-insensitive
+        if (row.email?.trim().toLowerCase() !== emailNorm) return;
+
         console.log("🔔 HOME REALTIME:", payload);
+
         await aggiornaDotNotificheHome();
       }
     )
