@@ -1188,7 +1188,14 @@ body.no-anim .poi-group{
 
 
 
-
+.prenota-note{
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+  line-height: 1.4;
+}
 
 
 
@@ -1269,9 +1276,17 @@ body.no-anim .poi-group{
         abbiamo bisogno di almeno <b>3 giorni di preavviso</b>
       </p>
 
-      <a class="semifreddo-btn" href="tel:+393387334493">
-        Prenota ora 📞
-      </a>
+  <a id="btn-prenota"
+   class="semifreddo-btn"
+   href="#">
+  Prenota ora 📞
+</a>
+
+      <div class="prenota-note">
+  Prenotazioni telefoniche:
+  9:00–12:00 · 18:30–21:00<br>
+  Attive solo nel periodo estivo.
+</div>
 
     </div>
 
@@ -2930,8 +2945,92 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 </script>
 
+<div id="prenota-popup" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+  box-sizing:border-box;
+  z-index:100000;
+">
+
+  <div style="
+    width:100%;
+    max-width:330px;
+    background:#fff;
+    border-radius:20px;
+    padding:16px;
+    box-shadow:0 18px 45px rgba(0,0,0,.25);
+    text-align:center;
+  ">
+    <b>Prenotazioni non disponibili</b>
+    <div style="margin-top:10px;font-size:14px;color:#555">
+      Attive solo dal <b>1 giugno</b> al <b>31 agosto</b>.<br><br>
+      📞 9:00–12:00 · 18:30–21:00
+    </div>
+
+    <button onclick="chiudiPrenotaPopup()" style="
+      margin-top:16px;
+      width:100%;
+      padding:10px;
+      border:none;
+      border-radius:12px;
+      background:#007aff;
+      color:#fff;
+      font-weight:700;
+    ">
+      OK
+    </button>
+  </div>
+</div>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btnPrenota = document.getElementById("btn-prenota");
+  if (!btnPrenota) {
+    console.warn("❌ btn-prenota non trovato");
+    return;
+  }
+
+  const TEL_NUMBER = "+393387334493"; // ✅ metti qui il tuo numero
+  const TEL_LINK = "tel:+393387334493";
+
+  function isPeriodoEstivo(date) {
+    const anno = date.getFullYear();
+    const inizio = new Date(anno, 5, 1, 0, 0, 0);          // 1 giugno
+    const fine   = new Date(anno, 7, 31, 23, 59, 59);      // 31 agosto
+    return date >= inizio && date <= fine;
+  }
+
+  btnPrenota.addEventListener("click", (e) => {
+    // 🔒 BLOCCA SEMPRE l’azione di default (quindi niente chiamata automatica)
+    e.preventDefault();
+    e.stopPropagation();
+
+    const oggi = window.TEST_DATE || new Date();
+
+    if (!isPeriodoEstivo(oggi)) {
+mostraPopupPrenota();
+      return;
+    }
+
+    // ✅ SOLO QUI parte la chiamata
+    window.location.href = TEL_LINK;
+  }, true); // 🔥 capture=true: intercetta prima di tutto
+});
+
+function mostraPopupPrenota(){
+  document.getElementById("prenota-popup").style.display = "flex";
+}
+
+function chiudiPrenotaPopup(){
+  document.getElementById("prenota-popup").style.display = "none";
+}
+</script>
 
 
 </body>
