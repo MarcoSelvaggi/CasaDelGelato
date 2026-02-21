@@ -576,6 +576,14 @@ if (guest_id) {
   }
 }
 
+// 🔗 ALLINEA COUPON ALL'EMAIL CORRENTE (se necessario)
+const { error: couponErr } = await supabase
+  .from("coupon")
+  .update({ email: data.email })
+  .eq("email", currentEmail); // currentEmail è la vecchia email
+
+console.log("🔎 COUPON UPDATE ERROR:", couponErr);
+
 mostraPopup(
   "Accesso effettuato",
   "Ora puoi accedere a coupon, storico e notifiche.",

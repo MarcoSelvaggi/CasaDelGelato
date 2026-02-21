@@ -1551,12 +1551,138 @@ body.no-scroll{
   transform: translate(-50%, -50%) scale(1);
 }
 
+/* ===== OVERLAY ===== */
+.popup-overlay{
+  position: fixed;
+  inset: 0;
+  padding: 20px; /* 🔥 margine reale dai bordi */
 
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999;
+}
+
+/* ===== BOX ===== */
+.popup-box{
+  background: #fff;
+  border-radius: 20px;
+
+  width: 100%;
+  max-width: 360px;
+
+  padding: 22px 20px 20px;
+
+  text-align: center;
+
+  box-shadow: 0 20px 50px rgba(0,0,0,.25);
+}
+
+/* 🔥 FIX SPAZI */
+.popup-box h2{
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.popup-box p{
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* ===== BUTTONS ===== */
+.popup-actions{
+  display:flex;
+  gap:12px;
+}
+
+.popup-btn{
+  flex:1;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  transition: transform .15s ease;
+}
+
+.popup-btn:active{
+  transform: scale(.96);
+}
+
+.popup-btn.primary{
+  background:#007aff;
+  color:#fff;
+}
+
+.popup-btn.secondary{
+  background:#f2f2f7;
+  color:#111;
+}
+
+/* 🔴 Bottone Logout (destructive) */
+.popup-btn.danger{
+  background:#ff3b30;
+  color:#fff;
+}
+
+.popup-btn.danger:active{
+  background:#d70015;
+}
+
+/* 🔒 blocca scroll */
+body.popup-open{
+  overflow:hidden;
+}
+
+/* =========================
+   🔄 PROFILE LOADER
+========================= */
+
+.profile-loader{
+  position: fixed;
+  inset: 0;
+  background: #f6f6f7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+}
+
+.spinner{
+  width: 34px;
+  height: 34px;
+  border: 3px solid #ddd;
+  border-top: 3px solid #007aff;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin{
+  to { transform: rotate(360deg); }
+}
 
 </style>
 </head>
 
 <body>
+
+<body>
+
+<!-- 🔄 LOADER PROFILO -->
+<div id="profile-loader" class="profile-loader">
+  <div class="spinner"></div>
+  <p>Caricamento in corso...</p>
+</div>
 
 <!-- 🔝 Barra -->
 <div id="top-fixed-bar">
@@ -2788,6 +2914,7 @@ function subscribeNotificheRealtime(email){
    PROFILO BOOT
 ================================ */
 document.addEventListener("DOMContentLoaded", async () => {
+const loader = document.getElementById("profile-loader");
   const email = localStorage.getItem("user_email")?.trim().toLowerCase();
   const logged = localStorage.getItem("userLogged") === "1";
 
@@ -2852,6 +2979,10 @@ if (!logged || !email){
   aggiornaProfileCard();
   aggiornaAvatarProfilo();
 
+  requestAnimationFrame(() => {
+  loader.style.display = "none";
+});
+
   return;
 }
 
@@ -2893,6 +3024,9 @@ aggiornaAvatarProfilo();
 subscribeCouponRealtime(email);
 subscribeConfermeRealtime(email);
 subscribeNotificheRealtime(email);
+requestAnimationFrame(() => {
+  loader.style.display = "none";
+});
 });
 
 /* ===============================
@@ -3065,36 +3199,64 @@ if (avatarBtn){
 
 // ===== Logout =====
 document.addEventListener("DOMContentLoaded", () => {
-  const logoutBtn = document.getElementById("menu-logout");
 
-  if (!logoutBtn) {
-    console.warn("❌ Bottone logout non trovato");
+  const logoutBtn  = document.getElementById("menu-logout");
+  const popup      = document.getElementById("logout-popup");
+  const confirmBtn = document.getElementById("logout-confirm");
+  const cancelBtn  = document.getElementById("logout-cancel");
+
+  if (!logoutBtn || !popup) {
+    console.warn("❌ Bottone logout o popup non trovato");
     return;
   }
 
   logoutBtn.addEventListener("click", () => {
-    console.log("🚪 Logout cliccato");
 
     // chiudi menu se aperto
     if (typeof closeMenu === "function") {
       closeMenu();
     }
 
-    // reset login
-    localStorage.removeItem("user_email");
-    localStorage.removeItem("user_name");
-    localStorage.removeItem("user_surname");
-    localStorage.setItem("userLogged", "0");
-  const avatarInput = document.getElementById("profile-avatar-input");
-  if (avatarInput) {
-    avatarInput.disabled = true;
-  }
-mostraPopup(
-  "Logout effettuato",
-  "Sei uscito correttamente dal tuo profilo.",
-  "profilo.html"
-);
+    popup.style.display = "flex";
+    document.body.classList.add("popup-open");
   });
+
+  // ❌ ANNULLA
+  if (cancelBtn){
+    cancelBtn.addEventListener("click", () => {
+      popup.style.display = "none";
+      document.body.classList.remove("popup-open");
+    });
+  }
+
+  // ✅ CONFERMA LOGOUT
+  if (confirmBtn){
+    confirmBtn.addEventListener("click", () => {
+
+      popup.style.display = "none";
+      document.body.classList.remove("popup-open");
+
+      console.log("🚪 Logout confermato");
+
+      // reset login
+      localStorage.removeItem("user_email");
+      localStorage.removeItem("user_name");
+      localStorage.removeItem("user_surname");
+      localStorage.setItem("userLogged", "0");
+
+      const avatarInput = document.getElementById("profile-avatar-input");
+      if (avatarInput) {
+        avatarInput.disabled = true;
+      }
+
+      mostraPopup(
+        "Logout effettuato",
+        "Sei uscito correttamente dal tuo profilo.",
+        "profilo.html"
+      );
+    });
+  }
+
 });
 
 // chiudi con ESC (desktop)
@@ -3526,6 +3688,25 @@ document.addEventListener("DOMContentLoaded", () => {
       style="flex:1;padding:10px;border-radius:12px;border:none;background:#ff3b30;color:#fff;font-weight:800;">
       OK
     </button>
+  </div>
+</div>
+
+
+<!-- 🔐 POPUP CONFERMA LOGOUT -->
+<div id="logout-popup" class="popup-overlay" style="display:none">
+  <div class="popup-box">
+    <h2>Sei sicuro?</h2>
+    <p>Vuoi uscire dal tuo account?</p>
+
+    <div class="popup-actions">
+      <button class="popup-btn secondary" id="logout-cancel">
+        Annulla
+      </button>
+
+      <button class="popup-btn danger" id="logout-confirm">
+        Logout
+      </button>
+    </div>
   </div>
 </div>
 

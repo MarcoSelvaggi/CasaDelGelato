@@ -22,6 +22,7 @@ let isLoadingCoppa = false;
 let _onConfirmRimuovi = null;
 let nuvolaInstagramTimer = null;
 let flussoRiepilogoAttivo = false;
+let coppaSalvataSuDB = false;
 
 // 🔥 GESTIONE INGRESSO SPECIALE (Allergie / Usa Coppa)
 document.addEventListener("DOMContentLoaded", () => {
@@ -2989,6 +2990,7 @@ if (!cronologiaArr.some(x => x.data === coppaForLocal.data)) {
           alert("⚠️ Coppa NON salvata su Supabase");
       } else {
           console.log("Coppa salvata correttamente su Supabase!");
+          coppaSalvataSuDB = true; // 🔥 QUI
       }
   } catch (err) {
       console.error("Errore inatteso Supabase:", err);
@@ -3424,6 +3426,7 @@ function timeoutPromise(ms) {
 }
 
 async function preparaRiepilogoFinale() {
+  coppaSalvataSuDB = false;
   isLoadingCoppa = true;
   resetBlurTotale();
   document.body.classList.remove("blur-bg");
@@ -3442,19 +3445,24 @@ async function preparaRiepilogoFinale() {
 
   // ⏳ Messaggio rete lenta dopo 8 secondi
 const slowNetworkTimer = setTimeout(() => {
+
   const hint = document.getElementById("slow-network-hint");
-  if (!hint) return;
+  const waitText = document.getElementById("slow-wait-text");
+  const safeText = document.getElementById("slow-safe-text");
+
+  if (!hint || !waitText || !safeText) return;
 
   hint.style.display = "block";
-  hint.style.opacity = "0";
-  hint.style.transform = "translateY(6px)";
-  hint.style.transition = "all .4s cubic-bezier(.22,.61,.36,1)";
 
-  requestAnimationFrame(() => {
-    hint.style.opacity = "1";
-    hint.style.transform = "translateY(0)";
-  });
-}, 20000);
+  if (coppaSalvataSuDB) {
+    waitText.style.display = "none";
+    safeText.style.display = "block";
+  } else {
+    waitText.style.display = "block";
+    safeText.style.display = "none";
+  }
+
+}, 10000);
 
 
   // ⏸️ lascia respirare Safari

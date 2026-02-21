@@ -144,40 +144,18 @@ if (!utente) {
   const emailVecchia = utente.email;
   const emailNuova   = utente.new_email;
 
-  try {
-    // 2️⃣ aggiorna TUTTE le tabelle collegate
-await supabase.from("coppe")
-  .update({ email: emailNuova })
-  .ilike("email", emailVecchia);
+try {
+const { data: res, error: rpcErr } = await supabase.rpc("confirm_email_change", { p_token: token });
+console.log("RPC RESULT:", res);
 
-await supabase.from("conferme_coppe")
-  .update({ email: emailNuova })
-  .ilike("email", emailVecchia);
+if (rpcErr) {
+  console.error("RPC error:", rpcErr);
+  mostraPopup("Errore", "Si è verificato un problema durante il cambio email.", "profilo.html");
+  return;
+}
 
-await supabase.from("coupon")
-  .update({ email: emailNuova })
-  .ilike("email", emailVecchia);
-
-await supabase.from("notifiche")
-  .update({ email: emailNuova })
-  .ilike("email", emailVecchia);
-
-await supabase.from("disponibilita")
-  .update({ email: emailNuova })
-  .ilike("email", emailVecchia);
-
-await supabase
-  .from("utenti")
-  .update({
-    email: emailNuova,
-    new_email: null,
-    email_change_token: null,
-    email_change_expires_at: null
-  })
-  .ilike("email", emailVecchia);
-
-  } catch (err){
-    console.error(err);
+  if (error) {
+    console.error("RPC error:", error);
     mostraPopup(
       "Errore",
       "Si è verificato un problema durante il cambio email.",
@@ -185,6 +163,16 @@ await supabase
     );
     return;
   }
+
+} catch (err) {
+  console.error(err);
+  mostraPopup(
+    "Errore",
+    "Si è verificato un problema durante il cambio email.",
+    "profilo.html"
+  );
+  return;
+}
 
   // 4️⃣ logout forzato
   localStorage.clear();
