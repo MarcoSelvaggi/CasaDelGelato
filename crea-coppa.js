@@ -1583,17 +1583,21 @@ if (step === "extra") {
          const disabledClass = !disponibile ? "item-disabled" : "";
          const allergeneClass = allergeneVietato ? "item-allergene" : "";
 
-          return `
-     <div class="item ${sel} ${disabledClass} ${allergeneClass}"
-     ${disponibile && !allergeneVietato
-       ? `onclick="toggle('${step}','${escForOnclick(nome)}',this)"`
-       : ""}>
-              ${it}
-            </div>
-          `;
+
+
+
+return `
+  <div class="item ${sel} ${disabledClass} ${allergeneClass}"
+       data-nome="${nome}"
+       ${disponibile && !allergeneVietato
+         ? `onclick="toggle('${step}','${escForOnclick(nome)}',this)"`
+         : ""}>
+    ${it}
+  </div>
+`;
         }).join("")
       }
-    </div>
+    </div> 
 
     <div class="nav-buttons">
       <button class="back-btn" onclick="prevStep()">Indietro</button>
@@ -1605,23 +1609,20 @@ if (step === "extra") {
 }
 
 // ---------------- TOGGLE ----------------
-function limitEffect(step, nome){
+function limitEffect(step, nome, el){
 
-  let el = null;
+  // ✅ se ho l’elemento cliccato, uso quello e basta
+  let target = el || null;
 
-  if (step === "gusti") {
-    el = document.querySelector(`.gusto-item[data-nome="${nome}"]`);
-  } else {
-    el = document.querySelector(`.item[onclick*="${nome}"]`);
+  // fallback SOLO per gusti (quando non hai el)
+  if (!target && step === "gusti") {
+    target = document.querySelector(`.gusto-item[data-nome="${nome}"]`);
   }
 
-  if (!el) return;
+  if (!target) return;
 
-  el.classList.add("limit-reached");
-
-  setTimeout(() => {
-    el.classList.remove("limit-reached");
-  }, 600);
+  target.classList.add("limit-reached");
+  setTimeout(() => target.classList.remove("limit-reached"), 600);
 
   showIsland(step, "Limite raggiunto ❗");
 }
@@ -1673,10 +1674,10 @@ function toggle(stepParam, nome, el) {
   } else {
 
     // 🚫 controllo limite SOLO in aggiunta
-    if (scelti[step].length >= max[step]) {
-      limitEffect(step, nome);
-      return;
-    }
+if (scelti[step].length >= max[step]) {
+  limitEffect(step, nome, el);  // ✅ passa l’elemento cliccato
+  return;
+}
 
     scelti[step].push(nome);
     console.log("✅ Selezionato:", nome);
@@ -4846,3 +4847,17 @@ function creaInLocale(){
 
   // lascia visibile step tavolo (che già è il default)
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.querySelector(".info-dup-btn");
+  if (!btn) return;
+
+  setInterval(() => {
+    btn.classList.remove("hint-move");
+    void btn.offsetWidth; // reset animazione
+    btn.classList.add("hint-move");
+  }, 3000); // ogni 3 secondi
+
+});
