@@ -2032,7 +2032,6 @@ function renderCoppaGrande(stage) {
 
   <img
     id="gusto-top-img"
-    src="img/pallina-vaniglia.png"
     crossorigin="anonymous"
   >
 </div>
@@ -2045,7 +2044,7 @@ function renderCoppaGrande(stage) {
         </svg>
         <div class="arrow-text left gusto-text" id="gusto-left-text">Gusto</div>
       </div>
-      <img id="gusto-left-img" src="img/pallina-fragola.png"crossorigin="anonymous">
+      <img id="gusto-left-img" crossorigin="anonymous">
     </div>
 
     <div class="box box-pallina pallina-right">
@@ -2057,7 +2056,7 @@ function renderCoppaGrande(stage) {
           <path d="M38 15 L30 11 M38 15 L30 19"/>
         </svg>
       </div>
-      <img id="gusto-right-img" src="img/pallina-cioccolato.png"crossorigin="anonymous">
+      <img id="gusto-right-img" crossorigin="anonymous">
     </div>
 
 <div class="box box-pallina pallina-bottom">
@@ -2072,7 +2071,7 @@ function renderCoppaGrande(stage) {
     </svg>
   </div>
 
-  <img id="gusto-bottom-img" src="img/pallina-pistacchio.png"crossorigin="anonymous">
+  <img id="gusto-bottom-img" crossorigin="anonymous">
 </div>
 
   </div>
@@ -2173,7 +2172,7 @@ function renderCoppaGrande(stage) {
 
   <!-- FRUTTA -->
 <div class="box box-extra frutta-1">
-  <img id="frutta-1-img" src="img/fragola.png"crossorigin="anonymous">
+  <img id="frutta-1-img" crossorigin="anonymous">
 
   <div class="arrow"
        style="bottom:-52px; left:50%; transform:translateX(-50%);">
@@ -2203,7 +2202,7 @@ function renderCoppaGrande(stage) {
 
 
 <div class="box box-extra frutta-2">
-  <img id="frutta-2-img" src="img/fragola.png"crossorigin="anonymous">
+  <img id="frutta-2-img" crossorigin="anonymous">
 
   <div class="arrow"
        style="bottom:-52px; left:50%; transform:translateX(-50%);">
@@ -2751,7 +2750,7 @@ if (coppaSelezionata === "PICCOLA") {
 
     <!-- Pallina sinistra -->
     <div class="box box-pallina pallina-1">
-     <img id="gusto-left-img" src="img/pallina-vaniglia.png"crossorigin="anonymous">
+     <img id="gusto-left-img" crossorigin="anonymous">
 
       <!-- Freccia gusto sinistra -->
       <div class="arrow"
@@ -2769,7 +2768,7 @@ if (coppaSelezionata === "PICCOLA") {
 
     <!-- Pallina destra -->
     <div class="box box-pallina pallina-2">
-      <img id="gusto-right-img" src="img/pallina-fragola.png"crossorigin="anonymous">
+      <img id="gusto-right-img" crossorigin="anonymous">
 
       <!-- Freccia gusto destra -->
       <div class="arrow"
@@ -2845,7 +2844,7 @@ if (coppaSelezionata === "PICCOLA") {
 
   <!-- FRUTTA -->
 <div class="box box-extra box-frutta">
-  <img id="frutta-img" src="img/fragola.png"crossorigin="anonymous">
+  <img id="frutta-img" crossorigin="anonymous">
 
   <div class="arrow"
        id="frutta-arrow"

@@ -5677,8 +5677,8 @@ body.loading-active #bottom-nav{
   }
   }
 
-  /* ===============================
-   FIX TESTI FORMATI – TELEFONI BASSI
+/* ===============================
+   FIX TESTI FORMATI – SOLO TELEFONI BASSI
 =============================== */
 @media (max-height: 700px){
 
@@ -5686,10 +5686,10 @@ body.loading-active #bottom-nav{
     padding: 16px 14px !important;
   }
 
-  .formati-wrapper .menu-item *{
-    word-break: break-word;      /* 🔥 permette andare a capo */
-    overflow-wrap: break-word;
+  /* SOLO descrizione sotto il titolo */
+  .formati-wrapper .menu-item p{
     white-space: normal !important;
+    line-height: 1.35;
   }
 
 }
