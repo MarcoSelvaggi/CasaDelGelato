@@ -5677,28 +5677,12 @@ body.loading-active #bottom-nav{
   }
   }
 
-/* ===============================
-   FIX TESTI FORMATI – SOLO TELEFONI BASSI
-=============================== */
-@media (max-height: 700px){
-
-  .formati-wrapper .menu-item{
-    padding: 16px 14px !important;
-  }
-
-  /* SOLO descrizione sotto il titolo */
-  .formati-wrapper .menu-item p{
-    white-space: normal !important;
-    line-height: 1.35;
-  }
-
-}
 
 /* ===============================
-   🍨 FIX COPPA GRANDE – TELEFONI VECCHI / PICCOLI
+   🍨 FIX COPPE – SOLO TELEFONI VECCHI
 =============================== */
 
-@media (max-height: 700px) {
+@media (max-height: 700px) and (max-width: 380px) {
 
   #coppa-stage .grande-wrapper {
     position: relative;
@@ -5707,14 +5691,6 @@ body.loading-active #bottom-nav{
     transform-origin: top center;
   }
 
-}
-
-/* ===============================
-   🍨 FIX COPPA MEDIA – TELEFONI VECCHI / PICCOLI
-=============================== */
-
-@media (max-height: 700px) {
-
   #coppa-stage .media-wrapper {
     position: relative;
     left: 35%;
@@ -5722,19 +5698,32 @@ body.loading-active #bottom-nav{
     transform-origin: top center;
   }
 
-}
-
-/* ===============================
-   🍨 FIX COPPA PICCOLA – TELEFONI VECCHI / PICCOLI
-=============================== */
-
-@media (max-height: 700px) {
-
   #coppa-stage .piccola-wrapper {
     position: relative;
     left: 45%;
     transform: translateX(-50%) scale(0.48);
     transform-origin: top center;
+  }
+
+}
+
+/* ===============================
+   FIX iPhone 7 – TESTO FORMATI
+=============================== */
+@media (max-width: 360px){
+
+  .formato-dettagli{
+    display: block;
+    width: 100%;
+    min-width: 0;
+
+    white-space: normal !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
+
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.35;
   }
 
 }
