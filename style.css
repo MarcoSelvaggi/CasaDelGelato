@@ -5727,3 +5727,11 @@ body.loading-active #bottom-nav{
   }
 
 }
+
+#popup-funzione{
+  z-index: 10001 !important;
+}
+
+#coppa-origin-overlay{
+  z-index: 10000;
+}
