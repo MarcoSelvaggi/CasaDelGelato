@@ -1795,6 +1795,44 @@ body.info-open{
 }
 
 
+/* ===============================
+   FIX CONTROLLI CRONOLOGIA – SCHERMI PICCOLI
+=============================== */
+@media (max-width: 390px){
+
+  .controls{
+    flex-wrap: wrap !important;   /* 🔥 permette di andare a capo */
+    justify-content: center !important;
+  }
+
+  .controls > *{
+    flex: 1 1 auto;
+    min-width: 120px;             /* evita bottoni troppo stretti */
+  }
+
+  #ordine-select{
+    width: 100%;
+  }
+
+}
+
+/* ===============================
+   FIX NOME COPPA – SCHERMI PICCOLI
+=============================== */
+@media (max-width: 390px){
+
+  .cup-title b.cup-name{
+    max-width: 100% !important;      /* niente spazio limitato */
+    white-space: normal !important;  /* testo normale */
+    word-break: normal !important;   /* 🔥 NON spezza ogni lettera */
+    overflow-wrap: break-word !important; /* spezza solo parole lunghe */
+    line-height: 1.25;
+  }
+
+}
+
+
+
 
     </style>
 </head>
@@ -3676,18 +3714,29 @@ sharedLogo.src = "img/scoopy-ice.png";
 async function generaCoppaInstagramStory(stageEl) {
   if (!stageEl) return null;
 
+  // 🔥 rilevo device vecchi PRIMA di tutto
+  const isOldDevice =
+    navigator.hardwareConcurrency <= 2 ||
+    /iPhone OS 12|iPhone OS 13/.test(navigator.userAgent);
+
   const canvas = document.createElement("canvas");
-  canvas.width = 1080;
-  canvas.height = 1920;
+
+  // 🔥 dimensioni dinamiche
+  canvas.width = isOldDevice ? 720 : 1080;
+  canvas.height = isOldDevice ? 1280 : 1920;
+
   const ctx = canvas.getContext("2d");
 
   // sfondo bianco
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+  // 🔥 scale dinamico
+  const scaleValue = isOldDevice ? 1 : 2;
+
   const coppaCanvas = await html2canvas(stageEl, {
     backgroundColor: null,
-    scale: 2,
+    scale: scaleValue,
     useCORS: true
   });
 

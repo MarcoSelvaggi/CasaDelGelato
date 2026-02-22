@@ -5637,3 +5637,104 @@ body.loading-active #bottom-nav{
 .info-dup-btn.hint-move {
   animation: hintPulse 1s ease;
 }
+
+
+/* ===============================
+   FIX LOGO CREA COPPA – SCHERMI BASSI
+=============================== */
+@media (max-height: 700px){
+
+  .coppa-origin-logo{
+    margin: 0 auto 24px !important;   /* niente margine negativo */
+  }
+
+  .coppa-origin-overlay{
+    align-items: flex-start !important;
+    padding-top: 40px;
+    overflow-y: auto;
+  }
+
+}
+
+/* ===============================
+   FIX POPUP CREA COPPA – SOLO TELEFONI VECCHI
+=============================== */
+@media (max-height: 700px){
+
+  #popup-coppa{
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: flex-start;   /* non centrato */
+    justify-content: center;
+
+    padding-top: 60px;
+    padding-bottom: 110px;     /* spazio per bottom nav */
+
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
+  }
+
+  /* ===============================
+   FIX TESTI FORMATI – TELEFONI BASSI
+=============================== */
+@media (max-height: 700px){
+
+  .formati-wrapper .menu-item{
+    padding: 16px 14px !important;
+  }
+
+  .formati-wrapper .menu-item *{
+    word-break: break-word;      /* 🔥 permette andare a capo */
+    overflow-wrap: break-word;
+    white-space: normal !important;
+  }
+
+}
+
+/* ===============================
+   🍨 FIX COPPA GRANDE – TELEFONI VECCHI / PICCOLI
+=============================== */
+
+@media (max-height: 700px) {
+
+  #coppa-stage .grande-wrapper {
+    position: relative;
+    left: 25%;
+    transform: translateX(-50%) scale(0.43);
+    transform-origin: top center;
+  }
+
+}
+
+/* ===============================
+   🍨 FIX COPPA MEDIA – TELEFONI VECCHI / PICCOLI
+=============================== */
+
+@media (max-height: 700px) {
+
+  #coppa-stage .media-wrapper {
+    position: relative;
+    left: 35%;
+    transform: translateX(-50%) scale(0.48);
+    transform-origin: top center;
+  }
+
+}
+
+/* ===============================
+   🍨 FIX COPPA PICCOLA – TELEFONI VECCHI / PICCOLI
+=============================== */
+
+@media (max-height: 700px) {
+
+  #coppa-stage .piccola-wrapper {
+    position: relative;
+    left: 45%;
+    transform: translateX(-50%) scale(0.48);
+    transform-origin: top center;
+  }
+
+}

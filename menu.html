@@ -1644,6 +1644,40 @@ body.allergen-open #top-fixed-bar{
   97%  { transform: translateX(2px); }
 }
 
+
+/* 📱 FIX POPUP – TELEFONI PICCOLI / VECCHI */
+@media (max-height: 700px) {
+
+  #welcome-panel,
+  #allergen-panel {
+    top: 50%;
+    max-height: 85vh;      /* 🔥 non supera mai lo schermo */
+    overflow-y: auto;      /* 🔥 scroll interno */
+    -webkit-overflow-scrolling: touch;
+  }
+
+}
+
+/* ===============================
+   📱 FIX POPUP MENU – TELEFONI VECCHI
+=============================== */
+
+@media (max-height: 700px) {
+
+  #welcome-panel,
+  #allergen-panel,
+  #menu-allergeni-panel {  /* 👈 aggiungi ID popup menu */
+
+    max-height: 85vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+}
+
 </style>
 </head>
 
