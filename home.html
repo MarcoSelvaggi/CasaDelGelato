@@ -1379,7 +1379,10 @@ body.logout-open{
   overflow: hidden;
 }
 
-
+html, body{
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
 
 
   </style>
@@ -2978,6 +2981,28 @@ function mostraPopup(titolo, messaggio, redirectUrl) {
     </div>
   </div>
 </div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // 🔓 sblocca eventuali lock rimasti attivi
+  document.body.classList.remove("popup-open", "logout-open", "no-scroll");
+  document.body.style.overflow = "";
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+
+  document.documentElement.style.overflow = "";
+
+  // ✅ assicurati che la pagina possa scrollare su iOS vecchi
+  document.documentElement.style.height = "auto";
+  document.body.style.height = "auto";
+  document.body.style.overflowY = "auto";
+  document.body.style.webkitOverflowScrolling = "touch";
+});
+</script>
 
 </body>
 </html>
