@@ -5677,6 +5677,18 @@ body.loading-active #bottom-nav{
   }
   }
 
+  #popup-coppa{
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;     /* centrato verticale */
+  justify-content: center; /* centrato orizzontale */
+
+  padding: 20px;
+  box-sizing: border-box;
+}
+
 
 /* ===============================
    🍨 FIX COPPE – SOLO TELEFONI VECCHI
