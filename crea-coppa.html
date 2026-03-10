@@ -898,6 +898,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // 🚧 SE DISABILITATO → mostra popup
   if (data.crea_coppa_enabled === false) {
 
+    localStorage.setItem("popupFunzioneAttiva", "1");
+
     const titleEl = document.getElementById("coming-soon-title");
     const msgEl   = document.getElementById("coming-soon-message");
 
@@ -909,6 +911,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     popup.style.display = "flex";
     document.body.style.overflow = "hidden";
+  } else {
+    localStorage.removeItem("popupFunzioneAttiva");
   }
 
 });
